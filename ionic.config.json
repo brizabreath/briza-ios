@@ -1,0 +1,7 @@
+{
+  "name": "brizabreathandperformance",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
