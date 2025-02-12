@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">brizabreath</string>
+    <string name="title_activity_main">brizabreath</string>
+    <string name="package_name">com.brizabreath.app</string>
+    <string name="custom_url_scheme">com.brizabreath.app</string>
+</resources>

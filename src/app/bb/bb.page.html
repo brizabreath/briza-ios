@@ -1,0 +1,184 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="bbPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings english">Briza Breathing</h4>
+            <h4 class="volumeSettings portuguese">Respiração Briza</h4>
+            <div class="questionMark questionClass">
+              <button #questionBB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <div class="settingButtons">
+          <button routerLink="/set" id="settingsBB" #settingsBB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+        </div>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="settings-form BB">
+                  <div class="timer-additional-info">
+                      <b class="english">INHALE | HOLD | EXHALE | HOLD</b>
+                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE | SEGURE</b>
+                  </div>  
+                  <div class="form-line">
+                      <input type="number" value="4" #inhaleInputBB min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                      <input type="number" value="2" #hold1InputBB min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                      <input type="number" value="6" #exhaleInputBB min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                    <input type="number" value="2" #hold2InputBB min="1" readonly>
+                </div>
+              </div>
+              <div class="BBtimer-container">
+                  <select #BBtimeInput class="countdownDisplay">
+                      <option value="infinity"> ∞ </option>
+                      <option value="60" class="english">1 minute</option>
+                      <option value="60" class="portuguese">1 minuto</option>
+                  </select>
+                  <input #BBcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnBB class="ballButton">
+                  <div #BBball class="ball">
+                      <span #BBballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="stopBtnBB" #stopBtnBB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BBSave" #BBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <form method="post" id="BBForm">
+                      <div class="roundbox">
+                          <div>Rounds:</div><div #roundsDoneBB>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBB>00 : 00</div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div #BBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <div id="myModalBB" class="modal" #myModalBB>
+    <div class="modal-content">
+        <span class="close" id="closeModalBB" #closeModalBB>&times;</span>
+        <div class="slideshow-container">
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">INTRO</div>
+                <div class="numbertext portuguese">Introdução</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>
+                    Learn how to breathe so gently and lightly that a feather placed beneath your nose would remain still                    
+                </p>
+                <p>
+                    Practice this exercise twice daily, dedicating 5 to 15 minutes to each session
+                </p>
+                </div>
+                <div class="text portuguese">
+                  <p>Aprenda a respirar tão suavemente que se houvesse uma pena sob seu nariz ela não se moveria</p>
+                  <p>Faça este exercício duas vezes ao dia, de 5 a 15 minutos cada sessão</p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 1</div>
+                <div class="numbertext portuguese">Passo 1</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <div class="text english">
+                  <p>
+                    Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth.
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 2</div>
+                <div class="numbertext portuguese">Passo 2</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <div class="text english">
+                  <p>
+                  The ratio of this exercise is fixed. What makes it harder or easier is how much air you breathe in and how fast you are breathing. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the cirlce again.
+                  </p>
+                  <p> 
+                  Breathe light on the inhalation and exhalation reducing the volume of air that you are breathing so light that you can barely feel or hear your breath. Sustain an air hunger for the whole session.
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p> 
+                    A proporção deste exercício é fixa. O que o torna mais difícil ou mais fácil é a quantidade de ar que você inspira e a velocidade com que está respirando. Escolha a duração da sessão e pressione "Iniciar" quando estiver pronto. Se precisar pausar, basta clicar no círculo novamente. 
+                  </p> 
+                  <p> 
+                    Respire levemente na inalação e exalação, reduzindo o volume de ar que você está respirando, tão suavemente que mal consiga sentir ou ouvir sua respiração. Mantenha uma leve sensação de fome de ar durante toda a sessão. 
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 3</div>
+                <div class="numbertext portuguese">Passo 3</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <div class="text english">
+                  <p>
+                    If the sensation of needing more air gets too strong, stick to the instructions, but allow yourself to breathe naturally. Once you feel comfortable, try reducing your breath's volume again.
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Se a "fome" de ar for intensa demais, continue seguindo a orientação, mas respire normalmente até que você possa reduzir o volume de ar novamente                    
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">KEEP IN MIND</div>
+                <div class="numbertext portuguese">Nota</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    For this technique to work effectively, maintaining a slight air hunger throughout the session is key
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Para que esta técnica seja eficaz, é importante que você mantenha uma sensação de fome de ar durante toda a sessão 
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">Humming</div>
+                <div class="numbertext portuguese">Zumbindo</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/calm.svg">
+                <div class="text english">
+                  <p> Alternatively, for this breathing technique, instead of a normal exhalation, you can hum with your lips sealed. This variation serves a different purpose but is very beneficial to your health. </p> 
+                  <p> Humming is a simple breathing exercise that offers several health benefits. One of its key advantages is the potential to increase the production of nitric oxide in the body. Nitric oxide is a molecule that plays a crucial role in physiological processes, including vasodilation (the widening of blood vessels), which can enhance blood flow and lower blood pressure. Moreover, nitric oxide has demonstrated anti-inflammatory and antimicrobial properties, contributing to additional health benefits. </p>
+                </div>
+                <div class="text portuguese">
+                  <p> Como alternativa para esta técnica de respiração, em vez de uma exalação normal, você pode emitir um som de zumbido com os lábios selados. Essa variação tem um propósito diferente, mas é muito benéfica para a sua saúde. </p> 
+                  <p> O zumbido é um exercício respiratório simples que oferece vários benefícios à saúde. Um dos principais é a capacidade de aumentar a produção de óxido nítrico no corpo. O óxido nítrico é uma molécula que desempenha um papel crucial em processos fisiológicos, incluindo a vasodilatação (ampliação dos vasos sanguíneos), o que pode melhorar o fluxo sanguíneo e reduzir a pressão arterial. Além disso, o óxido nítrico demonstrou possuir propriedades anti-inflamatórias e antimicrobianas, contribuindo para benefícios adicionais à saúde. </p>
+                </div>
+            </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #BBprev>&#10094;</a>
+            <a class="next" #BBnext>&#10095;</a>
+        </div>
+    </div>
+  </div>
+</ion-content>

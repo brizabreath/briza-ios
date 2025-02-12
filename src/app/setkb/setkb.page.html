@@ -1,0 +1,93 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="whsetSettingsPage" class="hidden">
+    <div class="breathingpages">
+        <h1 class="english">Settings</h1>
+        <h1 class="portuguese">Configurações</h1>
+        <div class="settings-form">
+          <h4 class="volumeSettings">Number of Breaths</h4>
+          <div class="form-line">
+              <button class="buttonminus" type="button" id="minusKB" #minusKB>-</button>
+          </div>
+          <div class="form-line">
+            <input class="SETWH" value="30" #breathsetInputKB min="1" readonly>
+          </div>
+          <div class="form-line">
+              <button class="buttonplus" type="button" id="plusKB" #plusKB>+</button>
+          </div>
+      </div>
+      <div class="settings-form">
+          <h4 class="volumeSettings">Speed of Breaths</h4>
+          <div class="form-line">
+              <button class="buttonminus" type="button" id="SminusKB" #SminusKB>-</button>
+          </div>
+          <div class="form-line">
+            <input class="SETWH" value="Medium" #speedsetInputKB min="1" readonly>
+          </div>
+          <div class="form-line">
+              <button class="buttonplus" type="button" id="SplusKB" #SplusKB>+</button>
+          </div>
+      </div>
+        <div class="volume-bar">
+          <h4 class="volumeSettings english">Play Voice?</h4>
+          <h4 class="volumeSettings portuguese">Tocar Voz?</h4>
+          <div class="audioButtons">
+              <div #setVaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+              <div #setVmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          </div>
+          <input type="range" #voiceBarSETKB min="0" max="1" step="1" value="1">
+      </div>
+      <hr />
+      <div class="volume-bar">
+        <h4 class="volumeSettings english">Play Breath Sound?</h4>
+        <h4 class="volumeSettings portuguese">Tocar som das respirações?</h4>
+        <div class="audioButtons">
+            <div #setBraudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+            <div #setBrmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+        </div>
+        <input type="range" #breathBarSETKB min="0" max="1" step="1" value="1">
+    </div>
+    <hr />
+      <div class="volume-bar">
+          <h4 class="volumeSettings english">Play Song?</h4>
+          <h4 class="volumeSettings portuguese">Tocar Música?</h4>
+          <div class="audioButtons">
+              <div #setaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+              <div #setmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          </div>
+          <input type="range" #volumeBarSETKB min="0" max="1" step="1" value="1">
+      </div>
+      <hr />
+      <div class="volume-bar">
+          <h4 class="volumeSettings english">Play Bell?</h4>
+          <h4 class="volumeSettings portuguese">Tocar Sino?</h4>
+          <div class="audioButtons">
+              <div #setBaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+              <div #setBmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          </div>
+          <input type="range" #bellBarSETKB min="0" max="1" step="1" value="1">
+      </div>
+      <hr />
+    </div>
+</div>
+<div class="breathingpages set">
+  <h4 class="volumeSettings english">Choose a song</h4>
+  <h4 class="volumeSettings portuguese">Escolha Música</h4>
+  <div class="song-container">
+    <select id="song-selectSETKB" #songSelectSETKB class="song-select" (change)="onSongChange($event)">
+      <option value="https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3" selected>Healing Frequency</option>
+      <option value="https://brizastorage.blob.core.windows.net/audio/peacefulGarden.mp3">Peaceful Garden</option>
+      <option value="https://brizastorage.blob.core.windows.net/audio/skyMeditation.mp3">Autumn Sky</option>
+    </select>
+  </div>
+</div>
+</ion-content>
+

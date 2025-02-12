@@ -1,0 +1,179 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="ahatPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings english">Advanced High Altitude Training</h4>
+            <h4 class="volumeSettings portuguese">Treinamento Avançado de Alta Altitude</h4>
+            <div class="questionMark questionClass">
+              <button #questionAHAT type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <div class="settingButtons">
+          <button routerLink="/set" id="settingsAHAT" #settingsAHAT class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+        </div>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="settings-form AHAT">
+                  <div class="timer-additional-info">
+                      <b class="english">HOLD | LIGHT | NORMAL</b>
+                      <b class="portuguese">SEGURE | LEVE | NORMAL</b>
+                  </div>  
+                  <div class="form-line">
+                      <input value="∞" #holdInputAHAT min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                      <input type="number" value="15" #lightInputAHAT min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                    <input type="number" value="30" #normalInputAHAT min="1" readonly>
+                </div>
+              </div>
+              <div class="AHATtimer-container">
+                  <select #AHATtimeInput class="countdownDisplay">
+                      <option value="infinity"> ∞ </option>
+                      <option value="1" class="english">1 Round</option>
+                  </select>
+                  <input #AHATcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnAHAT class="ballButton">
+                  <div #AHATball class="ball">
+                      <span #AHATballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="stopBtnAHAT" #stopBtnAHAT><div class="english">Next</div><div class="portuguese">Próximo</div></button>
+                  <button type="button" class="stopBtn" id="AHATReset" #AHATReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <form method="post" id="AHATForm">
+                      <button type="button" class="saveBtn" id="AHATSave" #AHATSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                      <div class="roundbox">
+                          <div>Rounds:</div><div #roundsDoneAHAT>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayAHAT>00 : 00</div>
+                      </div>
+                  </form>
+                  <div #AHATResults></div>
+              </div>
+          </div>
+      </div>
+      <div #AHATResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <div id="myModalAHAT" class="modal" #myModalAHAT>
+    <div class="modal-content">
+        <span class="close" id="closeModalAHAT" #closeModalAHAT>&times;</span>
+        <div class="slideshow-container">
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">INTRO</div>
+                <div class="numbertext portuguese">Introdução</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mountain.svg">
+                <div class="text english">
+                  <p>Bring your high altitude training to another level</p>
+                </div>
+                <div class="text portuguese">
+                  <p>Eleve seu treinamento de alta altitude para outro nível</p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+              <div class="numbertext english">STEP 1</div>
+              <div class="numbertext portuguese">Passo 1</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/walk.svg">
+              <div class="text english">
+                <p>
+                  Breathe normally for about 1 minute while running
+                </p>
+                <p>
+                  Whenever you're ready, press "Start", exhale, pinch your nose, hold your breath and keep on running                   
+                </p>
+                <p>
+                  The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press "Next"                    
+                </p>
+              </div>
+              <div class="text portuguese">
+                <p>
+                  Respire normalmente por cerca de 1 minuto enquanto corre
+                </p>
+                <p>
+                  Quando estiver pronto, pressione "Iniciar", expire, aperte o nariz, segure a respiração e continue correndo                   
+                </p>
+                <p>
+                  O cronômetro contará quanto tempo você consegue segurar a respiração enquanto corre. Uma vez que você sentir uma forte necessidade de ar e não conseguir mais segurar a respiração, pressione "Próximo"                    
+                </p>
+              </div>
+              </div>
+              <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 2</div>
+                <div class="numbertext portuguese">Passo 2</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <div class="text english">
+                  <p>
+                    Inhale and try to breathe as light as possible for 15 seconds, if you cannot breathe light you held it for too long
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Inale e tente respirar o mais suavemente possível por 15 segundos, se você não conseguir respirar suavemente, você segurou por tempo demais
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 3</div>
+                <div class="numbertext portuguese">Passo 3</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>
+                    Keep walking, and breathe normally for 30 seconds, after this a new round will start
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Continue caminhando e respire normalmente por 30 segundos, após isso uma nova rodada começará
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 4</div>
+                <div class="numbertext portuguese">Passo 4</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <div class="text english">
+                  <p>
+                    Do this exercise for about 8 to 10 rounds. You can click on the circle if you need to pause the exercise
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Faça este exercício por cerca de 8 a 10 rodadas. Se precisar pausar, basta clicar no círculo novamente
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">KEEP IN MIND</div>
+                <div class="numbertext portuguese">Nota</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    When holding your breath, aim to hold it for as long as you can. However, avoid pushing yourself to the point of feeling dizzy or struggling to recover your breath gently                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Quando prender a respiração, tente segurá-la o máximo que conseguir. No entanto, evite forçar a ponto de sentir tontura ou dificuldade em recuperar a respiração de forma suave                  </p>
+                </div>
+            </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #AHATprev>&#10094;</a>
+            <a class="next" #AHATnext>&#10095;</a>
+        </div>
+      </div>
+  </div>
+</ion-content>

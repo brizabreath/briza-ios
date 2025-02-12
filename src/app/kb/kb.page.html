@@ -1,0 +1,201 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="kbPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings">Kapalabhati</h4>
+            <div class="questionMark questionClass">
+              <button #questionKB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <div class="settingButtons">
+          <button routerLink="/setkb" id="settingsKB" #settingsKB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+        </div>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="settings-form KB">
+                  <div class="timer-additional-info">
+                      <b class="english">Breaths | Hold | Normal</b>
+                      <b class="portuguese">Respirações | Retenção | Normal </b>
+                  </div>  
+                  <div class="form-line">
+                      <input value="30" #breathsInputKB min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                      <input value="∞" #hold1InputKB min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                    <input type="number" value="30" #hold2InputKB min="1" readonly>
+                </div>
+              </div>
+              <div class="KBtimer-container">
+                  <select #KBtimeInput class="countdownDisplay">
+                      <option value="infinity"> ∞ </option>
+                      <option value="1" class="english">1 Round</option>
+                  </select>
+                  <input #KBcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnKB class="ballButton">
+                  <div #KBball class="ball">
+                      <span #KBballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="KBReset" #KBReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="KBSave" #KBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <form method="post" id="KBForm">
+                      <div class="roundbox">
+                          <div>Rounds:</div><div #roundsDoneKB>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayKB>00 : 00</div>
+                      </div>
+                  </form>
+                  <div #KBResults></div>
+              </div>
+          </div>
+      </div>
+      <div #KBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <div id="myModalKB" class="modal" #myModalKB>
+    <div class="modal-content">
+        <span class="close" id="closeModalKB" #closeModalKB>&times;</span>
+        <div class="slideshow-container">
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">INTRO 1/2</div>
+              <div class="numbertext portuguese">Introdução 1/2</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+              <div class="text english">
+                <p>Kapalabhati is a yogic breathing technique that involves rapid and forceful exhalations followed by passive inhalations. It's important to note that kapalabhati should be practiced on an empty stomach and should be avoided by those with high blood pressure, heart disease, or any other medical conditions</p>
+              </div>
+              <div class="text portuguese">
+                <p>Kapalabhati é uma técnica de Respiração Yogi que envolve exalações rápidas e vigorosas seguidas por inalações passivas. É importante notar que o kapalabhati deve ser praticado com o estômago vazio e deve ser evitado por aqueles com pressão alta, doenças cardíacas ou quaisquer outras condições médicas</p>
+              </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+              <div class="numbertext english">INTRO 2/2</div>
+              <div class="numbertext portuguese">Introdução 2/2</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+              <div class="text english">
+                <p>Kapalabhati helps to strengthen the respiratory muscles and increase lung capacity, which can improve breathing and respiratory function. The rapid and forceful exhalations in Kapalabhati help to stimulate the sympathetic nervous system, which can increase energy and vitality.
+                  It can also help to stimulate the digestive system, to calm the mind and reduce stress and anxiety, to purify the body by increasing circulation and eliminating toxins, and to improve concentration and focus.</p>
+              </div>
+              <div class="text portuguese">
+                <p>Kapalabhati ajuda a fortalecer os músculos respiratórios e aumentar a capacidade pulmonar, o que pode melhorar a respiração e a função respiratória. As exalações rápidas e vigorosas no Kapalabhati ajudam a estimular o sistema nervoso simpático, o que pode aumentar a energia e vitalidade.
+                  Também pode ajudar a estimular o sistema digestivo, a acalmar a mente e reduzir o estresse e a ansiedade, a purificar o corpo aumentando a circulação e eliminando toxinas, e a melhorar a concentração e o foco.</p>
+              </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+              <div class="numbertext english">STEP 1</div>
+              <div class="numbertext portuguese">Passo 1</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+              <div class="text english">
+                <p>
+                  Choose the number of breaths to prepare for the breath hold in the settings, sit in a comfortable seated position with your spine straight and your eyes closed
+                </p>
+              </div>
+              <div class="text portuguese">
+                <p>
+                  Escolha o número de respirações para preparar a retenção de respiração nas configurações, sente-se em uma posição confortável com a coluna reta e os olhos fechados
+                </p>
+              </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 2</div>
+                <div class="numbertext portuguese">Passo 2</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>
+                    Take a deep breath in through your nose, exhale forcefully through your nose while simultaneously contracting your abdominal muscles to push the air out in short bursts
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Inspire profundamente pelo nariz, expire vigorosamente pelo nariz enquanto contrai simultaneamente os músculos abdominais para empurrar o ar para fora em rajadas curtas
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 3</div>
+                <div class="numbertext portuguese">Passo 3</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <div class="text english">
+                  <p>
+                    Relax your abdominal muscles and passively inhale through your nose. Repeat it for several rounds, gradually increasing the force of your exhalations                  
+                 </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Relaxe os músculos abdominais e inale passivamente pelo nariz. Repita isso por várias rodadas, aumentando gradualmente a força de suas exalações
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 4</div>
+                <div class="numbertext portuguese">Passo 4</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/calm.svg">
+                <div class="text english">
+                  <p>
+                    After many breaths, take a deep breath in and hold your breath for as long as you can
+                 </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Após várias respirações, inspire profundamente e segure a respiração pelo maior tempo que puder
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 5</div>
+                <div class="numbertext portuguese">Passo 5</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>
+                    Once you cannot hold it any longer, press the circle and get back to your normal breathing for 30 seconds in the recovery round.Do as many rounds as you like 
+                 </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Uma vez que não puder mais segurar, pressione o circulo novamente e volte à respiração normal por 30 segundos na rodada de recuperação. Faça tantas rodadas quanto desejar
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">KEEP IN MIND</div>
+                <div class="numbertext portuguese">Nota</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    During the breath hold, try to stay calm and focus on your heart beat
+                  </p>
+                  <p>
+                      Do not do this technique inside the water or any place that may be dangerous if you lose your consciousness. Do not attemp to go over your limit, as you might pass out. If you have never done it before, it is a good idea to have someone to look after you during the exercise
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Durante a retenção de respiração, tente permanecer calmo e focado no seu batimento cardíaco
+                  </p>
+                  <p>
+                      Não faça esta técnica dentro da água ou em qualquer lugar que possa ser perigoso se você perder a consciência. Não tente ultrapassar seu limite, pois você pode desmaiar. Se você nunca fez isso antes, é uma boa ideia ter alguém para cuidar de você durante o exercício
+                  </p>
+                </div>
+            </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #KBprev>&#10094;</a>
+            <a class="next" #KBnext>&#10095;</a>
+        </div>
+      </div>
+  </div>
+</ion-content>

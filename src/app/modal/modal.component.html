@@ -1,0 +1,55 @@
+<div class="modal" *ngIf="isOpen">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+
+    <!-- Display subscription options -->
+    <div *ngIf="membershipStatus === 'inactive'">
+      <h1>{{ isPortuguese ? 'Assine agora' : 'Subscribe now' }}</h1>
+      <p>{{ isPortuguese ? 'Escolha uma opção de assinatura para obter acesso total e ganhe 3 dias gratis' : 'Choose a subscription option to unlock all features and get 3 days free trial' }}</p>
+
+      <div class="flexModal" *ngIf="offerings">
+        <div class="modalPrices" *ngFor="let pkg of offerings.availablePackages">
+          <h2>{{ formatTitle(pkg.product.title) }}</h2>
+          <h3>{{ formatPrice(pkg.product.priceString) }}</h3>
+          <p>{{ formatSubscriptionPeriod(pkg.product.subscriptionPeriod || '') }}</p>
+      
+          <input
+            type="radio"
+            name="subscriptionOption"
+            [value]="pkg"
+            (change)="selectPackage(pkg)"
+          />
+        </div>
+      </div>
+      
+
+      <ul>{{ isPortuguese ? 'Programa Briza Personalizado' : 'Personalized Briza Program' }}</ul>
+      <ul>{{ isPortuguese ? 'Técnicas de respiração personalizáveis' : 'Customizable breathing techniques' }}</ul>
+      <ul>{{ isPortuguese ? 'Resultados para acompanhar seu progresso' : 'Results to track your progress' }}</ul>
+      <ul>{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
+      <ul>{{ isPortuguese ? 'Técnicas de Pranayama' : 'Paranayama Techniques' }}</ul>
+
+      <button (click)="subscribe()" type="button">
+        {{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}
+      </button>
+
+      <p class="manageSubsModal">
+        {{
+          isPortuguese
+            ? 'Sua assinatura começa assim que você configura o pagamento. Sua cobrança automática mensal/anual ocorrerá no último dia do período de faturamento atual. Nós renovaremos sua assinatura para você (a menos que você tenha cancelado sua assinatura na página de perfil 24 horas antes do final do ciclo de faturamento)'
+            : 'Your membership starts as soon as you set up payment. Your monthly/yearly auto-renew charge will occur on the last day of the current billing period. We will renew your membership for you (unless you have canceled your subscription in the profile page 24 hours before end of billing cycle)'
+        }}
+      </p>
+    </div>
+
+    <!-- Payment Failed Section -->
+    <div *ngIf="membershipStatus === 'failed'">
+      <h1>{{ isPortuguese ? 'Pagamento Falhou' : 'Payment Failed' }}</h1>
+      <p>{{ isPortuguese ? 'Corrija seu pagamento para continuar' : 'Fix your payment to continue' }}</p>
+      <button type="button" (click)="openManageSubscription()">
+        {{ isPortuguese ? 'Gerenciar Pagamento' : 'Manage Payment' }}
+      </button>
+  </div>
+
+  </div>
+</div>

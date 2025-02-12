@@ -1,0 +1,42 @@
+<ion-content>
+  <header class="mainHeader">
+      <div class="back-buttons">
+          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      </div>
+      <div class="logo-container">
+          <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+      </div>
+      <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div class="breathingpages BHbreathing">
+    <h1 class="english">Briza Retention Test</h1>
+    <h1 class="portuguese">Teste de Retenção Briza</h1>
+  </div>
+  <div class="chart-container">
+    <canvas #chartCanvas></canvas>
+  </div>
+  <div class="overview-box">
+    <h2 class="english">Overview</h2>
+    <h2 class="portuguese">Visão Geral</h2>
+    <div class="overview-item">
+      <strong class="english">Latest Test:</strong>
+      <strong class="portuguese">Último Teste:</strong>
+      <span class="english">{{ latestTest.result }} seconds on {{ latestTest.date}}</span>
+      <span class="portuguese">{{ latestTest.result }} segundos no {{ latestTest.date}}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Longest Test:</strong>
+      <strong class="portuguese">Teste Mais Longo:</strong>
+      <span class="english">{{ longestTest.result }} seconds on {{ longestTest.date}}</span>
+      <span class="portuguese">{{ longestTest.result }} segundos no {{ longestTest.date}}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Total Tests:</strong>
+      <strong class="portuguese">Total de Testes:</strong>
+      <span class="english">{{ totalTests }} {{ totalTests === 1 ? 'Test' : 'Tests' }}</span>
+      <span class="portuguese">{{ totalTests }} {{ totalTests === 1 ? 'Teste' : 'Testes' }}</span>
+    </div>
+  
+    <div class="feedback" [innerHTML]="getFeedbackText()"></div>
+  </div>  
+</ion-content>

@@ -1,0 +1,102 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <div class="breathingpages" *ngIf="HAThasData">
+    <h1 class="english">High Altitude Training</h1>
+    <h1 class="portuguese">Treinamento de Alta Altitude</h1>
+  </div>
+
+  <div class="chart-container" #HATchartContainer>
+    <canvas #HATchartCanvas></canvas>
+  </div>
+
+  <div class="overview-box" *ngIf="HAThasData">
+    <h2 class="english">Overview</h2>
+    <h2 class="portuguese">Visão Geral</h2>
+    <div class="overview-item">
+      <strong class="english">Longest Session Average:</strong>
+      <strong class="portuguese">Maior Média de Sessão:</strong>
+      <span class="english">{{ HATlongestSessionAverage }} seconds on {{ HATlongestSessionAverageDate }}</span>
+      <span class="portuguese">{{ HATlongestSessionAverage }} segundos no dia {{ HATlongestSessionAverageDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Longest Round:</strong>
+      <strong class="portuguese">Rodada Mais Longa:</strong>
+      <span class="english">{{ HATlongestRound }} seconds on {{ HATlongestRoundDate }}</span>
+      <span class="portuguese">{{ HATlongestRound }} segundos no dia {{ HATlongestRoundDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Total Sessions:</strong>
+      <strong class="portuguese">Total de Sessões:</strong>
+      <span>{{ HATtotalSessions }}</span>
+    </div>
+  </div>  
+  <div class="breathingpages" *ngIf="HATChasData">
+    <h1 class="english">High Altitude Training Running</h1>
+    <h1 class="portuguese">Treinamento de Alta Altitude Correndo</h1>
+  </div>
+
+  <div class="chart-container" #HATCchartContainer>
+    <canvas #HATCchartCanvas></canvas>
+  </div>
+
+  <div class="overview-box" *ngIf="HATChasData">
+    <h2 class="english">Overview</h2>
+    <h2 class="portuguese">Visão Geral</h2>
+    <div class="overview-item">
+      <strong class="english">Longest Session Average:</strong>
+      <strong class="portuguese">Maior Média de Sessão:</strong>
+      <span class="english">{{ HATClongestSessionAverage }} seconds on {{ HATClongestSessionAverageDate }}</span>
+      <span class="portuguese">{{ HATClongestSessionAverage }} segundos no dia {{ HATClongestSessionAverageDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Longest Round:</strong>
+      <strong class="portuguese">Rodada Mais Longa:</strong>
+      <span class="english">{{ HATClongestRound }} seconds on {{ HATClongestRoundDate }}</span>
+      <span class="portuguese">{{ HATClongestRound }} segundos no dia {{ HATClongestRoundDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Total Sessions:</strong>
+      <strong class="portuguese">Total de Sessões:</strong>
+      <span>{{ HATCtotalSessions }}</span>
+    </div>
+  </div>  
+  <div class="breathingpages" *ngIf="AHAThasData">
+    <h1 class="english">Advanced High Altitude Training</h1>
+    <h1 class="portuguese">Treinamento Avançado de Alta Altitude</h1>
+  </div>
+
+  <div class="chart-container" #AHATchartContainer>
+    <canvas #AHATchartCanvas></canvas>
+  </div>
+
+  <div class="overview-box" *ngIf="AHAThasData">
+    <h2 class="english">Overview</h2>
+    <h2 class="portuguese">Visão Geral</h2>
+    <div class="overview-item">
+      <strong class="english">Longest Session Average:</strong>
+      <strong class="portuguese">Maior Média de Sessão:</strong>
+      <span class="english">{{ AHATlongestSessionAverage }} seconds on {{ AHATlongestSessionAverageDate }}</span>
+      <span class="portuguese">{{ AHATlongestSessionAverage }} segundos no dia {{ AHATlongestSessionAverageDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Longest Round:</strong>
+      <strong class="portuguese">Rodada Mais Longa:</strong>
+      <span class="english">{{ AHATlongestRound }} seconds on {{ AHATlongestRoundDate }}</span>
+      <span class="portuguese">{{ AHATlongestRound }} segundos no dia {{ AHATlongestRoundDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Total Sessions:</strong>
+      <strong class="portuguese">Total de Sessões:</strong>
+      <span>{{ AHATtotalSessions }}</span>
+    </div>
+  </div>  
+</ion-content>

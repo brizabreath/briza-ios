@@ -1,0 +1,42 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <div class="breathingpages" *ngIf="WHhasData">
+    <h1 class="english">Guided Hyperventilation</h1>
+    <h1 class="portuguese">Hiperventilação Guiada</h1>
+  </div>
+
+  <div class="chart-container" #WHchartContainer>
+    <canvas #WHchartCanvas></canvas>
+  </div>
+
+  <div class="overview-box" *ngIf="WHhasData">
+    <h2 class="english">Overview</h2>
+    <h2 class="portuguese">Visão Geral</h2>
+    <div class="overview-item">
+      <strong class="english">Longest Session Average:</strong>
+      <strong class="portuguese">Maior Média de Sessão:</strong>
+      <span class="english">{{ WHlongestSessionAverage }} on {{ WHlongestSessionAverageDate }}</span>
+      <span class="portuguese">{{ WHlongestSessionAverage }} no dia {{ WHlongestSessionAverageDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Longest Round:</strong>
+      <strong class="portuguese">Rodada Mais Longa:</strong>
+      <span class="english">{{ WHlongestRound }} on {{ WHlongestRoundDate }}</span>
+      <span class="portuguese">{{ WHlongestRound }} no dia {{ WHlongestRoundDate }}</span>
+    </div>
+    <div class="overview-item">
+      <strong class="english">Total Sessions:</strong>
+      <strong class="portuguese">Total de Sessões:</strong>
+      <span>{{ WHtotalSessions }}</span>
+    </div>
+  </div>  
+</ion-content>

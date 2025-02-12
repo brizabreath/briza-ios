@@ -1,0 +1,124 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="brtPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings english">Briza Retention Test</h4>
+            <h4 class="volumeSettings portuguese">Teste de Retenção Briza</h4>
+            <div class="questionMark questionClass">
+                <button #questionBRT type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <form method="post" id="brtForm">
+            <div class="settingButtons">
+                <button routerLink="/set" #BRTSettings class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            </div>
+            <div class="center-container">
+                <button #brtStart class="ballButton">
+                  <div #BRTball class="ball">
+                      <span #BRTballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div> 
+            <div class="timerDisplayBRT hiddenElements">
+                <input id="timerDisplayBRT" #timerDisplayBRT readonly value="00 : 00" />
+            </div>
+            <div class="BrtBtns">
+                <button type="button" class="stopBtn" id="brtStop" #brtStop><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                <button type="button" class="saveBtnBRT" id="brtSave" #brtSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+            </div>
+        </form>
+    </div>
+    <div id="brtResultSaved" #brtResultSaved class="resultSaved"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+</div>
+<div id="myModalBRT" class="modal" #myModalBRT>
+  <div class="modal-content">
+      <span class="close" id="closeModalBRT" #closeModalBRT>&times;</span>
+      <div class="slideshow-container">
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">INTRO</div>
+              <div class="numbertext portuguese">Introdução</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+              <div class="text english">
+                  <p>The Breath Retention Test (BRT) measures the breath-holding time with empty lungs, offering insights into your breathing efficiency and tolerance to carbon dioxide (CO2)</p>
+                  <p>Perform this test every morning as soon as you wake up. Results may vary if conducted at different times of the day</p>
+              </div>
+              <div class="text portuguese">
+                <p>O Teste de Retenção Briza é uma medida do tempo de retenção da respiração e pode fornecer insights sobre a eficiência da respiração de uma pessoa e sua tolerância ao dióxido de carbono (CO2).</p>
+                <p>Faça este teste todas as manhãs assim que acordar. Os resultados podem variar quando feitos em diferentes horas do dia.</p>
+              </div>
+          </div>
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">STEP 1</div>
+              <div class="numbertext portuguese">Passo 1</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+              <div class="text english">
+                  <p>
+                     Find a comfortable seat and take a few gentle breaths through your nose
+                  </p>
+              </div>
+              <div class="text portuguese">
+                  <p>
+                    Encontre um lugar confortável e dê algumas respirações leves pelo nariz
+                  </p>
+              </div>
+          </div>
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">STEP 2</div>
+              <div class="numbertext portuguese">Passo 2</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/nosepinch.svg">
+              <div class="text english">
+                  <p>
+                    Exhale gently and pinch your nose. After the exhalation, press 'Start' and hold your breath
+                  </p>
+              </div>
+              <div class="text portuguese">
+                  <p>
+                    EXALE e pince o nariz, após a exalação, pressione 'Iniciar' e segure a respiração
+                  </p>
+              </div>
+          </div>
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">STEP 3</div>
+              <div class="numbertext portuguese">Passo 3</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+              <div class="text english">
+                  <p>
+                    Click on circle again to pause in the he moment you feel the first urge to breathe, then return to your normal breathing pattern, which should be calm and controlled. If your initial breaths are not calm, it indicates you held your breath too long. If so, re-do the test for a more accurate result
+                  </p>
+                  <p>Remember to save your score to monitor your progress</p>
+              </div>
+              <div class="text portuguese">
+                <p> Assim que sentir a primeira vontade de respirar basta clicar no círculo novamente para pausar e volte à sua respiração normal, que deve ser calma e controlada. Se as primeiras respirações não forem calmas, isso significa que você segurou a respiração por muito tempo e deve fazer novamente para obter um resultado mais preciso.</p>
+                <p>Salve sua pontuação para acompanhar seu progresso.</p>
+              </div>
+          </div>
+          <div class="mySlides fadeModal slides">
+              <div class="numbertext english">KEEP IN MIND</div>
+              <div class="numbertext portuguese">Nota</div>
+              <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+              <div class="text english">
+                  <p>
+                      Keep in mind, this isn't a competition. Stop the timer the moment you feel the slightest urge to breathe, to guarantee precise results
+                  </p>
+              </div>
+              <div class="text portuguese">
+                    <p>Lembre-se, isso não é uma competição. Pause o cronômetro assim que sentir uma leve vontade de respirar para garantir resultados precisos.</p>
+              </div>
+          </div>
+          <!-- Next and previous buttons -->
+          <a class="prev" #BRTprev>&#10094;</a>
+          <a class="next" #BRTnext>&#10095;</a>
+      </div>
+  </div>
+</div>
+</ion-content>

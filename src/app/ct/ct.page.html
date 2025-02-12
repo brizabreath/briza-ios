@@ -1,0 +1,154 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="ctPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings english">CO2 Tolerance Training</h4>
+            <h4 class="volumeSettings portuguese">Treinamento de Tolerância ao CO2</h4>
+            <div class="questionMark questionClass">
+              <button #questionCT type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <div class="settingButtons">
+          <button routerLink="/set" id="settingsCT" #settingsCT class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+        </div>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="settings-form CT">
+                  <div class="timer-additional-info">
+                      <b class="english">INHALE | EXHALE | HOLD</b>
+                      <b class="portuguese">INSPIRE | ESPIRE | SEGURE</b>
+                  </div>  
+                  <div class="form-line">
+                      <input type="number" value="3" #inhaleInputCT min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                      <input type="number" value="3" #exhaleInputCT min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                    <input type="number" value="4" #hold1InputCT min="1" readonly>
+                </div>
+              </div>
+              <div class="CTtimer-container">
+                  <select #CTtimeInput class="countdownDisplay">
+                      <option value="infinity"> ∞ </option>
+                      <option value="60" class="english">1 minute</option>
+                      <option value="60" class="portuguese">1 minuto</option>
+                  </select>
+                  <input #CTcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnCT class="ballButton">
+                  <div #CTball class="ball">
+                      <span #CTballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT><div class="english">Restart</div><div class="portuguese">Reiniciar</div></button>
+                  <button type="button" class="stopBtn" id="CTReset" #CTReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <form method="post" id="CTForm">
+                      <button type="button" class="saveBtn" id="CTSave" #CTSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                      <div class="roundbox">
+                          <div>Rounds:</div><div #roundsDoneCT>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div #CTResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <div id="myModalCT" class="modal" #myModalCT>
+    <div class="modal-content">
+        <span class="close" id="closeModalCT" #closeModalCT>&times;</span>
+        <div class="slideshow-container">
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">INTRO</div>
+                <div class="numbertext portuguese">Introdução</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>The CO2 Tolerance Training is based on the principles of allowing your body to get used to low levels of oxygen and high levels of carbon dioxide. Do this technique for about 5 to 10 minutes</p>
+                </div>
+                <div class="text portuguese">
+                  <p>O Treinamento de Tolerância ao CO2 é baseado nos princípios de permitir que seu corpo se acostume com baixos níveis de oxigênio e altos níveis de dióxido de carbono. Faça esta técnica por cerca de 5 a 10 minutos</p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 1</div>
+                <div class="numbertext portuguese">Passo 1</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <div class="text english">
+                  <p>
+                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 2</div>
+                <div class="numbertext portuguese">Passo 2</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <div class="text english">
+                  <p>
+                    Press 'Start' and follow the guided technique. Do this technique for 5 to 10 minutes. If you need to pause, just click on the cirlce again.
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Pressione 'Iniciar' e siga a técnica guiada. Faça esta técnica por 5 a 10 minutos. Se precisar pausar, basta clicar no círculo novamente.
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 3</div>
+                <div class="numbertext portuguese">Passo 3</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <div class="text english">
+                  <p>
+                    Press "Restart" when you can no longer cope with the technique, this will take you back to the begining
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Pressione "Reiniciar" quando você não puder mais lidar com a técnica, isso o levará de volta ao início
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">KEEP IN MIND</div>
+                <div class="numbertext portuguese">Nota</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    When the time of the exahaltion becomes too great and you can no longer follow it, press 'Restart' and you will have 3 seconds to recover your breath and start again. Save your results at the end
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Quando o tempo da exalação se tornar muito grande e você não puder mais segui-lo, pressione 'Reiniciar' e você terá 3 segundos para recuperar sua respiração e começar novamente. Salve seus resultados ao final
+                  </p>
+                </div>
+            </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #CTprev>&#10094;</a>
+            <a class="next" #CTnext>&#10095;</a>
+        </div>
+    </div>
+  </div>
+</ion-content>

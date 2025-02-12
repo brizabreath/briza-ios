@@ -1,20 +1,47 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback"></button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="homepagegrid" #homepagegrid>
+    <div class="BRTtile">
+        <a routerLink="/brt"><img class="BRTtile__img" src="https://brizastorage.blob.core.windows.net/images/brt.svg" /></a>
+    </div>
+    <div class="row g-2">
+        <div class="col"><a routerLink="/program" routerLink="/program"><img class="homepageimgs2" src="https://brizastorage.blob.core.windows.net/images/brizaprogram.svg" /></a></div>
+        <div class="w-100"></div>
+        <div class="col"><a routerLink="/bh"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/breathhold.svg" /></a></div>
+        <div class="col"><a routerLink="/prana"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/pranayama.svg" /></a></div>
+    </div>
   </div>
+  <footer id="homeFooter" #homeFooter>
+    <div class="navbar">
+      <a class="active"><i class="fa fa-home active"></i>Home</a>
+      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
+      <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+    </div>
+  </footer>
+  <div id="homepagegridBR" #homepagegridBR style="display: none;">
+    <div class="BRTtile">
+        <a routerLink="/brt"><img class="BRTtile__img" src="https://brizastorage.blob.core.windows.net/images/brtPT.svg" /></a>
+    </div>
+    <div class="row g-2">
+        <div class="col"><a routerLink="/program"><img class="homepageimgs2" src="https://brizastorage.blob.core.windows.net/images/programabriza.svg" /></a></div>
+        <div class="w-100"></div>
+        <div class="col"><a routerLink="/bh"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/retencao.svg" /></a></div>
+        <div class="col"><a routerLink="/prana"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/pranayama.svg" /></a></div>
+    </div>
+  </div>
+  <footer id="homeFooterBR" #homeFooterBR>
+    <div class="navbar">
+      <a class="active"><i class="fa fa-home active"></i>Home</a>
+      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+    </div>
+  </footer>
 </ion-content>

@@ -1,0 +1,179 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="brwPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h4 class="volumeSettings english">Walking Recovery Exercise</h4>
+            <h4 class="volumeSettings portuguese">Recuperando de Fôlego Andando</h4>
+            <div class="questionMark questionClass">
+              <button #questionBRW type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+            </div>
+        </div>
+        <div class="settingButtons">
+          <button routerLink="/set" id="settingsBRW" #settingsBRW class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+        </div>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="settings-form BRW">
+                  <div class="timer-additional-info">
+                      <b class="english">INHALE | EXHALE | INHALE | EXHALE | HOLD</b>
+                      <b class="portuguese">INSPIRE | ESPIRE | INSPIRE | ESPIRE | SEGURE</b>
+                  </div>
+                  <div class="form-line">
+                    <button class="buttonminus" type="button" #minusBRW>-</button>
+                  </div>  
+                  <div class="form-line">
+                      <input type="number" value="4" #inhaleInputBRW min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                      <input type="number" value="4" #hold1InputBRW min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                      <input type="number" value="4" #exhaleInputBRW min="1" readonly>
+                  </div>
+  
+                  <div class="form-line">
+                    <input type="number" value="4" #hold2InputBRW min="1" readonly>
+                  </div>
+                  <div class="form-line">
+                    <input type="number" value="3" #hold3InputBRW min="1" readonly>
+                  </div>
+                <div class="form-line">
+                  <button class="buttonplus" type="button" #plusBRW>+</button>
+              </div>
+              </div>
+              <div class="BRWtimer-container">
+                  <select #BRWtimeInput class="countdownDisplay">
+                      <option value="infinity"> ∞ </option>
+                      <option value="60" class="english">1 minute</option>
+                      <option value="60" class="portuguese">1 minuto</option>
+                  </select>
+                  <input #BRWcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnBRW class="ballButton">
+                  <div #BRWball class="ball">
+                      <span #BRWballText></span>
+                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="stopBtnBRW" #stopBtnBRW><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BRWSave" #BRWSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <form method="post" id="BRWForm">
+                      <div class="roundbox">
+                          <div>Rounds:</div><div #roundsDoneBRW>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBRW>00 : 00</div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div #BRWResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <div id="myModalBRW" class="modal" #myModalBRW>
+    <div class="modal-content">
+        <span class="close" id="closeModalBRW" #closeModalBRW>&times;</span>
+        <div class="slideshow-container">
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">INTRO</div>
+                <div class="numbertext portuguese">Introdução</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/calm.svg">
+                <div class="text english">
+                  <p>Simple exercise that can be used to recover your breath after a physical activity</p>
+                  <p>Do this exercise once a day for 4 to 5 minutes </p>
+                </div>
+                <div class="text portuguese">
+                  <p>Exercício simples que pode ser usado para recuperar sua respiração após uma atividade física</p>
+                  <p>Faça este exercício uma vez por dia durante 4 a 5 minutos</p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 1</div>
+                <div class="numbertext portuguese">Passo 1</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <div class="text english">
+                  <p>
+                    Choose a suitable duration for your breath hold. If this is your first attempt, we recommend starting with a 2-second hold. As you become more comfortable with this recovery exercise, you may increase the hold duration to up to 10 seconds                    
+                  </p>
+                  <p>
+                    The practice of holding your breath enhances CO2 tolerance in your bloodstream and aids in muscle recovery
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p> 
+                    Escolha uma duração adequada para a sua retenção de ar. Se esta for sua primeira tentativa, recomendamos começar com uma retenção de 2 segundos. À medida que você se sentir mais confortável com este exercício de recuperação, poderá aumentar a duração da retenção para até 10 segundos
+                  </p> 
+                  <p> 
+                    A prática de segurar a respiração aumenta a tolerância ao CO2 na sua corrente sanguínea e auxilia na recuperação muscular
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 2</div>
+                <div class="numbertext portuguese">Passo 2</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    Press 'start' when you are ready to follow the exercise. If you need to pause, just click on the cirlce again.
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Aperte 'Iniciar' quando estiver pronto para começar o exercício. Se precisar pausar, basta clicar no círculo novamente.
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">STEP 3</div>
+                <div class="numbertext portuguese">Passo 3</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <div class="text english">
+                  <p>
+                    Allow your breathing to dictate the pace of your walk, ensuring that your breathing remains light as you move with ease
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Respire suavemente na inalação e exalação
+                  </p>
+                  <p>
+                    Segure a respiração após a exalação e continue caminhando
+                  </p>
+                </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+                <div class="numbertext english">KEEP IN MIND</div>
+                <div class="numbertext portuguese">Nota</div>
+                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <div class="text english">
+                  <p>
+                    If you fell that the breath hold time chosen is too hard, stop doing it and choose a lower breath hold time
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Se você sentir que o tempo de pausa respiratória escolhido é muito difícil, pare de fazê-lo e escolha um tempo de pausa menor
+                  </p>
+                </div>
+            </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #BRWprev>&#10094;</a>
+            <a class="next" #BRWnext>&#10095;</a>
+        </div>
+    </div>
+  </div>
+</ion-content>

@@ -1,0 +1,174 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback"></button>
+    </div>
+    <div class="logo-container">
+      <img
+        class="logoimg"
+        src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg"
+        width="50"
+        height="50"
+      />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+  <div class="breathingpages">
+    <h1 class="portuguese">Conta</h1>
+    <h1 class="english">Account</h1>
+    <div class="flexProfile">
+      <div #userEmail></div>
+    </div>
+    <div class="flexProfile">
+      <a
+        class="portuguese profileBTN"
+        [class.disabled]="!isOnline"
+        (click)="navigateToPage('/manageAccount', $event)"
+        >GERENCIAR CONTA</a
+      >
+      <a
+        class="english profileBTN"
+        [class.disabled]="!isOnline"
+        (click)="navigateToPage('/manageAccount', $event)"
+        >MANAGE ACCOUNT</a
+      >
+      <a (click)="!isLoggingOut && onLogout()" [class.blinking]="isLoggingOut" class="profileBTN">
+        LOGOUT
+      </a>      
+    </div>
+    <hr />
+    <div class="profile">
+      <h2 class="portuguese">Assinatura</h2>
+      <h2 class="english">Subscription</h2>
+      <!-- Manage Subscription (active or failed) -->
+      <div
+        *ngIf="membershipStatus === 'active' || membershipStatus === 'failed'"
+        class="manageMembership profile"
+      >
+        <button
+          type="button"
+          class="profileBTN portuguese"
+          [class.disabled]="!isOnline"
+          (click)="checkOnlineStatus($event)"
+          *ngIf="isPortuguese"
+          >GERENCIAR ASSINATURA</button
+        >
+        <button
+          type="button"
+          class="profileBTN english"
+          [class.disabled]="!isOnline"
+          (click)="checkOnlineStatus($event)"
+          *ngIf="!isPortuguese"
+          >MANAGE SUBSCRIPTION</button
+        >
+        <p id="subscribeNow2" class="portuguese" *ngIf="isPortuguese">
+          Gerencie sua assinatura, atualize os detalhes de pagamento ou cancele a qualquer momento.
+        </p>
+        <p id="subscribeNow2" class="english" *ngIf="!isPortuguese">
+          Manage your subscription, update payment details, or cancel anytime.
+        </p>
+      </div>
+
+      <!-- Get Subscription (inactive) -->
+      <div
+        *ngIf="membershipStatus === 'inactive'"
+        class="noActiveMembership profile"
+      >
+        <button
+          type="button"
+          class="profileBTN portuguese"
+          [class.disabled]="!isOnline"
+          (click)="checkOnlineStatus2($event)"
+          *ngIf="isPortuguese"
+          >OBTER ASSINATURA</button
+        >
+        <button
+          type="button"
+          class="profileBTN english"
+          [class.disabled]="!isOnline"
+          (click)="checkOnlineStatus2($event)"
+          *ngIf="!isPortuguese"
+          >GET SUBSCRIPTION</button
+        >
+        <p id="subscribeNow" class="portuguese" *ngIf="isPortuguese">
+          Obtenha uma assinatura e tenha acesso a todo o conteúdo do aplicativo.
+        </p>
+        <p id="subscribeNow" class="english" *ngIf="!isPortuguese">
+          Get a subscription and gain access to all app's content.
+        </p>
+      </div>
+    </div>
+    <hr />
+    <div class="profile">
+      <h2 class="portuguese">Idioma</h2>
+      <h2 class="english">Language</h2>
+      <div class="flags">
+        <a #portuguese><img src="https://brizastorage.blob.core.windows.net/images/br.png" /></a>
+        <a #english><img src="https://brizastorage.blob.core.windows.net/images/en.png" /></a>
+      </div>
+    </div>
+    <hr />
+    <div class="profile">
+      <h2 class="portuguese">Contato</h2>
+      <h2 class="english">Contact</h2>
+      <div class="contactProfile">
+        <p>Email</p>
+        <a href="mailto:info@brizabreath.com">info&#64;brizabreath.com</a>
+      </div>
+      <div class="contactProfile">
+        <p>Website</p>
+        <a href="https://www.brizabreath.com/" target="_blank">brizabreath.com</a>
+      </div>
+      <div class="contactProfile">
+        <p>Instagram</p>
+        <a href="https://www.instagram.com/brizabreath/" target="_blank">brizabreath</a>
+      </div>
+    </div>
+    <hr />
+    <div class="profile termsPrivacyBtn profileMargin">
+      <a
+        id="TermsBtn"
+        class="portuguese"
+        href="https://brizabreath.com/terms-conditions-br/"
+        target="_blank"
+        >Termos e Condições</a
+      >
+      <a
+        id="PrivacyBtn"
+        class="portuguese"
+        href="https://brizabreath.com/privacy-policy-br"
+        target="_blank"
+        >Política de Privacidade</a
+      >
+      <a
+        id="TermsBtn"
+        class="english"
+        href="https://brizabreath.com/terms-conditions/"
+        target="_blank"
+        >Terms & Conditions</a
+      >
+      <a
+        id="PrivacyBtn"
+        class="english"
+        href="https://brizabreath.com/privacy-policy"
+        target="_blank"
+        >Privacy Policy</a
+      >
+      <div class="smallText">Briza Breath 1.0</div>
+    </div>
+  </div>
+  <footer id="profileFooter" class="portuguese">
+    <div class="navbar">
+      <a id="navHome2" routerLink="/home"><i class="fa fa-home"></i>Home</a>
+      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="active"><i class="fa fa-user active"></i>Perfil</a>
+    </div>
+  </footer>
+  <footer id="profileFooter" class="english">
+    <div class="navbar">
+      <a id="navHome2" routerLink="/home"><i class="fa fa-home"></i>Home</a>
+      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
+      <a class="active"><i class="fa fa-user active"></i>Profile</a>
+    </div>
+  </footer>
+</ion-content>

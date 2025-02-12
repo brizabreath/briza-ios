@@ -1,0 +1,93 @@
+<ion-content>
+  <header class="mainHeader">
+      <div class="back-buttons">
+          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      </div>
+      <div class="logo-container">
+          <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+      </div>
+      <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="bhPage" #allProgramPage>
+    <div class="breathingpages BHbreathing">
+      <h1 class="english">Breath Holding</h1>
+      <h1 class="portuguese">Retenção de Respiração</h1>
+      <div class="questionMark questionClass2"><a id="questionBH" #questionBH><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png" /></a></div>
+    </div>
+      <div class="BHGrid english">
+        <div class="row g-2">
+            <div class="col"><a routerLink="/ap"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/apneatraining.svg" /></a></div>
+            <div class="col"><a routerLink="/ct"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/tolerance.svg" /></a></div>
+            <div class="w-100"></div>
+            <div class="col"><a routerLink="/wh"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/guidedhyper.svg"></a></div>
+            <div class="col"><a routerLink="/kb"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/kapalabhati.svg"/></a></div>
+        </div>
+      </div>
+      <div class="BHGrid portuguese">
+        <div class="row g-2">
+            <div class="col"><a routerLink="/ap"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/treinodeapneia.svg" /></a></div>
+            <div class="col"><a routerLink="/ct"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/tolerancia.svg" /></a></div>
+            <div class="w-100"></div>
+            <div class="col"><a routerLink="/kb"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/kapalabhati-pt.svg"/></a></div>
+            <div class="col"><a routerLink="/wh"><img class="homepageimgs"  src="https://brizastorage.blob.core.windows.net/images/guiadahiper.svg"></a></div>
+        </div>
+    </div>
+    <div class="breathingpages set">
+      <p class="atention portuguese"> NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios do App Briza Breath & Performance</p>
+      <p class="atention english"> Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath & Performance App`s exercises</p>
+  </div>
+  </div>
+  <div id="myModalBH" class="modal" #myModalBH>
+    <div class="modal-content">
+        <span class="close" id="closeModalBH" #closeModalBH>&times;</span>
+        <div class="slideshow-container">
+        <div class="mySlides fadeModal slides">
+            <div class="numbertext english">INTRO</div>
+            <div class="numbertext portuguese">Introdução</div>
+            <img src="https://brizastorage.blob.core.windows.net/images/coherentlines.svg">
+            <div class="text english">
+                <p>
+                  Breath-holding exercises offer a range of benefits that can significantly enhance performance, particularly for athletes, swimmers, free divers and individuals seeking to improve their overall health and well-being. Explore our breath-holding exercises and get many potential benefits out of it
+                </p>
+            </div>
+            <div class="text portuguese">
+                <p>Exercícios de retenção de respiração oferecem uma série de benefícios que podem melhorar significativamente o desempenho, particularmente para atletas, nadadores, mergulhadores livres e indivíduos que buscam melhorar sua saúde geral e bem-estar. Explore nossos exercícios de retenção de respiração e obtenha muitos benefícios potenciais</p>
+            </div>
+        </div>
+        <div class="mySlides fadeModal slides">
+            <div class="numbertext english">Benefits 1/2</div>
+            <div class="numbertext portuguese">Benefícios 1/2</div>
+            <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+            <div class="text english">
+              <ul>Increase lungs capacity and improve the efficiency of oxygen usage by the body. This means more oxygen can be delivered to muscles during intense activity, enhancing endurance and performance.</ul>
+              <ul>Improve the body's tolerance to carbon dioxide. Higher CO2 tolerance can delay the onset of fatigue, allowing for longer periods of intense exercise or activity</ul>
+              <ul>Improve diaphragm strength. These exercises strengthen the diaphragm, which plays a crucial role in breathing. A stronger diaphragm can enhance breathing efficiency, leading to better performance in physical activities.</ul>
+            </div>
+            <div class="text portuguese">
+              <ul>Aumentar a capacidade pulmonar e melhorar a eficiência do uso de oxigênio pelo corpo. Isso significa que mais oxigênio pode ser entregue aos músculos durante atividades intensas, melhorando a resistência e o desempenho.</ul>
+              <ul>Melhorar a tolerância do corpo ao dióxido de carbono. Maior tolerância ao CO2 pode atrasar o início da fadiga, permitindo períodos mais longos de exercício intenso ou atividade.</ul>
+              <ul>Melhorar a força do diafragma. Estes exercícios fortalecem o diafragma, que desempenha um papel crucial na respiração. Um diafragma mais forte pode melhorar a eficiência da respiração, levando a um melhor desempenho em atividades físicas.</ul>
+            </div>
+        </div>
+        <div class="mySlides fadeModal slides">
+            <div class="numbertext english">Benefits 2/2</div>
+            <div class="numbertext portuguese">Benefícios 2/2</div>
+            <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+            <div class="text english">
+              <ul>Increase anaerobic capacity allowing your body to perform better in situations where oxygen is scarce. This can be particularly beneficial in high-intensity sports or activities that require short bursts of effort</ul>
+              <ul>Improve cardiovascular health. These exercises contribute to cardiovascular health by enhancing circulatory efficiency and lowering heart rate, which is beneficial for long-term heart health and performance</ul>
+              <ul>Enhance mental toughness. The practice of holding one's breath teaches discipline, patience, and mental fortitude. These mental benefits can translate into improved performance in both physical and cognitive tasks</ul>
+            </div>
+            <div class="text portuguese">
+              <ul>Aumentar a capacidade anaeróbica permitindo que seu corpo tenha um desempenho melhor em situações onde o oxigênio é escasso. Isso pode ser particularmente benéfico em esportes de alta intensidade ou atividades que requerem explosões curtas de esforço.</ul>
+              <ul>Melhorar a saúde cardiovascular. Estes exercícios contribuem para a saúde cardiovascular, melhorando a eficiência circulatória e reduzindo a frequência cardíaca, o que é benéfico para a saúde do coração a longo prazo e desempenho.</ul>
+              <ul>Fortalecer a resistência mental. A prática de segurar a respiração ensina disciplina, paciência e fortaleza mental. Estes benefícios mentais podem se traduzir em melhor desempenho tanto em tarefas físicas quanto cognitivas.</ul>
+            </div>
+        </div>
+            <!-- Next and previous buttons -->
+            <a class="prev" #BHprev>&#10094;</a>
+            <a class="next" #BHnext>&#10095;</a>
+        </div>
+    </div>
+  </div>
+</ion-content>

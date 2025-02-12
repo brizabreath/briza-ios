@@ -1,6 +1,20 @@
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import { Purchases } from '@revenuecat/purchases-capacitor';
+import { routes } from './app/app.routes';
+import { AppComponent } from './app/app.component';
 
-import { AppModule } from './app/app.module';
+// Initialize RevenueCat
+Purchases.configure({
+  apiKey: 'goog_pkpJjBXrBipISmYfhOZTJEaoeuD', // Replace with your RevenueCat Public API Key
+  appUserID: null // Optional: Set a unique user ID if needed
+});
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideIonicAngular(),
+    provideRouter(routes, withPreloading(PreloadAllModules)),
+  ],
+});

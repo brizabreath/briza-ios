@@ -1,0 +1,22 @@
+<div class="logo" [ngClass]="{ 'blinking': isLoggingIn }">
+  <img src="https://brizastorage.blob.core.windows.net/images/brizalogo.png" width="250" height="100" />
+</div>
+
+<ion-content>
+  <form (submit)="onRegister()">
+    <ion-item>
+      <ion-input class ="form-control" type="email" [(ngModel)]="email" name="email" placeholder="Email" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input class ="form-control" type="password" [(ngModel)]="password" name="password" placeholder="Password" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input class ="form-control" type="password" [(ngModel)]="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required></ion-input>
+    </ion-item>
+    <ion-button class="form-button" expand="block" type="submit" [disabled]="isLoggingIn">
+      {{ isLoggingIn ? (isPortuguese ? 'Carregando...' : 'Loading...') : 'Register' }}
+    </ion-button>
+    <p *ngIf="registrationError" style="color: red; text-align: center;">{{ registrationError }}</p>
+  </form>
+  <p class="textForm"><a routerLink="/login">Back to login</a></p>
+</ion-content>
