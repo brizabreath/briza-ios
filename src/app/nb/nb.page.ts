@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-nb',
@@ -107,6 +108,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("exhaleRight");
      this.audioService.initializeAudioObjects("inhaleRight");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the NBduration after ViewChild is initialized
   setNBduration(): void {
@@ -121,7 +123,21 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startNB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopNB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -173,9 +189,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     this.plusNB.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnNB.nativeElement.disabled = true;
-      this.inhaleNB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
+      this.inhaleNB = true; 
       this.NBcountdownInput.nativeElement.style.display = "inline";
       this.NBtimeInput.nativeElement.style.display = "none";
       this.startCountdownNB();
@@ -210,6 +224,8 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         this.NBinterval = setInterval(() => this.startTimerNB(), 1000);
         this.NBTimer = setInterval(() => this.DisplayTimerNB(), 1000);
         this.startBtnNB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false");
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -353,12 +369,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputNB.nativeElement.value), this.NBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsNB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -377,12 +388,18 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.NBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -426,8 +443,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneNB.nativeElement.innerHTML = "0";
     this.timerDisplayNB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setNBduration();
     this.NBSeconds = 0;
@@ -462,5 +478,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopNB(); 
     this.NBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

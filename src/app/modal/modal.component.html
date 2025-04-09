@@ -5,7 +5,7 @@
     <!-- Display subscription options -->
     <div *ngIf="membershipStatus === 'inactive'">
       <h1>{{ isPortuguese ? 'Assine agora' : 'Subscribe now' }}</h1>
-      <p>{{ isPortuguese ? 'Escolha uma opção de assinatura para obter acesso total e ganhe 3 dias gratis' : 'Choose a subscription option to unlock all features and get 3 days free trial' }}</p>
+      <p>{{ isPortuguese ? 'Escolha uma opção de assinatura para obter acesso total' : 'Choose a subscription option to unlock all features' }}</p>
 
       <div class="flexModal" *ngIf="offerings">
         <div class="modalPrices" *ngFor="let pkg of offerings.availablePackages">
@@ -29,9 +29,14 @@
       <ul>{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
       <ul>{{ isPortuguese ? 'Técnicas de Pranayama' : 'Paranayama Techniques' }}</ul>
 
-      <button (click)="subscribe()" type="button">
-        {{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}
+      <!-- Subscription Button -->
+      <button (click)="subscribe()" type="button" [disabled]="isLoading">
+        <span *ngIf="!isLoading">{{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}</span>
+        <span *ngIf="isLoading">
+          <ion-spinner name="crescent"></ion-spinner>
+        </span>
       </button>
+
 
       <p class="manageSubsModal">
         {{

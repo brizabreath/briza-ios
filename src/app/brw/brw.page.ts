@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-brw',
@@ -107,6 +108,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.audioService.initializeAudioObjects("inhale");
     this.audioService.initializeAudioObjects("exhale");
     this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BRWduration after ViewChild is initialized
   setBRWduration(): void {
@@ -121,7 +123,21 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startBRW();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopBRW();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -163,9 +179,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.plusBRW.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBRW.nativeElement.disabled = true;
-      this.inhaleBRW = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
+      this.inhaleBRW = true; 
       this.BRWcountdownInput.nativeElement.style.display = "inline";
       this.BRWtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRW();
@@ -200,6 +214,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.BRWinterval = setInterval(() => this.startTimerBRW(), 1000);
         this.BRWTimer = setInterval(() => this.DisplayTimerBRW(), 1000);
         this.startBtnBRW.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false");
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -354,12 +370,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, 5, this.BRWball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsBRW();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -378,12 +389,18 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -428,8 +445,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneBRW.nativeElement.innerHTML = "0";
     this.timerDisplayBRW.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setBRWduration();
     this.BRWSeconds = 0;
@@ -464,5 +480,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopBRW(); 
     this.BRWResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

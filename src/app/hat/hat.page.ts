@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-hat',
@@ -110,7 +111,17 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+     // Listen for app state changes
+     App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startHAT();
+          this.globalService.clearAllTimeouts();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -139,8 +150,6 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnHAT.nativeElement.disabled = true;
       this.holdHAT = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.HATcountdownInput.nativeElement.style.display = "inline";
       this.HATtimeInput.nativeElement.style.display = "none";
       this.startCountdownHAT();
@@ -180,6 +189,8 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       const timeoutId5 = setTimeout(() => {
         this.stopBtnHAT.nativeElement.disabled = false;
         this.stopBtnHAT.nativeElement.style.color = '#0661AA';
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 6000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       
@@ -270,7 +281,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.HATballText.nativeElement.textContent = "Normal Breathing"
       }
       if(!this.voiceMute){
-          this.audioService.playSound('normalbreath');
+        this.audioService.playSound('normalbreath');
       }
     }
     else if(this.normalHAT && this.HATcurrentValue == 1){
@@ -290,12 +301,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.stopBtnHAT.nativeElement.style.color = '#0661AA';
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsHAT();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -314,6 +320,15 @@ export class HATPage implements  AfterViewInit, OnDestroy {
           this.HATballText.nativeElement.textContent = "Respiração Normal"
         }else{
           this.HATballText.nativeElement.textContent = "Normal Breathing"
+        }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
+         
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -355,8 +370,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneHAT.nativeElement.innerHTML = "0";
     this.timerDisplayHAT.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setHATduration();
     this.HATSeconds = 0;
@@ -420,5 +434,6 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopHAT(); 
     this.HATResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

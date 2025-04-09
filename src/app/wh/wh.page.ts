@@ -112,7 +112,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -144,7 +143,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHbreathSpeed = localStorage.getItem('speedOfBreaths');
     // Check if it doesn't exist or is null
     if (this.WHbreathSpeed === null) {
-      this.WHbreathSpeed = 1600; // Default value
+      this.WHbreathSpeed = 1900; // Default value
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     } else {
       this.WHbreathSpeed = parseInt(this.WHbreathSpeed); // Convert the stored string to a number
@@ -160,8 +159,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnWH.nativeElement.disabled = true;
       this.breathsWH = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.WHcountdownInput.nativeElement.style.display = "inline";
       this.WHtimeInput.nativeElement.style.display = "none";
       this.startCountdownWH();
@@ -198,6 +195,8 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }, this.WHbreathSpeed);
         this.WHTimer = setInterval(() => this.DisplayTimerWH(), 1000);
         this.startBtnWH.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -274,7 +273,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.WHballText.nativeElement.textContent = "Hold"    
       }
       if(!this.voiceMute){
-        this.audioService.playSound('letgoandhold');
+        setTimeout(() => {
+            this.audioService.playSound('letgoandhold');
+        },1000);
       }
       this.breathsWH = false;
       this.hold1WH = true;
@@ -286,9 +287,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     }else{
       this.WHballText.nativeElement.textContent = this.WHbreaths.toString();
       const timeoutId6 = setTimeout(() => {
-        this.globalService.changeBall(0.5 , this.WHbreathSpeed/2000, this.WHball);
-        if(!this.breathMute){
-          this.audioService.playSound('fullyout');
+      this.globalService.changeBall(0.5 , this.WHbreathSpeed/2000, this.WHball);
+      if(!this.breathMute){
+        this.audioService.playSound('fullyout');
       }
     }, this.WHbreathSpeed/2);
     this.globalService.timeouts.push(timeoutId6); // Store the timeout ID
@@ -357,12 +358,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.globalService.timeouts.push(timeoutId7); // Store the timeout ID
       }
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsWH();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -380,8 +376,18 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Normal Breathing"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          this.audioService.playSound('normalbreath');
+          setTimeout(() => {
+            this.audioService.playSound('normalbreath');
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }

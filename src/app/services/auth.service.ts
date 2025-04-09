@@ -9,13 +9,15 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
   User,
-  sendEmailVerification,
+  deleteUser,
+  verifyBeforeUpdateEmail,
+  onAuthStateChanged
 } from 'firebase/auth';
-import { Firestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { Firestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { NavController } from '@ionic/angular';
-import { onAuthStateChanged } from 'firebase/auth';
 import { Purchases } from '@revenuecat/purchases-capacitor';
+
 
 interface UserData {
   email: string;
@@ -67,25 +69,20 @@ export class AuthService {
       });
       return false;
     }
-
+  
     try {
       const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
-      await sendEmailVerification(user);
-
+  
       const uid = user.uid;
       const userDocRef = doc(this.getFirestore(), `users/${uid}`);
       await setDoc(userDocRef, { email: user.email, results: {} });
-
+  
       this.saveUserLocally(email);
-      await signOut(auth);
-
-      this.showAlert({
-        en: 'Registration successful. Please verify your email before logging in.',
-        pt: 'Registro bem-sucedido. Por favor, verifique seu e-mail antes de fazer login.',
-      });
-
+  
+      // No need to sign out — user stays logged in
+      await this.setRevenueCatUser(); // Log in to RevenueCat
+  
       return true;
     } catch (error) {
       console.error('Error during registration:', error);
@@ -96,6 +93,7 @@ export class AuthService {
       return false;
     }
   }
+  
 
   async login(email: string, password: string): Promise<boolean> {
     const auth = this.firebaseService.auth;
@@ -109,15 +107,10 @@ export class AuthService {
   
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("✅ Login successful:", userCredential);
       const user = userCredential.user;
   
-      if (!user.emailVerified) {
-        await signOut(auth);
-        throw new Error('Email not verified. Please verify your email before logging in.');
-      }
-  
       const uid = user.uid;
-  
       // 🔥 Fetch and store user's saved results from Firestore
       const userDocRef = doc(this.getFirestore(), `users/${uid}`);
       const userDocSnap = await getDoc(userDocRef);
@@ -188,7 +181,7 @@ export class AuthService {
       });
       return;
     }
-  
+    const email = localStorage.getItem('currentUserEmail');
     
     try {
       // Prepare data to save
@@ -220,12 +213,11 @@ export class AuthService {
           localStorage.removeItem(key);
         });
       });
-
       // Firebase logout
       await signOut(auth);
       localStorage.removeItem('currentUserUID');
-      localStorage.removeItem('currentUserEmail');
       localStorage.removeItem('membershipStatus');
+      localStorage.setItem('currentUserEmail', email || '');
     } catch (error) {
       console.error('Error during logout:', error);
       this.showAlert({
@@ -245,6 +237,7 @@ export class AuthService {
     if (!user) return;
   
     try {
+      await Purchases.restorePurchases(); // Sync purchases with RevenueCat
       const { customerInfo } = await Purchases.logIn({ appUserID: user.uid });
   
       const isSubscribed = customerInfo?.entitlements?.active?.["premium_access"] !== undefined;
@@ -341,4 +334,65 @@ export class AuthService {
     });
     return results;
   }
+  async deleteAccount(): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth) {
+      return;
+    }
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.error('No user is logged in');
+      return;
+    }
+
+    const userId = user.uid;
+    // 🛠 Ensure Firestore is available before proceeding
+    if (!this.firebaseService.firestore) {
+      console.error('Firestore is not initialized');
+      return;
+    }
+
+    try {
+      // 🔥 Delete user from Firestore database
+      const db = this.firebaseService.firestore;
+      const userDocRef = doc(db, `users/${userId}`);
+      await deleteDoc(userDocRef);
+      console.log('✅ User data deleted from Firestore');
+
+      // 🏷️ Delete from RevenueCat if they exist
+      await Purchases.logOut(); // Ensures user is unlinked from RevenueCat
+      console.log('✅ User logged out from RevenueCat');
+
+      // 🔥 Delete user from Firebase Authentication
+      await deleteUser(user);
+      console.log('✅ User deleted from Firebase Authentication');
+
+      // ✅ Clear local storage
+      localStorage.clear();
+
+      await this.logout();
+    } catch (error) {
+      console.error('❌ Error deleting account:', error);
+    }
+  }
+  async updateUserEmail(newEmail: string): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth) return;
+  
+    const user = auth.currentUser;
+    if (!user) throw new Error('No user is currently logged in.');
+  
+    try {
+      await verifyBeforeUpdateEmail(user, newEmail);
+      this.showAlert({
+        en: 'Verification email sent to the new address. Please confirm it to complete the update.',
+        pt: 'E-mail de verificação enviado para o novo endereço. Por favor, confirme para concluir a atualização.',
+      });
+      await this.logout();
+    } catch (error) {
+      console.error('Error sending verification for email update:', error);
+      throw error;
+    }
+  }  
 }

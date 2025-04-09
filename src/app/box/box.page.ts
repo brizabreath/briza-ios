@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-box',
@@ -105,6 +106,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("inhale");
      this.audioService.initializeAudioObjects("exhale");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BOXduration after ViewChild is initialized
   setBOXduration(): void {
@@ -119,6 +121,21 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startBOX();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopBOX();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -172,8 +189,6 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBOX.nativeElement.disabled = true;
       this.inhaleBOX = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.BOXcountdownInput.nativeElement.style.display = "inline";
       this.BOXtimeInput.nativeElement.style.display = "none";
       this.startCountdownBOX();
@@ -208,6 +223,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         this.BOXinterval = setInterval(() => this.startTimerBOX(), 1000);
         this.BOXTimer = setInterval(() => this.DisplayTimerBOX(), 1000);
         this.startBtnBOX.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -309,7 +326,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.BOXballText.nativeElement.textContent = "Expire"
+        this.BOXballText.nativeElement.textContent = "Espire"
       }else{
         this.BOXballText.nativeElement.textContent = "Exhale"
       }
@@ -347,12 +364,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputBOX.nativeElement.value), this.BOXball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        
         this.clearIntervalsBOX();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -371,12 +383,18 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BOXballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -420,8 +438,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneBOX.nativeElement.innerHTML = "0";
     this.timerDisplayBOX.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setBOXduration();
     this.BOXSeconds = 0;
@@ -456,5 +473,6 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopBOX(); 
     this.BOXResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

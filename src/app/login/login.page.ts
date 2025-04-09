@@ -26,9 +26,14 @@ export class LoginPage {
   loginError: string = ''; // Display localized error messages
   isLoggingIn: boolean = false; // Add this variable to track login status
   isPortuguese: boolean = localStorage.getItem('isPortuguese') === 'true';
-
   constructor(private navCtrl: NavController, private authService: AuthService) {}
 
+  ionViewWillEnter() {
+    const lastEmail = localStorage.getItem('currentUserEmail');
+    if (lastEmail) {
+      this.email = lastEmail;
+    }
+  }
   async onLogin() {
     if (!navigator.onLine) {
       this.authService.showAlert({

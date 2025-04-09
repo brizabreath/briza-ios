@@ -40,7 +40,6 @@
     <div class="profile">
       <h2 class="portuguese">Assinatura</h2>
       <h2 class="english">Subscription</h2>
-      <!-- Manage Subscription (active or failed) -->
       <div
         *ngIf="membershipStatus === 'active' || membershipStatus === 'failed'"
         class="manageMembership profile"
@@ -69,7 +68,6 @@
         </p>
       </div>
 
-      <!-- Get Subscription (inactive) -->
       <div
         *ngIf="membershipStatus === 'inactive'"
         class="noActiveMembership profile"
@@ -154,7 +152,12 @@
         target="_blank"
         >Privacy Policy</a
       >
-      <div class="smallText">Briza Breath 1.0</div>
+      <a
+        id="sourceBtn"
+        routerLink="/sources"
+        >Sources List</a
+      >
+      <div class="smallText">Briza 1.2</div>
     </div>
   </div>
   <footer id="profileFooter" class="portuguese">

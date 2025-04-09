@@ -31,28 +31,56 @@ export class AudioService {
   }
   // Method to play a specific sound by name
   playSound(name: string): void {
-    if (this.audioObjects[name]) {
-      this.audioObjects[name].currentTime = 0; // Reset to start
-      this.audioObjects[name].loop = false;
-      this.audioObjects[name].play();
-    } else {
-      console.error(`Audio ${name} not found.`);
-    }
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    const audioUrl = `https://brizastorage.blob.core.windows.net/sounds/${name}${isPortuguese ? 'PT' : ''}.mp3`;
+  
+    // 🔥 Use Web Audio API instead of HTMLAudioElement
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    fetch(audioUrl)
+      .then(response => response.arrayBuffer())
+      .then(data => audioContext.decodeAudioData(data))
+      .then(buffer => {
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+      })
+      .catch(error => console.error(`Failed to play sound: ${name}`, error));
   }
+  
 
   // Method to play the selected song from local storage
   playSelectedSong(): void {
-    if (this.currentAudio) {
-      this.currentAudio.loop = true; // Enable loop
-      this.currentAudio.play();
+    if (!this.currentAudio) {
+      console.log("🎵 Reloading audio...");
+      const selectedSongUrl = localStorage.getItem('selectedSong') || 'https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3';
+      this.currentAudio = new Audio(selectedSongUrl);
+      this.currentAudio.load(); // 🔥 Ensure preloading
     }
+  
+    this.currentAudio.loop = true;
+    this.currentAudio.play();
   }
-
+  
 
   // Method to pause the currently playing song
   pauseSelectedSong(): void {
     if (this.currentAudio) {
       this.currentAudio.pause();
+      this.currentAudio.src = ''; // 🔥 Remove source to unload
+      this.currentAudio.load();   // 🔥 Reset audio
+      this.currentAudio = null;   // 🔥 Make sure it's null so we can recreate it later
     }
-  }
+  
+    // 🔥 Unregister media session (prevents lock screen controls)
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = null;
+      navigator.mediaSession.setActionHandler('play', null);
+      navigator.mediaSession.setActionHandler('pause', null);
+      navigator.mediaSession.setActionHandler('seekbackward', null);
+      navigator.mediaSession.setActionHandler('seekforward', null);
+      navigator.mediaSession.setActionHandler('previoustrack', null);
+      navigator.mediaSession.setActionHandler('nexttrack', null);
+    }
+  }  
 }

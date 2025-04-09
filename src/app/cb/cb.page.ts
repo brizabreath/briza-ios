@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-cb',
@@ -92,6 +93,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.audioService.initializeAudioObjects("bell");
     this.audioService.initializeAudioObjects("inhale");
     this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the CBduration after ViewChild is initialized
   setCBduration(): void {
@@ -107,7 +109,21 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startCB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopCB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -136,8 +152,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnCB.nativeElement.disabled = true;
       this.inhaleCB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.CBcountdownInput.nativeElement.style.display = "inline";
       this.CBtimeInput.nativeElement.style.display = "none";
       this.startCountdownCB();
@@ -172,6 +186,8 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.CBinterval = setInterval(() => this.startTimerCB(), 500);
         this.CBTimer = setInterval(() => this.DisplayTimerCB(), 1000);
         this.startBtnCB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -279,12 +295,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, 5, this.CBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsCB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -303,12 +314,18 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -348,8 +365,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneCB.nativeElement.innerHTML = "0";
     this.timerDisplayCB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setCBduration();
     this.CBSeconds = 0;
@@ -384,5 +400,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopCB(); 
     this.CBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

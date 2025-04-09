@@ -110,7 +110,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -158,8 +157,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnKB.nativeElement.disabled = true;
       this.breathsKB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.KBcountdownInput.nativeElement.style.display = "inline";
       this.KBtimeInput.nativeElement.style.display = "none";
       this.startCountdownKB();
@@ -196,6 +193,8 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }, this.KBbreathSpeed);
         this.KBTimer = setInterval(() => this.DisplayTimerKB(), 1000);
         this.startBtnKB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -357,12 +356,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.globalService.timeouts.push(timeoutId7); // Store the timeout ID
       }
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsKB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -380,8 +374,18 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Normal Breathing"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          this.audioService.playSound('normalbreath');
+          setTimeout(() => {
+            this.audioService.playSound('normalbreath');
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -441,7 +445,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.KBballText.nativeElement.textContent = "Normal Breath"
     }
     if(!this.voiceMute){     
-        this.audioService.playSound('normalbreath');
+      this.audioService.playSound('normalbreath');
     }
     this.hold1KB = false;
     this.hold2KB = true;

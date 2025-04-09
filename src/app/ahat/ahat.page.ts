@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 
 @Component({
@@ -112,6 +113,17 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startAHAT();
+          this.globalService.clearAllTimeouts();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -140,8 +152,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnAHAT.nativeElement.disabled = true;
       this.holdAHAT = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.AHATcountdownInput.nativeElement.style.display = "inline";
       this.AHATtimeInput.nativeElement.style.display = "none";
       this.startCountdownAHAT();
@@ -181,6 +191,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       const timeoutId5 = setTimeout(() => {
         this.stopBtnAHAT.nativeElement.disabled = false;
         this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 6000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       
@@ -291,12 +303,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
         this.clearIntervalsAHAT();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -315,6 +321,14 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
           this.AHATballText.nativeElement.textContent = "Respiração Normal"
         }else{
           this.AHATballText.nativeElement.textContent = "Normal Breathing"
+        }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -356,8 +370,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneAHAT.nativeElement.innerHTML = "0";
     this.timerDisplayAHAT.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setAHATduration();
     this.AHATSeconds = 0;
@@ -425,5 +438,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopAHAT(); 
     this.AHATResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

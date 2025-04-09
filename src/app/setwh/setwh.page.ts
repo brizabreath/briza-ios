@@ -168,15 +168,15 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     this.WHbreathSpeed = localStorage.getItem('speedOfBreaths');
     // Check if it doesn't exist or is null
     if (this.WHbreathSpeed === null) {
-      this.WHbreathSpeed = 1600; // Default value
+      this.WHbreathSpeed = 1900; // Default value
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
       this.speedsetInputWH.nativeElement.value = "Medium";
     } else {
-      if(this.WHbreathSpeed == 2000){
+      if(this.WHbreathSpeed == 2200){
         this.speedsetInputWH.nativeElement.value = "Slow";
-      } else if(this.WHbreathSpeed == 1600){
+      } else if(this.WHbreathSpeed == 1900){
         this.speedsetInputWH.nativeElement.value = "Medium";
-      } else if(this.WHbreathSpeed == 1200){
+      } else if(this.WHbreathSpeed == 1600){
         this.speedsetInputWH.nativeElement.value = "Fast";
       } 
       this.WHbreathSpeed = parseInt(this.WHbreathSpeed); // Convert the stored string to a number
@@ -200,24 +200,24 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   handleSMinusChange():void{
     if (this.speedsetInputWH.nativeElement.value == "Medium") {
       this.speedsetInputWH.nativeElement.value = "Slow";
-      this.WHbreathSpeed = 2000;
+      this.WHbreathSpeed = 2200;
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     }
     else if (this.speedsetInputWH.nativeElement.value == "Fast") {
       this.speedsetInputWH.nativeElement.value = "Medium";
-      this.WHbreathSpeed = 1600;
+      this.WHbreathSpeed = 1900;
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     }
   }
   handleSPlusChange():void{
     if (this.speedsetInputWH.nativeElement.value == "Slow") {
       this.speedsetInputWH.nativeElement.value = "Medium";
-      this.WHbreathSpeed = 1600;
+      this.WHbreathSpeed = 1900;
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     }
     else if (this.speedsetInputWH.nativeElement.value == "Medium") {
       this.speedsetInputWH.nativeElement.value = "Fast";
-      this.WHbreathSpeed = 1200;
+      this.WHbreathSpeed = 1600;
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     }
   }

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-ub',
@@ -104,6 +105,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("inhale");
      this.audioService.initializeAudioObjects("exhale");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the UBduration after ViewChild is initialized
   setUBduration(): void {
@@ -118,6 +120,21 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+     // Listen for app state changes
+     App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startUB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopUB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -170,8 +187,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnUB.nativeElement.disabled = true;
       this.inhaleUB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.UBcountdownInput.nativeElement.style.display = "inline";
       this.UBtimeInput.nativeElement.style.display = "none";
       this.startCountdownUB();
@@ -206,6 +221,8 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.UBinterval = setInterval(() => this.startTimerUB(), 1000);
         this.UBTimer = setInterval(() => this.DisplayTimerUB(), 1000);
         this.startBtnUB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -307,7 +324,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.UBballText.nativeElement.textContent = "Expire"
+        this.UBballText.nativeElement.textContent = "Espire"
       }else{
         this.UBballText.nativeElement.textContent = "Exhale"
       }
@@ -345,12 +362,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputUB.nativeElement.value), this.UBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
         this.clearIntervalsUB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -369,12 +380,18 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.UBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -418,8 +435,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneUB.nativeElement.innerHTML = "0";
     this.timerDisplayUB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setUBduration();
     this.UBSeconds = 0;
@@ -454,5 +470,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopUB(); 
     this.UBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-bb',
@@ -95,6 +96,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.audioService.initializeAudioObjects("inhale");
     this.audioService.initializeAudioObjects("exhale");
     this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BBduration after ViewChild is initialized
   setBBduration(): void {
@@ -110,6 +112,21 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() { 
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startBB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopBB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -138,8 +155,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBB.nativeElement.disabled = true;
       this.inhaleBB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.BBcountdownInput.nativeElement.style.display = "inline";
       this.BBtimeInput.nativeElement.style.display = "none";
       this.startCountdownBB();
@@ -174,6 +189,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.BBinterval = setInterval(() => this.startTimerBB(), 1000);
         this.BBTimer = setInterval(() => this.DisplayTimerBB(), 1000);
         this.startBtnBB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -275,7 +292,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.BBballText.nativeElement.textContent = "Expire"
+        this.BBballText.nativeElement.textContent = "Espire"
       }else{
         this.BBballText.nativeElement.textContent = "Exhale"
       }
@@ -313,12 +330,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, 5, this.BBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsBB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -337,12 +349,18 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -384,8 +402,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneBB.nativeElement.innerHTML = "0";
     this.timerDisplayBB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setBBduration();
     this.BBSeconds = 0;
@@ -420,5 +437,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopBB(); 
     this.BBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

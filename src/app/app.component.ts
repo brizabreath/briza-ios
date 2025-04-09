@@ -4,9 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { ModalComponent } from './modal/modal.component';
 import { GlobalService } from './services/global.service';
-import { Purchases } from '@revenuecat/purchases-capacitor';
 import { AuthService } from './services/auth.service'; // Your authentication service
-import { KeepAwake } from '@capacitor-community/keep-awake';
 
 @Component({
   selector: 'app-root',
@@ -24,8 +22,6 @@ export class AppComponent {
   isPortuguese: boolean = false;
 
   constructor(private globalService: GlobalService, private authService: AuthService) {
-    this.globalService.initializeApp();
-    this.preventSleepMode();
   }
   async ngOnInit(){
     // Initialize language preference safely
@@ -41,13 +37,5 @@ export class AppComponent {
   
   onModalClose(): void {
     this.isModalOpen = false; // Fecha o modal
-  }
-  async preventSleepMode() {
-    try {
-      await KeepAwake.keepAwake();
-      console.log('Screen will stay awake.');
-    } catch (error) {
-      console.error('Error keeping screen awake:', error);
-    }
   }
 }

@@ -52,7 +52,7 @@ export class RegistrationPage {
         if (success) {
           // Registration successful, redirect to login
           this.registrationError = '';
-          this.navCtrl.navigateRoot('/login');
+          this.navCtrl.navigateRoot('/home');
         } else {
           // Registration failed (e.g., user already exists)
           this.registrationError = isPortuguese

@@ -18,10 +18,18 @@
     <h1 class="english">Manage Account</h1>
 
     <form (ngSubmit)="onManageAccount()">
+      <!-- Current Email (readonly) -->
       <ion-item>
         <ion-label position="stacked">Current Email</ion-label>
-        <ion-input class="form-control" type="email" [(ngModel)]="email" name="email" required></ion-input>
+        <ion-input class="form-control" type="email" [value]="email" readonly></ion-input>
       </ion-item>
+
+      <!-- New Email (optional) -->
+      <ion-item>
+        <ion-label position="stacked">New Email</ion-label>
+        <ion-input class="form-control" type="email" [(ngModel)]="newEmail" name="newEmail"></ion-input>
+      </ion-item>
+
   
       <ion-item>
         <ion-label position="stacked">Current Password</ion-label>
@@ -44,4 +52,7 @@
       <ion-button class="form-button" type="submit" expand="block">Save Changes</ion-button>
     </form>
   </div>
+  <button (click)="confirmAccountDeletion()" class="delete-account">
+    {{ isPortuguese ? 'Deletar Conta' : 'Delete Account' }}
+  </button>  
 </ion-content>

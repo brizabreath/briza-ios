@@ -26,50 +26,73 @@ export class ModalComponent implements OnInit {
   membershipStatus: string = localStorage.getItem('membershipStatus') || 'inactive';
   offerings: PurchasesOffering | null = null;
   selectedPackage: PurchasesPackage | null = null;
+  isLoading: boolean = false; // New loading state
+
 
   constructor() {}
 
   async ngOnInit() {
+    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    await this.initializeRevenueCat();
     this.checkSubscriptionStatus();
     await this.fetchOfferings();
   }
 
-  async fetchOfferings() {
+  async initializeRevenueCat() {
     try {
-      const offerings = await Purchases.getOfferings();
-      if (offerings.current) {
-        this.offerings = offerings.current;
-      } else {
-        console.warn('No current offering available');
-      }
+      const apiKey = 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH';
+      await Purchases.configure({ apiKey });
+      console.log('RevenueCat initialized successfully');
     } catch (error) {
-      console.error('Error fetching offerings:', error);
+      console.error('Error initializing RevenueCat:', error);
     }
   }
+
+  async fetchOfferings() {
+    try {
+      await Purchases.invalidateCustomerInfoCache(); // Force refresh
+      const offerings = await Purchases.getOfferings();
+      console.log("Offerings fetched after invalidation:", offerings);
+  
+      if (offerings.current) {
+        this.offerings = offerings.current;
+        console.log("✅ Offerings available:", this.offerings);
+      } else {
+        console.warn("⚠️ No current offering available.");
+      }
+    } catch (error) {
+      console.error("❌ Error fetching offerings:", error);
+    }
+  }  
 
   selectPackage(pkg: PurchasesPackage) {
     this.selectedPackage = pkg;
   }
-
   async subscribe() {
     if (!this.selectedPackage) {
       alert(this.isPortuguese ? 'Selecione um plano primeiro.' : 'Please select a plan first.');
       return;
     }
-  
+    this.isLoading = true; // Show spinner
+
     try {
-      await Purchases.purchasePackage({ aPackage: this.selectedPackage });
+      const purchaseResult = await Purchases.purchasePackage({ aPackage: this.selectedPackage });
   
-      // Refresh customer info
-      await this.checkSubscriptionStatus();
-  
-      alert(this.isPortuguese ? 'Assinatura realizada com sucesso!' : 'Subscription successful!');
-      this.closeModal();
-      window.location.href = '/home'; // Redirect user
-  
-    } catch (error) {
+      if (purchaseResult && purchaseResult.customerInfo) {
+        await this.checkSubscriptionStatus();
+        alert(this.isPortuguese ? 'Assinatura realizada com sucesso!' : 'Subscription successful!');
+        this.closeModal();
+        window.location.href = '/home'; // Redirect user
+      }
+    } catch (error: any) {
       console.error('Purchase failed:', error);
-      alert(this.isPortuguese ? 'Erro ao processar a assinatura.' : 'Error processing subscription.');
+      alert(
+        this.isPortuguese 
+          ? 'Erro ao processar a assinatura. Verifique se seu método de pagamento está correto.' 
+          : 'Error processing subscription. Please check your payment method.'
+      );
+    }finally {
+      this.isLoading = false; // Hide spinner after process
     }
   }
 
@@ -82,65 +105,50 @@ export class ModalComponent implements OnInit {
     const isOnline = navigator.onLine;
     
     if (!isOnline) {
-      if (this.membershipStatus === "active") {
-        this.membershipStatus == "active";
-      } else if (this.membershipStatus === "failed") {
-        this.membershipStatus == "failed";
+      this.membershipStatus = localStorage.getItem('membershipStatus') || 'inactive';
+      return;
+    }
+
+    try {
+      await Purchases.restorePurchases(); // Sync purchases with RevenueCat
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      const isSubscribed = customerInfo?.entitlements?.active?.['premium_access'] !== undefined;
+      
+      if (isSubscribed) {
+        localStorage.setItem('membershipStatus', 'active');
+        this.membershipStatus = 'active';
       } else {
-        this.membershipStatus == "inactive";
-      }
-    }else{
-      try {
-        // 🔹 Check RevenueCat if online
-        const { customerInfo } = await Purchases.getCustomerInfo();
-        const isSubscribed = customerInfo?.entitlements?.active?.["premium_access"] !== undefined;
-        
-        if (isSubscribed) {
-          localStorage.setItem('membershipStatus', 'active');
-          this.membershipStatus = 'active';
+        if (customerInfo?.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
+          localStorage.setItem('membershipStatus', 'failed');
+          this.membershipStatus = 'failed';
         } else {
-          if (customerInfo?.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
-            localStorage.setItem('membershipStatus', 'failed'); // Payment failed or expired
-            this.membershipStatus = 'failed';
-          } else {
-            localStorage.setItem('membershipStatus', 'inactive');
-            this.membershipStatus = 'inactive';
-          }
+          localStorage.setItem('membershipStatus', 'inactive');
+          this.membershipStatus = 'inactive';
         }
-      } catch (error) {
-        console.error('Error checking subscription:', error);
       }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
     }
   }
   
   async openManageSubscription() {
-    const isAndroid = /android/i.test(navigator.userAgent);
-    
-    if (isAndroid) {
-      await Browser.open({ url: "https://play.google.com/store/account/subscriptions" });
-    } else {
-      await Browser.open({ url: "https://apps.apple.com/account/subscriptions" });
-    }
+      await Browser.open({ url: 'https://apps.apple.com/account/subscriptions' });   
   }
-  formatTitle(title: string): string {
-    return title.replace(/\(.*?\)\)?/g, '').trim(); // Removes parentheses and any trailing `)`
-  }
-
   
+  formatTitle(title: string): string {
+    return title.replace(/\(.*?\)\)?/g, '').trim();
+  }
   
   formatPrice(price: string): string {
-    // Example: Convert "$4.99" to "Only 4.99 USD"
     return `Only ${price}`;
   }
   
   formatSubscriptionPeriod(period: string | null): string {
-    if (!period) return this.isPortuguese ? "Período não disponível" : "Period not available";
+    if (!period) return this.isPortuguese ? 'Período não disponível' : 'Period not available';
   
-    // Custom formatting logic
-    if (period.includes("P1Y")) return this.isPortuguese ? "1 Ano" : "1 Year";
-    if (period.includes("P1M")) return this.isPortuguese ? "1 Mês" : "1 Month";
+    if (period.includes('P1Y')) return this.isPortuguese ? '1 Ano' : '1 Year';
+    if (period.includes('P1M')) return this.isPortuguese ? '1 Mês' : '1 Month';
     
-    return period; // Fallback for unexpected values
+    return period;
   }  
-  
 }
