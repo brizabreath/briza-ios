@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-ap',
@@ -102,6 +103,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("inhale");
      this.audioService.initializeAudioObjects("exhale");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
+
   }
   // Method to set the APduration after ViewChild is initialized
   setAPduration(): void {
@@ -116,6 +119,21 @@ export class APPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startAP();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopAP();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -164,8 +182,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnAP.nativeElement.disabled = true;
       this.inhaleAP = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.APcountdownInput.nativeElement.style.display = "inline";
       this.APtimeInput.nativeElement.style.display = "none";
       this.startCountdownAP();
@@ -188,6 +204,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
       const timeoutId4 = setTimeout(() => {
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
         if(this.isPortuguese){
           this.APballText.nativeElement.textContent = "Inspire";
         }else{
@@ -301,7 +319,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.APballText.nativeElement.textContent = "Expire"
+        this.APballText.nativeElement.textContent = "Espire"
       }else{
         this.APballText.nativeElement.textContent = "Exhale"
       }
@@ -325,12 +343,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputAP.nativeElement.value), this.APball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        
         this.clearIntervalsAP();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -349,12 +362,18 @@ export class APPage implements  AfterViewInit, OnDestroy {
         }else{
           this.APballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -397,8 +416,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneAP.nativeElement.innerHTML = "0";
     this.timerDisplayAP.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setAPduration();
     this.APSeconds = 0;
@@ -433,5 +451,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopAP(); 
     this.APResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

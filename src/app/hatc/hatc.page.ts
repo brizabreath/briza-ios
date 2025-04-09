@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-hatc',
@@ -108,7 +109,17 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+     // Listen for app state changes
+     App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startHATC();
+          this.globalService.clearAllTimeouts();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -137,8 +148,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnHATC.nativeElement.disabled = true;
       this.holdHATC = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.HATCcountdownInput.nativeElement.style.display = "inline";
       this.HATCtimeInput.nativeElement.style.display = "none";
       this.startCountdownHATC();
@@ -178,6 +187,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       const timeoutId5 = setTimeout(() => {
         this.stopBtnHATC.nativeElement.disabled = false;
         this.stopBtnHATC.nativeElement.style.color = '#0661AA';
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 6000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       
@@ -271,12 +282,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.stopBtnHATC.nativeElement.style.color = '#0661AA';
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsHATC();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -295,6 +301,14 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
           this.HATCballText.nativeElement.textContent = "Respiração Normal"
         }else{
           this.HATCballText.nativeElement.textContent = "Normal Breathing"
+        }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -335,8 +349,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneHATC.nativeElement.innerHTML = "0";
     this.timerDisplayHATC.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setHATCduration();
     this.HATCSeconds = 0;
@@ -399,5 +412,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopHATC(); 
     this.HATCResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

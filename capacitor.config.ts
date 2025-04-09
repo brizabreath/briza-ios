@@ -1,14 +1,24 @@
-import type { CapacitorConfig } from '@capacitor/cli';
+import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.brizabreath.app',
-  appName: 'brizabreath',
+  appName: 'Briza',
   webDir: 'www',
-  plugins: {
-    SplashScreen: {
-      launchShowDuration: 0, 
-    },
-},
+  ios: {
+    backgroundColor: "#FFFFFF",
+    webContentsDebuggingEnabled: true,
+    overrideUserAgent: "",
+    appendUserAgent: "",
+  }, 
+    plugins: {
+      Purchases: {
+        apiKey: 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH' // Use the iOS API Key from RevenueCat
+      },
+      StatusBar: {
+        style: 'light',
+        backgroundColor: '#ffffff'
+      }
+    }
 };
 
 export default config;

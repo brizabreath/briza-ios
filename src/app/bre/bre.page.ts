@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-bre',
@@ -107,6 +108,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.audioService.initializeAudioObjects("inhale");
     this.audioService.initializeAudioObjects("exhale");
     this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BREduration after ViewChild is initialized
   setBREduration(): void {
@@ -121,7 +123,21 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startBRE();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopBRE();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -164,8 +180,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBRE.nativeElement.disabled = true;
       this.inhaleBRE = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.BREcountdownInput.nativeElement.style.display = "inline";
       this.BREtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRE();
@@ -200,6 +214,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.BREinterval = setInterval(() => this.startTimerBRE(), 1000);
         this.BRETimer = setInterval(() => this.DisplayTimerBRE(), 1000);
         this.startBtnBRE.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -354,12 +370,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, 5, this.BREball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+         
         this.clearIntervalsBRE();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -378,12 +389,18 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BREballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -428,8 +445,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneBRE.nativeElement.innerHTML = "0";
     this.timerDisplayBRE.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setBREduration();
     this.BRESeconds = 0;
@@ -464,5 +480,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopBRE(); 
     this.BREResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

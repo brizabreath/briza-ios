@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
@@ -30,9 +30,10 @@ export class ManageAccountPage {
   successMessage: string = '';
   isPortuguese: boolean = false;
 
-  constructor(private authService: AuthService, private navCtrl: NavController, private globalService: GlobalService) {}
+  constructor(private authService: AuthService, private navCtrl: NavController, private globalService: GlobalService, private alertController: AlertController) {}
 
   async ionViewWillEnter() {
+    this.email = localStorage.getItem('currentUserEmail') || '';
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if (isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -47,23 +48,42 @@ export class ManageAccountPage {
     this.errorMessage = '';
     this.successMessage = '';
   
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Please provide your current email and password.';
+      return;
+    }
+  
+    const changingEmail = !!this.newEmail.trim();
+    const changingPassword = !!this.newPassword.trim();
+  
+    if (!changingEmail && !changingPassword) {
+      this.errorMessage = 'Please fill in new email or new password.';
+      return;
+    }
+  
     try {
-      if (this.email && this.password) {
-        // Reauthenticate the user
-        await this.authService.reauthenticate(this.email, this.password);
-      } else {
-        this.errorMessage = 'Please provide your current email and password for verification.';
-        return;
+      // Reauthenticate before making changes
+      await this.authService.reauthenticate(this.email, this.password);
+  
+      if (changingEmail) {
+        await this.authService.updateUserEmail(this.newEmail.trim());
+        this.successMessage += ' Email updated successfully.';
+        this.email = this.newEmail.trim(); // Update local display
+        this.newEmail = '';
       }
   
-      if (this.newPassword && this.newPassword === this.confirmPassword) {
-        await this.authService.updateUserPassword(this.newPassword);
+      if (changingPassword) {
+        if (this.newPassword !== this.confirmPassword) {
+          this.errorMessage = 'Password confirmation does not match.';
+          return;
+        }
+        await this.authService.updateUserPassword(this.newPassword.trim());
         this.successMessage += ' Password updated successfully.';
-      } else if (this.newPassword) {
-        this.errorMessage = 'Password confirmation does not match.';
-        return;
+        this.newPassword = '';
+        this.confirmPassword = '';
       }
-    } catch (error: any) { // Explicitly specify 'any' for error
+  
+    } catch (error: any) {
       if (error.code === 'auth/requires-recent-login') {
         this.errorMessage = 'You need to log in again to perform this action.';
       } else {
@@ -76,5 +96,24 @@ export class ManageAccountPage {
 
   goBack() {
     this.navCtrl.back();
+  }
+  async confirmAccountDeletion(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Delete Account',
+      message: 'Deleting your account is permanent. You must manually cancel your subscription in the App Store to avoid future charges. Are you sure you want to delete your account?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+        {
+          text: 'Yes, Delete',
+          handler: async () => {
+            await this.authService.deleteAccount();
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 }

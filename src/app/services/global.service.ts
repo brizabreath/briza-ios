@@ -13,31 +13,75 @@ export class GlobalService {
 
   
   constructor(private authService: AuthService) {}  
-  async initializeApp() {
-  }
+  
   openModal2(): void {
     this.isModalOpenSubject.next(true); // Show modal
+     // Ensure the modal is loaded before checking content
+     setTimeout(() => this.checkIfModalIsEmpty(), 500); // Adding a slight delay to ensure modal has loaded
+  }
+  checkIfModalIsEmpty() {
+    const modalContent = document.querySelector('.modalPrices');
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    const membershipStatus = localStorage.getItem('membershipStatus') || 'inactive';
+
+    if(membershipStatus == 'failed'){
+        return;
+    }
+    if (!modalContent) {
+      console.error('Modal content not found');
+
+        const message = isPortuguese 
+            ?'Para acessar esta página, você precisa ter uma assinatura ativa. Parece que seu Apple ID já possui uma assinatura vinculada a outra conta. Para continuar, faça login com essa conta existente ou altere seu Apple ID nas Configurações e tente novamente.'
+            :'To access this page, you need an active subscription. It looks like your Apple ID already has a subscription linked to another account. To proceed, log in with that existing account or change your Apple ID in Settings and try again.';
+        alert(message);
+        this.closeModal2(); // Close the modal if it's empty
+    } else {
+      console.log('✅ Content detected in the modal.');
+    }
   }
   
   closeModal2(): void {
     this.isModalOpenSubject.next(false); // Hide modal
   }
   
-  // Method to hide all elements with a specific class
-  hideElementsByClass(className: string): void {
-      const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
-      for (let i = 0; i < elements.length; i++) {
-      elements[i].style.display = 'none';
-      }
-  }
+    // Method to hide all <option> elements with a specific class
+    hideElementsByClass(className: string): void {
+        const elements = document.getElementsByClassName(className);
 
-  // Method to show all elements with a specific class
-  showElementsByClass(className: string): void {
-      const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
-      for (let i = 0; i < elements.length; i++) {
-      elements[i].style.display = 'block';
-      }
-  }
+        for (let i = elements.length - 1; i >= 0; i--) { // Iterate in reverse to avoid index shifting issues
+            const element = elements[i] as HTMLOptionElement;
+
+            if (element.tagName.toLowerCase() === 'option') {
+                element.remove(); // Completely remove the option from the DOM
+            } else {
+                element.style.display = 'none';
+            }
+        }
+    }
+
+    // Method to show all <option> elements with a specific class
+    showElementsByClass(className: 'english' | 'portuguese'): void { // Explicitly define the allowed types for `className`
+        const parentSelect = document.querySelector('.countdownDisplay') as HTMLSelectElement;
+
+        // Define the options to re-add based on the class name
+        const options: Record<'english' | 'portuguese', string> = {
+            'english': '<option value="60" class="english">1 minute</option>',
+            'portuguese': '<option value="60" class="portuguese">1 minuto</option>',
+        };
+
+        if (parentSelect && options[className]) {
+            parentSelect.insertAdjacentHTML('beforeend', options[className]); // Re-add the option
+        }
+
+        const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
+
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            element.style.display = 'block';
+        }
+    }
+
+
 
   // Method to open modalBB
   openModal(element: any): void {
@@ -131,5 +175,6 @@ export class GlobalService {
   clearAllTimeouts(): void {
       this.timeouts.forEach((timeoutId) => clearTimeout(timeoutId)); // Clear each timeout
       this.timeouts.length = 0; // Optionally reset the array
+      this.timeouts = [];
   }
 }

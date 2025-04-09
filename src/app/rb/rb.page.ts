@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-rb',
@@ -99,6 +100,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("inhale");
      this.audioService.initializeAudioObjects("exhale");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
+
   }
   // Method to set the RBduration after ViewChild is initialized
   setRBduration(): void {
@@ -113,7 +116,21 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startRB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopRB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -141,8 +158,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnRB.nativeElement.disabled = true;
       this.inhaleRB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.RBcountdownInput.nativeElement.style.display = "inline";
       this.RBtimeInput.nativeElement.style.display = "none";
       this.startCountdownRB();
@@ -177,6 +192,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.RBinterval = setInterval(() => this.startTimerRB(), 1000);
         this.RBTimer = setInterval(() => this.DisplayTimerRB(), 1000);
         this.startBtnRB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -278,7 +295,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.RBballText.nativeElement.textContent = "Expire"
+        this.RBballText.nativeElement.textContent = "Espire"
       }else{
         this.RBballText.nativeElement.textContent = "Exhale"
       }
@@ -300,12 +317,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputRB.nativeElement.value), this.RBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        
         this.clearIntervalsRB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -324,12 +336,18 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -370,8 +388,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneRB.nativeElement.innerHTML = "0";
     this.timerDisplayRB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setRBduration();
     this.RBSeconds = 0;
@@ -406,5 +423,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopRB(); 
     this.RBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

@@ -74,24 +74,36 @@
     </div>
   </footer>
   <ion-modal [isOpen]="isModalOpen2" (willDismiss)="closeModal()">
-      <div class="modal-content2">    
-        <div *ngIf="selectedDateResults.length; else noResults">
-          <div class="modal-header">
-            <div></div>
-            <h2>{{ selectedDateHeader }}</h2>
-            <button (click)="closeModal()" class="close-button">X</button>
+    <div class="modal-content2">    
+      <div *ngIf="selectedDateResults.length; else noResults">
+        <div class="modal-header">
+          <div></div>
+          <h2>{{ selectedDateHeader }}</h2>
+          <button (click)="closeModal()" class="close-button">X</button>
+        </div>
+        <div *ngFor="let result of selectedDateResults" class="result-item">
+          <h3>{{ getExerciseName(result.exerciseKey) }}</h3> 
+  
+          <!-- For results with multiple rounds -->
+          <div *ngIf="isMultiRoundExercise(result.exerciseKey)">
+            <div *ngFor="let round of result.result; let i = index">
+              <p>Round {{ i + 1 }}: {{ formatTime(round) }}</p>
+            </div>
           </div>
-          <div *ngFor="let result of selectedDateResults" class="result-item">
-            <h3>{{ getExerciseName(result.exerciseKey) }}</h3>
+
+          <!-- For results with a single result -->
+          <div *ngIf="!isMultiRoundExercise(result.exerciseKey)">
             <p *ngIf="result.result">Result: {{ result.result }}</p>
             <p *ngIf="result.rounds">Rounds: {{ result.rounds }}</p>
-            <button (click)="confirmDelete(result)" class="delete-button">Delete Result</button>
           </div>
+          
+          <button (click)="confirmDelete(result)" class="delete-button">Delete Result</button>
         </div>
-    
-        <ng-template #noResults>
-          <p>No results available for this date.</p>
-        </ng-template>
       </div>
-  </ion-modal>
+  
+      <ng-template #noResults>
+        <p>No results available for this date.</p>
+      </ng-template>
+    </div>
+  </ion-modal>  
 </ion-content>

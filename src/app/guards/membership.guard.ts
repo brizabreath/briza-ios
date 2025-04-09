@@ -16,13 +16,9 @@ export class MembershipGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
-    
     const membershipStatus = localStorage.getItem("membershipStatus");
     if (membershipStatus === "active") {
       return true; // Allow access
-    } else if (membershipStatus === "failed") {
-      this.globalService.openModal2(); // Show "Fix Payment" modal
-      return false; // Deny access
     } else {
       this.globalService.openModal2(); // Show subscription options
       return false; // Deny access

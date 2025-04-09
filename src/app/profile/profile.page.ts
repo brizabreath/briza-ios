@@ -35,8 +35,7 @@ export class ProfilePage implements AfterViewInit {
   constructor(
     private authService: AuthService,
     private navCtrl: NavController,
-    private globalService: GlobalService
-  ) {}
+    private globalService: GlobalService ) {}
 
   async ngAfterViewInit() {
     try {

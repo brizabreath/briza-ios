@@ -24,7 +24,6 @@ describe('AuthGuard', () => {
   });
 
   it('should allow access if user is logged in', async () => {
-    authServiceMock.checkLoggedInStatus.and.resolveTo(true); // Simulate logged-in user
 
     const result = await authGuard.canActivate(); 
     expect(result).toBeTrue();
@@ -32,7 +31,6 @@ describe('AuthGuard', () => {
   });
 
   it('should deny access and redirect to login if user is not logged in', async () => {
-    authServiceMock.checkLoggedInStatus.and.resolveTo(false); // Simulate not logged-in user
 
     const result = await authGuard.canActivate();
     expect(result).toBeFalse();

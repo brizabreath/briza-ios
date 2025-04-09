@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-yogic',
@@ -105,6 +106,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
      this.audioService.initializeAudioObjects("inhale");
      this.audioService.initializeAudioObjects("exhale");
      this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the YBduration after ViewChild is initialized
   setYBduration(): void {
@@ -119,7 +121,21 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   }
 
   ionViewWillEnter() {
-
+    // Listen for app state changes
+    App.addListener('appStateChange', (state) => {
+      if (!state.isActive) {
+        let breathingON = localStorage.getItem('breathingON');
+        let firstClick = localStorage.getItem('firstClick');
+        if(firstClick == "false" && breathingON == "true"){
+          this.startYB();
+          this.globalService.clearAllTimeouts();
+        }else if(firstClick == "false" && breathingON == "false"){
+        }else{
+          this.globalService.clearAllTimeouts();
+          this.stopYB();
+        }
+      }
+    });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -173,8 +189,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnYB.nativeElement.disabled = true;
       this.inhaleYB = true;
-      localStorage.setItem('breathingON', "true"); 
-      localStorage.setItem('firstClick', "false"); 
       this.YBcountdownInput.nativeElement.style.display = "inline";
       this.YBtimeInput.nativeElement.style.display = "none";
       this.startCountdownYB();
@@ -209,6 +223,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         this.YBinterval = setInterval(() => this.startTimerYB(), 1000);
         this.YBTimer = setInterval(() => this.DisplayTimerYB(), 1000);
         this.startBtnYB.nativeElement.disabled = false;
+        localStorage.setItem('breathingON', "true"); 
+        localStorage.setItem('firstClick', "false"); 
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       //pause function
@@ -310,7 +326,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
           this.audioService.playSound('exhale');
       }
       if(this.isPortuguese){
-        this.YBballText.nativeElement.textContent = "Expire"
+        this.YBballText.nativeElement.textContent = "Espire"
       }else{
         this.YBballText.nativeElement.textContent = "Exhale"
       }
@@ -348,12 +364,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputYB.nativeElement.value), this.YBball);
       } 
       else{
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
         this.clearIntervalsYB();
         localStorage.setItem('breathingON', "false"); 
         localStorage.setItem('firstClick', "true"); 
@@ -372,12 +382,18 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         }else{
           this.YBballText.nativeElement.textContent = "Start"
         }
+        if (!this.bellMute) {
+          this.audioService.playSound("bell");
+        }
         if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('nommalbreathPT');
-          }else{
+          setTimeout(() => {
             this.audioService.playSound('normalbreath');
-          }
+          }, 1000);
+        }
+        if (!this.audioPlayerMute) {
+          setTimeout(() => {
+            this.audioService.pauseSelectedSong();
+          }, 3000);
         }
       }
     }
@@ -421,8 +437,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.roundsDoneYB.nativeElement.innerHTML = "0";
     this.timerDisplayYB.nativeElement.innerHTML = "00 : 00";
     if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
+      this.audioService.pauseSelectedSong();
     }
     this.setYBduration();
     this.YBSeconds = 0;
@@ -457,5 +472,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.stopYB(); 
     this.YBResultSaved.nativeElement.style.display = 'none';
+    App.removeAllListeners();
   }
 }

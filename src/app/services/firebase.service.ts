@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, setPersistence, browserLocalPersistence, Auth } from 'firebase/auth';
+import { 
+  initializeAuth, 
+  indexedDBLocalPersistence, 
+  browserLocalPersistence, 
+  Auth 
+} from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
+import { Capacitor } from '@capacitor/core';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD3sn0T8BX0MX2LegPfGqfW4uVvf8ZfDjI',
@@ -21,22 +27,19 @@ export class FirebaseService {
   auth: Auth | null = null;
   firestore: Firestore | null = null;
 
-  constructor() {
+  constructor() {    
     if (navigator.onLine) {
       try {
         this.firebaseApp = initializeApp(firebaseConfig);
-        this.auth = getAuth(this.firebaseApp);
-
-        // Set authentication persistence to local
-        setPersistence(this.auth, browserLocalPersistence)
-          .catch((error) => console.error('Error setting Firebase Auth persistence:', error));
-
+        this.auth = initializeAuth(this.firebaseApp, {
+          persistence: indexedDBLocalPersistence
+        });
         this.firestore = getFirestore(this.firebaseApp);
       } catch (error) {
-        console.error('Error initializing Firebase:', error);
+        console.error("❌ Error initializing Firebase:", error);
       }
     } else {
-      console.warn('Offline mode detected. Firebase services are not initialized.');
+      console.warn("⚠️ Offline mode detected. Firebase services are not initialized.");
     }
   }
 }

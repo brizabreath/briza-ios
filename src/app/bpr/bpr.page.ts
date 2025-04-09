@@ -273,7 +273,16 @@ export class BPRPage implements OnInit {
       this.resultMSG.nativeElement.style.display = resultsFound ? 'block' : 'none';
     }
   }
-
+  isMultiRoundExercise(exerciseKey: string): boolean {
+    const multiRoundExercises = ['HATResults', 'HATCResults', 'AHATResults', 'WHResults', 'KBResults'];
+    return multiRoundExercises.includes(exerciseKey);
+  }
+  formatTime(seconds: number): string {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(minutes).padStart(2, '0')} min & ${String(remainingSeconds).padStart(2, '0')} sec`;
+  }
+  
   // Method to navigate back
   goBack(): void {
     this.navCtrl.back();
