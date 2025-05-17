@@ -39,10 +39,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   @ViewChild('WHResults') WHResults!: ElementRef<HTMLDivElement>;
   @ViewChild('breathsInputWH') breathsInputWH!: ElementRef<HTMLInputElement>;
 
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private breathMute = localStorage.getItem('breathMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private breathsWH = true;
   private hold1WH = false;
@@ -87,14 +83,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
-    //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("fullyin");
-    this.audioService.initializeAudioObjects("fullyout");
-    this.audioService.initializeAudioObjects("letgoandhold");
-    this.audioService.initializeAudioObjects("fullyinHold");
-    this.audioService.initializeAudioObjects("normalbreath");
-    this.audioService.initializeAudioObjects("nextRound");
     this.globalService.changeBall(1, 1, this.WHball);
     
   }
@@ -124,13 +112,16 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     }
     this.setWHduration();
     this.WHResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.breathMute = localStorage.getItem('breathMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("fullyin");
+    this.audioService.initializeAudioObjects("fullyout");
+    this.audioService.initializeAudioObjects("letgoandhold");
+    this.audioService.initializeAudioObjects("fullyinHold");
+    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeAudioObjects("nextRound");
     //set up breaths
     this.WHbreaths = localStorage.getItem('numberOfBreaths');
     // Check if it doesn't exist or is null
@@ -163,13 +154,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       this.WHtimeInput.nativeElement.style.display = "none";
       this.startCountdownWH();
       this.WHballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -187,9 +174,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
           this.WHballText.nativeElement.textContent = "Fully In";
         }
         this.WHinterval = setInterval(() => {
-          if(!this.breathMute){
-            this.audioService.playSound('fullyin');
-          }
+          this.audioService.playBreath('fullyin');
           this.globalService.changeBall(1.3 , this.WHbreathSpeed/2000, this.WHball);
           this.startBreathsWH();
         }, this.WHbreathSpeed);
@@ -217,9 +202,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Resume"
         }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        this.audioService.pauseSelectedSong();
         this.globalService.changeBall(1.3, 1, this.WHball);
       }else{
         this.pauseWH();
@@ -239,9 +222,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
           this.WHballText.nativeElement.textContent = "Breath"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.WHReset.nativeElement.disabled = true;
       this.WHReset.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -252,9 +233,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.WHTimer = setInterval(() => this.DisplayTimerWH(), 1000);
       }else if(this.breathsWH){
         this.WHinterval = setInterval(() => {
-          if(!this.breathMute){
-            this.audioService.playSound('fullyin');
-          }
+          this.audioService.playBreath('fullyin');
           this.globalService.changeBall(1.3 , this.WHbreathSpeed/2000, this.WHball);
           this.startBreathsWH();
         }, this.WHbreathSpeed);
@@ -272,11 +251,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       }else{
         this.WHballText.nativeElement.textContent = "Hold"    
       }
-      if(!this.voiceMute){
-        setTimeout(() => {
-            this.audioService.playSound('letgoandhold');
-        },1000);
-      }
+      setTimeout(() => {
+          this.audioService.playSound('letgoandhold');
+      },1000);
       this.breathsWH = false;
       this.hold1WH = true;
       this.WHbreaths = this.breathsInputWH.nativeElement.value;
@@ -285,12 +262,10 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       }, 2000);
       this.globalService.timeouts.push(timeoutId8); // Store the timeout ID
     }else{
-      this.WHballText.nativeElement.textContent = this.WHbreaths.toString();
-      const timeoutId6 = setTimeout(() => {
+    this.WHballText.nativeElement.textContent = this.WHbreaths.toString();
+    const timeoutId6 = setTimeout(() => {
       this.globalService.changeBall(0.5 , this.WHbreathSpeed/2000, this.WHball);
-      if(!this.breathMute){
-        this.audioService.playSound('fullyout');
-      }
+      this.audioService.playBreath('fullyout');
     }, this.WHbreathSpeed/2);
     this.globalService.timeouts.push(timeoutId6); // Store the timeout ID
     }
@@ -343,14 +318,10 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Next Round"
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('nextRound');
-        }
+        this.audioService.playSound('nextRound');
         const timeoutId7 = setTimeout(() => {
           this.WHinterval = setInterval(() => {
-            if(!this.breathMute){
-              this.audioService.playSound('fullyin');
-            }
+            this.audioService.playBreath('fullyin');
             this.globalService.changeBall(1.3 , this.WHbreathSpeed/2000, this.WHball);
             this.startBreathsWH();
           }, this.WHbreathSpeed);
@@ -361,7 +332,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsWH();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnWH.nativeElement.disabled = true;
         this.settingsWH.nativeElement.disabled = false;
         this.questionWH.nativeElement.disabled = false;
@@ -376,19 +346,13 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Normal Breathing"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -426,17 +390,14 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.roundsWH = 0;
     this.roundsDoneWH.nativeElement.innerHTML = "0";
     this.timerDisplayWH.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
-    }
+    this.audioService.pauseSelectedSong();
     this.setWHduration();
     this.WHSeconds = 0;
     this.WHMinutes = 0;
     this.roundsWH = 0;
     this.WHResults.nativeElement.innerHTML = "";
     this.globalService.changeBall(1.3, 1, this.WHball);
-
+    this.WHbreaths = this.breathsInputWH.nativeElement.value;
   }
   pauseWH(): void{
     clearInterval(this.WHinterval);
@@ -446,9 +407,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     }else{
       this.WHballText.nativeElement.textContent = "Hold"
     }
-    if(!this.voiceMute){     
-        this.audioService.playSound('fullyinHold');
-    }
+    this.audioService.playSound('fullyinHold');
     this.hold1WH = false;
     this.hold2WH = true;
     this.roundsWH++;

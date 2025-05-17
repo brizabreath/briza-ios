@@ -38,10 +38,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('timerDisplayCB') timerDisplayCB!: ElementRef<HTMLInputElement>;
   @ViewChild('CBResultSaved') CBResultSaved!: ElementRef<HTMLDivElement>;
 
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleCB = true;
   private exhaleCB = false;
@@ -89,11 +85,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-    //initialize sounds
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the CBduration after ViewChild is initialized
   setCBduration(): void {
@@ -136,12 +127,13 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     }
     this.setCBduration();
     this.CBResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
  
   startCB(): void{
@@ -156,13 +148,9 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.CBtimeInput.nativeElement.style.display = "none";
       this.startCountdownCB();
       this.CBballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -179,9 +167,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, 5, this.CBball);
         this.CBinterval = setInterval(() => this.startTimerCB(), 500);
         this.CBTimer = setInterval(() => this.DisplayTimerCB(), 1000);
@@ -207,9 +193,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       }else{
         this.CBballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -225,9 +209,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
           this.CBballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnCB.nativeElement.disabled = true;
       this.stopBtnCB.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -267,9 +249,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.CBcurrentValue = 5.5;
       this.inhaleCB = false;
       this.exhaleCB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.CBballText.nativeElement.textContent = "Espire"
       }else{
@@ -284,9 +264,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.CBcurrentValue = 5.5;
         this.exhaleCB = false;
         this.inhaleCB = true;
-        if(!this.voiceMute){     
-            this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.CBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -298,7 +276,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsCB();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnCB.nativeElement.disabled = true;
         this.settingsCB.nativeElement.disabled = false;
         this.questionCB.nativeElement.disabled = false;
@@ -314,19 +291,13 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -364,9 +335,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.roundsCB = 0;
     this.roundsDoneCB.nativeElement.innerHTML = "0";
     this.timerDisplayCB.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setCBduration();
     this.CBSeconds = 0;
     this.CBMinutes = 0;

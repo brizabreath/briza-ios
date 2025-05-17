@@ -40,10 +40,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   @ViewChild('HATCResultSaved') HATCResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCResults') HATCResults!: ElementRef<HTMLDivElement>;
 
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private holdHATC = true;
   private normalHATC = false;
@@ -89,10 +85,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
-    //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("pinchRun");
-    this.audioService.initializeAudioObjects("normalbreath");
     this.globalService.changeBall(1.3, 1, this.HATCball);
   }
   // Method to set the HATCduration after ViewChild is initialized
@@ -132,12 +124,12 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     }
     this.setHATCduration();
     this.HATCResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("pinchRun");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
 
   startHATC(): void{
@@ -152,13 +144,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       this.HATCtimeInput.nativeElement.style.display = "none";
       this.startCountdownHATC();
       this.HATCballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -175,9 +163,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Start running";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('pinchRun');
-        }
+        this.audioService.playSound('pinchRun');
         this.HATCinterval = setInterval(() => this.startTimerHATC(), 1000);
         this.HATCTimer = setInterval(() => this.DisplayTimerHATC(), 1000);
         this.startBtnHATC.nativeElement.disabled = false;
@@ -212,9 +198,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Resume"
         }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        this.audioService.pauseSelectedSong();
       }
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
@@ -227,9 +211,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
           this.HATCballText.nativeElement.textContent = "Normal Breathing"
         }    
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.HATCReset.nativeElement.disabled = true;
       this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -275,9 +257,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Hold"
         }
-        if(!this.voiceMute){     
-            this.audioService.playSound('pinchRun');
-        }
+        this.audioService.playSound('pinchRun');
         this.stopBtnHATC.nativeElement.disabled = false;
         this.stopBtnHATC.nativeElement.style.color = '#0661AA';
       } 
@@ -285,7 +265,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsHATC();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnHATC.nativeElement.disabled = true;
         this.settingsHATC.nativeElement.disabled = false;
         this.questionHATC.nativeElement.disabled = false;
@@ -302,14 +281,10 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Normal Breathing"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 3000);
       }
     }
   }
@@ -348,9 +323,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.roundsHATC = 0;
     this.roundsDoneHATC.nativeElement.innerHTML = "0";
     this.timerDisplayHATC.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setHATCduration();
     this.HATCSeconds = 0;
     this.HATCMinutes = 0;
@@ -369,9 +342,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     }else{
       this.HATCballText.nativeElement.textContent = "Normal Breathing"
     }
-    if(!this.voiceMute){     
-      this.audioService.playSound('normalbreath');
-    }
+    this.audioService.playSound('normalbreath');
     this.roundsHATC++;
     this.roundsDoneHATC.nativeElement.innerHTML = this.roundsHATC.toString();
     this.HATCduration = this.HATCduration - 1;

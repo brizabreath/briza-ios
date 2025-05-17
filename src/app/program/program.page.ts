@@ -4,20 +4,14 @@ import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router'; // Import RouterModule
-
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-program',
   templateUrl: './program.page.html',
   styleUrls: ['./program.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RouterModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
 })
 export class ProgramPage implements AfterViewInit {
   @ViewChild('personalizedBriza') personalizedBriza!: ElementRef<HTMLDivElement>;
@@ -26,35 +20,92 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('Pprev') Pprev!: ElementRef<HTMLButtonElement>;
   @ViewChild('Pnext') Pnext!: ElementRef<HTMLButtonElement>;
   @ViewChild('questionP') questionP!: ElementRef<HTMLAnchorElement>;
+
+  // Default BRT references
   @ViewChild('noBrtResults') noBrtResults!: ElementRef<HTMLDivElement>;
   @ViewChild('noBrtResultsBR') noBrtResultsBR!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus15') brtResultMinus15!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus25') brtResultMinus25!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus35') brtResultMinus35!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultPlus35') brtResultPlus35!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus15BR') brtResultMinus15BR!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus25BR') brtResultMinus25BR!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultMinus35BR') brtResultMinus35BR!: ElementRef<HTMLDivElement>;
-  @ViewChild('brtResultPlus35BR') brtResultPlus35BR!: ElementRef<HTMLDivElement>;
+
+  // Minus 15
+  @ViewChild('brtResultMinus15Monday') brtResultMinus15Monday!: ElementRef;
+  @ViewChild('brtResultMinus15Tuesday') brtResultMinus15Tuesday!: ElementRef;
+  @ViewChild('brtResultMinus15Wednesday') brtResultMinus15Wednesday!: ElementRef;
+  @ViewChild('brtResultMinus15Thursday') brtResultMinus15Thursday!: ElementRef;
+  @ViewChild('brtResultMinus15Friday') brtResultMinus15Friday!: ElementRef;
+  @ViewChild('brtResultMinus15Saturday') brtResultMinus15Saturday!: ElementRef;
+  @ViewChild('brtResultMinus15Sunday') brtResultMinus15Sunday!: ElementRef;
+  @ViewChild('brtResultMinus15MondayBR') brtResultMinus15MondayBR!: ElementRef;
+  @ViewChild('brtResultMinus15TuesdayBR') brtResultMinus15TuesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus15WednesdayBR') brtResultMinus15WednesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus15ThursdayBR') brtResultMinus15ThursdayBR!: ElementRef;
+  @ViewChild('brtResultMinus15FridayBR') brtResultMinus15FridayBR!: ElementRef;
+  @ViewChild('brtResultMinus15SaturdayBR') brtResultMinus15SaturdayBR!: ElementRef;
+  @ViewChild('brtResultMinus15SundayBR') brtResultMinus15SundayBR!: ElementRef;
+
+  // Minus 25
+  @ViewChild('brtResultMinus25Monday') brtResultMinus25Monday!: ElementRef;
+  @ViewChild('brtResultMinus25Tuesday') brtResultMinus25Tuesday!: ElementRef;
+  @ViewChild('brtResultMinus25Wednesday') brtResultMinus25Wednesday!: ElementRef;
+  @ViewChild('brtResultMinus25Thursday') brtResultMinus25Thursday!: ElementRef;
+  @ViewChild('brtResultMinus25Friday') brtResultMinus25Friday!: ElementRef;
+  @ViewChild('brtResultMinus25Saturday') brtResultMinus25Saturday!: ElementRef;
+  @ViewChild('brtResultMinus25Sunday') brtResultMinus25Sunday!: ElementRef;
+  @ViewChild('brtResultMinus25MondayBR') brtResultMinus25MondayBR!: ElementRef;
+  @ViewChild('brtResultMinus25TuesdayBR') brtResultMinus25TuesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus25WednesdayBR') brtResultMinus25WednesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus25ThursdayBR') brtResultMinus25ThursdayBR!: ElementRef;
+  @ViewChild('brtResultMinus25FridayBR') brtResultMinus25FridayBR!: ElementRef;
+  @ViewChild('brtResultMinus25SaturdayBR') brtResultMinus25SaturdayBR!: ElementRef;
+  @ViewChild('brtResultMinus25SundayBR') brtResultMinus25SundayBR!: ElementRef;
+
+  // Minus 35
+  @ViewChild('brtResultMinus35Monday') brtResultMinus35Monday!: ElementRef;
+  @ViewChild('brtResultMinus35Tuesday') brtResultMinus35Tuesday!: ElementRef;
+  @ViewChild('brtResultMinus35Wednesday') brtResultMinus35Wednesday!: ElementRef;
+  @ViewChild('brtResultMinus35Thursday') brtResultMinus35Thursday!: ElementRef;
+  @ViewChild('brtResultMinus35Friday') brtResultMinus35Friday!: ElementRef;
+  @ViewChild('brtResultMinus35Saturday') brtResultMinus35Saturday!: ElementRef;
+  @ViewChild('brtResultMinus35Sunday') brtResultMinus35Sunday!: ElementRef;
+  @ViewChild('brtResultMinus35MondayBR') brtResultMinus35MondayBR!: ElementRef;
+  @ViewChild('brtResultMinus35TuesdayBR') brtResultMinus35TuesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus35WednesdayBR') brtResultMinus35WednesdayBR!: ElementRef;
+  @ViewChild('brtResultMinus35ThursdayBR') brtResultMinus35ThursdayBR!: ElementRef;
+  @ViewChild('brtResultMinus35FridayBR') brtResultMinus35FridayBR!: ElementRef;
+  @ViewChild('brtResultMinus35SaturdayBR') brtResultMinus35SaturdayBR!: ElementRef;
+  @ViewChild('brtResultMinus35SundayBR') brtResultMinus35SundayBR!: ElementRef;
+
+  // Plus 35
+  @ViewChild('brtResultPlus35Monday') brtResultPlus35Monday!: ElementRef;
+  @ViewChild('brtResultPlus35Tuesday') brtResultPlus35Tuesday!: ElementRef;
+  @ViewChild('brtResultPlus35Wednesday') brtResultPlus35Wednesday!: ElementRef;
+  @ViewChild('brtResultPlus35Thursday') brtResultPlus35Thursday!: ElementRef;
+  @ViewChild('brtResultPlus35Friday') brtResultPlus35Friday!: ElementRef;
+  @ViewChild('brtResultPlus35Saturday') brtResultPlus35Saturday!: ElementRef;
+  @ViewChild('brtResultPlus35Sunday') brtResultPlus35Sunday!: ElementRef;
+  @ViewChild('brtResultPlus35MondayBR') brtResultPlus35MondayBR!: ElementRef;
+  @ViewChild('brtResultPlus35TuesdayBR') brtResultPlus35TuesdayBR!: ElementRef;
+  @ViewChild('brtResultPlus35WednesdayBR') brtResultPlus35WednesdayBR!: ElementRef;
+  @ViewChild('brtResultPlus35ThursdayBR') brtResultPlus35ThursdayBR!: ElementRef;
+  @ViewChild('brtResultPlus35FridayBR') brtResultPlus35FridayBR!: ElementRef;
+  @ViewChild('brtResultPlus35SaturdayBR') brtResultPlus35SaturdayBR!: ElementRef;
+  @ViewChild('brtResultPlus35SundayBR') brtResultPlus35SundayBR!: ElementRef;
+
 
   latestBRTResultInSeconds = 0;
 
   constructor(private navCtrl: NavController, private globalService: GlobalService) {}
 
   ngAfterViewInit() {
-    //modal events set up
     this.closeModalButtonP.nativeElement.onclick = () => this.globalService.closeModal(this.modalP);
     this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP);
     this.Pnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalP);
     this.Pprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalP);
-    this.globalService.openModal(this.modalP);  
+    this.globalService.openModal(this.modalP);
   }
+
   ionViewWillEnter() {
-    // Refresh the content every time the page becomes active
     this.populateProgramContent();
   }
 
-  // Method to populate program content based on BRT results
   populateProgramContent(): void {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
@@ -65,69 +116,63 @@ export class ProgramPage implements AfterViewInit {
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
     }
-    
-    // Retrieve the array of brtResults from local storage
     const storedResults = localStorage.getItem('brtResults');
     const brtResults = storedResults ? JSON.parse(storedResults) : [];
 
-    // Set BRTnumberOfTests as the length of the results array
     const BRTnumberOfTests = brtResults.length;
+    const BRTlatestResult = brtResults.length > 0 ? brtResults[brtResults.length - 1].result : '0:00';
+    const result = this.timeStringToSeconds(BRTlatestResult);
+    const day = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+    const lang = isPortuguese ? 'BR' : '';
 
-    // Set BRTlatestResult as the last entry's value if the array is not empty
-    const BRTlatestResult = brtResults.length > 0 ? brtResults[brtResults.length - 1].result : 0;
-
-    function timeStringToSeconds(time: string): number {
-      const [minutes, seconds] = time.split(':').map(Number);
-      return minutes * 60 + seconds;
-    }
-    // Reset all sections to display none
     this.resetAllSections();
+
     if (BRTnumberOfTests === 0) {
-      if (isPortuguese) {
-        this.noBrtResultsBR.nativeElement.style.display = 'block';
-      }else{
-        this.noBrtResults.nativeElement.style.display = 'block';
-      }
-    } else if (BRTnumberOfTests > 0) {
-      this.latestBRTResultInSeconds = timeStringToSeconds(BRTlatestResult); // Convert to seconds
-      if (isPortuguese) {
-        if (timeStringToSeconds(BRTlatestResult) <= 15) {
-          this.brtResultMinus15BR.nativeElement.style.display = 'block';
-        } else if (timeStringToSeconds(BRTlatestResult) > 15 && timeStringToSeconds(BRTlatestResult) <= 25) {
-          this.brtResultMinus25BR.nativeElement.style.display = 'block';
-        } else if (timeStringToSeconds(BRTlatestResult) > 25 && timeStringToSeconds(BRTlatestResult) <= 35) {
-          this.brtResultMinus35BR.nativeElement.style.display = 'block';
-        } else if (timeStringToSeconds(BRTlatestResult) > 35) {
-          this.brtResultPlus35BR.nativeElement.style.display = 'block';
-        }
-      } else {
-        if (timeStringToSeconds(BRTlatestResult) <= 15) {
-          this.brtResultMinus15.nativeElement.style.display = 'block';
-        }
-        else if (timeStringToSeconds(BRTlatestResult) > 15 && timeStringToSeconds(BRTlatestResult) <= 25) {
-          this.brtResultMinus25.nativeElement.style.display = 'block';
-        } else if (timeStringToSeconds(BRTlatestResult) > 25 && timeStringToSeconds(BRTlatestResult) <= 35) {
-          this.brtResultMinus35.nativeElement.style.display = 'block';
-        } else if (timeStringToSeconds(BRTlatestResult) > 35) {
-          this.brtResultPlus35.nativeElement.style.display = 'block';
-        }
+      this[isPortuguese ? 'noBrtResultsBR' : 'noBrtResults'].nativeElement.style.display = 'block';
+    } else {
+      this.latestBRTResultInSeconds = result;
+      const prefix = this.getRangePrefix(result);
+      const key = `${prefix}${day}${lang}`  as keyof this;
+      this.showSectionByKey(key);
+    }
+  }
+
+  private getRangePrefix(seconds: number): string {
+    if (seconds <= 15) return 'brtResultMinus15';
+    if (seconds <= 25) return 'brtResultMinus25';
+    if (seconds <= 35) return 'brtResultMinus35';
+    return 'brtResultPlus35';
+
+  }
+
+  private showSectionByKey(key: keyof this): void {
+    const section = this[key];
+    if (section instanceof ElementRef) {
+      section.nativeElement.style.display = 'block';
+    } else {
+      console.warn(`❌ Section '${String(key)}' not found or not an ElementRef`);
+    }
+  }  
+
+  private timeStringToSeconds(time: string): number {
+    const [minutes, seconds] = time.split(':').map(Number);
+    return minutes * 60 + seconds;
+  }
+
+  resetAllSections(): void {
+    const keysToReset = Object.keys(this).filter(k =>
+      k.startsWith('brtResultMinus') || k.startsWith('brtResultPlus') || k.startsWith('noBrtResults')
+    );
+  
+    for (const key of keysToReset) {
+      const section = this[key as keyof this];
+      if (section instanceof ElementRef) {
+        try {
+          section.nativeElement.style.display = 'none';
+        } catch {}
       }
     }
   }
-  // Method to reset all content sections to display none
-  resetAllSections(): void {
-    this.noBrtResults.nativeElement.style.display = 'none';
-    this.noBrtResultsBR.nativeElement.style.display = 'none';
-    this.brtResultMinus15.nativeElement.style.display = 'none';
-    this.brtResultMinus25.nativeElement.style.display = 'none';
-    this.brtResultMinus35.nativeElement.style.display = 'none';
-    this.brtResultPlus35.nativeElement.style.display = 'none';
-    this.brtResultMinus15BR.nativeElement.style.display = 'none';
-    this.brtResultMinus25BR.nativeElement.style.display = 'none';
-    this.brtResultMinus35BR.nativeElement.style.display = 'none';
-    this.brtResultPlus35BR.nativeElement.style.display = 'none';
-  }
-  // Method to navigate back
   goBack(): void {
     this.navCtrl.back();
   }

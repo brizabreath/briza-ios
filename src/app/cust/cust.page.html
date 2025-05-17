@@ -8,96 +8,86 @@
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
-  <div id="yogicPage">
+  <div id="custPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Yogic Breathing</h4>
-            <h4 class="volumeSettings portuguese">Respiração Yogi</h4>
+            <h4 class="volumeSettings english">Choose Ratio</h4>
+            <h4 class="volumeSettings portuguese">Escolha Proporção</h4>
             <div class="questionMark questionClass">
-              <button #questionYB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
+              <button #questionCUST type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
             </div>
         </div>
         <div class="settingButtons">
-          <button routerLink="/set" id="settingsYB" #settingsYB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+          <button routerLink="/set" id="settingsCUST" #settingsCUST class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
         </div>
         <div class="main-container">
           <div class="timer-status">
-              <div class="settings-form YB">
+              <div class="settings-form CUST">
                   <div class="timer-additional-info">
                       <b class="english">INHALE | HOLD | EXHALE | HOLD</b>
                       <b class="portuguese">INSPIRE | SEGURE | ESPIRE | SEGURE</b>
                   </div>
                   <div class="form-line">
-                    <button class="buttonminus" type="button" #minusYB>-</button>
-                  </div>  
-                  <div class="form-line">
-                      <input type="number" value="4" #inhaleInputYB min="1" readonly>
+                      <input type="number" value="4" #inhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))"> 
                   </div>
   
                   <div class="form-line">
-                      <input type="number" value="2" #hold1InputYB min="1" readonly>
+                      <input type="number" value="4" #hold1InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
                   </div>
   
                   <div class="form-line">
-                      <input type="number" value="4" #exhaleInputYB min="1" readonly>
+                      <input type="number" value="4" #exhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))">
                   </div>
   
                   <div class="form-line">
-                    <input type="number" value="2" #hold2InputYB min="1" readonly>
+                    <input type="number" value="4" #hold2InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
                 </div>
-                <div class="form-line">
-                  <button class="buttonplus" type="button" #plusYB>+</button>
               </div>
-              </div>
-              <div class="YBtimer-container">
-                  <select #YBtimeInput class="countdownDisplay">
+              <div class="CUSTtimer-container">
+                  <select #CUSTtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
                       <option value="60" class="english">1 minute</option>
                       <option value="60" class="portuguese">1 minuto</option>
                   </select>
-                  <input #YBcountdownInput class="countdownDisplay" style="display: none;" readonly />
+                  <input #CUSTcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
               <div class="center-container">
-                <button #startBtnYB class="ballButton">
-                  <div #YBball class="ball">
-                      <span #YBballText></span>
+                <button #startBtnCUST class="ballButton">
+                  <div #CUSTball class="ball">
+                      <span #CUSTballText></span>
                       <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnYB" #stopBtnYB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="YBSave" #YBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
-                  <form method="post" id="YBForm">
+                  <button type="button" class="stopBtn" id="stopBtnCUST" #stopBtnCUST><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="CUSTSave" #CUSTSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <form method="post" id="CUSTForm">
                       <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneYB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayYB>00 : 00</div>
+                          <div>Rounds:</div><div #roundsDoneCUST>0</div>
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayCUST>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #YBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #CUSTResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
-  <div id="myModalYB" class="modal" #myModalYB>
+  <div id="myModalCUST" class="modal" #myModalCUST>
     <div class="modal-content">
-        <span class="close" id="closeModalYB" #closeModalYB>&times;</span>
+        <span class="close" id="closeModalCUST" #closeModalCUST>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <div class="numbertext english">INTRO</div>
                 <div class="numbertext portuguese">Introdução</div>
                 <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
                 <div class="text english">
-                  <p>
-                    Yogic breathing is a mindful practice that involves breathing in three parts: first filling the belly, then the ribs, and finally the chest. When exhaling, you reverse the order, starting from the chest, moving to the ribs, and finishing with the belly. This technique helps in controlling breath and improving oxygen flow
-                  </p>
+                  <p>Personalize your training by choosing the breathing ratio that works best for you. Just click on the numbers and choose your preferred ratio</p>
                 </div>
                 <div class="text portuguese">
-                  <p>
-                    A Respiração Yogi envolve o controle consciente da respiração, por meio de padrões específicos de 3 partes: enchendo a barriga, costelas e peito, e exalando do peito, costelas e por último a barriga
-                  </p>
+                  <p>Adapte seu treino escolhendo a proporção de respiração ideal para você. Basta clicar nos numeros e escolher a proporção de sua preferencia</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
@@ -106,7 +96,7 @@
                 <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
                 <div class="text english">
                   <p>
-                    Find a comfortable seat or lie down. Relax your shoulders, facial muscles, and jaw. Place your tongue on the roof of your mouth, with its tip gently touching your upper front teeth
+                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
                 <div class="text portuguese">
@@ -121,7 +111,7 @@
                 <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Select a breathing count that feels manageable yet gently extends your limits. Also, choose your session's duration, ideally 5 to 10 minutes, gradually increasing your breath's length for deeper practice
+                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for (5 to 10 minutes is recommended)
                   </p>
                 </div>
                 <div class="text portuguese">
@@ -136,7 +126,7 @@
                 <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again
+                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again.
                   </p>
                   <p>
                     In the end, save your results to track your improvement over time
@@ -144,7 +134,7 @@
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente
+                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente.
                   </p>
                 </div>
             </div>
@@ -154,18 +144,18 @@
                 <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
                 <div class="text english">
                   <p>
-                    If you notice your heartbeat speeding up or the practice becomes too difficult with your chosen breath count, pause and select a more suitable option for you                    
+                    If the ratio chosen is making your heart beat acelerate and you finding it too hard, stop doing it and choose a lower ratio
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazê-lo e escolha uma proporção menor
+                    Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazer e escolha uma proporção menor
                   </p>
                 </div>
             </div>
             <!-- Next and previous buttons -->
-            <a class="prev" #YBprev>&#10094;</a>
-            <a class="next" #YBnext>&#10095;</a>
+            <a class="prev" #CUSTprev>&#10094;</a>
+            <a class="next" #CUSTnext>&#10095;</a>
         </div>
     </div>
   </div>

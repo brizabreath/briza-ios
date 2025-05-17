@@ -43,11 +43,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
   @ViewChild('minusAP') minusAP!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusAP') plusAP!: ElementRef<HTMLButtonElement>;
 
-
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleAP = true;
   private hold1AP = false;
@@ -98,13 +93,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-     //initialize sounds
-     this.audioService.initializeAudioObjects("bell");
-     this.audioService.initializeAudioObjects("inhale");
-     this.audioService.initializeAudioObjects("exhale");
-     this.audioService.initializeAudioObjects("hold");
-     this.audioService.initializeAudioObjects("normalbreath");
-
   }
   // Method to set the APduration after ViewChild is initialized
   setAPduration(): void {
@@ -146,11 +134,14 @@ export class APPage implements  AfterViewInit, OnDestroy {
     }
     this.setAPduration();
     this.APResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     this.audioService.initializeSong();
+     //initialize sounds
+     this.audioService.initializeAudioObjects("bell");
+     this.audioService.initializeAudioObjects("inhale");
+     this.audioService.initializeAudioObjects("exhale");
+     this.audioService.initializeAudioObjects("hold");
+     this.audioService.initializeAudioObjects("normalbreath");
   }
   minusRatioAP(): void{
     if(parseInt(this.inhaleInputAP.nativeElement.value) > 2){
@@ -186,13 +177,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
       this.APtimeInput.nativeElement.style.display = "none";
       this.startCountdownAP();
       this.APballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -211,9 +198,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
         }else{
           this.APballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputAP.nativeElement.value), this.APball);
         this.APinterval = setInterval(() => this.startTimerAP(), 1000);
         this.APTimer = setInterval(() => this.DisplayTimerAP(), 1000);
@@ -237,9 +222,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
       }else{
         this.APballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -259,9 +242,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
           this.APballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnAP.nativeElement.disabled = true;
       this.stopBtnAP.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -301,9 +282,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
       this.APcurrentValue = parseInt(this.hold1InputAP.nativeElement.value) + 1;
       this.inhaleAP = false;
       this.hold1AP = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.APballText.nativeElement.textContent = "Segure"
       }else{
@@ -315,9 +294,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
       this.APcurrentValue = parseInt(this.exhaleInputAP.nativeElement.value) + 1;
       this.hold1AP = false;
       this.exhaleAP = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.APballText.nativeElement.textContent = "Espire"
       }else{
@@ -332,9 +309,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
         this.APcurrentValue = parseInt(this.inhaleInputAP.nativeElement.value) + 1;
         this.exhaleAP = false;
         this.inhaleAP = true;
-        if(!this.voiceMute){
-            this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.APballText.nativeElement.textContent = "Inspire"
         }else{
@@ -343,10 +318,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputAP.nativeElement.value), this.APball);
       } 
       else{
-        
         this.clearIntervalsAP();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnAP.nativeElement.disabled = true;
         this.settingsAP.nativeElement.disabled = false;
         this.questionAP.nativeElement.disabled = false;
@@ -362,19 +335,13 @@ export class APPage implements  AfterViewInit, OnDestroy {
         }else{
           this.APballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -415,9 +382,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.roundsAP = 0;
     this.roundsDoneAP.nativeElement.innerHTML = "0";
     this.timerDisplayAP.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setAPduration();
     this.APSeconds = 0;
     this.APMinutes = 0;

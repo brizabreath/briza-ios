@@ -39,10 +39,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('KBResults') KBResults!: ElementRef<HTMLDivElement>;
   @ViewChild('breathsInputKB') breathsInputKB!: ElementRef<HTMLInputElement>;
 
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private breathMute = localStorage.getItem('breathMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private breathsKB = true;
   private hold1KB = false;
@@ -87,14 +83,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
-    //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("fullyout2");
-    this.audioService.initializeAudioObjects("fullyinHold");
-    this.audioService.initializeAudioObjects("normalbreath");
-    this.audioService.initializeAudioObjects("nextRound");
     this.globalService.changeBall(1, 1, this.KBball);
-    
   }
   // Method to set the KBduration after ViewChild is initialized
   setKBduration(): void {
@@ -122,13 +111,14 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }
     this.setKBduration();
     this.KBResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.breathMute = localStorage.getItem('breathMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("fullyout2");
+    this.audioService.initializeAudioObjects("fullyinHold");
+    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeAudioObjects("nextRound");
     //set up breaths
     this.KBbreaths = localStorage.getItem('numberOfBreaths');
     // Check if it doesn't exist or is null
@@ -161,13 +151,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.KBtimeInput.nativeElement.style.display = "none";
       this.startCountdownKB();
       this.KBballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -185,9 +171,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
           this.KBballText.nativeElement.textContent = "Get started";
         }
         this.KBinterval = setInterval(() => {
-          if(!this.breathMute){
-            this.audioService.playSound('fullyout2');
-          }
+          this.audioService.playBreath('fullyout2');
           this.globalService.changeBall(1.3 , 0.2, this.KBball);
           this.startBreathsKB();
         }, this.KBbreathSpeed);
@@ -215,9 +199,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Resume"
         }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        this.audioService.pauseSelectedSong();
         this.globalService.changeBall(1.3, 1, this.KBball);
       }else{
         this.pauseKB();
@@ -237,9 +219,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
           this.KBballText.nativeElement.textContent = "Breath"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.KBReset.nativeElement.disabled = true;
       this.KBReset.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -250,9 +230,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.KBTimer = setInterval(() => this.DisplayTimerKB(), 1000);
       }else if(this.breathsKB){
         this.KBinterval = setInterval(() => {
-          if(!this.breathMute){
-            this.audioService.playSound('fullyout2');
-          }
+          this.audioService.playBreath('fullyout2');
           this.globalService.changeBall(1.3 , 0.2, this.KBball);
           this.startBreathsKB();
         }, this.KBbreathSpeed);
@@ -276,9 +254,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Inhale and Hold"    
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('fullyinHold');
-        }
+        this.audioService.playSound('fullyinHold');
       }, 700);
       this.globalService.timeouts.push(timeoutId9); // Store the timeout ID
       const timeoutId8 = setTimeout(() => {
@@ -341,14 +317,10 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Next Round"
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('nextRound');
-        }
+        this.audioService.playSound('nextRound');
         const timeoutId7 = setTimeout(() => {
           this.KBinterval = setInterval(() => {
-            if(!this.breathMute){
-              this.audioService.playSound('fullyout2');
-            }
+            this.audioService.playBreath('fullyout2');
             this.globalService.changeBall(1.3 , this.KBbreathSpeed/2000, this.KBball);
             this.startBreathsKB();
           }, this.KBbreathSpeed);
@@ -359,7 +331,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsKB();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnKB.nativeElement.disabled = true;
         this.settingsKB.nativeElement.disabled = false;
         this.questionKB.nativeElement.disabled = false;
@@ -374,19 +345,13 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Normal Breathing"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -424,17 +389,13 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.roundsKB = 0;
     this.roundsDoneKB.nativeElement.innerHTML = "0";
     this.timerDisplayKB.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-      this.audioService.currentAudio.currentTime = 0;
-    }
+    this.audioService.pauseSelectedSong();
     this.setKBduration();
     this.KBSeconds = 0;
     this.KBMinutes = 0;
     this.roundsKB = 0;
     this.KBResults.nativeElement.innerHTML = "";
     this.globalService.changeBall(1.3, 1, this.KBball);
-
   }
   pauseKB(): void{
     clearInterval(this.KBinterval);
@@ -444,9 +405,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }else{
       this.KBballText.nativeElement.textContent = "Normal Breath"
     }
-    if(!this.voiceMute){     
-      this.audioService.playSound('normalbreath');
-    }
+    this.audioService.playSound('normalbreath');
     this.hold1KB = false;
     this.hold2KB = true;
     this.roundsKB++;

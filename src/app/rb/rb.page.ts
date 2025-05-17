@@ -41,11 +41,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('timerDisplayRB') timerDisplayRB!: ElementRef<HTMLInputElement>;
   @ViewChild('RBResultSaved') RBResultSaved!: ElementRef<HTMLDivElement>;
 
-
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleRB = true;
   private hold1RB = false;
@@ -95,13 +90,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-     //initialize sounds
-     this.audioService.initializeAudioObjects("bell");
-     this.audioService.initializeAudioObjects("inhale");
-     this.audioService.initializeAudioObjects("exhale");
-     this.audioService.initializeAudioObjects("hold");
-     this.audioService.initializeAudioObjects("normalbreath");
-
   }
   // Method to set the RBduration after ViewChild is initialized
   setRBduration(): void {
@@ -143,11 +131,14 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     }
     this.setRBduration();
     this.RBResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   
   startRB(): void{
@@ -162,13 +153,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.RBtimeInput.nativeElement.style.display = "none";
       this.startCountdownRB();
       this.RBballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -185,9 +172,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputRB.nativeElement.value), this.RBball);
         this.RBinterval = setInterval(() => this.startTimerRB(), 1000);
         this.RBTimer = setInterval(() => this.DisplayTimerRB(), 1000);
@@ -213,9 +198,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       }else{
         this.RBballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -235,9 +218,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
           this.RBballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnRB.nativeElement.disabled = true;
       this.stopBtnRB.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -277,9 +258,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.RBcurrentValue = parseInt(this.hold1InputRB.nativeElement.value) + 1;
       this.inhaleRB = false;
       this.hold1RB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.RBballText.nativeElement.textContent = "Segure"
       }else{
@@ -291,9 +270,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.RBcurrentValue = parseInt(this.exhaleInputRB.nativeElement.value) + 1;
       this.hold1RB = false;
       this.exhaleRB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.RBballText.nativeElement.textContent = "Espire"
       }else{
@@ -306,9 +283,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
         this.exhaleRB = false;
         this.inhaleRB = true;
-        if(!this.voiceMute){
-            this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.RBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -317,10 +292,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputRB.nativeElement.value), this.RBball);
       } 
       else{
-        
         this.clearIntervalsRB();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnRB.nativeElement.disabled = true;
         this.settingsRB.nativeElement.disabled = false;
         this.questionRB.nativeElement.disabled = false;
@@ -336,19 +309,13 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -387,9 +354,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     this.roundsRB = 0;
     this.roundsDoneRB.nativeElement.innerHTML = "0";
     this.timerDisplayRB.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setRBduration();
     this.RBSeconds = 0;
     this.RBMinutes = 0;

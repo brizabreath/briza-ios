@@ -9,6 +9,7 @@ import { AuthService } from './services/auth.service'; // Your authentication se
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  styleUrls: ['app.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -20,8 +21,10 @@ import { AuthService } from './services/auth.service'; // Your authentication se
 export class AppComponent {
   isModalOpen: boolean = false;
   isPortuguese: boolean = false;
+  private inactivityTimer: any;
 
   constructor(private globalService: GlobalService, private authService: AuthService) {
+    this.setupInactivityMonitor();
   }
   async ngOnInit(){
     // Initialize language preference safely
@@ -37,5 +40,25 @@ export class AppComponent {
   
   onModalClose(): void {
     this.isModalOpen = false; // Fecha o modal
+  }
+  setupInactivityMonitor(): void {
+    const events = ['touchstart', 'click', 'mousemove', 'keydown'];
+
+    events.forEach(event => {
+      document.addEventListener(event, () => this.resetInactivityTimer());
+    });
+
+    this.resetInactivityTimer();
+  }
+
+  resetInactivityTimer(): void {
+    clearTimeout(this.inactivityTimer);
+
+    const overlay = document.querySelector('.dimOverlay') as HTMLElement;
+    if (overlay) overlay.style.opacity = '0';
+
+    this.inactivityTimer = setTimeout(() => {
+      if (overlay) overlay.style.opacity = '0.8';
+    }, 60000); // 30 seconds
   }
 }

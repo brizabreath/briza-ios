@@ -4,83 +4,155 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AudioService {
-  audioObjects: { [key: string]: HTMLAudioElement } = {};
+  audioObjects: { [key: string]: HTMLAudioElement[] } = {};
+  breathIndexes: { [key: string]: number } = {};
+  soundIndexes: { [key: string]: number } = {};
+  bellIndexes: { [key: string]: number } = {};
   currentAudio: HTMLAudioElement | null = null;
+
+  private voiceMute = false;
+  private bellMute = false;
+  private audioPlayerMute = false;
+  private breathMute = false;
 
   constructor() {}
 
-  // Method to initialize audio objects
   initializeAudioObjects(name: string): void {
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true'; // Adjust based on how you determine language
-    this.audioObjects[name] = new Audio(
-      `https://brizastorage.blob.core.windows.net/sounds/${name}${isPortuguese ? 'PT' : ''}.mp3`
-    );
-    this.audioObjects[name].load();
-  }
-  initializeSong(): void{
-    const selectedSongUrl = localStorage.getItem('selectedSong');
-    if (selectedSongUrl) {
-        this.currentAudio = new Audio(selectedSongUrl);
-        this.currentAudio.load();
-    } else {
-      const defaultSong = 'https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3'; // Default song URL
-      localStorage.setItem('selectedSong', defaultSong); // Save the default song in local storage
-      this.currentAudio = new Audio(defaultSong);
-      this.currentAudio.load();
-    }
-  }
-  // Method to play a specific sound by name
-  playSound(name: string): void {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    const audioUrl = `https://brizastorage.blob.core.windows.net/sounds/${name}${isPortuguese ? 'PT' : ''}.mp3`;
-  
-    // 🔥 Use Web Audio API instead of HTMLAudioElement
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    fetch(audioUrl)
-      .then(response => response.arrayBuffer())
-      .then(data => audioContext.decodeAudioData(data))
-      .then(buffer => {
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioContext.destination);
-        source.start(0);
-      })
-      .catch(error => console.error(`Failed to play sound: ${name}`, error));
-  }
-  
+    const isFemale = localStorage.getItem('isFemale') === 'true';
 
-  // Method to play the selected song from local storage
-  playSelectedSong(): void {
-    if (!this.currentAudio) {
-      console.log("🎵 Reloading audio...");
-      const selectedSongUrl = localStorage.getItem('selectedSong') || 'https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3';
-      this.currentAudio = new Audio(selectedSongUrl);
-      this.currentAudio.load(); // 🔥 Ensure preloading
+    const audioUrl = `https://brizastorage.blob.core.windows.net/sounds/${name}${isPortuguese ? 'PT' : ''}${isFemale ? 'F' : ''}.mp3`;
+
+    let poolSize = 1;
+    if (['fullyin', 'fullyout', 'fullyout2'].includes(name)) poolSize = 3; // Breath sounds
+    else if (name === 'bell') poolSize = 2; // Bell
+    else poolSize = 5; // General voice sounds
+
+    const pool: HTMLAudioElement[] = [];
+
+    for (let i = 0; i < poolSize; i++) {
+      const audio = new Audio(audioUrl);
+      audio.preload = 'auto';
+      audio.setAttribute('controls', 'false');
+      audio.load();
+      pool.push(audio);
     }
-  
-    this.currentAudio.loop = true;
-    this.currentAudio.play();
-  }
-  
 
-  // Method to pause the currently playing song
+    this.audioObjects[name] = pool;
+
+    if (['fullyin', 'fullyout', 'fullyout2'].includes(name)) {
+      this.breathIndexes[name] = 0;
+    } else if (name === 'bell') {
+      this.bellIndexes[name] = 0;
+    } else {
+      this.soundIndexes[name] = 0;
+    }
+  }
+
+  initializeSong(): void {
+    const selectedSongUrl =
+      localStorage.getItem('selectedSong') ||
+      'https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3';
+
+    if (!localStorage.getItem('selectedSong')) {
+      localStorage.setItem('selectedSong', selectedSongUrl);
+    }
+
+    this.currentAudio = new Audio(selectedSongUrl);
+    this.currentAudio.loop = true;
+    this.currentAudio.load();
+  }
+
+  playSelectedSong(): void {
+    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
+    if (this.audioPlayerMute) return;
+
+    if (!this.currentAudio) {
+      this.initializeSong();
+    }
+
+    this.currentAudio?.play();
+  }
+
   pauseSelectedSong(): void {
+    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
+    if (this.audioPlayerMute) return;
+
     if (this.currentAudio) {
       this.currentAudio.pause();
-      this.currentAudio.src = ''; // 🔥 Remove source to unload
-      this.currentAudio.load();   // 🔥 Reset audio
-      this.currentAudio = null;   // 🔥 Make sure it's null so we can recreate it later
+      this.currentAudio.src = '';
+      this.currentAudio.load();
+      this.currentAudio = null;
     }
-  
-    // 🔥 Unregister media session (prevents lock screen controls)
+
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = null;
-      navigator.mediaSession.setActionHandler('play', null);
-      navigator.mediaSession.setActionHandler('pause', null);
-      navigator.mediaSession.setActionHandler('seekbackward', null);
-      navigator.mediaSession.setActionHandler('seekforward', null);
-      navigator.mediaSession.setActionHandler('previoustrack', null);
-      navigator.mediaSession.setActionHandler('nexttrack', null);
+      try {
+        navigator.mediaSession.metadata = null;
+
+        const nullHandler = () => {
+          console.log('🔒 Ignored lock screen media control');
+        };
+
+        navigator.mediaSession.setActionHandler('play', nullHandler);
+        navigator.mediaSession.setActionHandler('pause', nullHandler);
+        navigator.mediaSession.setActionHandler('seekbackward', nullHandler);
+        navigator.mediaSession.setActionHandler('seekforward', nullHandler);
+        navigator.mediaSession.setActionHandler('previoustrack', nullHandler);
+        navigator.mediaSession.setActionHandler('nexttrack', nullHandler);
+      } catch (e) {
+        console.warn('⚠️ MediaSession handler clear failed', e);
+      }
     }
-  }  
+  }
+
+  private playFromPool(pool: HTMLAudioElement[], name: string, indexMap: { [key: string]: number }, key: string): void {
+    if (!pool || pool.length === 0) return;
+
+    const index = indexMap[key] ?? 0;
+    const audio = pool[index];
+    indexMap[key] = (index + 1) % pool.length;
+
+    try {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+
+      audio.play().catch(err => {
+        console.warn(`Retrying ${name} after play() failed once:`, err);
+        setTimeout(() => {
+          audio.currentTime = 0;
+          audio.play().catch(err2 => {
+            console.error(`Failed to play ${name} after retry:`, err2);
+          });
+        }, 50);
+      });
+    } catch (err) {
+      console.error(`Audio error for ${name}:`, err);
+    }
+  }
+
+  playSound(name: string): void {
+    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
+    if (this.voiceMute) return;
+
+    const pool = this.audioObjects[name];
+    this.playFromPool(pool, name, this.soundIndexes, name);
+  }
+
+  playBell(name: string): void {
+    this.bellMute = localStorage.getItem('bellMute') === 'true';
+    if (this.bellMute) return;
+
+    const pool = this.audioObjects[name];
+    this.playFromPool(pool, name, this.bellIndexes, name);
+  }
+
+  playBreath(name: string): void {
+    this.breathMute = localStorage.getItem('breathMute') === 'true';
+    if (this.breathMute) return;
+
+    const pool = this.audioObjects[name];
+    this.playFromPool(pool, name, this.breathIndexes, name);
+  }
 }

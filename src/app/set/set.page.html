@@ -23,13 +23,13 @@
       </div>
       <hr />
       <div class="volume-bar">
-          <h4 class="volumeSettings english">Play Song?</h4>
-          <h4 class="volumeSettings portuguese">Tocar Música?</h4>
-          <div class="audioButtons">
-              <div #setaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
-              <div #setmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
-          </div>
-          <input type="range" #volumeBarSet min="0" max="1" step="1" value="1">
+        <h4 class="volumeSettings english">Type of voice?</h4>
+        <h4 class="volumeSettings portuguese">Tipo de voz?</h4>
+        <div class="audioButtons">
+            <div #setFemale class="audio"><p class="english">Female</p><p class="portuguese">Feminina</p></div>
+            <div #setMale class="mute"><p class="english">Male</p><p class="portuguese">Masculina</p></div>
+        </div>
+        <input type="range" #maleBarSet min="0" max="1" step="1" value="1">
       </div>
       <hr />
       <div class="volume-bar">
@@ -40,6 +40,16 @@
               <div #setBmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
           </div>
           <input type="range" #bellBarSet min="0" max="1" step="1" value="1">
+      </div>
+      <hr />
+      <div class="volume-bar">
+          <h4 class="volumeSettings english">Play Song?</h4>
+          <h4 class="volumeSettings portuguese">Tocar Música?</h4>
+          <div class="audioButtons">
+              <div #setaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+              <div #setmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          </div>
+          <input type="range" #volumeBarSet min="0" max="1" step="1" value="1">
       </div>
       <hr />
     </div>

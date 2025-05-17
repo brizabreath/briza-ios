@@ -24,7 +24,7 @@ export class BPRPage implements OnInit {
     { nameEN: 'High Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
     { nameEN: 'Guided Hyperventilation', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
-    { nameEN: 'Others', namePT: 'Outros', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults'], url: '/allresults' }
+    { nameEN: 'Others', namePT: 'Outros', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults'], url: '/allresults' }
   ];
 
   @ViewChild('resultsList', { static: true }) resultsList!: ElementRef<HTMLDivElement>;
@@ -130,6 +130,7 @@ export class BPRPage implements OnInit {
         APResults: { en: 'Apnea Training', pt: 'Treinamento de Apneia' },
         UBResults: { en: 'Ujjayi Breathing', pt: 'Respiração Ujjayi' },
         BOXResults: { en: 'Box Breathing', pt: 'Respiração em Caixa' },
+        CUSTResults: { en: 'Custom Breathwork', pt: 'Respiração Personalizada' },
         CBResults: { en: 'Coherent Breathing', pt: 'Respiração Coerente' },
         RBResults: { en: 'Relaxation Breathing', pt: 'Respiração Relaxante' },
         NBResults: { en: 'Nadi Shodhana', pt: 'Nadi Shodhana' },
@@ -154,7 +155,7 @@ export class BPRPage implements OnInit {
         'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-        'CBResults', 'RBResults', 'NBResults'
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults'
     ];
 
     this.resultsByDate = {};

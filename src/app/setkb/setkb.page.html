@@ -47,6 +47,16 @@
       </div>
       <hr />
       <div class="volume-bar">
+        <h4 class="volumeSettings english">Type of voice?</h4>
+        <h4 class="volumeSettings portuguese">Tipo de voz?</h4>
+        <div class="audioButtons">
+          <div #setFemale class="audio"><p class="english">Female</p><p class="portuguese">Feminina</p></div>
+          <div #setMale class="mute"><p class="english">Male</p><p class="portuguese">Masculina</p></div>
+        </div>
+        <input type="range" #maleBarSetKB min="0" max="1" step="1" value="1">
+    </div>
+    <hr />
+      <div class="volume-bar">
         <h4 class="volumeSettings english">Play Breath Sound?</h4>
         <h4 class="volumeSettings portuguese">Tocar som das respirações?</h4>
         <div class="audioButtons">
@@ -54,6 +64,16 @@
             <div #setBrmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
         </div>
         <input type="range" #breathBarSETKB min="0" max="1" step="1" value="1">
+    </div>
+    <hr />
+    <div class="volume-bar">
+      <h4 class="volumeSettings english">Play Bell?</h4>
+      <h4 class="volumeSettings portuguese">Tocar Sino?</h4>
+      <div class="audioButtons">
+          <div #setBaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
+          <div #setBmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+      </div>
+      <input type="range" #bellBarSETKB min="0" max="1" step="1" value="1">
     </div>
     <hr />
       <div class="volume-bar">
@@ -64,16 +84,6 @@
               <div #setmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
           </div>
           <input type="range" #volumeBarSETKB min="0" max="1" step="1" value="1">
-      </div>
-      <hr />
-      <div class="volume-bar">
-          <h4 class="volumeSettings english">Play Bell?</h4>
-          <h4 class="volumeSettings portuguese">Tocar Sino?</h4>
-          <div class="audioButtons">
-              <div #setBaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
-              <div #setBmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
-          </div>
-          <input type="range" #bellBarSETKB min="0" max="1" step="1" value="1">
       </div>
       <hr />
     </div>

@@ -257,12 +257,12 @@ export class BrtresultsPage implements AfterViewInit {
     this.chartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.handleScroll(deltaX);
+      this.handleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.chartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.handleScroll(event.deltaX);
+      this.handleScroll(-event.deltaX);
     });
   }
 

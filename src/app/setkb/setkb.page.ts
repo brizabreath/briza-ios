@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { GlobalService } from '../services/global.service'; 
-import { AudioService } from '../services/audio.service'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -29,6 +28,9 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   @ViewChild('setBaudio') setBaudio!: ElementRef<HTMLDivElement>;
   @ViewChild('setBmute') setBmute!: ElementRef<HTMLDivElement>;
   @ViewChild('volumeBarSETKB') volumeBarSETKB!: ElementRef<HTMLInputElement>;
+  @ViewChild('setFemale') setFemale!: ElementRef<HTMLDivElement>;
+  @ViewChild('setMale') setMale!: ElementRef<HTMLDivElement>;
+  @ViewChild('maleBarSetKB') maleBarSetKB!: ElementRef<HTMLInputElement>;
   @ViewChild('voiceBarSETKB') voiceBarSETKB!: ElementRef<HTMLInputElement>;
   @ViewChild('breathBarSETKB') breathBarSETKB!: ElementRef<HTMLInputElement>;
   @ViewChild('bellBarSETKB') bellBarSETKB!: ElementRef<HTMLInputElement>;
@@ -49,9 +51,9 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private KBbreaths: any = null;
   private KBbreathSpeed: any = null; 
+  private isFemale = localStorage.getItem('isFemale') === 'true';
 
-
-  constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
+  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
 
   // Method called when the user selects a song
   onSongChange(event: Event): void {
@@ -102,6 +104,7 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     this.voiceBarSETKB.nativeElement.addEventListener('input', () => this.handleVoiceChange());
     this.breathBarSETKB.nativeElement.addEventListener('input', () => this.handleBreathChange());
     this.bellBarSETKB.nativeElement.addEventListener('input', () => this.handleBellChange());
+    this.maleBarSetKB.nativeElement.addEventListener('input', () => this.handleMaleChange());
     // Add event listener for breath changes
     this.minusKB.nativeElement.onclick = () => this.handleMinusChange();
     this.plusKB.nativeElement.onclick = () => this.handlePlusChange();
@@ -155,6 +158,15 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
       this.bellBarSETKB.nativeElement.value = '1';
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+    if(this.isFemale){
+      this.maleBarSetKB.nativeElement.value = '0';
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    }else{
+      this.maleBarSetKB.nativeElement.value = '1';
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
     //set up breaths
     this.KBbreaths = localStorage.getItem('numberOfBreaths');
@@ -279,6 +291,21 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('bellMute', 'false');
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  handleMaleChange(): void {
+    const volumeSet = parseFloat(this.maleBarSetKB.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSet === 0) {
+      localStorage.setItem('isFemale', 'true');
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('isFemale', 'false');
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
   }
   // Method to navigate back

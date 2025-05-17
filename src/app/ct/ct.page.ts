@@ -42,10 +42,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('hold1InputCT') hold1InputCT!: ElementRef<HTMLInputElement>;
   @ViewChild('exhaleInputCT') exhaleInputCT!: ElementRef<HTMLInputElement>;
 
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleCT = true;
   private exhaleCT = false;
@@ -97,12 +93,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
-    //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the CTduration after ViewChild is initialized
   setCTduration(): void {
@@ -145,12 +135,14 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     }
     this.setCTduration();
     this.CTResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   
   startCT(): void{
@@ -165,13 +157,9 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTtimeInput.nativeElement.style.display = "none";
       this.startCountdownCT();
       this.CTballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -188,9 +176,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputCT.nativeElement.value), this.CTball);
         this.CTinterval = setInterval(() => this.startTimerCT(), 1000);
         this.CTTimer = setInterval(() => this.DisplayTimerCT(), 1000);
@@ -220,9 +206,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       }else{
         this.CTballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -242,9 +226,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
           this.CTballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnCT.nativeElement.disabled = false;
       this.stopBtnCT.nativeElement.style.color = '#0661AA';
@@ -286,9 +268,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTcurrentValue = parseInt(this.exhaleInputCT.nativeElement.value) + 1;
       this.inhaleCT = false;
       this.exhaleCT = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.CTballText.nativeElement.textContent = "Espire"
       }else{
@@ -300,9 +280,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTcurrentValue = parseInt(this.hold1InputCT.nativeElement.value) + 1;
       this.exhaleCT = false;
       this.hold1CT = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.CTballText.nativeElement.textContent = "Segure"
       }else{
@@ -319,9 +297,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTcurrentValue = parseInt(this.inhaleInputCT.nativeElement.value) + 1;
         this.hold1CT = false;
         this.inhaleCT = true;
-        if(!this.voiceMute){     
-            this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.CTballText.nativeElement.textContent = "Inspire"
         }else{
@@ -333,7 +309,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsCT();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnCT.nativeElement.disabled = true;
         this.settingsCT.nativeElement.disabled = false;
         this.questionCT.nativeElement.disabled = false;
@@ -351,19 +326,13 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -404,9 +373,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     this.roundsCT = 0;
     this.roundsDoneCT.nativeElement.innerHTML = "0";
     this.timerDisplayCT.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setCTduration();
     this.CTSeconds = 0;
     this.CTMinutes = 0;
