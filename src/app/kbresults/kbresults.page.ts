@@ -277,12 +277,12 @@ export class KBresultsPage implements AfterViewInit {
     this.KBchartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.KBhandleScroll(deltaX);
+      this.KBhandleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.KBchartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.KBhandleScroll(event.deltaX);
+      this.KBhandleScroll(-event.deltaX);
     });
   }
 

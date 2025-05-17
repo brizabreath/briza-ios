@@ -317,12 +317,12 @@ export class HatresultsPage implements AfterViewInit {
     this.HATchartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.HAThandleScroll(deltaX);
+      this.HAThandleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.HATchartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.HAThandleScroll(event.deltaX);
+      this.HAThandleScroll(-event.deltaX);
     });
   }
 
@@ -547,12 +547,12 @@ export class HatresultsPage implements AfterViewInit {
     this.HATCchartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.HATChandleScroll(deltaX);
+      this.HATChandleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.HATCchartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.HATChandleScroll(event.deltaX);
+      this.HATChandleScroll(-event.deltaX);
     });
   }
 
@@ -777,12 +777,12 @@ export class HatresultsPage implements AfterViewInit {
     this.AHATchartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.AHAThandleScroll(deltaX);
+      this.AHAThandleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.AHATchartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.AHAThandleScroll(event.deltaX);
+      this.AHAThandleScroll(-event.deltaX);
     });
   }
 

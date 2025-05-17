@@ -43,9 +43,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   private brtMinutes = 0;
   private brtInt: any = null;
   private brtResult = ''; // Variable to store the BRT result as a string
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
 
@@ -74,11 +71,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.BRTprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalBRT);
     this.closeModalButtonBRT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRT));
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT);
-    //initialize sounds
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
   }
   ionViewWillEnter() {
     // Listen for app state changes
@@ -106,12 +98,13 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.BRTballText.nativeElement.textContent = "Start"
     }
     this.brtResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("hold");
   }
   
   // Method to start the timer
@@ -131,19 +124,13 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       }else{
         this.BRTballText.nativeElement.textContent = "Inhale";
       }
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }   
+        this.audioService.playSound('inhale');
         this.BRTballText.nativeElement.textContent = "3";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -161,9 +148,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         }else{
           this.BRTballText.nativeElement.textContent = "Exhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-        }        
+        this.audioService.playSound('exhale');
       }, 4000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       const timeoutId6 = setTimeout(() => {
@@ -184,9 +169,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         }else{
           this.BRTballText.nativeElement.textContent = "Hold";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('hold');
-        }     
+        this.audioService.playSound('hold');
         this.brtInt = setInterval(() => this.brtDisplayTimer(), 1000);
         this.brtStart.nativeElement.disabled = false;
         localStorage.setItem('breathingON', "true"); 
@@ -210,9 +193,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.brtResult = this.timerDisplayBRT.nativeElement.value;
 
       // Pause the selected song
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
     }
   }
     // Method to display the timer

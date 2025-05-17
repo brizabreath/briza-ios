@@ -276,12 +276,12 @@ export class WHresultsPage implements AfterViewInit {
     this.WHchartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.WHhandleScroll(deltaX);
+      this.WHhandleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
 
     this.WHchartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => {
-      this.WHhandleScroll(event.deltaX);
+      this.WHhandleScroll(-event.deltaX);
     });
   }
 

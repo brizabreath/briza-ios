@@ -60,7 +60,7 @@ export class ALLresultsPage implements AfterViewInit {
   }
 
   loadDataFromLocalStorage(): void {
-    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults'];
+    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};
 
     exerciseKeys.forEach(key => {
@@ -258,10 +258,10 @@ export class ALLresultsPage implements AfterViewInit {
     this.allChartCanvas.nativeElement.addEventListener('touchmove', (event: TouchEvent) => {
       event.preventDefault();
       const deltaX = event.touches[0].clientX - lastScrollX;
-      this.handleScroll(deltaX);
+      this.handleScroll(-deltaX);
       lastScrollX = event.touches[0].clientX;
     });
-    this.allChartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => this.handleScroll(event.deltaX));
+    this.allChartCanvas.nativeElement.addEventListener('wheel', (event: WheelEvent) => this.handleScroll(-event.deltaX));
   }
 
   handleScroll(deltaX: number): void {

@@ -61,17 +61,6 @@ export class GlobalService {
 
     // Method to show all <option> elements with a specific class
     showElementsByClass(className: 'english' | 'portuguese'): void { // Explicitly define the allowed types for `className`
-        const parentSelect = document.querySelector('.countdownDisplay') as HTMLSelectElement;
-
-        // Define the options to re-add based on the class name
-        const options: Record<'english' | 'portuguese', string> = {
-            'english': '<option value="60" class="english">1 minute</option>',
-            'portuguese': '<option value="60" class="portuguese">1 minuto</option>',
-        };
-
-        if (parentSelect && options[className]) {
-            parentSelect.insertAdjacentHTML('beforeend', options[className]); // Re-add the option
-        }
 
         const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
 

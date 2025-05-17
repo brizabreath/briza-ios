@@ -38,10 +38,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('timerDisplayBB') timerDisplayBB!: ElementRef<HTMLInputElement>;
   @ViewChild('BBResultSaved') BBResultSaved!: ElementRef<HTMLDivElement>;
 
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleBB = true;
   private hold1BB = false;
@@ -91,12 +87,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-    //initialize sounds
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BBduration after ViewChild is initialized
   setBBduration(): void {
@@ -139,12 +129,14 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     }
     this.setBBduration();
     this.BBResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
 
   startBB(): void{
@@ -159,13 +151,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBtimeInput.nativeElement.style.display = "none";
       this.startCountdownBB();
       this.BBballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -182,9 +170,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BBballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, 5, this.BBball);
         this.BBinterval = setInterval(() => this.startTimerBB(), 1000);
         this.BBTimer = setInterval(() => this.DisplayTimerBB(), 1000);
@@ -210,9 +196,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       }else{
         this.BBballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -232,9 +216,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
           this.BBballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBB.nativeElement.disabled = true;
       this.stopBtnBB.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -274,9 +256,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBcurrentValue = 3;
       this.inhaleBB = false;
       this.hold1BB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BBballText.nativeElement.textContent = "Segure"
       }else{
@@ -288,9 +268,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBcurrentValue = 7;
       this.hold1BB = false;
       this.exhaleBB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.BBballText.nativeElement.textContent = "Espire"
       }else{
@@ -302,9 +280,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBcurrentValue = 3;
       this.exhaleBB = false;
       this.hold2BB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BBballText.nativeElement.textContent = "Segure"
       }else{
@@ -319,9 +295,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.BBcurrentValue = 5;
         this.hold2BB = false;
         this.inhaleBB = true;
-        if(!this.voiceMute){     
-            this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.BBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -330,10 +304,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.globalService.changeBall(1.5, 5, this.BBball);
       } 
       else{
-         
         this.clearIntervalsBB();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnBB.nativeElement.disabled = true;
         this.settingsBB.nativeElement.disabled = false;
         this.questionBB.nativeElement.disabled = false;
@@ -349,19 +321,13 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BBballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -401,9 +367,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.roundsBB = 0;
     this.roundsDoneBB.nativeElement.innerHTML = "0";
     this.timerDisplayBB.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setBBduration();
     this.BBSeconds = 0;
     this.BBMinutes = 0;

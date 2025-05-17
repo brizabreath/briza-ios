@@ -44,11 +44,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('minusNB') minusNB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusNB') plusNB!: ElementRef<HTMLButtonElement>;
 
-
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleNB = true;
   private hold1NB = false;
@@ -101,14 +96,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-     //initialize sounds
-     this.audioService.initializeAudioObjects("bell");
-     this.audioService.initializeAudioObjects("exhaleLeft");
-     this.audioService.initializeAudioObjects("inhaleLeft");
-     this.audioService.initializeAudioObjects("exhaleRight");
-     this.audioService.initializeAudioObjects("inhaleRight");
-     this.audioService.initializeAudioObjects("hold");
-     this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the NBduration after ViewChild is initialized
   setNBduration(): void {
@@ -150,11 +137,16 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     }
     this.setNBduration();
     this.NBResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("exhaleLeft");
+    this.audioService.initializeAudioObjects("inhaleLeft");
+    this.audioService.initializeAudioObjects("exhaleRight");
+    this.audioService.initializeAudioObjects("inhaleRight");
+    this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
   minusRatioNB(): void{
     if(parseInt(this.inhaleInputNB.nativeElement.value) > 3){
@@ -194,13 +186,9 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.NBtimeInput.nativeElement.style.display = "none";
       this.startCountdownNB();
       this.NBballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -217,9 +205,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.NBballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhaleLeft');
-        }
+        this.audioService.playSound('inhaleLeft');
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputNB.nativeElement.value), this.NBball);
         this.NBinterval = setInterval(() => this.startTimerNB(), 1000);
         this.NBTimer = setInterval(() => this.DisplayTimerNB(), 1000);
@@ -245,9 +231,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       }else{
         this.NBballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
+      this.audioService.pauseSelectedSong();
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
@@ -271,9 +255,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
           this.NBballText.nativeElement.textContent = "Exhale"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnNB.nativeElement.disabled = true;
       this.stopBtnNB.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -313,9 +295,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.NBcurrentValue = parseInt(this.hold1InputNB.nativeElement.value) + 1;
       this.inhaleNB = false;
       this.hold1NB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhaleRight');
-      }
+      this.audioService.playSound('exhaleRight');
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Espire"
       }else{
@@ -327,9 +307,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.NBcurrentValue = parseInt(this.exhaleInputNB.nativeElement.value) + 1;
       this.hold1NB = false;
       this.exhaleNB = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('inhaleRight');
-      }
+      this.audioService.playSound('inhaleRight');
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Inspire"
       }else{
@@ -341,9 +319,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.NBcurrentValue = parseInt(this.hold2InputNB.nativeElement.value) + 1;
       this.exhaleNB = false;
       this.hold2NB = true;
-      if(!this.voiceMute){
-        this.audioService.playSound('exhaleLeft');
-      }
+      this.audioService.playSound('exhaleLeft');
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Espire"
       }else{
@@ -358,9 +334,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 1;
         this.hold2NB = false;
         this.inhaleNB = true;
-        if(!this.voiceMute){
-            this.audioService.playSound('inhaleLeft');
-        }
+        this.audioService.playSound('inhaleLeft');
         if(this.isPortuguese){
           this.NBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -372,7 +346,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsNB();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnNB.nativeElement.disabled = true;
         this.settingsNB.nativeElement.disabled = false;
         this.questionNB.nativeElement.disabled = false;
@@ -388,19 +361,13 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.NBballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -442,9 +409,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     this.roundsNB = 0;
     this.roundsDoneNB.nativeElement.innerHTML = "0";
     this.timerDisplayNB.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setNBduration();
     this.NBSeconds = 0;
     this.NBMinutes = 0;

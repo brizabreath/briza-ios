@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { GlobalService } from '../services/global.service'; 
-import { AudioService } from '../services/audio.service'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -39,6 +38,9 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   @ViewChild('SplusWH') SplusWH!: ElementRef<HTMLButtonElement>;
   @ViewChild('breathsetInputWH') breathsetInputWH!: ElementRef<HTMLInputElement>;
   @ViewChild('speedsetInputWH') speedsetInputWH!: ElementRef<HTMLInputElement>;
+  @ViewChild('setFemale') setFemale!: ElementRef<HTMLDivElement>;
+  @ViewChild('setMale') setMale!: ElementRef<HTMLDivElement>;
+  @ViewChild('maleBarSetWH') maleBarSetWH!: ElementRef<HTMLInputElement>;
 
 
   private currentAudio: HTMLAudioElement | null = null; // To keep track of the currently playing audio
@@ -49,9 +51,11 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private WHbreaths: any = null;
   private WHbreathSpeed: any = null; 
+  private isFemale = localStorage.getItem('isFemale') === 'true';
 
 
-  constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
+
+  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
 
   // Method called when the user selects a song
   onSongChange(event: Event): void {
@@ -102,6 +106,7 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     this.voiceBarSETWH.nativeElement.addEventListener('input', () => this.handleVoiceChange());
     this.breathBarSETWH.nativeElement.addEventListener('input', () => this.handleBreathChange());
     this.bellBarSETWH.nativeElement.addEventListener('input', () => this.handleBellChange());
+    this.maleBarSetWH.nativeElement.addEventListener('input', () => this.handleMaleChange());
     // Add event listener for breath changes
     this.minusWH.nativeElement.onclick = () => this.handleMinusChange();
     this.plusWH.nativeElement.onclick = () => this.handlePlusChange();
@@ -155,6 +160,15 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
       this.bellBarSETWH.nativeElement.value = '1';
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+    if(this.isFemale){
+      this.maleBarSetWH.nativeElement.value = '0';
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    }else{
+      this.maleBarSetWH.nativeElement.value = '1';
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
     //set up breaths
     this.WHbreaths = localStorage.getItem('numberOfBreaths');
@@ -279,6 +293,21 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('bellMute', 'false');
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  handleMaleChange(): void {
+    const volumeSet = parseFloat(this.maleBarSetWH.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSet === 0) {
+      localStorage.setItem('isFemale', 'true');
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('isFemale', 'false');
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
   }
   // Method to navigate back

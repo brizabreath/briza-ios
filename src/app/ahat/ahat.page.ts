@@ -41,10 +41,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('AHATResultSaved') AHATResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATResults') AHATResults!: ElementRef<HTMLDivElement>;
 
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private holdAHAT = true;
   private lightAHAT = false;
@@ -93,10 +89,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
     //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("pinchRun");
-    this.audioService.initializeAudioObjects("lightNasal");
-    this.audioService.initializeAudioObjects("normalbreath");
     this.globalService.changeBall(1.3, 1, this.AHATball);
   }
   // Method to set the AHATduration after ViewChild is initialized
@@ -136,12 +128,13 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     }
     this.setAHATduration();
     this.AHATResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("pinchRun");
+    this.audioService.initializeAudioObjects("lightNasal");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
 
   startAHAT(): void{
@@ -156,13 +149,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.AHATtimeInput.nativeElement.style.display = "none";
       this.startCountdownAHAT();
       this.AHATballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+      this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -179,9 +168,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Start running";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('pinchRun');
-        }
+        this.audioService.playSound('pinchRun');
         this.AHATinterval = setInterval(() => this.startTimerAHAT(), 1000);
         this.AHATTimer = setInterval(() => this.DisplayTimerAHAT(), 1000);
         this.startBtnAHAT.nativeElement.disabled = false;
@@ -216,9 +203,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Resume"
         }
-        if (!this.audioPlayerMute) {
-          this.audioService.pauseSelectedSong();
-        }
+        this.audioService.pauseSelectedSong();
       }
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
@@ -235,9 +220,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
           this.AHATballText.nativeElement.textContent = "Light Breathing"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.AHATReset.nativeElement.disabled = true;
       this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -282,9 +265,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       }else{
         this.AHATballText.nativeElement.textContent = "Normal Breathing"
       }
-      if(!this.voiceMute){
-          this.audioService.playSound('normalbreath');
-      }
+      this.audioService.playSound('normalbreath');
     }
     else if(this.normalAHAT && this.AHATcurrentValue == 1){
       if(this.AHATduration !== 0){
@@ -296,16 +277,13 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Hold"
         }
-        if(!this.voiceMute){     
-            this.audioService.playSound('pinchRun');
-        }
+        this.audioService.playSound('pinchRun');
         this.stopBtnAHAT.nativeElement.disabled = false;
         this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
       } 
       else{
         this.clearIntervalsAHAT();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnAHAT.nativeElement.disabled = true;
         this.settingsAHAT.nativeElement.disabled = false;
         this.questionAHAT.nativeElement.disabled = false;
@@ -322,14 +300,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Normal Breathing"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+      this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 3000);
       }
     }
   }
@@ -369,9 +343,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.roundsAHAT = 0;
     this.roundsDoneAHAT.nativeElement.innerHTML = "0";
     this.timerDisplayAHAT.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setAHATduration();
     this.AHATSeconds = 0;
     this.AHATMinutes = 0;
@@ -391,9 +363,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     }else{
       this.AHATballText.nativeElement.textContent = "Light Breathing"
     }
-    if(!this.voiceMute){     
-      this.audioService.playSound('lightNasal');
-    }
+    this.audioService.playSound('lightNasal');
     this.roundsAHAT++;
     this.roundsDoneAHAT.nativeElement.innerHTML = this.roundsAHAT.toString();
     this.AHATduration = this.AHATduration - 1;

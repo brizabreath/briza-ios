@@ -31,6 +31,7 @@ export const routes: Routes = [
   { path: 'prana', loadComponent: () => import('./prana/prana.page').then(m => m.PranaPage), canActivate: [AuthGuard] },
   { path: 'ub', loadComponent: () => import('./ub/ub.page').then(m => m.UBPage), canActivate: [AuthGuard] },
   { path: 'box', loadComponent: () => import('./box/box.page').then(m => m.BOXPage), canActivate: [MembershipGuard, AuthGuard] },
+  { path: 'cust', loadComponent: () => import('./cust/cust.page').then(m => m.CUSTPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'nb', loadComponent: () => import('./nb/nb.page').then(m => m.NBPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'cb', loadComponent: () => import('./cb/cb.page').then(m => m.CBPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'rb', loadComponent: () => import('./rb/rb.page').then(m => m.RBPage), canActivate: [MembershipGuard, AuthGuard] },

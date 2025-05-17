@@ -45,11 +45,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   @ViewChild('minusBRW') minusBRW!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusBRW') plusBRW!: ElementRef<HTMLButtonElement>;
 
-
-
-  private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-  private voiceMute = localStorage.getItem('voiceMute') === 'true';
-  private bellMute = localStorage.getItem('bellMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleBRW = true;
   private hold1BRW = false;
@@ -103,12 +98,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
-    //initialize sounds 
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
   }
   // Method to set the BRWduration after ViewChild is initialized
   setBRWduration(): void {
@@ -150,12 +139,14 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     }
     this.setBRWduration();
     this.BRWResultSaved.nativeElement.style.display = 'none';
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
     this.audioService.initializeSong();
+    this.audioService.initializeAudioObjects("bell");
+    this.audioService.initializeAudioObjects("inhale");
+    this.audioService.initializeAudioObjects("exhale");
+    this.audioService.initializeAudioObjects("hold");
+    this.audioService.initializeAudioObjects("normalbreath");
   }
 
   minusRatioBRW(): void{
@@ -184,13 +175,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRW();
       this.BRWballText.nativeElement.textContent = "3";
-      if (!this.bellMute) {
-        this.audioService.playSound("bell");
-      }
+      this.audioService.playBell("bell");;
       const timeoutId1 = setTimeout(() => {
-        if (!this.audioPlayerMute) {
-          this.audioService.playSelectedSong();
-        }
+        this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
@@ -207,9 +194,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Inhale";
         }
-        if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-        }
+        this.audioService.playSound('inhale');
         this.globalService.changeBall(1.5, 5, this.BRWball);
         this.BRWinterval = setInterval(() => this.startTimerBRW(), 1000);
         this.BRWTimer = setInterval(() => this.DisplayTimerBRW(), 1000);
@@ -235,10 +220,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       }else{
         this.BRWballText.nativeElement.textContent = "Resume"
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.pauseSelectedSong();
-      }
-      //unpause function
+      this.audioService.pauseSelectedSong();
+     //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
       if(this.isPortuguese){
         if(this.inhaleBRW || this.exhaleBRW){
@@ -257,9 +240,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
           this.BRWballText.nativeElement.textContent = "Hold"
         }      
       }
-      if (!this.audioPlayerMute) {
-        this.audioService.playSelectedSong();
-      }
+      this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBRW.nativeElement.disabled = true;
       this.stopBtnBRW.nativeElement.style.color = 'rgb(177, 177, 177)';
@@ -299,9 +280,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.hold1InputBRW.nativeElement.value) + 1;
       this.inhaleBRW = false;
       this.hold1BRW = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -313,9 +292,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.exhaleInputBRW.nativeElement.value) + 1;
       this.hold1BRW = false;
       this.exhaleBRW = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('inhale');
-      }
+      this.audioService.playSound('inhale');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Inspire"
       }else{
@@ -327,9 +304,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.hold2InputBRW.nativeElement.value) + 1;
       this.exhaleBRW = false;
       this.hold2BRW = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('exhale');
-      }
+      this.audioService.playSound('exhale');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -341,9 +316,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
       this.hold2BRW = false;
       this.hold3BRW = true;
-      if(!this.voiceMute){
-          this.audioService.playSound('hold');
-      }
+      this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Segure"
       }else{
@@ -357,11 +330,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
         this.hold3BRW = false;
         this.inhaleBRW = true;
-        if(!this.voiceMute){
-          if(this.isPortuguese){
-            this.audioService.playSound('inhale');
-          }
-        }
+        this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.BRWballText.nativeElement.textContent = "Inspire"
         }else{
@@ -373,7 +342,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
          
         this.clearIntervalsBRW();
         localStorage.setItem('breathingON', "false"); 
-        localStorage.setItem('firstClick', "true"); 
         this.startBtnBRW.nativeElement.disabled = true;
         this.settingsBRW.nativeElement.disabled = false;
         this.questionBRW.nativeElement.disabled = false;
@@ -389,19 +357,13 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Start"
         }
-        if (!this.bellMute) {
-          this.audioService.playSound("bell");
-        }
-        if(!this.voiceMute){
-          setTimeout(() => {
-            this.audioService.playSound('normalbreath');
-          }, 1000);
-        }
-        if (!this.audioPlayerMute) {
-          setTimeout(() => {
-            this.audioService.pauseSelectedSong();
-          }, 3000);
-        }
+        this.audioService.playBell("bell");;
+        setTimeout(() => {
+          this.audioService.playSound('normalbreath');
+        }, 500);
+        setTimeout(() => {
+          this.audioService.pauseSelectedSong();
+        }, 4000);
       }
     }
   }
@@ -444,9 +406,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.roundsBRW = 0;
     this.roundsDoneBRW.nativeElement.innerHTML = "0";
     this.timerDisplayBRW.nativeElement.innerHTML = "00 : 00";
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
     this.setBRWduration();
     this.BRWSeconds = 0;
     this.BRWMinutes = 0;

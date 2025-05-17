@@ -31,6 +31,6 @@
     </ion-button>
     <p *ngIf="loginError" style="color: red; text-align: center;">{{ loginError }}</p>
   </form>
-  <p class="textForm"><a routerLink="/forgot-password">Forgot Password?</a></p>
-  <p class="textForm">Don't have an account? <br><a routerLink="/registration">Register here</a></p>
+  <p class="textForm"><a routerLink="/forgot-password">{{ isPortuguese ? 'Esqueceu Senha?' : 'Forgot Password?' }}</a></p>
+  <p class="textForm">{{ isPortuguese ? 'Não tem uma conta?' : 'Don't have an account?' }} <br><a routerLink="/registration">{{ isPortuguese ? 'Registre aqui' : 'Register here' }}</a></p>
 </ion-content>

@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { GlobalService } from '../services/global.service'; 
-import { AudioService } from '../services/audio.service'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -27,6 +26,9 @@ export class SetPage implements AfterViewInit, OnDestroy {
   @ViewChild('setBaudio') setBaudio!: ElementRef<HTMLDivElement>;
   @ViewChild('setBmute') setBmute!: ElementRef<HTMLDivElement>;
   @ViewChild('volumeBarSet') volumeBarSet!: ElementRef<HTMLInputElement>;
+  @ViewChild('setFemale') setFemale!: ElementRef<HTMLDivElement>;
+  @ViewChild('setMale') setMale!: ElementRef<HTMLDivElement>;
+  @ViewChild('maleBarSet') maleBarSet!: ElementRef<HTMLInputElement>;
   @ViewChild('voiceBarSet') voiceBarSet!: ElementRef<HTMLInputElement>;
   @ViewChild('bellBarSet') bellBarSet!: ElementRef<HTMLInputElement>;
   @ViewChild('songSelectSet') songSelectSet!: ElementRef<HTMLSelectElement>; // Reference to the select element
@@ -36,9 +38,11 @@ export class SetPage implements AfterViewInit, OnDestroy {
   private audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
   private voiceMute = localStorage.getItem('voiceMute') === 'true';
   private bellMute = localStorage.getItem('bellMute') === 'true';
+  private isFemale = localStorage.getItem('isFemale') === 'true';
 
 
-  constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
+
+  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
 
   // Method called when the user selects a song
   onSongChange(event: Event): void {
@@ -88,6 +92,7 @@ export class SetPage implements AfterViewInit, OnDestroy {
     this.volumeBarSet.nativeElement.addEventListener('input', () => this.handleVolumeChange());
     this.voiceBarSet.nativeElement.addEventListener('input', () => this.handleVoiceChange());
     this.bellBarSet.nativeElement.addEventListener('input', () => this.handleBellChange());
+    this.maleBarSet.nativeElement.addEventListener('input', () => this.handleMaleChange());
   }
 
   ionViewWillEnter() {
@@ -127,6 +132,15 @@ export class SetPage implements AfterViewInit, OnDestroy {
       this.bellBarSet.nativeElement.value = '1';
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+    if(this.isFemale){
+      this.maleBarSet.nativeElement.value = '0';
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    }else{
+      this.maleBarSet.nativeElement.value = '1';
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
   }
   // Method to handle the volume change
@@ -172,6 +186,21 @@ export class SetPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('bellMute', 'false');
       this.setBmute.nativeElement.style.display = 'none';
       this.setBaudio.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  handleMaleChange(): void {
+    const volumeSet = parseFloat(this.maleBarSet.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSet === 0) {
+      localStorage.setItem('isFemale', 'true');
+      this.setMale.nativeElement.style.display = 'none';
+      this.setFemale.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('isFemale', 'false');
+      this.setFemale.nativeElement.style.display = 'none';
+      this.setMale.nativeElement.style.display = 'block';
     }
   }
   // Method to navigate back
