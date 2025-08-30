@@ -26,7 +26,7 @@ export class WHresultsPage implements AfterViewInit {
   @ViewChild('WHchartCanvas') WHchartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('WHchartContainer') WHchartContainer!: ElementRef<HTMLDivElement>;
   WHChart: any;
-  WHDataArray: ReadonlyArray<{ date: Date; result: number[], rounds: number }> = [];
+  WHDataArray: ReadonlyArray<{ date: Date; roundsResult: number[], rounds: number }> = [];
   WHstartDate!: Date;
   WHendDate!: Date;
   WHfixedLatestDate!: Date;
@@ -76,7 +76,7 @@ export class WHresultsPage implements AfterViewInit {
     this.WHDataArray = Object.freeze(
       data.map((item: any) => ({
         date: Object.freeze(new Date(item.date)),
-        result: Object.freeze(item.result),
+        roundsResult: Object.freeze(item.roundsResult),
         rounds: item.rounds
       }))
     );
@@ -111,7 +111,7 @@ export class WHresultsPage implements AfterViewInit {
   
     // Find the latest longest round
     const allRoundsWithDates = this.WHDataArray.map(entry => ({
-      round: Math.max(...entry.result),
+      round: Math.max(...entry.roundsResult),
       date: entry.date
     }));
     const longestRoundEntry = allRoundsWithDates.reduce((max, entry) =>
@@ -122,7 +122,7 @@ export class WHresultsPage implements AfterViewInit {
   
     // Find the latest longest session average
     const sessionAveragesWithDates = this.WHDataArray.map(entry => ({
-      average: entry.result.reduce((a, b) => a + b, 0) / entry.rounds,
+      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
       date: entry.date
     }));
     const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
@@ -223,14 +223,14 @@ export class WHresultsPage implements AfterViewInit {
       if (resultDate < WHstartDate || resultDate > WHendDate) return;
   
       const formattedDate = this.formatDate(resultDate); // Format as "dd/mm"
-      const sessionTotal = whResult.result.reduce((a, b) => a + b, 0); // Sum of all results in the session
-      const maxRound = Math.max(...whResult.result);
+      const sessionTotal = whResult.roundsResult.reduce((a, b) => a + b, 0); // Sum of all results in the session
+      const maxRound = Math.max(...whResult.roundsResult);
   
       if (!aggregatedData[formattedDate]) {
-        aggregatedData[formattedDate] = { totalValue: sessionTotal, count: whResult.result.length, maxRound: maxRound };
+        aggregatedData[formattedDate] = { totalValue: sessionTotal, count: whResult.roundsResult.length, maxRound: maxRound };
       } else {
         aggregatedData[formattedDate].totalValue += sessionTotal; // Accumulate total for the day
-        aggregatedData[formattedDate].count += whResult.result.length; // Accumulate count for the day
+        aggregatedData[formattedDate].count += whResult.roundsResult.length; // Accumulate count for the day
         aggregatedData[formattedDate].maxRound = Math.max(aggregatedData[formattedDate].maxRound, maxRound); // Track longest round for the day
       }
     });

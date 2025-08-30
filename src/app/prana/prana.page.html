@@ -4,38 +4,54 @@
           <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
       </div>
       <div class="logo-container">
-          <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+          <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
       </div>
       <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+          <div class="questionMark questionClass2"><a id="questionPrana" #questionPrana><img class="questionIMG" src="assets/images/question.png" /></a></div>
   </header>  
-  <div id="pranaPage" #allProgramPage>
-    <div class="breathingpages BHbreathing">
-      <h1>Pranayama</h1>
-      <div class="questionMark questionClass2"><a id="questionPrana" #questionPrana><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png" /></a></div>
+  <div id="pranaPage">
+    <div class="segmented-control">
+      <button 
+        class="segment" 
+        [class.active]="selectedSegment === 'traditional'" 
+        (click)="selectSegment('traditional')">
+        <div class="english">Traditional</div>
+        <div class="portuguese">Tradicional</div>
+      </button>
+      <button 
+        class="segment" 
+        [class.active]="selectedSegment === 'regulation'" 
+        (click)="selectSegment('regulation')">
+        <div class="english">Regulation</div>
+        <div class="portuguese">Regulação</div>
+      </button>
     </div>
-      <div class="BHGrid english">
+
+    <div class="segment-content">
+      <div *ngIf="selectedSegment === 'traditional'" class="bhgrid">
+        <!-- Traditional Content Here -->
         <div class="row g-2">
-          <div class="col"><a routerLink="/ub"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/ujjayi.svg"/></a></div>
-          <div class="col"><a routerLink="/kb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/kapalabhati.svg"/></a></div>
-          <div class="w-100"></div>
-          <div class="col"><a routerLink="/box"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/boxbreathing.svg"/></a></div>
-          <div class="col"><a routerLink="/nb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/nadishodhana.svg"/></a></div>
-          <div class="w-100"></div>
-          <div class="col"><a routerLink="/cb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/coherent.svg"/></a></div>
-          <div class="col"><a routerLink="/rb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/478.svg" /></a></div>
+            <div class="col"><a routerLink="/ub"><img class="homepageimgs5 english" src="assets/images/ub.svg" /><img class="homepageimgs5 portuguese" src="assets/images/ubPT.svg" /></a></div>
+            <div class="col"><a routerLink="/yogic"><img class="homepageimgs5 english"  src="assets/images/yb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/ybPT.svg" /></a></div>
+            <div class="w-100"></div>
+            <div class="col"><a routerLink="/box"><img class="homepageimgs5 english"  src="assets/images/box.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/boxPT.svg" /></a></div>
+            <div class="col"><a routerLink="/nb"><img class="homepageimgs5 english"  src="assets/images/nb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/nbPT.svg" /></a></div>
+            <div class="w-100"></div>
+            <div class="col"><a routerLink="/kb"><img class="homepageimgs5 english"  src="assets/images/kb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/kbPT.svg" /></a></div>
+            <div class="col"><a routerLink="/hum"><img class="homepageimgs5 english"  src="assets/images/hum.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/humPT.svg" /></a></div>
         </div>
       </div>
-      <div class="BHGrid portuguese">
+
+      <div *ngIf="selectedSegment === 'regulation'" class="bhgrid">
+        <!-- Recovery Content Here -->
         <div class="row g-2">
-            <div class="col"><a routerLink="/ub"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/ujjayi-pt.svg"/></a></div>
-            <div class="col"><a routerLink="/kb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/kapalabhati-pt.svg"/></a></div>
+            <div class="col"><a routerLink="/rb"><img class="homepageimgs4 english"  src="assets/images/rb.svg"><img class="homepageimgs4 portuguese"  src="assets/images/rbPT.svg"></a></div>
+            <div class="col"><a routerLink="/cb"><img class="homepageimgs4 english"  src="assets/images/cb.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/cbPT.svg" /></a></div>            
             <div class="w-100"></div>
-            <div class="col"><a routerLink="/box"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/boxbreathing-pt.svg"/></a></div>
-            <div class="col"><a routerLink="/nb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/nadishodhana-pt.svg"/></a></div>
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/cb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/coherent-pt.svg"/></a></div>
-            <div class="col"><a routerLink="/rb"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/478-pt.svg" /></a></div>      
+            <div class="col"><a routerLink="/bb"><img class="homepageimgs4 english"  src="assets/images/bb.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/bbPT.svg" /></a></div>
+            <div class="col"><a routerLink="/db"><img class="homepageimgs4 english"  src="assets/images/db.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/dbPT.svg" /></a></div>
         </div>
+      </div>
     </div>
     <div class="breathingpages set">
       <p class="atention portuguese"> NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios do App Briza Breath & Performance</p>
@@ -47,9 +63,7 @@
         <span class="close" id="closeModalPrana" #closeModalPrana>&times;</span>
         <div class="slideshow-container">
         <div class="mySlides fadeModal slides">
-            <div class="numbertext english">INTRO</div>
-            <div class="numbertext portuguese">Introdução</div>
-            <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+            <img src="assets/images/yogiclines.svg">
             <div class="text english">
                 <p>
                   Pranayama (Prana = life force, Yama = control), a key component of yoga, involves the control and regulation of breath and is known for its profound impact on physical, mental, and emotional well-being. Incorporating pranayama exercises into one's routine can significantly improve performance across various sports
@@ -62,39 +76,61 @@
             </div>
         </div>
         <div class="mySlides fadeModal slides">
-            <div class="numbertext english">Benefits 1/2</div>
-            <div class="numbertext portuguese">Benefícios 1/2</div>
-            <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+            <img src="assets/images/breathlight.svg">
             <div class="text english">
-              <ul>Increase the strength and capacity of your lungs by forcing them to work harder to deliver oxygen to your body</ul>
-              <ul>Help calm your mind and reduce stress and anxiety by slowing down your heart rate and promoting relaxation</ul>
-              <ul>Improve your cardiovascular health by increasing the amount of oxygen your body can transport to your cells and tissues</ul>
+              <p>Increase the strength and capacity of your lungs by forcing them to work harder to deliver oxygen to your body</p>
+           </div>
+            <div class="text portuguese">
+              <p>Aumentar a força e a capacidade dos seus pulmões, forçando-os a trabalhar mais para entregar oxigênio ao seu corpo</p>
+           </div>
+        </div>
+        <div class="mySlides fadeModal slides">
+            <img src="assets/images/breathlight.svg">
+            <div class="text english">
+              <p>Help calm your mind and reduce stress and anxiety by slowing down your heart rate and promoting relaxation</p>
             </div>
             <div class="text portuguese">
-              <ul>Aumentar a força e a capacidade dos seus pulmões, forçando-os a trabalhar mais para entregar oxigênio ao seu corpo</ul>
-              <ul>Ajudar a acalmar sua mente e reduzir o estresse e a ansiedade, diminuindo sua frequência cardíaca e promovendo relaxamento</ul>
-              <ul>Melhorar sua saúde cardiovascular, aumentando a quantidade de oxigênio que seu corpo pode transportar para suas células e tecidos</ul>
+              <p>Ajudar a acalmar sua mente e reduzir o estresse e a ansiedade, diminuindo sua frequência cardíaca e promovendo relaxamento</p>
             </div>
         </div>
         <div class="mySlides fadeModal slides">
-            <div class="numbertext english">Benefits 2/2</div>
-            <div class="numbertext portuguese">Benefícios 2/2</div>
-            <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+            <img src="assets/images/breathlight.svg">
             <div class="text english">
-              <ul>Help you focus and clear your mind by increasing blood flow and oxygenation to the brain</ul>
-              <ul>Increase energy levels. Pranayama exercises help in balancing energy levels. Improved breathing patterns can lead to increased vitality and stamina, enabling individuals to perform better in their daily activities</ul>
-              <ul>Boost your immune system. These exercises strengthen the immune system, making the body more resilient to infections and diseases. A strong immune system supports overall health and minimizes disruptions to training and performance goals</ul>
+              <p>Improve your cardiovascular health by increasing the amount of oxygen your body can transport to your cells and tissues</p>
+           </div>
+            <div class="text portuguese">
+              <p>Melhorar sua saúde cardiovascular, aumentando a quantidade de oxigênio que seu corpo pode transportar para suas células e tecidos</p>
+            </div>
+        </div>
+        <div class="mySlides fadeModal slides">
+            <img src="assets/images/breathlight.svg">
+            <div class="text english">
+              <p>Help you focus and clear your mind by increasing blood flow and oxygenation to the brain</p>
+           </div>
+            <div class="text portuguese">
+              <p>Ajudar a focar e limpar sua mente, aumentando o fluxo sanguíneo e a oxigenação para o cérebro</p>
+           </div>
+        </div>
+        <div class="mySlides fadeModal slides">
+            <img src="assets/images/breathlight.svg">
+            <div class="text english">
+               <p>Increase energy levels. Pranayama exercises help in balancing energy levels. Improved breathing patterns can lead to increased vitality and stamina, enabling individuals to perform better in their daily activities</p>
             </div>
             <div class="text portuguese">
-              <ul>Ajudar a focar e limpar sua mente, aumentando o fluxo sanguíneo e a oxigenação para o cérebro</ul>
-              <ul>Aumentar os níveis de energia. Exercícios de pranayama ajudam no equilíbrio dos níveis de energia. Padrões de respiração melhorados podem levar a um aumento da vitalidade e resistência, permitindo que os indivíduos tenham um desempenho melhor em suas atividades diárias</ul>
-              <ul>Impulsionar seu sistema imunológico. Esses exercícios fortalecem o sistema imunológico, tornando o corpo mais resiliente a infecções e doenças. Um sistema imunológico forte apoia a saúde geral e minimiza interrupções nos objetivos de treinamento e desempenho</ul>
+               <p>Aumentar os níveis de energia. Exercícios de pranayama ajudam no equilíbrio dos níveis de energia. Padrões de respiração melhorados podem levar a um aumento da vitalidade e resistência, permitindo que os indivíduos tenham um desempenho melhor em suas atividades diárias</p>
             </div>
         </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #Pranaprev>&#10094;</a>
-            <a class="next" #Prananext>&#10095;</a>
+        <div class="mySlides fadeModal slides">
+            <img src="assets/images/breathlight.svg">
+            <div class="text english">
+               <p>Boost your immune system. These exercises strengthen the immune system, making the body more resilient to infections and diseases. A strong immune system supports overall health and minimizes disruptions to training and performance goals</p>
+            </div>
+            <div class="text portuguese">
+              <p>Impulsionar seu sistema imunológico. Esses exercícios fortalecem o sistema imunológico, tornando o corpo mais resiliente a infecções e doenças. Um sistema imunológico forte apoia a saúde geral e minimiza interrupções nos objetivos de treinamento e desempenho</p>
+            </div>
         </div>
+        <div class="dots" #Pranadots role="tablist" aria-label="Slideshow pagination"></div>
+      </div>
     </div>
   </div>
 </ion-content>

@@ -24,8 +24,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalBRW') modalBRW!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalBRW') closeModalButtonBRW!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionBRW') questionBRW!: ElementRef<HTMLButtonElement>;
-  @ViewChild('BRWprev') BRWprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('BRWnext') BRWnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('BRWdots') BRWdots!: ElementRef<HTMLDivElement>;
   @ViewChild('BRWball') BRWball!: ElementRef<HTMLDivElement>;
   @ViewChild('BRWballText') BRWballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BRWtimeInput') BRWtimeInput!: ElementRef<HTMLSelectElement>;
@@ -62,16 +61,12 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   private BRWResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonBRW.nativeElement.onclick = () => this.globalService.closeModal(this.modalBRW);
+   this.globalService.initBulletSlider(this.modalBRW, this.BRWdots, 'slides');
+    this.closeModalButtonBRW.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRW));
+    this.questionBRW.nativeElement.onclick = () => this.globalService.openModal(this.modalBRW, this.BRWdots, 'slides');
     this.questionBRW.nativeElement.onclick = () => this.globalService.openModal(this.modalBRW);
-    this.BRWnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalBRW);
-    this.BRWprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalBRW);
-    this.globalService.openModal(this.modalBRW);
     //populate input
     for (let BRWi = 2; BRWi <= 60; BRWi++) { // assuming 1 to 60 minutes
       let BRWoption = document.createElement('option');
@@ -140,15 +135,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.setBRWduration();
     this.BRWResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-
+   
   minusRatioBRW(): void{
     if(parseInt(this.hold3InputBRW.nativeElement.value) > 2){
       this.hold3InputBRW.nativeElement.value = 
@@ -162,6 +151,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     }
   }
   startBRW(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRW.nativeElement.disabled = true;
@@ -175,7 +165,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRW();
       this.BRWballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -194,7 +184,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.BRWball);
         this.BRWinterval = setInterval(() => this.startTimerBRW(), 1000);
         this.BRWTimer = setInterval(() => this.DisplayTimerBRW(), 1000);
@@ -281,6 +272,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.inhaleBRW = false;
       this.hold1BRW = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -305,6 +297,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.exhaleBRW = false;
       this.hold2BRW = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -313,7 +306,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1, 5, this.BRWball);
     }
     else if(this.hold2BRW && this.BRWcurrentValue == 1){
-      this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
+      this.BRWcurrentValue = parseInt(this.hold3InputBRW.nativeElement.value) + 1;
       this.hold2BRW = false;
       this.hold3BRW = true;
       this.audioService.playSound('hold');
@@ -330,7 +323,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
         this.hold3BRW = false;
         this.inhaleBRW = true;
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
         if(this.isPortuguese){
           this.BRWballText.nativeElement.textContent = "Inspire"
         }else{
@@ -357,7 +351,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);

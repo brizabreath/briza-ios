@@ -24,8 +24,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalHAT') modalHAT!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalHAT') closeModalButtonHAT!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionHAT') questionHAT!: ElementRef<HTMLButtonElement>;
-  @ViewChild('HATprev') HATprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('HATnext') HATnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('HATdots') HATdots!: ElementRef<HTMLDivElement>;
   @ViewChild('HATball') HATball!: ElementRef<HTMLDivElement>;
   @ViewChild('HATballText') HATballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('HATtimeInput') HATtimeInput!: ElementRef<HTMLSelectElement>;
@@ -54,16 +53,12 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   private HATroundsResults: any[] = [];
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonHAT.nativeElement.onclick = () => this.globalService.closeModal(this.modalHAT);
+    this.globalService.initBulletSlider(this.modalHAT, this.HATdots, 'slides');
+    this.closeModalButtonHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHAT));
+    this.questionHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalHAT, this.HATdots, 'slides');
     this.questionHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalHAT);
-    this.HATnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalHAT);
-    this.HATprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalHAT);
-    this.globalService.openModal(this.modalHAT);
     //populate input
     for (let HATi = 2; HATi <= 12; HATi++) { // assuming 1 to 12 rounds
       let HAToption = document.createElement('option');
@@ -126,15 +121,11 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.setHATduration();
     this.HATResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("pinchWalk");
-    this.audioService.initializeAudioObjects("lightNasal");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-
+  
   startHAT(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHAT.nativeElement.disabled = true;
@@ -146,7 +137,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       this.HATtimeInput.nativeElement.style.display = "none";
       this.startCountdownHAT();
       this.HATballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -297,7 +288,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");;         
+        this.audioService.playBell("bell");         
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
         }, 3000);
@@ -377,7 +368,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
   saveHAT(): void{
     const savedResults = JSON.parse(localStorage.getItem('HATResults') || '[]'); // Retrieve existing results or initialize an empty array
-    savedResults.push({ date: new Date().toISOString(), result: this.HATroundsResults, rounds: this.roundsHAT }); // Add the new result with the current date
+    savedResults.push({ date: new Date().toISOString(), roundsResult: this.HATroundsResults, result: this.timerDisplayHAT.nativeElement.innerHTML,  rounds: this.roundsHAT }); // Add the new result with the current date
     localStorage.setItem('HATResults', JSON.stringify(savedResults)); // Save updated results back to local storage
 
     // Show the saved message

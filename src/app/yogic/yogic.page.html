@@ -1,49 +1,44 @@
 <ion-content>
   <header class="mainHeader">
-    <div class="back-buttons">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsYB" #settingsYB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionYB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
   </header>  
   <div id="yogicPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Yogic Breathing</h4>
-            <h4 class="volumeSettings portuguese">Respiração Yogi</h4>
-            <div class="questionMark questionClass">
-              <button #questionYB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsYB" #settingsYB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings">Dirga</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form YB">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | HOLD | EXHALE | HOLD</b>
-                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE | SEGURE</b>
-                  </div>
                   <div class="form-line">
                     <button class="buttonminus" type="button" #minusYB>-</button>
                   </div>  
                   <div class="form-line">
-                      <input type="number" value="4" #inhaleInputYB min="1" readonly>
+                      <img src="assets/images/in.png">
+                      <input type="number" value="3" #inhaleInputYB min="1" readonly>
                   </div>
-  
                   <div class="form-line">
-                      <input type="number" value="2" #hold1InputYB min="1" readonly>
+                      <img src="assets/images/in.png">
+                      <input type="number" value="3" #hold1InputYB min="1" readonly>
                   </div>
-  
                   <div class="form-line">
-                      <input type="number" value="4" #exhaleInputYB min="1" readonly>
+                      <img src="assets/images/in.png">
+                      <input type="number" value="3" #exhaleInputYB min="1" readonly>
                   </div>
-  
                   <div class="form-line">
-                    <input type="number" value="2" #hold2InputYB min="1" readonly>
+                      <img src="assets/images/pause.png">
+                    <input type="number" value="9" #hold2InputYB min="1" readonly>
                 </div>
                 <div class="form-line">
                   <button class="buttonplus" type="button" #plusYB>+</button>
@@ -61,7 +56,7 @@
                 <button #startBtnYB class="ballButton">
                   <div #YBball class="ball">
                       <span #YBballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -86,24 +81,20 @@
         <span class="close" id="closeModalYB" #closeModalYB>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+                <img src="assets/images/yogiclines.svg">
                 <div class="text english">
                   <p>
-                    Yogic breathing is a mindful practice that involves breathing in three parts: first filling the belly, then the ribs, and finally the chest. When exhaling, you reverse the order, starting from the chest, moving to the ribs, and finishing with the belly. This technique helps in controlling breath and improving oxygen flow
+                    Dirga is a mindful practice that involves breathing in three parts: first filling the belly, then the ribs, and finally the chest. When exhaling, you reverse the order, starting from the chest, moving to the ribs, and finishing with the belly. This technique helps in controlling breath and improving oxygen flow
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    A Respiração Yogi envolve o controle consciente da respiração, por meio de padrões específicos de 3 partes: enchendo a barriga, costelas e peito, e exalando do peito, costelas e por último a barriga
+                    Dirga envolve o controle consciente da respiração, por meio de padrões específicos de 3 partes: enchendo a barriga, costelas e peito, e exalando do peito, costelas e por último a barriga
                   </p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lie down. Relax your shoulders, facial muscles, and jaw. Place your tongue on the roof of your mouth, with its tip gently touching your upper front teeth
@@ -116,24 +107,20 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Select a breathing count that feels manageable yet gently extends your limits. Also, choose your session's duration, ideally 5 to 10 minutes, gradually increasing your breath's length for deeper practice
+                    Select a breathing count that feels manageable yet gently extends your limits. Also, choose your session's duration
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p> 
-                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo (recomenda-se de 5 a 10 minutos)
+                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p> 
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 3</div>
-                <div class="numbertext portuguese">Passo 3</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again
@@ -149,9 +136,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">KEEP IN MIND</div>
-                <div class="numbertext portuguese">Nota</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <img src="assets/images/airhunger.svg">
                 <div class="text english">
                   <p>
                     If you notice your heartbeat speeding up or the practice becomes too difficult with your chosen breath count, pause and select a more suitable option for you                    
@@ -163,9 +148,7 @@
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #YBprev>&#10094;</a>
-            <a class="next" #YBnext>&#10095;</a>
+            <div class="dots" #YBdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

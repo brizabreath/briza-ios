@@ -9,6 +9,7 @@ body {
     -webkit-tap-highlight-color: transparent; /* Disable tap highlight color on iOS */
     overflow-y: auto;
     height: 100%;
+    background-color: white;
 }
 .logo {
     text-align: center;
@@ -21,30 +22,30 @@ body {
     height: 50px;
     color: #49B79D !important;
     font-size: 18px !important;
-    border-color: #ffffff00;
+    border-color: #676767;
     text-align: center !important;
-    background-color: #e4e3d442;
+    background-color: rgba(0, 0, 0, 0.676);
     margin-bottom: 20px;
 }
 ::-webkit-input-placeholder {
     color: #49B79D !important;
 }
-ion-item {
-    --border-style: none;
-}
+
 #header{
-    background-color: white;
+    background-color: #01213b;
 }
 .form-button {
     margin: auto;
-    width: 80% !important;
     height: 50px;
-    font-size: 18px !important;
-    margin-bottom: 40px;
     --background: #0661AA;
+    border-radius: 10px;
+    text-decoration: none;
+    width: 80% !important;
+    font-size: 18px !important;
     color: white !important;
+    margin-bottom: 20px;
 }
-.textForm{
+.textForm{ 
     margin: auto;
     width: 80% !important;
     height: 50px;
@@ -52,12 +53,44 @@ ion-item {
     text-align: center;
     color: #0661AA;
 }
+.textForm a{ 
+    color: #075599 !important;
+}
+.textForm2{ 
+    margin-top: 20px;
+    color: #0661AA;
+}
+#loginGrid, #forgotGrid, #registerGrid{
+    position: fixed;
+    margin-top: 30px;
+    width: 100%;
+}
+#kbsetSettingsPage, #whsetSettingsPage, #setSettingsPage{
+    position: fixed;
+    width: 100%;
+}
 #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR {
     text-align: center;
     max-width: 500px;
+    width: 95%;
     margin: auto;
-    margin-top: 120px;
-    margin-bottom: 140px;
+    margin-top: 8rem;
+}
+#breathpagegrid, #breathpagegridBR {
+    max-width: 500px;
+    width: 90%;
+    margin: auto;
+    margin-top: 8rem;
+    color: #0661AA;
+}
+#breathpagegrid h3, #breathpagegridBR h3{
+    margin-top: 2rem;
+    font-size: 20px;
+    
+}
+#homegrid, #breathgrid{
+    position: fixed;
+    width: 100%;
 }
 #homepagegrid3 {
     width: 90%;
@@ -72,31 +105,66 @@ ion-item {
     padding: 0;
 }
 .homepageimgs {
-    width: 99%;
-    height: auto;
+    width: 97%;
     max-width: 400px;
-    object-fit: cover;
-    box-shadow: 0px 3px 7px 0px #80808021;
-    margin-bottom: 1px;
-    border-radius: 5px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 12rem;
+    background-color: rgba(238, 238, 218, 0.39);
 }
 .homepageimgs2 {
+    width: 97%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 6rem;
+    background-color: rgba(238, 238, 218, 0.39);
+}
+.homepageimgs3 {
     width: 99%;
-    height: auto;
-    object-fit: cover;
-    box-shadow: 0px 3px 7px 0px #80808021;
-    margin-bottom: 1px;
-    border-radius: 5px;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 8rem;
+    background-color:#49b79d1c;
+    margin-bottom: 15px;
+}
+.homepageimgs4 {
+    width: 97%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 12rem;
+    background-color:#49b79d1c;
+}
+.homepageimgs5 {
+    width: 97%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 12rem;
+    background-color:#0660aa1c;
 }
 .BRTtile {
-    height: 120px;
-    width: 99%;
+    width: 97%;
     margin: auto;
+    margin-bottom: 20px;
+    box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, 0.22);
+    background-color: #0661AA;
+    border-radius: 15px;
+}
+.BRTtile__img{
+    border-radius: 15px;
+}
+.BRTtile__img2{
+    border-radius: 15px;
+    height: 6rem;
+    width: 100%;
 }
 /*navbar*/
 .navbar {
     width: 100%;
-    background-color: #ffffff;
+    background-color: white;
     display: flex;
     flex-flow: row nowrap;
     font-size: 12px;
@@ -105,7 +173,7 @@ ion-item {
     padding: 2rem;
 }
 
-#navResults, #navResults2, #navProfile, #navProfile2  {
+.navIcons{
     color: #0661AA;
 }
 .navbar a {
@@ -116,6 +184,7 @@ ion-item {
     align-items: center;
     margin: auto;
     color: #0661AA;
+    font-weight: 500;
 }
 
 .fa {
@@ -124,14 +193,14 @@ ion-item {
 }
 
 .a .active {
-    color: #49B79D !important;
+    color: #0661AA !important;
 }
 
 .active {
     color: #49B79D !important;
 }
 
-#homeFooter, #homeFooterBR, #resultsFooter, #resultsFooterBR, #profileFooter, #profileFooterBR   {
+#homeFooter, #homeFooterBR, #resultsFooter, #resultsFooterBR, #profileFooter, #profileFooterBR, #breathFooter, #breathFooterBR, #yogaFooter, #yogaFooterBR     {
     position: fixed;
     left: 0;
     bottom: 0;
@@ -144,12 +213,12 @@ ion-item {
     font-size: 18px;
     color: #49B79D;
     border: none;
-    background-color: white;
     text-decoration: none; 
     font-size: 18px;
     color: #49B79D;
     border: none;
     background-color: white;
+    font-weight: bold;
 }
 
 .profileMargin{
@@ -160,12 +229,23 @@ ion-item {
     justify-content: space-around;
     margin-top: 20px;
     margin-bottom: 20px;
+    
 }
 .profile {
     text-align: center;
     margin-top: 20px;
     display: grid;
     margin-bottom: 20px;
+    
+}
+.profileLogin {
+    text-align: center;
+    margin-top: 40px;
+    display: grid;
+    margin-bottom: 20px;
+}
+.profileLogin h2{
+    color: #0661AA;
 }
 .profile a{
     font-size: 18px;
@@ -187,6 +267,10 @@ ion-item {
 .profile h2 {
     margin-bottom: 10px !important;
 }
+.profileLogin h2 {
+    margin-bottom: 10px !important;
+    margin-top: 30px;
+}
 .contactProfile {
     display: flex;
     justify-content: center;
@@ -194,9 +278,7 @@ ion-item {
 .flags img {
     max-width: 190px;
 }
-.BRTtile__img {
-    border-radius: 5px;
-}
+
 .logo-container {
     text-align: center;
 }
@@ -216,7 +298,7 @@ ion-item {
     top: 0;
     width: 100%;
     text-align: center;
-    box-shadow: 0 4px 6px -6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 34px -5px rgba(89, 89, 89, 0.2);
     position: fixed;
     z-index: 2;
     padding-left: 20px;
@@ -267,8 +349,7 @@ ion-item {
     width: 100%;
     color: #0661AA;
     text-align: center;
-    margin-bottom: 40px;
-    margin-top: 150px;
+    margin-top: 130px;
 }
 .breathingpages2 {
     width: 100%;
@@ -292,45 +373,50 @@ ion-item {
     color: #49B79D;
     display: inline-block;
     width: 1em;
-    font-weight: bold;
+    
 }
 
 .breathingpages p {
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 20px;
-    text-align: center;
+    text-align: justify;
+    font-size: 14px;
+    
 }
 .BHGrid p {
     font-size: 20px;
-    font-weight: 700;
 }
 
 .breathingpages h1 {
     text-align: center;
-    font-weight: bold;
-    padding: 10px;
+    
 }
 .breathingpages h2 {
     text-align: center;
     margin-bottom: 0;
     padding-left:10px;
     padding-right: 10px;
+    
 }
 .breathingpages h3 {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
+    
 }
 .breathingpages2 h3 {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
+    font-size: 20px;
+    
 }
 .breathingpages2 h2 {
     text-align: center;
     margin-bottom: 30px;
     padding: 0.5em;
+    
 }
 .colText {
     display: flex;
@@ -523,7 +609,6 @@ input#timerDisplayLungs {
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
-    font-weight: 900;
     color: #49B79D;
     width: 70px;
 }
@@ -531,7 +616,6 @@ input#timerDisplayLungs {
 .audioButtons img {
     width: 20px;
     height: 20px;
-    margin-right: 35px;
 }
 
 .settingButtons img {
@@ -576,9 +660,9 @@ input#timerDisplayLungs {
 
 
 .timer-additional-info {
-    font-size: 12px;
+    font-size: 15px;
     padding-bottom: 5px;
-    margin-top: 20px;
+    margin-top: 3rem;
     text-align: center;
 }
 
@@ -587,29 +671,34 @@ input#timerDisplayLungs {
 }
 
 .buttonplus {
-    font-size: 25px;
+    font-size: 40px;
     border: none;
     border-radius: 5px;
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
     color: #49B79D;
-    font-weight: 900;
-    margin-left: 15px;
+    
+    margin-top: 1rem;
 }
 
 .buttonminus {
-    font-size: 25px;
+    font-size: 40px;
     border: none;
     border-radius: 5px;
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
     color: #49B79D;
-    font-weight: 900;
-    margin-right: 15px;
+    
+    margin-top: 1.2rem;
 }
-
+#minusKB, #plusKB, #SminusKB, #SplusKB, #minusWH, #plusWH, #SminusWH, #SplusWH{
+    margin-top: 0;
+}
+.kbSETForm{
+    width: 80% !important;
+}
 .roundbox {
     display: flex;
     font-size: 12px;
@@ -617,34 +706,25 @@ input#timerDisplayLungs {
     font-size: 15px;
     justify-content: space-evenly;
 }
-
-.form-line {
-    display: inline;
-    align-items: baseline;
-    margin-bottom: 1rem;
+.form-line{
+    width: 3rem;
 }
-
-.form-line:last-of-type {
-    margin: 0;
-}
-
-.form-line label {
-    flex-grow: 1;
-    padding-right: .5rem;
+.form-line img{
+    height: 3rem;
+    opacity: 0.4;
 }
 
 .form-line input {
-    width: 40px;
+    width: 3rem;
     border-radius: 5px;
-    text-align: center;
     border: none;
-    background-color: white;
-    color: #0661AA;
-    font-size: 18px;
+    font-size: 1.2rem;
+    color: #49B79D;
+    
+    text-align: center;
 }
 .SETWH{
-    width: 100px !important;
-    font-size: 22px !important;
+    width: 6rem !important;
 }
 /*TIMER*/
 .main-container {
@@ -663,42 +743,53 @@ input#timerDisplayLungs {
 }
 
 .settings-form {
-    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 1rem;
 }
 
 .settings-form.BB {
     margin-bottom: 0 !important;
 }
 
-.audioButtons {
-    display: flex;
-    margin-left: 100px;
-    margin-top: 30px;
-}
-
 .box.boxFontSize {
     height: 15px;
 }
-
+.settingsVolBut{
+    display: flex;
+    width: 30%;
+    justify-content: space-around;
+}
 .volume-bar {
     display: flex;
-    width: 85%;
-    margin: 0 auto;
-    align-items: center;
-    justify-content: space-around;
-    margin-bottom: 40px;
+    margin: 2rem;
+    margin-bottom: 1rem;
+    justify-content: space-between;
 }
-
+.volume-bar  h4{
+    font-size: 18px !important;
+}
+.set h4{
+    font-size: 18px !important;
+}
+.settings-formWHKB{
+    margin-top: 1rem;
+}
+.settings-formWHKB h4{
+    font-size: 18px !important;
+    
+}
 .volume-bar input[type="range"] {
     width: 30px;
-    height: 6px;
     background: #49B79D;
     border-radius: 3px;
     outline: none;
-    margin: 0;
-    margin-top: 35px;
 }
-
+.settingBreaths{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
 .volume-bar input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px;
@@ -706,11 +797,6 @@ input#timerDisplayLungs {
     background: #0661AA;
     border: none;
     border-radius: 50%;
-}
-
-h4.volumeSettings {
-    text-align: center;
-    margin-top: 60px;
 }
 
 .song-container {
@@ -2280,12 +2366,14 @@ input.btn.btn-danger.CO2delete-button {
     margin-top: 20px !important;
 }
 .countdownDisplay {
-    border: none;
-    margin-top: 15px;
+    border: 1px solid;
+    border-radius: 20px;
+    margin-top: 2rem;
     text-align: center;
     font-size: 20px;
     color: #0661AA;
     background-color: white;
+    width: 10rem;
 }
 .BBtimer-container{
     text-align: center;
@@ -2295,8 +2383,8 @@ input.btn.btn-danger.CO2delete-button {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 50px;
-    margin-top: 40px;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
 }
 .ball {
     position: relative;
@@ -2338,11 +2426,6 @@ li::marker {
     padding-right: 40px;
 }
 
-.questionMark {
-  /* Aligns the question mark to the right */
-    margin-left: auto; /* This pushes the question mark to the right */
-    margin-right: 1rem;
-}
 .questionMark button{
     background-color: transparent;
 }
@@ -2351,17 +2434,10 @@ li::marker {
     height: 35px;
 }
 
-/* Slideshow container */
-.slideshow-container {
-    position: relative;
-    margin: auto;
-}
-
 
 /* Next & previous buttons */
 .prev, .next {
     top: 20%;
-    font-weight: 700;
     font-size: 30px;
     border-radius: 0 3px 3px 0;
     user-select: none;
@@ -2378,93 +2454,23 @@ li::marker {
     right: 10%;
 }
 
-/* Caption text */
-.text {
+
+.text2 {
     padding: 30px;
     width: 100%;
     text-align: center;
     position: fixed;
-    top: 28%;
+    top: 50%;
     left: 0;
 }
 
-/* Number text (1/3 etc) */
-.numbertext {
-    padding: 8px 12px;
-    font-size: 20px;
-    position: fixed;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-.mySlides img {
-    height: 120px;
-    margin-top: 20px;
-    transform: translate(-50%, -50%);
-    left: 50%;
-    position: fixed;
-    top: 20%;
-}
 .fadeModal:not(.show) {
     opacity: 1;
 }
 .manageSubsModal{
     font-size: 12px !important; 
 }
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-}
 
-.modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px 2px 20px 2px;
-    border-radius: 0;
-    border: none;
-    text-align: center;
-    color: #0661AA !important;
-    overflow-y: auto;
-    height: 100%;
-}
-.modal-content ul {
-    list-style: none;
-    margin-bottom: 1px !important;
-    padding: 0 !important;
-    font-size: 16px !important;
-}
-.mySlides ul{
-    font-size: 17px !important;
-}
-.modal-content ul::before {
-    content: "\2022";
-    color: #49B79D;
-    display: inline-block;
-    width: 1em;
-    font-weight: bold;
-}
-.modal-content p {
-    font-size: 17px;
-}
-.modal-content h1 {
-    margin-top: 50px;
-    margin-bottom: 0;
-}
-.close {
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 30px;
-    margin-top: 45px;
-    z-index: 1;
-}
 .flexModal {
     display: inline-flex;
     justify-content: space-evenly;
@@ -2479,7 +2485,7 @@ li::marker {
     box-shadow: 0px 3px 7px 0px #8080803b;
 }
 .modalPrices h2{
-    font-size: 18px;
+    font-size: 1rem;
 }
 .modalPrices h3{
     font-size: 16px;
@@ -2532,22 +2538,14 @@ input[type="radio"]:checked {
     background-color: white;
 }
 .settingButtons {
-    margin-left: 1rem;
-    top: 150px;
-    position: absolute;
-    font-size: 30px;
     z-index: 1;
 }
 .questionClass {
-    position: absolute;
-    top: 150px;
-    right: 10px;
-    font-size: 30px;
     z-index: 1;
 }
 .questionClass2 {
     position: absolute;
-    top: 150px;
+    top: 50px;
     right: 10px;
     font-size: 30px;
     z-index: 1;
@@ -2563,11 +2561,7 @@ input[type="radio"]:checked {
 
 #programPage {
     text-align: center;
-}
-#allProgramPage, #allProgramPageBR {
-    text-align: center;
-    margin-bottom: 40px;
-    margin-top: 100px;
+    margin-top: 8rem;
 }
 .guidedBTN {
     width: 90%;
@@ -2596,7 +2590,6 @@ p {
 #resultsPage h1 {
     text-align: center;
     margin-top: 15px;
-    font-weight: 700;
     color: #0661AA;
 }
 input#breakDurationInputCB {
@@ -2606,8 +2599,14 @@ input#intervalDurationInputCB {
     width: 50px;
     margin-left: 0.5rem;
 }
-#brtPage, #ahatPage, #apPage, #bbPage, #boxPage, #brePage, #brwPage, #cbPage, #ctPage, #hatPage, #hatcPage, #kbPage, #nbPage, #rbPage, #ubPage, #whPage, #yogicPage, #custPage {
-    margin-top: 215px !important;
+#brtPage, #apPage, #bbPage, #boxPage, #brePage, #brwPage, #cbPage, #ctPage, #nbPage, #rbPage, #ubPage, #yogicPage, #custPage, #dbPage {
+    margin-top: 15px !important;
+    position: fixed;
+    width: 100%;
+}
+#ahatPage, #hatPage, #hatcPage, #kbPage, #whPage{
+    margin-top: 15px !important;
+    width: 100%;
 }
 .dim-overlay {
     position: fixed;
@@ -2624,9 +2623,6 @@ input#intervalDurationInputCB {
     .form-control, .form-button {
         width: 450px !important;
     }
-    .lungsVideoContanier{
-        height: 400px;
-    }
 }
 @media only screen and (min-width: 500px){
     .form-control, .form-button {
@@ -2639,16 +2635,6 @@ input#intervalDurationInputCB {
     }
 }
 
-.lungsVideoContanier{
-    width: 90%;
-    margin: auto;
-    box-shadow: 3px 5px 12px 6px #88888824;
-    height: 250px;
-}
-.lungsVideo{
-    width: 100%;
-    height: 100%;
-}
 .set{
     margin-top: 0 !important;
 }
@@ -2657,17 +2643,10 @@ input#intervalDurationInputCB {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    
     text-align: center;
     margin-top: 120px;
     margin-bottom: 150px;
-}
-  
-.results-container h2 {
-    font-size: 24px;
-    color: #0661AA;
-    margin-bottom: 25px;
-    font-weight: bold;
 }
 #noBrtResults {
     width: 90%;
@@ -2678,7 +2657,7 @@ input#intervalDurationInputCB {
     padding: 20px 0;
     font-size: 18px;
     color: #49B79D;
-    box-shadow: inset 0 0 20px 0 #49b79d1f;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     border-radius: 10px;
     margin-bottom: 10px;
     text-decoration: none;
@@ -2707,10 +2686,6 @@ input#intervalDurationInputCB {
     gap: 5px;
     margin-top: 5px;
     color: #49B79D;
-}
-  
-.calendar-weekdays div {
-    font-weight: bold;
 }
   
 .calendar-day {
@@ -2772,7 +2747,7 @@ ion-modal>.ion-page {
 .modal-header h2 {
     margin: 0;
     color: #49B79D;
-    font-weight: bold;
+    
 }
 
 .close-button {
@@ -2791,7 +2766,7 @@ ion-modal>.ion-page {
 }
 
 .delete-button {
-    background-color: #ff5c5c;
+    background-color: #cd0211;
     border: none;
     color: white;
     padding: 5px 10px;
@@ -2800,7 +2775,7 @@ ion-modal>.ion-page {
     margin-top: 5px;
 }
 .delete-account{
-    color:red;
+    color: #cd0211;
     font-size: 15px;
     border: none;
     width: 100%;
@@ -2831,24 +2806,24 @@ canvas {
     margin-bottom: 80px;
     text-align: center;
 
-    h2 {
-        color: #0661AA;
-        font-size: 1.2em;
-        margin-bottom: 12px;
-    }
+h2{
+    color: #0661AA;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+}
 
-    .overview-item {
-        font-size: 0.95em;
-        color: #0661AA;
-        margin-top: 10px;
-    }
+.overview-item {
+    font-size: 0.95em;
+    color: #0661AA;
+    margin-top: 10px;
+}
 
-    .feedback {
-        color: #0661AA;
-        margin-top: 20px;
-        font-size: 0.9em;
-        line-height: 1.4em;
-    }   
+.feedback {
+    color: #0661AA;
+    margin-top: 20px;
+    font-size: 0.9em;
+    line-height: 1.4em;
+}   
 }
 .manage-account {
     margin-top: 130px;

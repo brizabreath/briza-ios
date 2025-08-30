@@ -24,8 +24,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalCT') modalCT!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalCT') closeModalButtonCT!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionCT') questionCT!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CTprev') CTprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CTnext') CTnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('CTdots') CTdots!: ElementRef<HTMLDivElement>;
   @ViewChild('CTball') CTball!: ElementRef<HTMLDivElement>;
   @ViewChild('CTballText') CTballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CTtimeInput') CTtimeInput!: ElementRef<HTMLSelectElement>;
@@ -57,16 +56,12 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   private CTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonCT.nativeElement.onclick = () => this.globalService.closeModal(this.modalCT);
+     this.globalService.initBulletSlider(this.modalCT, this.CTdots, 'slides');
+    this.closeModalButtonCT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCT));
+    this.questionCT.nativeElement.onclick = () => this.globalService.openModal(this.modalCT, this.CTdots, 'slides');
     this.questionCT.nativeElement.onclick = () => this.globalService.openModal(this.modalCT);
-    this.CTnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalCT);
-    this.CTprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalCT);
-    this.globalService.openModal(this.modalCT);
     //populate input
     for (let CTi = 2; CTi <= 60; CTi++) { // assuming 1 to 60 minutes
       let CToption = document.createElement('option');
@@ -136,16 +131,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     this.setCTduration();
     this.CTResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-  
+   
   startCT(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCT.nativeElement.disabled = true;
@@ -157,7 +147,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTtimeInput.nativeElement.style.display = "none";
       this.startCountdownCT();
       this.CTballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -176,7 +166,8 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputCT.nativeElement.value), this.CTball);
         this.CTinterval = setInterval(() => this.startTimerCT(), 1000);
         this.CTTimer = setInterval(() => this.DisplayTimerCT(), 1000);
@@ -269,6 +260,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.inhaleCT = false;
       this.exhaleCT = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.CTcurrentValue); 
       if(this.isPortuguese){
         this.CTballText.nativeElement.textContent = "Espire"
       }else{
@@ -297,7 +289,8 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTcurrentValue = parseInt(this.inhaleInputCT.nativeElement.value) + 1;
         this.hold1CT = false;
         this.inhaleCT = true;
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
         if(this.isPortuguese){
           this.CTballText.nativeElement.textContent = "Inspire"
         }else{
@@ -326,7 +319,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);

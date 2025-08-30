@@ -24,8 +24,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalCUST') modalCUST!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalCUST') closeModalButtonCUST!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionCUST') questionCUST!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CUSTprev') CUSTprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CUSTnext') CUSTnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('CUSTdots') CUSTdots!: ElementRef<HTMLDivElement>;
   @ViewChild('CUSTball') CUSTball!: ElementRef<HTMLDivElement>;
   @ViewChild('CUSTballText') CUSTballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CUSTtimeInput') CUSTtimeInput!: ElementRef<HTMLSelectElement>;
@@ -62,16 +61,12 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   private CUSTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonCUST.nativeElement.onclick = () => this.globalService.closeModal(this.modalCUST);
+    this.globalService.initBulletSlider(this.modalCUST, this.CUSTdots, 'slides');
+    this.closeModalButtonCUST.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCUST));
+    this.questionCUST.nativeElement.onclick = () => this.globalService.openModal(this.modalCUST, this.CUSTdots, 'slides');
     this.questionCUST.nativeElement.onclick = () => this.globalService.openModal(this.modalCUST);
-    this.CUSTnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalCUST);
-    this.CUSTprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalCUST);
-    this.globalService.openModal(this.modalCUST);
     //populate input
     for (let CUSTi = 2; CUSTi <= 60; CUSTi++) { // assuming 1 to 60 minutes
       let CUSToption = document.createElement('option');
@@ -139,14 +134,6 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.CUSTResultSaved.nativeElement.style.display = 'none';
    
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath")
-    ;
     this.inhaleInputCUST.nativeElement.value = this.customizableIn.toString();
     this.hold1InputCUST.nativeElement.value = this.customizableH1.toString();
     this.exhaleInputCUST.nativeElement.value = this.customizableOut.toString();
@@ -155,8 +142,11 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.hold1InputCUST.nativeElement.disabled = false;
     this.exhaleInputCUST.nativeElement.disabled = false;
     this.hold2InputCUST.nativeElement.disabled = false;
+    this.audioService.initializeSong(); 
   }
+   
   startCUST(): void{
+    this.audioService.initializeSong(); 
     this.customizableIn = this.inhaleInputCUST.nativeElement.value;
     this.customizableH1 = this.hold1InputCUST.nativeElement.value;
     this.customizableOut = this.exhaleInputCUST.nativeElement.value;
@@ -165,6 +155,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('customizableH1', this.customizableH1.toString()); 
     localStorage.setItem('customizableOut', this.customizableOut.toString()); 
     localStorage.setItem('customizableH2', this.customizableH2.toString()); 
+    this.CUSTcurrentValue = parseInt(this.customizableIn) + 1;
     this.inhaleInputCUST.nativeElement.disabled = true;
     this.hold1InputCUST.nativeElement.disabled = true;
     this.exhaleInputCUST.nativeElement.disabled = true;
@@ -180,7 +171,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.CUSTtimeInput.nativeElement.style.display = "none";
       this.startCountdownCUST();
       this.CUSTballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -199,7 +190,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CUSTballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputCUST.nativeElement.value), this.CUSTball);
         this.CUSTinterval = setInterval(() => this.startTimerCUST(), 1000);
         this.CUSTTimer = setInterval(() => this.DisplayTimerCUST(), 1000);
@@ -288,6 +280,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         this.inhaleCUST = false;
         this.exhaleCUST = true;
         this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
         if(this.isPortuguese){
           this.CUSTballText.nativeElement.textContent = "Espire"
         }else{
@@ -311,6 +304,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.hold1CUST = false;
       this.exhaleCUST = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
       if(this.isPortuguese){
         this.CUSTballText.nativeElement.textContent = "Espire"
       }else{
@@ -325,7 +319,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
           this.CUSTcurrentValue = parseInt(this.inhaleInputCUST.nativeElement.value) + 1;
           this.exhaleCUST = false;
           this.inhaleCUST = true;
-          this.audioService.playSound('inhale');
+          this.audioService.playSound('inhale');        
+          this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
           if(this.isPortuguese){
             this.CUSTballText.nativeElement.textContent = "Inspire"
           }else{
@@ -366,7 +361,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CUSTballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);

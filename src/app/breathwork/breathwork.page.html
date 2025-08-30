@@ -1,0 +1,149 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback"></button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="questionMark questionClass2">
+      <button #questionBREATH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
+  </header>  
+  <div id="breathgrid">
+    <div id="breathpagegrid">
+      <div class="welcomeDisplay"><h2 #name></h2></div>
+      <div #noBRTresult style="display: none;">
+        <h2 class="english homeH2">Have you done your retention test today?</h2>
+        <h2 class="portuguese homeH2">Voce ja fez seu teste de retencao hoje?</h2>
+        <a class="breath-button" routerLink="/brt" id="hp-brt">
+            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
+            <div class="textBP">
+                <div class="titleBP english">Briza<br>Retention Test</div>
+                <div class="subtitleBP english">Measure your fitness level</div>
+                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
+                <div class="subtitleBP portuguese">Medindo seu nível de condicionamento físico</div>
+            </div>
+        </a>
+      </div>
+      <div #BRTresult style="display: none;">
+          <h2 class="english homeH2">Your retention test score is <b>{{ latestBRTResultInSeconds }}</b> seconds </h2> 
+          <h2 class="portuguese homeH2">Seu resultado no teste de rentencao e de <b>{{ latestBRTResultInSeconds }}</b> segundos</h2>
+          <a class="breath-button" routerLink="/program">
+            <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
+            <div class="textBP">
+                <div class="titleBP english">Briza<br>Program</div>
+                <div class="subtitleBP english">Improve your breathing efficiency</div>
+                <div class="titleBP portuguese">Programa<br>Briza</div>
+                <div class="subtitleBP portuguese">Melhore sua eficiência respiratória</div>
+            </div>
+          </a>      
+        </div>
+      <!-- Briza Program Weekly Practice Header -->
+      <h3 class="english">Explore the app</h3>
+      <h3 class="portuguese">Explore o app</h3>
+      <div class="row g-2">
+          <div class="col">
+            <a class="breath-button2" routerLink="/home">
+              <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
+              <div class="textBW">
+                  <div class="titleBW">Breathwork</div>
+              </div>
+            </a>      
+          </div>
+          <div class="col">
+            <a class="breath-button2" routerLink="/yoga">
+              <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP yoga" />
+              <div class="textBW">
+                  <div class="titleBW">Yoga</div>
+              </div>
+            </a>   
+          </div>
+      </div>
+      <h3 class="english homeWeek">Week progress</h3>
+      <h3 class="portuguese homeWeek">Progresso Semanal</h3>
+      <p #numberOfSessions></p>
+     
+
+      <!-- Weekly Progress Circles -->
+      <div class="weekday-row">
+        <div class="day">
+          <div id="circle-mon" class="circle"></div>
+          <div class="label english">M</div>
+          <div class="label portuguese">S</div>
+        </div>
+        <div class="day">
+          <div id="circle-tue" class="circle"></div>
+          <div class="label">T</div>
+        </div>
+        <div class="day">
+          <div id="circle-wed" class="circle"></div>
+          <div class="label english">W</div>
+          <div class="label portuguese">Q</div>
+        </div>
+        <div class="day">
+          <div id="circle-thu" class="circle"></div>
+          <div class="label english">T</div>
+          <div class="label portuguese">Q</div>
+        </div>
+        <div class="day">
+          <div id="circle-fri" class="circle"></div>
+          <div class="label english">F</div>
+          <div class="label portuguese">S</div>
+        </div>
+        <div class="day">
+          <div id="circle-sat" class="circle"></div>
+          <div class="label">S</div>
+        </div>
+        <div class="day">
+          <div id="circle-sun" class="circle"></div>
+          <div class="label english">S</div>
+          <div class="label portuguese">D</div>
+        </div>
+      </div>
+    </div>
+    <footer id="breathFooter" class="english"> 
+      <div class="navbar">
+        <a class="active"><i class="fa fa-home active"></i>Home</a>
+        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+        <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
+        <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+      </div>
+    </footer>
+  </div>
+  <footer id="breathFooterBR" class="portuguese">
+    <div class="navbar">
+      <a class="active"><i class="fa fa-home active"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+    </div>
+  </footer>
+  <div id="openScreen" class="modal" #openScreen>
+    <div class="modal-content">
+      <span class="close" id="closeModalBREATH2" #closeModalBREATH2>&times;</span>
+      <div class="slideshow-container">
+          <div class="mySlides fadeModal slides active">
+            <img src="assets/images/splash.png" class="logo-img" />
+
+            <div class="quote-container english" *ngIf="!isPortuguese">
+              <p class="quote-text">"{{ selectedQuote?.en?.text }}"</p>
+              <p class="quote-author">- {{ selectedQuote?.en?.author }}</p>
+            </div>
+            <div class="quote-container portuguese" *ngIf="isPortuguese">
+              <p class="quote-text">"{{ selectedQuote?.pt?.text }}"</p>
+              <p class="quote-author">-{{ selectedQuote?.pt?.author }}</p>
+            </div>
+            <button (click)="shareOpenScreen()" class="share-button"  #shareButton>
+              {{ isPortuguese ? 'Compartilhar' : 'Share' }}
+            </button>
+          </div>
+          <a class="openScreenBut english" (click)="startAppGuide()">App Guide</a>
+          <a class="openScreenBut portuguese" (click)="startAppGuide()">Guia do app</a>
+      </div>
+    </div>
+  </div>
+</ion-content>

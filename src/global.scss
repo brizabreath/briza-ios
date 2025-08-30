@@ -36,12 +36,663 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+@import "shepherd.js/dist/css/shepherd.css";
 
-html, body, ion-app, ion-content {
-    background-color: #ffffff !important;
+/* keep tour above headers/tabs/modals */
+.shepherd-element,
+.shepherd-modal-overlay-container {
+  z-index: 99999 !important;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('/assets/fonts/nunito/Nunito-Bold.woff2') format('woff2'),
+       url('/assets/fonts/nunito/Nunito-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DellaRespira';
+  src: url('/assets/fonts/nunito/DellaRespira-Regular.woff2') format('woff2'),
+       url('/assets/fonts/nunito/DellaRespira-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+html.ios, html.md {
+  --ion-default-font: 'Nunito', sans-serif;
+}
+
+:root {
+  --app-font-family: 'Nunito', sans-serif !important;
+  --heading-font: 'DellaRespira', serif;
+}
+
+html, body, ion-app {
+  font-family: var(--app-font-family) ;
+  background-color: white !important;
+  font-weight: bold;
+}
+ion-label,
+ion-button,
+ion-title,
+ion-text,
+ion-item,
+ion-input,
+ion-textarea,
+ion-select,
+ion-datetime,
+ion-segment-button {
+  font-family: var(--app-font-family);
+}
+h1, h2, h3, h4{
+  font-weight: bold !important;
+}
+ion-item {
+    --border-style: none;
+}
+strong{
+  font-size: 18px;
+}
+.web-splash-screen {
+position: fixed;
+z-index: 9999;
+background-color: white; // match launch screen
+width: 100vw;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.web-splash-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white; /* or your preferred background */
+}
+
+.loader {
+  border: 6px solid #b7b7b7;        /* Light gray */
+  border-top: 6px solid #001220;    /* Your highlight color (greenish) */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+ion-input {
+  border-color: #ffffff48;
+  border: 1px solid;
+  border-radius: 10px;
+  box-shadow: none !important;
+  background: transparent !important;
+  --background: transparent;
+  --padding-start: 0;
+  --padding-end: 0;
+  --border-width: 0;
+}
+
+/* Handle autofill glow (especially on iOS) */
+.logo-img {
+  margin: 0 auto;
+  display: block;
+  opacity: 0;
+  animation: fadeInLogo 1s forwards;
+  max-width: 250px !important;
+  top:12% !important;
+}
+
+.quote-container {
+  text-align: center;
+  margin: 20px;
+  opacity: 0;
+  animation: fadeInQuote 2s forwards;
+  animation-delay: 1s; // start after logo animation
+}
+
+.quote-text {
+  margin: 0.5rem;
+  font-size: 25px !important;
+  color: #0661AA;
+  font-family: var(--heading-font) !important;
+}
+
+.quote-author {
+  font-size: 1rem;
+  color: #0660aa95;
+}
+.openScreenBut{
+  bottom: 100px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  color: #0661AA;
+  opacity: 0;
+  text-decoration: none !important;
+  animation: fadeInButton 3s forwards;
+  animation-delay: 2s; // start after logo animation
+}
+.share-button {
+  background-color: #49b79d1c;
+  color: #0661AA;
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  margin-top: 16px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  animation: fadeInShareButton 3s forwards;
+  animation-delay: 2s; // start after logo animation
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.blinking {
+  animation: blink 1s infinite;
+}
+@keyframes fadeInLogo {
+  to {
+    opacity: 1;
   }
-  
-  ion-content {
-    --background: #ffffff !important;
+}
+
+@keyframes fadeInQuote {
+  to {
+    opacity: 1;
   }
+}
+@keyframes fadeInButton {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeInShareButton {
+  to {
+    opacity: 1;
+  }
+}
+
+.weekday-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  margin: 10px 0;
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 12%;
+}
+
+.label {
+  font-size: 12px;
+  color: #0661AA;
+}
+.homeWeek{
+  margin-top: 20px;
+}
+.circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #49B79D;
+  margin-bottom: 4px;
+}
+.welcomeDisplay{
+  display: flex;
   
+}
+
+.lungsVideoContainer {
+  position: relative;
+  width: 95%;
+  max-width: 700px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.lungsVideo {
+  width: 100%;
+  height: auto;
+  border: none;
+  display: block;
+  background-color: #0660aa1c;
+}
+
+
+@media (max-width: 600px) {
+  .breathingpages h1 {
+    font-size: 20px;
+  }
+
+  .breathingpages .description {
+    font-size: 18px;
+  }
+}
+.breath-button {
+  display: flex;
+  align-items: center;
+  background-color: #49b79d1c; /* light cream */
+  border: none;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+  width: 100%;
+  max-width: 350px;
+  text-align: left;
+  margin: auto;
+  text-decoration: none;
+  
+}
+.breath-button3 {
+  display: flex;
+  align-items: center;
+  background-color: #fdfbf6; /* light cream */
+  border: none;
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+  width: 100%;
+  max-width: 350px;
+  text-align: left;
+  margin: auto;
+  text-decoration: none;
+  
+}
+
+.iconBP {
+  width: 3rem;
+}
+.textBP{
+  margin-left: 3rem;
+}
+.textBP .titleBP {
+  
+  font-size: 18px;
+  color: #0661AA;
+  line-height: 1.2;
+}
+
+.textBP .subtitleBP {
+  font-size: 14px;
+  color: #49B79D;
+  margin-top: 4px;
+}
+.breath-button2 {
+  display: flex;
+  align-items: center;
+  background-color: #fdfbf6; /* light cream */
+  border: none;
+  border-radius: 16px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+  width: 100%;
+  height: 100px;
+  text-align: center;
+  text-decoration: none;
+  
+}
+.yoga{
+  margin-left: 15px;
+}
+.iconBW {
+  width: 4rem;
+}
+.textBW{
+  margin-left: 10px;
+}
+.textBW .titleBW {
+  
+  font-size: 16px;
+  color: #0661AA;
+}
+
+.programpageStyle{
+  width: 100%;
+  color: #0661AA;
+  margin-bottom: 50px;  
+}
+.programpageStyle h2{
+  text-align: center;
+  padding: 0.5em;
+  font-size: 20px;
+  
+}
+.programpageStyle h3 {
+  text-align: left;
+  padding-left: 1rem;
+  padding-top: 1rem;
+  font-size: 18px;
+  
+}
+.checkbox{
+  margin-left: 1rem;
+}
+.homeH2{
+  margin-top: 2rem;
+  font-size: 20px;
+  
+}
+.segmented-control {
+  display: flex;
+  border: 1px solid #49B79D;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 90%;
+  margin: auto;
+  margin-top: 150px;
+  margin-bottom: 30px;
+}
+
+.segment {
+  padding: 10px 18px;
+  border: none;
+  background-color: white;
+  color: #0661AA;
+  cursor: pointer;
+  font-size: 14px;
+  flex: 1;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold !important;
+}
+
+.segment:not(:last-child) {
+  border-right: 1px solid #49B79D;
+}
+
+.segment.active {
+  background-color: #49B79D;
+  color: white !important;
+}
+
+.segment-content {
+  font-size: 16px;
+}
+.bhgrid{
+  max-width: 500px;
+  width: 95%;
+  margin: auto;
+}
+.brizaBlue{
+  color: #0661AA;
+  --color:  #0661AA;
+}
+.comments-container{
+  color: #49B79D !important;
+}
+.commentPost{
+  --background: #0661AA;
+}
+.justifyContent{
+  text-align: justify !important;
+}
+p {
+  font-weight: 500;
+}
+#breathpagegrid p {
+  font-weight: 500;
+}
+/* ============ Modal shell ============ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}
+.modal-content {
+  position: absolute;
+  inset: 0;
+  margin: 0 auto;
+  background-color: #fff !important;
+  padding: 20px 12px;
+  border: none;
+  color: #0661AA !important;
+  overflow-y: auto;   /* scroll if slide is tall */
+  text-align: center; /* headings/images center; text blocks below can be left-aligned */
+}
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 30px;
+  margin-top: 45px;
+  z-index: 1;
+  color: #0661AA !important;
+}
+
+.slideshow-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  margin: auto;
+}
+
+/* All slides are stacked, only active one fades in */
+.mySlides.slides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Active slide shown with fade */
+.mySlides.slides.active {
+  opacity: 1;
+  visibility: visible;
+  position: relative;   /* put active slide back into normal flow */
+}
+
+.mySlides.slides img {
+  display: block;
+  margin: 0 auto 12px;
+  max-width: 140px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.mySlides.slides .text{
+  width: 100%;
+  margin: 0 auto;
+  max-width: 680px;
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 30px;
+  text-align: center;
+}
+.mySlides.slides .text p {
+  font-size: 25px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+/* Dots */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  padding: 12px 0 4px;
+  position: fixed;
+  top: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  border: none;
+  background: #cfd4da;
+  cursor: pointer;
+}
+.dots button.active {
+  background: #49B79D;
+  transform: scale(1.15);
+}
+
+.dots button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(73,183,157,.35);
+}
+
+/* Optional: list style inside slides */
+.modal-content ul {
+  list-style: none;
+  margin-bottom: 1px !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+}
+.mySlides ul {
+  font-size: 17px !important;
+}
+.modal-content ul::before {
+  content: "\2022";
+  color: #49B79D;
+  display: inline-block;
+  width: 1em;
+}
+.modal-content p { font-size: 17px; }
+.modal-content h1 { margin-top: 50px; margin-bottom: 0; }
+
+.modal-controls {
+  display: flex;
+  justify-content: center;
+  padding: 12px 16px 16px;
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.modal-controls .modal-primary {
+  appearance: none;
+  border: 0;
+  border-radius: 14px;
+  padding: 10px 18px;
+  font-weight: 600;
+  font-size: 15px;
+  background: #49B79D;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
+  transition: transform .08s ease, box-shadow .15s ease;
+}
+.modal-controls .modal-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+#openScreen .modal-controls {
+display: none;
+}
+/* Briza theme for Shepherd tour */
+.briza-tour.shepherd-element {
+  max-width: 250px;
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  background: rgba(236, 249, 246, 1);  
+  border: 2px solid #0660aa65; /* teal border */
+  font-family: 'Nunito', Arial, sans-serif;
+}
+.shepherd-footer {
+  justify-content: center !important;
+}
+/* Title/header */
+.briza-tour .shepherd-header {
+  background: #0660aa00; /* Briza blue */
+  color: #fff;
+  font-weight: 700;
+  padding: 2px;
+}
+
+/* Body text */
+.briza-tour .shepherd-text {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #0661AA; /* deep green */
+  padding: 10px;
+}
+
+/* Buttons */
+.briza-tour .shepherd-footer button {
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  font-family: 'Nunito', Arial, sans-serif;
+}
+
+.briza-tour .shepherd-button {
+  background: #49B79D;
+  color: white;
+  margin-left: 6px;
+}
+
+.briza-tour .shepherd-button:not(.shepherd-button-primary) {
+  background: #0661AA;
+  color: #ffffff;
+}
+/* Special finish step styling */
+.briza-tour-finish {
+  text-align: center;
+  padding: 1rem;
+}
+
+.briza-tour-finish h2 {
+  font-family: 'Nunito', Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #0661AA; /* Briza blue */
+  margin-bottom: 0.5rem;
+}
+
+.briza-tour-finish p {
+  font-family: 'Nunito', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #0661AA; /* deep green */
+  margin: 0;
+}
+.briza-finish-btn {
+  background: #0661AA !important; /* teal green */
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;  
+  padding: 8px 16px !important;
+}
+/* Make header icons and ball not add inline gaps */
+.settingButtons img,
+.questionMark img,
+#hp-ball {
+  display: block;
+}
+
+/* Tighter highlight rounding */
+.briza-highlight { border-radius: 20px; }
+
+.timer-controls {
+  padding: 0;
+}
+

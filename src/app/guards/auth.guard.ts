@@ -14,15 +14,20 @@ export class AuthGuard implements CanActivate {
 
     if (!auth) {
       if (!navigator.onLine) {
-        // User is offline
-        return true;
+        const wasSignedIn = localStorage.getItem('wasSignedIn');
+        if (wasSignedIn === 'true') {
+          return true;
+        } else {
+          this.router.navigate(['/login']);
+          return false;
+        }
       }else{
         console.error('Firebase Auth is not initialized.');
         this.router.navigate(['/login']);
         return false;
       }     
     }
-
+ 
     // Wait for the Auth state to initialize
     return new Promise((resolve) => {
       onAuthStateChanged(auth, (user) => {

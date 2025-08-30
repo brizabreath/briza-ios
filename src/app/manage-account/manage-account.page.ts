@@ -6,6 +6,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { doc, getDoc } from 'firebase/firestore'; // add this import at top
+
 
 @Component({
   selector: 'app-manage-account',
@@ -21,6 +23,7 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
 })
 export class ManageAccountPage {
   newEmail: string = '';
+  name: string = '';
   email: string = '';
   confirmEmail: string = '';
   newPassword: string = '';
@@ -34,6 +37,7 @@ export class ManageAccountPage {
 
   async ionViewWillEnter() {
     this.email = localStorage.getItem('currentUserEmail') || '';
+    this.name = localStorage.getItem('currentUserName') || '';
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if (isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -55,9 +59,10 @@ export class ManageAccountPage {
   
     const changingEmail = !!this.newEmail.trim();
     const changingPassword = !!this.newPassword.trim();
+    const changingName = this.name.trim() !== '';
   
-    if (!changingEmail && !changingPassword) {
-      this.errorMessage = 'Please fill in new email or new password.';
+    if (!changingEmail && !changingPassword && !changingName) {
+      this.errorMessage = 'Please fill in new email, new password or new name';
       return;
     }
   
@@ -71,7 +76,7 @@ export class ManageAccountPage {
         this.email = this.newEmail.trim(); // Update local display
         this.newEmail = '';
       }
-  
+      
       if (changingPassword) {
         if (this.newPassword !== this.confirmPassword) {
           this.errorMessage = 'Password confirmation does not match.';
@@ -81,6 +86,12 @@ export class ManageAccountPage {
         this.successMessage += ' Password updated successfully.';
         this.newPassword = '';
         this.confirmPassword = '';
+      }
+      if (changingName) {
+        // Update name in Firestore
+        localStorage.setItem('currentUserName', this.name.trim()); 
+        await this.authService.updateUserName(this.name.trim());
+        this.successMessage += this.isPortuguese ? ' Nome atualizado com sucesso.' : ' Name updated successfully.';
       }
   
     } catch (error: any) {

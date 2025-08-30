@@ -60,7 +60,7 @@ export class ALLresultsPage implements AfterViewInit {
   }
 
   loadDataFromLocalStorage(): void {
-    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults'];
+    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults', 'WHResults', 'LungsResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};
 
     exerciseKeys.forEach(key => {
@@ -79,13 +79,17 @@ export class ALLresultsPage implements AfterViewInit {
     });
 
     this.aggregatedDataArray = Object.keys(aggregatedData).map(date => ({
-      date: new Date(date.split('/').reverse().join('-')), // Parse as "yyyy-mm-dd" for proper Date object
+      date: new Date(date.split('/').reverse().join('-')),
       totalMinutes: parseFloat((aggregatedData[date].totalSeconds / 60).toFixed(2)),
       sessionCount: aggregatedData[date].sessionCount
     }));
-
+    
+    // ✅ Sort by date ascending
+    this.aggregatedDataArray.sort((a, b) => a.date.getTime() - b.date.getTime());
+    
     this.hasData = this.aggregatedDataArray.length > 0;
     this.fixedLatestDate = this.hasData ? new Date(this.aggregatedDataArray[this.aggregatedDataArray.length - 1].date) : new Date();
+    
   }
 
   convertToSeconds(result: string): number {
@@ -93,7 +97,7 @@ export class ALLresultsPage implements AfterViewInit {
     return minutes * 60 + seconds;
   }
 
-  setDateRange(): void {
+  setDateRange(): void { 
     const lastResultDate = this.hasData ? new Date(this.aggregatedDataArray[this.aggregatedDataArray.length - 1].date) : new Date();
     this.endDate = new Date(lastResultDate);
     this.startDate = new Date(this.endDate);

@@ -5,8 +5,10 @@ import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router'; // Import RouterModule
+import { Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import { ShepherdService } from 'angular-shepherd';
+
 
 @Component({
   selector: 'app-brt',
@@ -23,12 +25,11 @@ import { App } from '@capacitor/app';
 export class BRTPage implements AfterViewInit, OnDestroy {
   @ViewChild('myModalBRT') modalBRT!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalBRT') closeModalButtonBRT!: ElementRef<HTMLSpanElement>;
-  @ViewChild('BRTprev') BRTprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('BRTnext') BRTnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('BRTdots') BRTdots!: ElementRef<HTMLDivElement>;
   @ViewChild('timerDisplayBRT') timerDisplayBRT!: ElementRef<HTMLInputElement>;
   @ViewChild('brtStart') brtStart!: ElementRef<HTMLButtonElement>;
   @ViewChild('brtStop') brtStop!: ElementRef<HTMLButtonElement>;
-  @ViewChild('brtSave') brtSave!: ElementRef<HTMLInputElement>;
+  @ViewChild('brtSave') brtSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('BRTSettings') BRTSettings!: ElementRef<HTMLButtonElement>;
   @ViewChild('brtResultSaved') brtResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('BRTball') BRTball!: ElementRef<HTMLDivElement>;
@@ -36,20 +37,113 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   @ViewChild('questionBRT') questionBRT!: ElementRef<HTMLButtonElement>;
   @ViewChild('BRTballText') BRTballText!: ElementRef<HTMLSpanElement>;
 
-
-
-
   private brtSeconds = 0;
   private brtMinutes = 0;
   private brtInt: any = null;
   private brtResult = ''; // Variable to store the BRT result as a string
   private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
+  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
+  ionViewDidEnter() {
+    const shouldStart = localStorage.getItem('startBRTTour') === 'true';
+    const shouldStartModal = localStorage.getItem('startBRTModal') === 'true';
+    if (shouldStart) {
+      localStorage.removeItem('startBRTTour');
+      this.startBRTTour();
+    }else{
+      if (shouldStartModal) {
+        localStorage.removeItem('startBRTModal');
+        this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');    
+      }
+    }
+  }
+ startBRTTour() {
+    // types don't include popperOptions; cast to any
+    (this.shepherd as any).defaultStepOptions = {
+      cancelIcon: { enabled: true },
+      scrollTo: true,
+      canClickTarget: false,
+      classes: 'briza-tour',
+      modalOverlayOpeningPadding: 4,   
+      modalOverlayOpeningRadius: 10, 
+      popperOptions: {
+        strategy: 'fixed',
+        modifiers: [
+          { name: 'preventOverflow', options: { boundary: 'viewport' } },
+          { name: 'flip', options: { fallbackPlacements: ['top','right','left','bottom'] } }
+        ]
+      }
+    } as any;
 
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+    this.shepherd.modal = true;
+
+    const isPT = localStorage.getItem('isPortuguese') === 'true';
+    const t = (en: string, pt: string) => (isPT ? pt : en);
+
+    // Defer a tick so header/layout are fully ready
+    setTimeout(() => {
+      this.shepherd.addSteps([
+        {
+          id: 'hp-settings',
+          text: `<h3>${t('Settings','Configurações')}</h3>
+                <p>${t('Adjust exercises preferences',
+                        'Ajuste as preferências de exercícios')}</p>`,
+          attachTo: { element: '#hp-settings', on: 'bottom' }, // bottom is safer near header
+          highlightClass: 'briza-highlight',
+          buttons: [
+            { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+          ]
+        },
+        {
+          id: 'hp-question',
+          text: `<h3>${t('Help','Ajuda')}</h3>
+                <p>${t('Check how to do the breathing exercises correctly',
+                        'Veja como fazer os exercícios de respiração corretamente')}</p>`,
+          attachTo: { element: '#hp-question', on: 'bottom' },
+          highlightClass: 'briza-highlight',
+          buttons: [
+            { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+            { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+          ]
+        },
+        {
+          id: 'hp-ball',
+          text: `<h3>${t('Start Button','Botão Iniciar')}</h3>
+                <p>${t('To start the exercise, press this circle, press it again if you would like to pause it',
+                        'Para iniciar os exercícios, pressione este círculo, pressione-o novamente se desejar pausá-lo')}</p>`,
+          attachTo: { element: '#hp-ball', on: 'top' },
+          highlightClass: 'briza-highlight',
+          buttons: [
+            { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+            { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+          ]
+        },
+        {
+          id: 'hp-controls',
+          text: `<h3>${t('Save your result','Salvar resultado')}</h3>
+                <p>${t('After pausing the exercise, tap Save to track your progress',
+                        'Clique em Salvar ao terminar para acompanhar seu progresso')}</p>`,
+          // attach tightly to the Save button instead of the whole bar
+          attachTo: { element: '#brtSave', on: 'top' },
+          buttons: [
+            { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+            { text: t('Continue','Continuar'),
+              action: () => {
+                this.shepherd.complete();
+                localStorage.setItem('startHomeTour','true');
+                this.router.navigateByUrl('/home');
+              }
+            },
+          ]
+        },
+        
+      ]);
+
+      this.shepherd.start();
+    }, 0);
+  }
 
   ngAfterViewInit(): void {
-    this.globalService.openModal(this.modalBRT);
     // Add event listeners for start, pause, stop, and save buttons
     this.brtStart.nativeElement.addEventListener('click', () => this.startTimerBRT());
     this.brtStop.nativeElement.addEventListener('click', () => this.stopTimerBRT());
@@ -67,9 +161,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
     //initiate button
-    this.BRTnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalBRT);
-    this.BRTprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalBRT);
+    this.globalService.initBulletSlider(this.modalBRT, this.BRTdots, 'slides');
     this.closeModalButtonBRT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRT));
+    this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT);
   }
   ionViewWillEnter() {
@@ -99,16 +193,13 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     }
     this.brtResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
+   this.audioService.initializeSong(); 
   }
   
   // Method to start the timer
   startTimerBRT(): void {
+    try{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     if(firstClick == "true" && breathingON == "false"){
@@ -124,13 +215,14 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       }else{
         this.BRTballText.nativeElement.textContent = "Inhale";
       }
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(() => {
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', 3); 
         this.BRTballText.nativeElement.textContent = "3";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -149,6 +241,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
           this.BRTballText.nativeElement.textContent = "Exhale";
         }
         this.audioService.playSound('exhale');
+        this.audioService.playBreathSound('exhaleBreath', 3); 
       }, 4000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       const timeoutId6 = setTimeout(() => {
@@ -195,6 +288,10 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       // Pause the selected song
       this.audioService.pauseSelectedSong();
     }
+    }catch (error) {
+    console.error("startTimerBRT error:", error);
+    alert("Error: " + (error instanceof Error ? error.message : JSON.stringify(error)));
+  }
   }
     // Method to display the timer
     brtDisplayTimer(): void {

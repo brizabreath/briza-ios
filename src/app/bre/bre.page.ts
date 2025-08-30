@@ -24,8 +24,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalBRE') modalBRE!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalBRE') closeModalButtonBRE!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionBRE') questionBRE!: ElementRef<HTMLButtonElement>;
-  @ViewChild('BREprev') BREprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('BREnext') BREnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('BREdots') BREdots!: ElementRef<HTMLDivElement>;
   @ViewChild('BREball') BREball!: ElementRef<HTMLDivElement>;
   @ViewChild('BREballText') BREballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BREtimeInput') BREtimeInput!: ElementRef<HTMLSelectElement>;
@@ -62,16 +61,12 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   private BREResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonBRE.nativeElement.onclick = () => this.globalService.closeModal(this.modalBRE);
+    this.globalService.initBulletSlider(this.modalBRE, this.BREdots, 'slides');
+    this.closeModalButtonBRE.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRE));
+    this.questionBRE.nativeElement.onclick = () => this.globalService.openModal(this.modalBRE, this.BREdots, 'slides');
     this.questionBRE.nativeElement.onclick = () => this.globalService.openModal(this.modalBRE);
-    this.BREnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalBRE);
-    this.BREprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalBRE);
-    this.globalService.openModal(this.modalBRE);
     //populate input
     for (let BREi = 2; BREi <= 60; BREi++) { // assuming 1 to 60 minutes
       let BREoption = document.createElement('option');
@@ -140,15 +135,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.setBREduration();
     this.BREResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-     this.audioService.initializeAudioObjects("bell");
-     this.audioService.initializeAudioObjects("inhale");
-     this.audioService.initializeAudioObjects("exhale");
-     this.audioService.initializeAudioObjects("hold");
-     this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-  
   minusRatioBRE(): void{
     if(parseInt(this.hold3InputBRE.nativeElement.value) > 2){
       this.hold3InputBRE.nativeElement.value = 
@@ -162,6 +150,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     }
   }
   startBRE(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRE.nativeElement.disabled = true;
@@ -175,7 +164,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRE();
       this.BREballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -194,7 +183,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BREballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.BREball);
         this.BREinterval = setInterval(() => this.startTimerBRE(), 1000);
         this.BRETimer = setInterval(() => this.DisplayTimerBRE(), 1000);
@@ -281,6 +271,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.inhaleBRE = false;
       this.hold1BRE = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -305,6 +296,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.exhaleBRE = false;
       this.hold2BRE = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -313,7 +305,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1, 5, this.BREball);
     }
     else if(this.hold2BRE && this.BREcurrentValue == 1){
-      this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 1;
+      this.BREcurrentValue = parseInt(this.hold3InputBRE.nativeElement.value) + 1;
       this.hold2BRE = false;
       this.hold3BRE = true;
       this.audioService.playSound('hold');
@@ -330,7 +322,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 1;
         this.hold3BRE = false;
         this.inhaleBRE = true;
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
         if(this.isPortuguese){
           this.BREballText.nativeElement.textContent = "Inspire"
         }else{
@@ -356,7 +349,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BREballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);

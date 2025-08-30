@@ -1,0 +1,87 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback"></button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+  </header>  
+  <div id="yogaPage">
+    <div class="segmented-control">
+      <button 
+        class="segment" 
+        [class.active]="selectedSegment === 'move'" 
+        (click)="selectSegment('move')">
+        <div class="english">Move</div>
+        <div class="portuguese">Mexa-se</div>
+      </button>
+      <button 
+        class="segment" 
+        [class.active]="selectedSegment === 'slowdown'" 
+        (click)="selectSegment('slowdown')">
+        <div class="english">Slow Down</div>
+        <div class="portuguese">Acalme-se</div>
+      </button>
+      <button 
+        class="segment" 
+        [class.active]="selectedSegment === 'meditate'" 
+        (click)="selectSegment('meditate')">
+        <div class="english">Meditate</div>
+        <div class="portuguese">Medite</div>
+      </button>
+    </div>
+    <div class="duration-filter">
+      <select id="durationSelect" [(ngModel)]="selectedFilter" (change)="filterVideos()">
+        <option *ngFor="let f of filters" [value]="f">{{ f }}</option>
+      </select>
+    </div>
+
+    <div class="segment-content">
+      <div *ngIf="filteredVideos.length > 0" class="video-list">
+        <p class="section-subtitle">
+          <span *ngIf="selectedSegment === 'meditate'" class="english">Guided meditations to relax and focus.</span>
+          <span *ngIf="selectedSegment === 'meditate'" class="portuguese">Meditações guiadas para relaxar e focar.</span>
+          <span *ngIf="selectedSegment === 'move'" class="english">Move your body to energize your day.</span>
+          <span *ngIf="selectedSegment === 'move'" class="portuguese">Mexa seu corpo para energizar o dia.</span>
+          <span *ngIf="selectedSegment === 'slowdown'" class="english">Slow down with gentle movements and breath.</span>
+          <span *ngIf="selectedSegment === 'slowdown'" class="portuguese">Acalme-se com movimentos suaves e respiração.</span>
+        </p>
+
+        <div *ngFor="let video of filteredVideos" class="video-card" (click)="onVideoClick(video)">
+          <img [src]="video.thumbnail" class="video-thumb" />
+        <div class="video-info">
+        <h3>{{ video.title }}</h3>
+        <p class="video-subtitle">{{ video.duration }} min</p>
+      </div>
+      <div class="play-button">&#9658;</div>
+    </div>
+  </div>
+
+  <div *ngIf="filteredVideos.length === 0" class="no-videos">
+    <p class="english">No videos found for this category.</p>
+    <p class="portuguese">Nenhum vídeo encontrado para esta categoria.</p>
+  </div>
+</div>
+
+  </div>
+  <footer id="yogaFooter" class="english">
+    <div class="navbar">
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons"><i class="fa fa-sun-o active"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
+      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+    </div>
+  </footer>
+  <footer id="yogaFooterBR" class="portuguese">
+    <div class="navbar">
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons"><i class="fa fa-sun-o active"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+    </div>
+  </footer>
+</ion-content>

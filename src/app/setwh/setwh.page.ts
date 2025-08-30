@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { AudioService } from '../services/audio.service';   
 
 @Component({
   selector: 'app-setwh',
@@ -55,7 +56,7 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
 
 
 
-  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
+  constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
   onSongChange(event: Event): void {
@@ -309,6 +310,7 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
       this.setFemale.nativeElement.style.display = 'none';
       this.setMale.nativeElement.style.display = 'block';
     }
+    this.audioService.clearAllAudioBuffers();
   }
   // Method to navigate back
   goBack() {

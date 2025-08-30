@@ -24,8 +24,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalHATC') modalHATC!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalHATC') closeModalButtonHATC!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionHATC') questionHATC!: ElementRef<HTMLButtonElement>;
-  @ViewChild('HATCprev') HATCprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('HATCnext') HATCnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('HATCdots') HATCdots!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCball') HATCball!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCballText') HATCballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('HATCtimeInput') HATCtimeInput!: ElementRef<HTMLSelectElement>;
@@ -53,17 +52,14 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   private HATCroundsResults: any[] = [];
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
     //modal events set up
-    this.closeModalButtonHATC.nativeElement.onclick = () => this.globalService.closeModal(this.modalHATC);
+   this.globalService.initBulletSlider(this.modalHATC, this.HATCdots, 'slides');
+    this.closeModalButtonHATC.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHATC));
+    this.questionHATC.nativeElement.onclick = () => this.globalService.openModal(this.modalHATC, this.HATCdots, 'slides');
     this.questionHATC.nativeElement.onclick = () => this.globalService.openModal(this.modalHATC);
-    this.HATCnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalHATC);
-    this.HATCprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalHATC);
-    this.globalService.openModal(this.modalHATC);
-    //populate input
+     //populate input
     for (let HATCi = 2; HATCi <= 12; HATCi++) { // assuming 1 to 12 rounds
       let HATCoption = document.createElement('option');
       HATCoption.value = (HATCi).toString(); // Convert the number to a string
@@ -126,13 +122,12 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.HATCResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("pinchRun");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-
+   
   startHATC(): void{
+    //initialize sounds
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHATC.nativeElement.disabled = true;
@@ -144,7 +139,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       this.HATCtimeInput.nativeElement.style.display = "none";
       this.startCountdownHATC();
       this.HATCballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -281,7 +276,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
         }, 3000);
@@ -359,7 +354,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
   saveHATC(): void{
     const savedResults = JSON.parse(localStorage.getItem('HATCResults') || '[]'); // Retrieve existing results or initialize an empty array
-    savedResults.push({ date: new Date().toISOString(), result: this.HATCroundsResults, rounds: this.roundsHATC }); // Add the new result with the current date
+    savedResults.push({ date: new Date().toISOString(), roundsResult: this.HATCroundsResults, result: this.timerDisplayHATC.nativeElement.innerHTML, rounds: this.roundsHATC }); // Add the new result with the current date
     localStorage.setItem('HATCResults', JSON.stringify(savedResults)); // Save updated results back to local storage
 
     // Show the saved message

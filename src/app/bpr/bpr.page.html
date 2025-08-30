@@ -4,13 +4,11 @@
       <button class="goback"></button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
 </header>  
   <div class="results-container">
-    <h2 class="english">Results</h2>
-    <h2 class="portuguese">Resultados</h2>
     <div class="calendar" #resultCalendar>
       <div class="calendar-header">
         <button (click)="changeMonth(-1)">&larr;</button> <!-- Left arrow -->
@@ -44,33 +42,39 @@
       <p>Acompanhe seus resultados e acompanhe o progresso em seus exercícios de respiração preferidos e de retenção de respiração. Observar seu progresso serve como um motivador poderoso, incentivando você a continuar seu treinamento e buscar um melhor desempenho.</p>
     </div>
     <div id="noResultsMessage" #noResultsMessage style="display: none;">
-      <div class="breathingpages2 english">
-        <h3>It looks like you haven't done any breathing exercise. Find out what your Briza Retention Test score is to get started with the Briza Program.</h3>
-        <a routerLink="/brt">
-            <img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/brt.svg" />
+      <div class="programpageStyle">
+        <h2 class="english justifyContent">It looks like you haven't done breathing exercise yet. Find out what your retention test score is to
+            get started</h2>
+        <h2 class="portuguese justifyContent">Parece que você ainda não fez nenhum exercício de respiração. Descubra qual é a sua pontuação no teste de renteção
+            para começar</h2>
+        <a class="breath-button" routerLink="/brt">
+          <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
+          <div class="textBP">
+              <div class="titleBP english">Briza<br>Retention Test</div>
+              <div class="subtitleBP english">Measure your fitness level</div>
+              <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
+              <div class="subtitleBP portuguese">Medindo seu nível de condicionamento físico</div>
+          </div>
         </a>
-      </div>
-      <div class="breathingpages2 portuguese">
-        <h3>Parece que você ainda não fez nenhum exercício de respiração. Descubra qual é a sua pontuação com o Teste de Retenção Briza para começar com o Programa Briza</h3>
-        <a routerLink="/brt">
-          <img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/brtPT.svg" />
-        </a>
-        
       </div>
     </div>
   </div>
   <footer id="resultsFooter" class="english">
     <div class="navbar">
-        <a id="navResults" routerLink="/home"><i class="fa fa-home"></i>Home</a>
+        <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
         <a class="active"><i class="fa fa-line-chart active"></i>Results</a>
-        <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+        <a class="navIcons"routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
     </div>
   </footer>
   <footer id="resultsFooterBR" class="portuguese">
     <div class="navbar">
-        <a id="navResults" routerLink="/home"><i class="fa fa-home"></i>Home</a>
+        <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
         <a class="active"><i class="fa fa-line-chart active"></i>Resultados</a>
-        <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+        <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
   <ion-modal [isOpen]="isModalOpen2" (willDismiss)="closeModal()">
@@ -86,7 +90,7 @@
   
           <!-- For results with multiple rounds -->
           <div *ngIf="isMultiRoundExercise(result.exerciseKey)">
-            <div *ngFor="let round of result.result; let i = index">
+            <div *ngFor="let round of result.roundsResult; let i = index">
               <p>Round {{ i + 1 }}: {{ formatTime(round) }}</p>
             </div>
           </div>

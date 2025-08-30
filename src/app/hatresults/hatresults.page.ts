@@ -27,7 +27,7 @@ export class HatresultsPage implements AfterViewInit {
   @ViewChild('HATchartCanvas') HATchartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('HATchartContainer') HATchartContainer!: ElementRef<HTMLDivElement>;
   HATChart: any;
-  HATDataArray: ReadonlyArray<{ date: Date; result: number[], rounds: number }> = [];
+  HATDataArray: ReadonlyArray<{ date: Date; roundsResult: number[], rounds: number }> = [];
   HATstartDate!: Date;
   HATendDate!: Date;
   HATfixedLatestDate!: Date;
@@ -43,7 +43,7 @@ export class HatresultsPage implements AfterViewInit {
   @ViewChild('HATCchartCanvas') HATCchartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('HATCchartContainer') HATCchartContainer!: ElementRef<HTMLDivElement>;
   HATCChart: any;
-  HATCDataArray: ReadonlyArray<{ date: Date; result: number[], rounds: number }> = [];
+  HATCDataArray: ReadonlyArray<{ date: Date; roundsResult: number[], rounds: number }> = [];
   HATCstartDate!: Date;
   HATCendDate!: Date;
   HATCfixedLatestDate!: Date;
@@ -59,7 +59,7 @@ export class HatresultsPage implements AfterViewInit {
   @ViewChild('AHATchartCanvas') AHATchartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('AHATchartContainer') AHATchartContainer!: ElementRef<HTMLDivElement>;
   AHATChart: any;
-  AHATDataArray: ReadonlyArray<{ date: Date; result: number[], rounds: number }> = [];
+  AHATDataArray: ReadonlyArray<{ date: Date; roundsResult: number[], rounds: number }> = [];
   AHATstartDate!: Date;
   AHATendDate!: Date;
   AHATfixedLatestDate!: Date;
@@ -123,7 +123,7 @@ export class HatresultsPage implements AfterViewInit {
     this.HATDataArray = Object.freeze(
       data.map((item: any) => ({
         date: Object.freeze(new Date(item.date)),
-        result: Object.freeze(item.result),
+        roundsResult: Object.freeze(item.roundsResult),
         rounds: item.rounds
       }))
     );
@@ -158,7 +158,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest round
     const allRoundsWithDates = this.HATDataArray.map(entry => ({
-      round: Math.max(...entry.result),
+      round: Math.max(...entry.roundsResult),
       date: entry.date
     }));
     const longestRoundEntry = allRoundsWithDates.reduce((max, entry) =>
@@ -169,7 +169,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest session average
     const sessionAveragesWithDates = this.HATDataArray.map(entry => ({
-      average: entry.result.reduce((a, b) => a + b, 0) / entry.rounds,
+      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
       date: entry.date
     }));
     const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
@@ -268,8 +268,8 @@ export class HatresultsPage implements AfterViewInit {
       if (resultDate < HATstartDate || resultDate > HATendDate) return;
   
       const formattedDate = this.formatDate(resultDate); // Using "dd/mm" format
-      const sessionAverage = hatResult.result.reduce((a, b) => a + b, 0) / hatResult.rounds;
-      const maxRound = Math.max(...hatResult.result);
+      const sessionAverage = hatResult.roundsResult.reduce((a, b) => a + b, 0) / hatResult.rounds;
+      const maxRound = Math.max(...hatResult.roundsResult);
   
       if (!aggregatedData[formattedDate]) {
         aggregatedData[formattedDate] = { totalValue: sessionAverage, count: 1, maxRound: maxRound };
@@ -353,7 +353,7 @@ export class HatresultsPage implements AfterViewInit {
     this.HATCDataArray = Object.freeze(
       data.map((item: any) => ({
         date: Object.freeze(new Date(item.date)),
-        result: Object.freeze(item.result),
+        roundsResult: Object.freeze(item.roundsResult),
         rounds: item.rounds
       }))
     );
@@ -388,7 +388,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest round
     const allRoundsWithDates = this.HATCDataArray.map(entry => ({
-      round: Math.max(...entry.result),
+      round: Math.max(...entry.roundsResult),
       date: entry.date
     }));
     const longestRoundEntry = allRoundsWithDates.reduce((max, entry) =>
@@ -399,7 +399,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest session average
     const sessionAveragesWithDates = this.HATCDataArray.map(entry => ({
-      average: entry.result.reduce((a, b) => a + b, 0) / entry.rounds,
+      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
       date: entry.date
     }));
     const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
@@ -498,8 +498,8 @@ export class HatresultsPage implements AfterViewInit {
       if (resultDate < HATCstartDate || resultDate > HATCendDate) return;
   
       const formattedDate = this.formatDate(resultDate); // Using "dd/mm" format
-      const sessionAverage = hatResult.result.reduce((a, b) => a + b, 0) / hatResult.rounds;
-      const maxRound = Math.max(...hatResult.result);
+      const sessionAverage = hatResult.roundsResult.reduce((a, b) => a + b, 0) / hatResult.rounds;
+      const maxRound = Math.max(...hatResult.roundsResult);
   
       if (!aggregatedData[formattedDate]) {
         aggregatedData[formattedDate] = { totalValue: sessionAverage, count: 1, maxRound: maxRound };
@@ -583,7 +583,7 @@ export class HatresultsPage implements AfterViewInit {
     this.AHATDataArray = Object.freeze(
       data.map((item: any) => ({
         date: Object.freeze(new Date(item.date)),
-        result: Object.freeze(item.result),
+        roundsResult: Object.freeze(item.roundsResult),
         rounds: item.rounds
       }))
     );
@@ -618,7 +618,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest round
     const allRoundsWithDates = this.AHATDataArray.map(entry => ({
-      round: Math.max(...entry.result),
+      round: Math.max(...entry.roundsResult),
       date: entry.date
     }));
     const longestRoundEntry = allRoundsWithDates.reduce((max, entry) =>
@@ -629,7 +629,7 @@ export class HatresultsPage implements AfterViewInit {
   
     // Find the latest longest session average
     const sessionAveragesWithDates = this.AHATDataArray.map(entry => ({
-      average: entry.result.reduce((a, b) => a + b, 0) / entry.rounds,
+      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
       date: entry.date
     }));
     const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
@@ -728,8 +728,8 @@ export class HatresultsPage implements AfterViewInit {
       if (resultDate < AHATstartDate || resultDate > AHATendDate) return;
   
       const formattedDate = this.formatDate(resultDate); // Using "dd/mm" format
-      const sessionAverage = hatResult.result.reduce((a, b) => a + b, 0) / hatResult.rounds;
-      const maxRound = Math.max(...hatResult.result);
+      const sessionAverage = hatResult.roundsResult.reduce((a, b) => a + b, 0) / hatResult.rounds;
+      const maxRound = Math.max(...hatResult.roundsResult);
   
       if (!aggregatedData[formattedDate]) {
         aggregatedData[formattedDate] = { totalValue: sessionAverage, count: 1, maxRound: maxRound };

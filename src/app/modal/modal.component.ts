@@ -82,7 +82,7 @@ export class ModalComponent implements OnInit {
         await this.checkSubscriptionStatus();
         alert(this.isPortuguese ? 'Assinatura realizada com sucesso!' : 'Subscription successful!');
         this.closeModal();
-        window.location.href = '/home'; // Redirect user
+        window.location.href = '/breathwork'; // Redirect user
       }
     } catch (error: any) {
       console.error('Purchase failed:', error);

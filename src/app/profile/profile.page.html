@@ -6,7 +6,7 @@
     <div class="logo-container">
       <img
         class="logoimg"
-        src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg"
+        src="assets/images/B_DEGRAD.svg"
         width="50"
         height="50"
       />
@@ -14,11 +14,18 @@
     <div class="placeholderHeader"></div>
   </header>
   <div class="breathingpages">
-    <h1 class="portuguese">Conta</h1>
-    <h1 class="english">Account</h1>
+    <h2 class="portuguese">Conta</h2>
+    <h2 class="english">Account</h2>
     <div class="flexProfile">
       <div #userEmail></div>
     </div>
+    <ion-button 
+      *ngIf="isAdmin()" 
+      expand="block" 
+      color="danger" 
+      (click)="goToAdminComments()">
+      Manage Comments
+    </ion-button>
     <div class="flexProfile">
       <a
         class="portuguese profileBTN"
@@ -98,15 +105,6 @@
     </div>
     <hr />
     <div class="profile">
-      <h2 class="portuguese">Idioma</h2>
-      <h2 class="english">Language</h2>
-      <div class="flags">
-        <a #portuguese><img src="https://brizastorage.blob.core.windows.net/images/br.png" /></a>
-        <a #english><img src="https://brizastorage.blob.core.windows.net/images/en.png" /></a>
-      </div>
-    </div>
-    <hr />
-    <div class="profile">
       <h2 class="portuguese">Contato</h2>
       <h2 class="english">Contact</h2>
       <div class="contactProfile">
@@ -115,8 +113,7 @@
       </div>
       <div class="contactProfile">
         <p>Website</p>
-        <a class="english" href="https://www.brizabreath.com/" target="_blank">brizabreath.com</a>
-        <a class="portuguese" href="https://www.brizabreath.com/br" target="_blank">brizabreath.com</a>
+        <a href="https://www.brizabreath.com/" target="_blank">brizabreath.com</a>
       </div>
       <div class="contactProfile">
         <p>Instagram</p>
@@ -158,20 +155,23 @@
         routerLink="/sources"
         >Sources List</a
       >
-      <div class="smallText">Briza 1.6</div>
     </div>
   </div>
   <footer id="profileFooter" class="portuguese">
     <div class="navbar">
-      <a id="navHome2" routerLink="/home"><i class="fa fa-home"></i>Home</a>
-      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
       <a class="active"><i class="fa fa-user active"></i>Perfil</a>
     </div>
   </footer>
   <footer id="profileFooter" class="english">
     <div class="navbar">
-      <a id="navHome2" routerLink="/home"><i class="fa fa-home"></i>Home</a>
-      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
       <a class="active"><i class="fa fa-user active"></i>Profile</a>
     </div>
   </footer>

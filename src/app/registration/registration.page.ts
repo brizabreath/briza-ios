@@ -19,6 +19,7 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
   ],
 })
 export class RegistrationPage {
+  name: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
@@ -47,12 +48,12 @@ export class RegistrationPage {
     } else {
       try {
         // Call register() method from AuthService
-        const success = await this.authService.register(this.email, this.password);
+        const success = await this.authService.register(this.email, this.password, this.name);
 
         if (success) {
           // Registration successful, redirect to login
           this.registrationError = '';
-          this.navCtrl.navigateRoot('/home');
+          this.navCtrl.navigateRoot('/breathwork');
         } else {
           // Registration failed (e.g., user already exists)
           this.registrationError = isPortuguese

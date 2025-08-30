@@ -6,7 +6,7 @@
     <div class="logo-container">
       <img
         class="logoimg"
-        src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg"
+        src="assets/images/B_DEGRAD.svg"
         width="50"
         height="50"
       />
@@ -23,7 +23,11 @@
         <ion-label position="stacked">Current Email</ion-label>
         <ion-input class="form-control" type="email" [value]="email" readonly></ion-input>
       </ion-item>
-
+      <!-- Name -->
+      <ion-item>
+        <ion-label position="stacked">Name</ion-label>
+        <ion-input class="form-control" type="text" [(ngModel)]="name" name="name"></ion-input>
+      </ion-item>
       <!-- New Email (optional) -->
       <ion-item>
         <ion-label position="stacked">New Email</ion-label>

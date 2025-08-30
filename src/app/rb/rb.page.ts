@@ -24,8 +24,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalRB') modalRB!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalRB') closeModalButtonRB!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionRB') questionRB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('RBprev') RBprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('RBnext') RBnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('RBdots') RBdots!: ElementRef<HTMLDivElement>;
   @ViewChild('RBball') RBball!: ElementRef<HTMLDivElement>;
   @ViewChild('RBballText') RBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('RBtimeInput') RBtimeInput!: ElementRef<HTMLSelectElement>;
@@ -56,16 +55,12 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   private RBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonRB.nativeElement.onclick = () => this.globalService.closeModal(this.modalRB);
+   this.globalService.initBulletSlider(this.modalRB, this.RBdots, 'slides');
+    this.closeModalButtonRB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalRB));
+    this.questionRB.nativeElement.onclick = () => this.globalService.openModal(this.modalRB, this.RBdots, 'slides');
     this.questionRB.nativeElement.onclick = () => this.globalService.openModal(this.modalRB);
-    this.RBnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalRB);
-    this.RBprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalRB);
-    this.globalService.openModal(this.modalRB);
     //populate input
     for (let RBi = 2; RBi <= 60; RBi++) { // assuming 1 to 60 minutes
       let RBoption = document.createElement('option');
@@ -133,15 +128,13 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     this.RBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("hold");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-  
+   
   startRB(): void{
+    this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
+    //initialize sounds
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsRB.nativeElement.disabled = true;
@@ -153,7 +146,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.RBtimeInput.nativeElement.style.display = "none";
       this.startCountdownRB();
       this.RBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -172,7 +165,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.RBcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputRB.nativeElement.value), this.RBball);
         this.RBinterval = setInterval(() => this.startTimerRB(), 1000);
         this.RBTimer = setInterval(() => this.DisplayTimerRB(), 1000);
@@ -271,6 +265,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.hold1RB = false;
       this.exhaleRB = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.RBcurrentValue); 
       if(this.isPortuguese){
         this.RBballText.nativeElement.textContent = "Espire"
       }else{
@@ -283,7 +278,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
         this.exhaleRB = false;
         this.inhaleRB = true;
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.RBcurrentValue); 
         if(this.isPortuguese){
           this.RBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -309,7 +305,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);

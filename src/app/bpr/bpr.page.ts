@@ -24,7 +24,7 @@ export class BPRPage implements OnInit {
     { nameEN: 'High Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
     { nameEN: 'Guided Hyperventilation', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
-    { nameEN: 'Others', namePT: 'Outros', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults'], url: '/allresults' }
+    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults'], url: '/allresults' }
   ];
 
   @ViewChild('resultsList', { static: true }) resultsList!: ElementRef<HTMLDivElement>;
@@ -134,6 +134,7 @@ export class BPRPage implements OnInit {
         CBResults: { en: 'Coherent Breathing', pt: 'Respiração Coerente' },
         RBResults: { en: 'Relaxation Breathing', pt: 'Respiração Relaxante' },
         NBResults: { en: 'Nadi Shodhana', pt: 'Nadi Shodhana' },
+        LungsResults: { en: 'Lungs Expansion', pt: 'Expansão Pulmonar' },
       };
     const language = this.isPortuguese ? 'pt' : 'en';
     return exerciseNames[key]?.[language] || 'Exercise Name Not Found';
@@ -155,7 +156,7 @@ export class BPRPage implements OnInit {
         'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-        'CBResults', 'RBResults', 'NBResults', 'CUSTResults'
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults'
     ];
 
     this.resultsByDate = {};

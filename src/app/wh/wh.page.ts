@@ -23,8 +23,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalWH') modalWH!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalWH') closeModalButtonWH!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionWH') questionWH!: ElementRef<HTMLButtonElement>;
-  @ViewChild('WHprev') WHprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('WHnext') WHnext!: ElementRef<HTMLButtonElement>; 
+  @ViewChild('WHdots') WHdots!: ElementRef<HTMLDivElement>;
   @ViewChild('WHball') WHball!: ElementRef<HTMLDivElement>;
   @ViewChild('WHballText') WHballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('WHtimeInput') WHtimeInput!: ElementRef<HTMLSelectElement>;
@@ -55,15 +54,12 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   private WHbreathSpeed: any = null;
   isModalOpen = false;
 
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonWH.nativeElement.onclick = () => this.globalService.closeModal(this.modalWH);
+    this.globalService.initBulletSlider(this.modalWH, this.WHdots, 'slides');
+    this.closeModalButtonWH.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalWH));
+    this.questionWH.nativeElement.onclick = () => this.globalService.openModal(this.modalWH, this.WHdots, 'slides');
     this.questionWH.nativeElement.onclick = () => this.globalService.openModal(this.modalWH);
-    this.WHnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalWH);
-    this.WHprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalWH);
-    this.globalService.openModal(this.modalWH);
     //populate input
     for (let WHi = 2; WHi <= 8; WHi++) { // assuming 1 to 8 rounds
       let WHoption = document.createElement('option');
@@ -114,14 +110,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("fullyin");
-    this.audioService.initializeAudioObjects("fullyout");
-    this.audioService.initializeAudioObjects("letgoandhold");
-    this.audioService.initializeAudioObjects("fullyinHold");
-    this.audioService.initializeAudioObjects("normalbreath");
-    this.audioService.initializeAudioObjects("nextRound");
+    this.audioService.initializeSong(); 
     //set up breaths
     this.WHbreaths = localStorage.getItem('numberOfBreaths');
     // Check if it doesn't exist or is null
@@ -141,8 +130,10 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     }
     this.breathsInputWH.nativeElement.value = (this.WHbreaths - 1).toString();
   }
-
+   
   startWH(): void{
+     //initialize sounds
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsWH.nativeElement.disabled = true;
@@ -154,7 +145,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       this.WHtimeInput.nativeElement.style.display = "none";
       this.startCountdownWH();
       this.WHballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -318,7 +309,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Next Round"
         }
-        this.audioService.playSound('nextRound');
+        this.audioService.playSound('letGo');
         const timeoutId7 = setTimeout(() => {
           this.WHinterval = setInterval(() => {
             this.audioService.playBreath('fullyin');
@@ -346,7 +337,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);
@@ -425,7 +416,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
   saveWH(): void{
     const savedResults = JSON.parse(localStorage.getItem('WHResults') || '[]'); // Retrieve existing results or initialize an empty array
-    savedResults.push({ date: new Date().toISOString(), result: this.WHroundsResults, rounds: this.roundsWH }); // Add the new result with the current date
+    savedResults.push({ date: new Date().toISOString(), roundsResult: this.WHroundsResults, result: this.timerDisplayWH.nativeElement.innerHTML, rounds: this.roundsWH }); // Add the new result with the current date
     localStorage.setItem('WHResults', JSON.stringify(savedResults)); // Save updated results back to local storage
 
     // Show the saved message

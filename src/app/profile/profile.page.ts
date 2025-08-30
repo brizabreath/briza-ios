@@ -8,6 +8,8 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { Browser } from '@capacitor/browser';
+import { FirebaseService } from '../services/firebase.service';
+
 
 @Component({
   selector: 'app-profile',
@@ -22,8 +24,6 @@ import { Browser } from '@capacitor/browser';
   ],
 })
 export class ProfilePage implements AfterViewInit {
-  @ViewChild('portuguese') portuguese!: ElementRef<HTMLButtonElement>;
-  @ViewChild('english') english!: ElementRef<HTMLButtonElement>;
   @ViewChild('userEmail') userEmail!: ElementRef<HTMLDivElement>;
 
   membershipStatus: string = 'inactive';
@@ -35,8 +35,17 @@ export class ProfilePage implements AfterViewInit {
   constructor(
     private authService: AuthService,
     private navCtrl: NavController,
-    private globalService: GlobalService ) {}
+    private globalService: GlobalService,
+    private firebaseService: FirebaseService ) {}
+  
+  isAdmin() {
+    const user = this.firebaseService.auth?.currentUser;
+    return user?.email === 'info@brizabreath.com';
+  }
 
+  goToAdminComments() {
+    this.navCtrl.navigateForward('/manage-comments');
+  }
   async ngAfterViewInit() {
     try {
       let userEmail: string | null = null;
@@ -69,11 +78,9 @@ export class ProfilePage implements AfterViewInit {
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
       this.globalService.showElementsByClass('portuguese');
-      this.english.nativeElement.onclick = () => this.toEnglish();
     } else {
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
-      this.portuguese.nativeElement.onclick = () => this.toPortuguese();
     }
   }
 
@@ -106,16 +113,6 @@ export class ProfilePage implements AfterViewInit {
   checkOnlineStatus2(event: Event) {
     event.preventDefault();
     this.globalService.openModal2();
-  }
-
-  toEnglish(): void {
-    localStorage.setItem('isPortuguese', 'false');
-    window.location.reload();
-  }
-
-  toPortuguese(): void {
-    localStorage.setItem('isPortuguese', 'true');
-    window.location.reload();
   }
 
   onLogout() {

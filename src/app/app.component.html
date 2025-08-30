@@ -6,4 +6,8 @@
     (close)="onModalClose()"
   ></app-modal>
   <div class="dimOverlay"></div>
+  <!-- Splash screen shown while app loads -->
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
 </ion-app>

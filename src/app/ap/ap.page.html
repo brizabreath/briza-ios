@@ -1,44 +1,42 @@
 <ion-content>
   <header class="mainHeader">
-    <div class="back-buttons">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-  </header>  
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsAP" #settingsAP class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionAP type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
+  </header>   
   <div id="apPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Apnea Training</h4>
-            <h4 class="volumeSettings portuguese">Treinamento de Apneia</h4>
-            <div class="questionMark questionClass">
-              <button #questionAP type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsAP" #settingsAP class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings english">Apnea Training</h1>
+            <h1 class="volumeSettings portuguese">Treino de Apneia</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form AP">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | HOLD | EXHALE</b>
-                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE</b>
-                  </div>
                   <div class="form-line">
                     <button class="buttonminus" type="button" #minusAP>-</button>
                   </div>  
                   <div class="form-line">
+                      <img src="assets/images/in.png">
                       <input type="number" value="3" #inhaleInputAP min="1" readonly>
                   </div>
   
                   <div class="form-line">
+                      <img src="assets/images/pause.png">
                       <input type="number" value="12" #hold1InputAP min="1" readonly>
                   </div>
   
                   <div class="form-line">
+                      <img src="assets/images/out.png">
                       <input type="number" value="6" #exhaleInputAP min="1" readonly>
                   </div>
                 <div class="form-line">
@@ -57,7 +55,7 @@
                 <button #startBtnAP class="ballButton">
                   <div #APball class="ball">
                       <span #APballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -82,20 +80,16 @@
         <span class="close" id="closeModalAP" #closeModalAP>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+                <img src="assets/images/yogiclines.svg">
                 <div class="text english">
-                  <p>This apnea breathing technique is based on the principles of deep breathing and diaphragmatic breathing, allowing you to use the full capacity of your lungs and create more tolerance to breath-holding exercises. Start with small intervals until you are used to this technique</p>
+                  <p>This apnea breathing technique is based on the principles of deep breathing and diaphragmatic breathing, allowing you to use the full capacity of your lungs and create more tolerance to breath-holding exercises</p>
                 </div>
                 <div class="text portuguese">
-                  <p>Esta técnica de respiração apneica é baseada nos princípios da respiração profunda e respiração diafragmática, permitindo que você use a capacidade total dos seus pulmões e crie mais tolerância aos exercícios de retenção de respiração. Comece com pequenos intervalos até que você esteja acostumado com esta técnica</p>
+                  <p>Esta técnica de respiração apneica é baseada nos princípios da respiração profunda e respiração diafragmática, permitindo que você use a capacidade total dos seus pulmões e crie mais tolerância aos exercícios de retenção de respiração</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
@@ -108,24 +102,20 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for (5 to 10 minutes is recommended)
+                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo (recomenda-se de 5 a 10 minutos)
+                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 3</div>
-                <div class="numbertext portuguese">Passo 3</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <img src="assets/images/breathlight.svg">
                 <div class="text english">
                   <p>
                     Press 'Start' and follow the guided technique always breathing through the nose. Save your results at the end
@@ -138,9 +128,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">KEEP IN MIND</div>
-                <div class="numbertext portuguese">Nota</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you finding it too hard, stop doing it and choose a lower ratio 
@@ -152,9 +140,7 @@
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #APprev>&#10094;</a>
-            <a class="next" #APnext>&#10095;</a>
+            <div class="dots" #APdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

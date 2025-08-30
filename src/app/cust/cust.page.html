@@ -1,46 +1,43 @@
 <ion-content>
   <header class="mainHeader">
-    <div class="back-buttons">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsCUST" #settingsCUST class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionCUST type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
   </header>  
   <div id="custPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Choose Ratio</h4>
-            <h4 class="volumeSettings portuguese">Escolha Proporção</h4>
-            <div class="questionMark questionClass">
-              <button #questionCUST type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsCUST" #settingsCUST class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings english">Tap numbers to choose ratio</h1>
+            <h1 class="volumeSettings portuguese">Clique nos números para escolher proporção</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form CUST">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | HOLD | EXHALE | HOLD</b>
-                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE | SEGURE</b>
+                  <div class="form-line">
+                      <img src="assets/images/in.png">
+                      <input type="number" inputmode="numeric" pattern="[0-9]*" value="4" #inhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))"> 
                   </div>
                   <div class="form-line">
-                      <input type="number" value="4" #inhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))"> 
-                  </div>
-  
-                  <div class="form-line">
-                      <input type="number" value="4" #hold1InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
+                      <img src="assets/images/pause.png">
+                      <input type="number"  inputmode="numeric" pattern="[0-9]*" value="4" #hold1InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
                   </div>
   
                   <div class="form-line">
-                      <input type="number" value="4" #exhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))">
+                      <img src="assets/images/out.png">
+                      <input type="number" inputmode="numeric" pattern="[0-9]*" value="4" #exhaleInputCUST min="1" max="99" onblur="this.value = Math.max(2, Math.min(99, this.value))">
                   </div>
-  
                   <div class="form-line">
-                    <input type="number" value="4" #hold2InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
+                      <img src="assets/images/pause.png">
+                    <input type="number" inputmode="numeric" pattern="[0-9]*" value="4" #hold2InputCUST min="0" max="99" onblur="this.value = Math.max(0, Math.min(99, this.value))">
                 </div>
               </div>
               <div class="CUSTtimer-container">
@@ -55,7 +52,7 @@
                 <button #startBtnCUST class="ballButton">
                   <div #CUSTball class="ball">
                       <span #CUSTballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -80,9 +77,7 @@
         <span class="close" id="closeModalCUST" #closeModalCUST>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+                <img src="assets/images/yogiclines.svg">
                 <div class="text english">
                   <p>Personalize your training by choosing the breathing ratio that works best for you. Just click on the numbers and choose your preferred ratio</p>
                 </div>
@@ -91,9 +86,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
@@ -106,30 +99,23 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for (5 to 10 minutes is recommended)
+                    Choose a ratio by clicking on the numbers input. You can also choose how long you want to do it for
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p> 
-                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo (recomenda-se de 5 a 10 minutos)
+                    Selecione uma proporção clicando nos números inseridos. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p> 
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 3</div>
-                <div class="numbertext portuguese">Passo 3</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again.
-                  </p>
-                  <p>
-                    In the end, save your results to track your improvement over time
+                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again. In the end, save your results to track your improvement over time
                   </p>
                 </div>
                 <div class="text portuguese">
@@ -139,9 +125,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">KEEP IN MIND</div>
-                <div class="numbertext portuguese">Nota</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <img src="assets/images/airhunger.svg">
                 <div class="text english">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you finding it too hard, stop doing it and choose a lower ratio
@@ -153,9 +137,7 @@
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #CUSTprev>&#10094;</a>
-            <a class="next" #CUSTnext>&#10095;</a>
+            <div class="dots" #CUSTdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

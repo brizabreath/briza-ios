@@ -1,41 +1,36 @@
 <ion-content>
   <header class="mainHeader">
-    <div class="back-buttons">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsRB" #settingsRB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionRB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
   </header>  
   <div id="rbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">4-7-8 Relaxation Breathing</h4>
-            <h4 class="volumeSettings portuguese">4-7-8 Respiração Relaxante</h4>
-            <div class="questionMark questionClass">
-              <button #questionRB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsRB" #settingsRB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings">4-7-8</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form RB">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | HOLD | EXHALE</b>
-                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE</b>
-                  </div>
                   <div class="form-line">
+                      <img src="assets/images/in.png">
                       <input type="number" value="4" #inhaleInputRB min="1" readonly>
                   </div>
-  
                   <div class="form-line">
+                      <img src="assets/images/pause.png">
                       <input type="number" value="7" #hold1InputRB min="1" readonly>
                   </div>
-  
                   <div class="form-line">
+                      <img src="assets/images/out.png">
                       <input type="number" value="8" #exhaleInputRB min="1" readonly>
                   </div>
               </div>
@@ -51,7 +46,7 @@
                 <button #startBtnRB class="ballButton">
                   <div #RBball class="ball">
                       <span #RBballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -76,9 +71,8 @@
         <span class="close" id="closeModalRB" #closeModalRB>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+
+                <img src="assets/images/yogiclines.svg">
                 <div class="text english">
                   <p>The 478 breathing technique is based on the principles of deep breathing and diaphragmatic breathing, which have been shown to reduce stress and anxiety by activating the body's relaxation response
                     By slowing down the breath and focusing on the pattern of inhalation and exhalation, the mind is able to become more calm and centered.
@@ -92,9 +86,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
@@ -107,9 +99,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again
@@ -121,9 +111,7 @@
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #RBprev>&#10094;</a>
-            <a class="next" #RBnext>&#10095;</a>
+            <div class="dots" #RBdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

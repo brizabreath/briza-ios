@@ -1,8 +1,9 @@
 <div class="logo" [ngClass]="{ 'blinking': isLoggingIn }">
-  <img src="https://brizastorage.blob.core.windows.net/images/brizalogo.png" width="250" height="100" />
+  <img src="assets/images/splash.png" width="250" height="100" />
 </div>
 
 <ion-content>
+  <div id="loginGrid">
   <form (submit)="onLogin()">
     <ion-item>
       <ion-input appAutofill 
@@ -32,5 +33,14 @@
     <p *ngIf="loginError" style="color: red; text-align: center;">{{ loginError }}</p>
   </form>
   <p class="textForm"><a routerLink="/forgot-password">{{ isPortuguese ? 'Esqueceu Senha?' : 'Forgot Password?' }}</a></p>
-  <p class="textForm">{{ isPortuguese ? 'Não tem uma conta?' : 'Don't have an account?' }} <br><a routerLink="/registration">{{ isPortuguese ? 'Registre aqui' : 'Register here' }}</a></p>
+  <p class="textForm">{{ isPortuguese ? 'Não tem uma conta?' : 'Don`t have an account?' }}<br><a routerLink="/registration">{{ isPortuguese ? 'Registre aqui' : 'Register here' }}</a></p>
+  <div class="profileLogin textForm2">
+    <h2 class="portuguese">Idioma</h2>
+    <h2 class="english">Language</h2>
+    <div class="flags">
+      <a #portuguese><img src="assets/images/br.png" /></a>
+      <a #english><img src="assets/images/en.png" /></a>
+    </div>
+  </div>
+  </div>
 </ion-content>

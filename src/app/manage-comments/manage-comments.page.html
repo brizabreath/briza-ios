@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="back-buttons">
+          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <ion-title>Manage Comments</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar [(ngModel)]="q" placeholder="Search comments..."></ion-searchbar>
+
+    <ion-list>
+    <ion-item lines="full" *ngFor="let c of filtered()">
+        <ion-label>
+        <div class="title">
+            <b>{{ c.userName }}</b> on <b>{{ c.videoTitle || ('Video ' + c.videoId) }}</b>
+            <span class="time" *ngIf="c.createdAt">{{ c.createdAt | date:'short' }}</span>
+        </div>
+        <div class="textCom">{{ c.text }}</div>
+
+        <!-- Reply box -->
+        <div *ngIf="replyOpenId === c.id" style="margin-top:8px">
+            <ion-textarea
+            [(ngModel)]="replyText"
+            placeholder="Write a reply..."
+            autoGrow="true">
+            </ion-textarea>
+            <div style="display:flex; gap:8px; margin-top:6px">
+            <ion-button size="small" (click)="submitReply(c)">Reply</ion-button>
+            <ion-button size="small" fill="clear" (click)="toggleReply(c.id!)">Cancel</ion-button>
+            </div>
+        </div>
+        </ion-label>
+
+        <div slot="end" style="display:flex; gap:8px">
+        <ion-button size="small" fill="outline" (click)="toggleReply(c.id)">Reply</ion-button>
+        <ion-button size="small" color="danger" (click)="deleteComment(c)">Delete</ion-button>
+        </div>
+    </ion-item>
+    </ion-list>
+
+</ion-content>

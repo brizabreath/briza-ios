@@ -1,25 +1,51 @@
 <ion-content>
   <header class="mainHeader">
-      <div class="back-buttons">
-          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
-      </div>
-      <div class="logo-container">
-          <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
-      </div>
-      <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-  </header>  
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <!-- English Section -->
   <div class="breathingpages english">
     <h1>Lungs Expansion Training</h1>
-    <div class="lungsVideoContanier">
-      <iframe class="lungsVideo" src="https://www.youtube.com/embed/f5cQBVsmz98?si=KGdiw5V_VwUBCTEf" title="Lungs Expansion Training" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <div class="lungsVideoContainer">
+      <video #videoElement
+        class="lungsVideo"
+        src="assets/videos/LE.mp4"
+        poster="assets/images/lungs.svg"
+        title="Lungs Expansion Training"
+        controls
+        playsinline
+        preload="metadata"
+        (play)="enterFullscreen(videoElement)"
+      ></video>
     </div>
-    <p>Follow this 23 minutes video and learn how to expand your lungs creating more volume capacity and making full use of your breathing system</p>
+    <p class="description">
+      Follow this 23-minute video and learn how to expand your lungs, create more volume capacity, and make full use of your breathing system.
+    </p>
   </div>
+
+  <!-- Portuguese Section -->
   <div class="breathingpages portuguese">
     <h1>Treinamento de Expansão Pulmonar</h1>
-    <div class="lungsVideoContanier">
-      <iframe class="lungsVideo" src="https://www.youtube.com/embed/cm89r49BLbc?si=pOvyR7DQrI-copi2" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <div class="lungsVideoContainer">
+      <video #videoElementPT
+        class="lungsVideo"
+        src="assets/videos/LEPT.mp4"
+        poster="assets/images/lungsPT.svg"
+        title="Treinamento de Expansão Pulmonar"
+        controls
+        playsinline
+        preload="metadata"
+        (play)="enterFullscreen(videoElementPT)"
+      ></video>
     </div>
-    <p>Siga este vídeo de 20 minutos e aprenda como expandir seus pulmões criando maior capacidade de volume e fazendo uso completo do seu sistema respiratório</p>
-</div>
+    <p class="description">
+      Siga este vídeo de 20 minutos e aprenda como expandir seus pulmões, criando maior capacidade de volume e fazendo uso completo do seu sistema respiratório.
+    </p>
+  </div>
 </ion-content>

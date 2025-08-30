@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { AudioService } from '../services/audio.service'; 
+
 
 @Component({
   selector: 'app-set',
@@ -31,7 +33,11 @@ export class SetPage implements AfterViewInit, OnDestroy {
   @ViewChild('maleBarSet') maleBarSet!: ElementRef<HTMLInputElement>;
   @ViewChild('voiceBarSet') voiceBarSet!: ElementRef<HTMLInputElement>;
   @ViewChild('bellBarSet') bellBarSet!: ElementRef<HTMLInputElement>;
-  @ViewChild('songSelectSet') songSelectSet!: ElementRef<HTMLSelectElement>; // Reference to the select element
+  @ViewChild('songSelectSet') songSelectSet!: ElementRef<HTMLSelectElement>; 
+  @ViewChild('setBrmute') setBrmute!: ElementRef<HTMLDivElement>;
+  @ViewChild('setBraudio') setBraudio!: ElementRef<HTMLDivElement>;
+  @ViewChild('breathBarSET') breathBarSET!: ElementRef<HTMLInputElement>;
+
 
   private currentAudio: HTMLAudioElement | null = null; // To keep track of the currently playing audio
   private timeoutIdSet: any; // To store the timeout ID for stopping audio playback
@@ -39,10 +45,10 @@ export class SetPage implements AfterViewInit, OnDestroy {
   private voiceMute = localStorage.getItem('voiceMute') === 'true';
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private isFemale = localStorage.getItem('isFemale') === 'true';
+  private breathMute = localStorage.getItem('breathMute') === 'true';
 
 
-
-  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
+  constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
   onSongChange(event: Event): void {
@@ -93,6 +99,7 @@ export class SetPage implements AfterViewInit, OnDestroy {
     this.voiceBarSet.nativeElement.addEventListener('input', () => this.handleVoiceChange());
     this.bellBarSet.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSet.nativeElement.addEventListener('input', () => this.handleMaleChange());
+    this.breathBarSET.nativeElement.addEventListener('input', () => this.handleBreathChange());
   }
 
   ionViewWillEnter() {
@@ -141,6 +148,15 @@ export class SetPage implements AfterViewInit, OnDestroy {
       this.maleBarSet.nativeElement.value = '1';
       this.setFemale.nativeElement.style.display = 'none';
       this.setMale.nativeElement.style.display = 'block';
+    }
+    if(this.breathMute){
+      this.breathBarSET.nativeElement.value = '0';
+      this.setBraudio.nativeElement.style.display = 'none';
+      this.setBrmute.nativeElement.style.display = 'block';
+    }else{
+      this.breathBarSET.nativeElement.value = '1';
+      this.setBrmute.nativeElement.style.display = 'none';
+      this.setBraudio.nativeElement.style.display = 'block';
     }
   }
   // Method to handle the volume change
@@ -201,6 +217,22 @@ export class SetPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('isFemale', 'false');
       this.setFemale.nativeElement.style.display = 'none';
       this.setMale.nativeElement.style.display = 'block';
+    }
+    this.audioService.clearAllAudioBuffers();
+  }
+  // Method to handle the volume change
+  handleBreathChange(): void {
+    const volumeSET = parseFloat(this.breathBarSET.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSET === 0) {
+      localStorage.setItem('breathMute', 'true');
+      this.setBraudio.nativeElement.style.display = 'none';
+      this.setBrmute.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('breathMute', 'false');
+      this.setBrmute.nativeElement.style.display = 'none';
+      this.setBraudio.nativeElement.style.display = 'block';
     }
   }
   // Method to navigate back

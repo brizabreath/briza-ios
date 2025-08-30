@@ -17,13 +17,11 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('personalizedBriza') personalizedBriza!: ElementRef<HTMLDivElement>;
   @ViewChild('myModalP') modalP!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalP') closeModalButtonP!: ElementRef<HTMLSpanElement>;
-  @ViewChild('Pprev') Pprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('Pnext') Pnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('Pdots') Pdots!: ElementRef<HTMLDivElement>;
   @ViewChild('questionP') questionP!: ElementRef<HTMLAnchorElement>;
 
   // Default BRT references
   @ViewChild('noBrtResults') noBrtResults!: ElementRef<HTMLDivElement>;
-  @ViewChild('noBrtResultsBR') noBrtResultsBR!: ElementRef<HTMLDivElement>;
 
   // Minus 15
   @ViewChild('brtResultMinus15Monday') brtResultMinus15Monday!: ElementRef;
@@ -33,13 +31,6 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('brtResultMinus15Friday') brtResultMinus15Friday!: ElementRef;
   @ViewChild('brtResultMinus15Saturday') brtResultMinus15Saturday!: ElementRef;
   @ViewChild('brtResultMinus15Sunday') brtResultMinus15Sunday!: ElementRef;
-  @ViewChild('brtResultMinus15MondayBR') brtResultMinus15MondayBR!: ElementRef;
-  @ViewChild('brtResultMinus15TuesdayBR') brtResultMinus15TuesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus15WednesdayBR') brtResultMinus15WednesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus15ThursdayBR') brtResultMinus15ThursdayBR!: ElementRef;
-  @ViewChild('brtResultMinus15FridayBR') brtResultMinus15FridayBR!: ElementRef;
-  @ViewChild('brtResultMinus15SaturdayBR') brtResultMinus15SaturdayBR!: ElementRef;
-  @ViewChild('brtResultMinus15SundayBR') brtResultMinus15SundayBR!: ElementRef;
 
   // Minus 25
   @ViewChild('brtResultMinus25Monday') brtResultMinus25Monday!: ElementRef;
@@ -49,13 +40,6 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('brtResultMinus25Friday') brtResultMinus25Friday!: ElementRef;
   @ViewChild('brtResultMinus25Saturday') brtResultMinus25Saturday!: ElementRef;
   @ViewChild('brtResultMinus25Sunday') brtResultMinus25Sunday!: ElementRef;
-  @ViewChild('brtResultMinus25MondayBR') brtResultMinus25MondayBR!: ElementRef;
-  @ViewChild('brtResultMinus25TuesdayBR') brtResultMinus25TuesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus25WednesdayBR') brtResultMinus25WednesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus25ThursdayBR') brtResultMinus25ThursdayBR!: ElementRef;
-  @ViewChild('brtResultMinus25FridayBR') brtResultMinus25FridayBR!: ElementRef;
-  @ViewChild('brtResultMinus25SaturdayBR') brtResultMinus25SaturdayBR!: ElementRef;
-  @ViewChild('brtResultMinus25SundayBR') brtResultMinus25SundayBR!: ElementRef;
 
   // Minus 35
   @ViewChild('brtResultMinus35Monday') brtResultMinus35Monday!: ElementRef;
@@ -65,13 +49,6 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('brtResultMinus35Friday') brtResultMinus35Friday!: ElementRef;
   @ViewChild('brtResultMinus35Saturday') brtResultMinus35Saturday!: ElementRef;
   @ViewChild('brtResultMinus35Sunday') brtResultMinus35Sunday!: ElementRef;
-  @ViewChild('brtResultMinus35MondayBR') brtResultMinus35MondayBR!: ElementRef;
-  @ViewChild('brtResultMinus35TuesdayBR') brtResultMinus35TuesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus35WednesdayBR') brtResultMinus35WednesdayBR!: ElementRef;
-  @ViewChild('brtResultMinus35ThursdayBR') brtResultMinus35ThursdayBR!: ElementRef;
-  @ViewChild('brtResultMinus35FridayBR') brtResultMinus35FridayBR!: ElementRef;
-  @ViewChild('brtResultMinus35SaturdayBR') brtResultMinus35SaturdayBR!: ElementRef;
-  @ViewChild('brtResultMinus35SundayBR') brtResultMinus35SundayBR!: ElementRef;
 
   // Plus 35
   @ViewChild('brtResultPlus35Monday') brtResultPlus35Monday!: ElementRef;
@@ -81,25 +58,17 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('brtResultPlus35Friday') brtResultPlus35Friday!: ElementRef;
   @ViewChild('brtResultPlus35Saturday') brtResultPlus35Saturday!: ElementRef;
   @ViewChild('brtResultPlus35Sunday') brtResultPlus35Sunday!: ElementRef;
-  @ViewChild('brtResultPlus35MondayBR') brtResultPlus35MondayBR!: ElementRef;
-  @ViewChild('brtResultPlus35TuesdayBR') brtResultPlus35TuesdayBR!: ElementRef;
-  @ViewChild('brtResultPlus35WednesdayBR') brtResultPlus35WednesdayBR!: ElementRef;
-  @ViewChild('brtResultPlus35ThursdayBR') brtResultPlus35ThursdayBR!: ElementRef;
-  @ViewChild('brtResultPlus35FridayBR') brtResultPlus35FridayBR!: ElementRef;
-  @ViewChild('brtResultPlus35SaturdayBR') brtResultPlus35SaturdayBR!: ElementRef;
-  @ViewChild('brtResultPlus35SundayBR') brtResultPlus35SundayBR!: ElementRef;
-
 
   latestBRTResultInSeconds = 0;
+  resultsByDate: { [date: string]: any[] } = {};
 
   constructor(private navCtrl: NavController, private globalService: GlobalService) {}
 
   ngAfterViewInit() {
-    this.closeModalButtonP.nativeElement.onclick = () => this.globalService.closeModal(this.modalP);
+   this.globalService.initBulletSlider(this.modalP, this.Pdots, 'slides');
+    this.closeModalButtonP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalP));
+    this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP, this.Pdots, 'slides');
     this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP);
-    this.Pnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalP);
-    this.Pprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalP);
-    this.globalService.openModal(this.modalP);
   }
 
   ionViewWillEnter() {
@@ -107,8 +76,26 @@ export class ProgramPage implements AfterViewInit {
   }
 
   populateProgramContent(): void {
+    this.loadResults();
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    const storedResults = localStorage.getItem('brtResults');
+    const brtResults = storedResults ? JSON.parse(storedResults) : [];
 
+    const BRTnumberOfTests = brtResults.length;
+    const BRTlatestResult = brtResults.length > 0 ? brtResults[brtResults.length - 1].result : '0:00';
+    const result = this.timeStringToSeconds(BRTlatestResult);
+    const day = this.getEnglishWeekdayKey();
+
+    this.resetAllSections();
+
+    if (BRTnumberOfTests === 0) {
+      this.noBrtResults.nativeElement.style.display = 'block';
+    } else {
+      this.latestBRTResultInSeconds = result;
+      const prefix = this.getRangePrefix(result);
+      const key = `${prefix}${day}`  as keyof this;
+      this.showSectionByKey(key);
+    }
     if (isPortuguese) {
       this.globalService.hideElementsByClass('english');
       this.globalService.showElementsByClass('portuguese');
@@ -116,27 +103,13 @@ export class ProgramPage implements AfterViewInit {
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
     }
-    const storedResults = localStorage.getItem('brtResults');
-    const brtResults = storedResults ? JSON.parse(storedResults) : [];
-
-    const BRTnumberOfTests = brtResults.length;
-    const BRTlatestResult = brtResults.length > 0 ? brtResults[brtResults.length - 1].result : '0:00';
-    const result = this.timeStringToSeconds(BRTlatestResult);
-    const day = new Date().toLocaleDateString(undefined, { weekday: 'long' });
-    const lang = isPortuguese ? 'BR' : '';
-
-    this.resetAllSections();
-
-    if (BRTnumberOfTests === 0) {
-      this[isPortuguese ? 'noBrtResultsBR' : 'noBrtResults'].nativeElement.style.display = 'block';
-    } else {
-      this.latestBRTResultInSeconds = result;
-      const prefix = this.getRangePrefix(result);
-      const key = `${prefix}${day}${lang}`  as keyof this;
-      this.showSectionByKey(key);
-    }
   }
-
+  private getEnglishWeekdayKey(): string {
+    const weekdayIndex = new Date().getDay(); // 0 (Sunday) to 6 (Saturday)
+    const weekdayKeys = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return weekdayKeys[weekdayIndex];
+  }
+  
   private getRangePrefix(seconds: number): string {
     if (seconds <= 15) return 'brtResultMinus15';
     if (seconds <= 25) return 'brtResultMinus25';
@@ -175,5 +148,48 @@ export class ProgramPage implements AfterViewInit {
   }
   goBack(): void {
     this.navCtrl.back();
+  }
+  loadResults(): void {
+    const exerciseKeys = [
+        'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
+        'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
+        'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults'
+    ];
+
+    this.resultsByDate = {};
+
+    exerciseKeys.forEach((key) => {
+        const results = JSON.parse(localStorage.getItem(key) || '[]');
+        results.forEach((result: { date: string; result: string; rounds?: number }) => {
+            const resultDateUTC = new Date(result.date);
+            
+            // Convert UTC date to a local date string in yyyy-mm-dd format
+            const localDateString = resultDateUTC.toLocaleDateString('en-CA', {
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            
+            if (!this.resultsByDate[localDateString]) {
+                this.resultsByDate[localDateString] = [];
+            }
+            this.resultsByDate[localDateString].push({ ...result, exerciseKey: key });
+        });
+    });
+  }
+  isExerciseDoneToday(key: string): boolean {
+    const today = new Date().toLocaleDateString('en-CA', {
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+
+    return (
+      this.resultsByDate[today] &&
+      this.resultsByDate[today].some(result => result.exerciseKey === key)
+    );
   }
 }

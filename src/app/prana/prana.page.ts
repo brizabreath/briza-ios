@@ -22,18 +22,16 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
 export class PranaPage implements AfterViewInit{
   @ViewChild('myModalPrana') modalPrana!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalPrana') closeModalButtonPrana!: ElementRef<HTMLSpanElement>;
-  @ViewChild('Pranaprev') Pranaprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('Prananext') Prananext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('Pranadots') Pranadots!: ElementRef<HTMLDivElement>;
   @ViewChild('questionPrana') questionPrana!: ElementRef<HTMLAnchorElement>;
+  selectedSegment: string = 'traditional';
 
   constructor(private navCtrl: NavController, private globalService: GlobalService) {}
   ngAfterViewInit() {
-    //modal events set up
-    this.closeModalButtonPrana.nativeElement.onclick = () => this.globalService.closeModal(this.modalPrana);
+   this.globalService.initBulletSlider(this.modalPrana, this.Pranadots, 'slides');
+    this.closeModalButtonPrana.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalPrana));
+    this.questionPrana.nativeElement.onclick = () => this.globalService.openModal(this.modalPrana, this.Pranadots, 'slides');
     this.questionPrana.nativeElement.onclick = () => this.globalService.openModal(this.modalPrana);
-    this.Prananext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalPrana);
-    this.Pranaprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalPrana);
-    this.globalService.openModal(this.modalPrana);  
   }
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
@@ -47,6 +45,20 @@ export class PranaPage implements AfterViewInit{
       this.globalService.showElementsByClass('english');
     }
   } 
+  selectSegment(segment: string) {
+    this.selectedSegment = segment;
+   setTimeout(() => {
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+
+    if (isPortuguese) {
+      this.globalService.hideElementsByClass('english');
+      this.globalService.showElementsByClass('portuguese');
+    } else {
+      this.globalService.hideElementsByClass('portuguese');
+      this.globalService.showElementsByClass('english');
+    }
+  }, 10); // Wait until DOM updates
+  }
   // Method to navigate back
   goBack(): void {
     this.navCtrl.back();

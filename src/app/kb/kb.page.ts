@@ -23,8 +23,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalKB') modalKB!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalKB') closeModalButtonKB!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionKB') questionKB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('KBprev') KBprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('KBnext') KBnext!: ElementRef<HTMLButtonElement>; 
+  @ViewChild('KBdots') KBdots!: ElementRef<HTMLDivElement>;
   @ViewChild('KBball') KBball!: ElementRef<HTMLDivElement>;
   @ViewChild('KBballText') KBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('KBtimeInput') KBtimeInput!: ElementRef<HTMLSelectElement>;
@@ -55,16 +54,13 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   private KBbreathSpeed: any = null;
   isModalOpen = false;
 
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonKB.nativeElement.onclick = () => this.globalService.closeModal(this.modalKB);
+    this.globalService.initBulletSlider(this.modalKB, this.KBdots, 'slides');
+    this.closeModalButtonKB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalKB));
+    this.questionKB.nativeElement.onclick = () => this.globalService.openModal(this.modalKB, this.KBdots, 'slides');
     this.questionKB.nativeElement.onclick = () => this.globalService.openModal(this.modalKB);
-    this.KBnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalKB);
-    this.KBprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalKB);
-    this.globalService.openModal(this.modalKB);
-    //populate input
+     //populate input
     for (let KBi = 2; KBi <= 8; KBi++) { // assuming 1 to 8 rounds
       let KBoption = document.createElement('option');
       KBoption.value = (KBi).toString(); // Convert the number to a string
@@ -113,12 +109,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.KBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("fullyout2");
-    this.audioService.initializeAudioObjects("fullyinHold");
-    this.audioService.initializeAudioObjects("normalbreath");
-    this.audioService.initializeAudioObjects("nextRound");
+    this.audioService.initializeSong(); 
     //set up breaths
     this.KBbreaths = localStorage.getItem('numberOfBreaths');
     // Check if it doesn't exist or is null
@@ -138,8 +129,10 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }
     this.breathsInputKB.nativeElement.value = (this.KBbreaths - 1).toString();
   }
- 
+   
   startKB(): void{
+    //initialize sounds
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsKB.nativeElement.disabled = true;
@@ -151,7 +144,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.KBtimeInput.nativeElement.style.display = "none";
       this.startCountdownKB();
       this.KBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -345,7 +338,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);
@@ -423,7 +416,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
   saveKB(): void{
     const savedResults = JSON.parse(localStorage.getItem('KBResults') || '[]'); // Retrieve existing results or initialize an empty array
-    savedResults.push({ date: new Date().toISOString(), result: this.KBroundsResults, rounds: this.roundsKB }); // Add the new result with the current date
+    savedResults.push({ date: new Date().toISOString(), roundsResult: this.KBroundsResults, result: this.timerDisplayKB.nativeElement.innerHTML, rounds: this.roundsKB }); // Add the new result with the current date
     localStorage.setItem('KBResults', JSON.stringify(savedResults)); // Save updated results back to local storage
 
     // Show the saved message

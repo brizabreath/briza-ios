@@ -1,39 +1,37 @@
 <ion-content>
   <header class="mainHeader">
-    <div class="back-buttons">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="settingButtons">
+      <button routerLink="/setwh" id="settingsWH" #settingsWH class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionWH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
   </header>  
   <div id="whPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Guided Hyperventilation</h4>
-            <h4 class="volumeSettings portuguese">Hiperventilação Guiada</h4>
-            <div class="questionMark questionClass">
-              <button #questionWH type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/setwh" id="settingsWH" #settingsWH class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h4 class="volumeSettings english">Oxygen Boost</h4>
+            <h4 class="volumeSettings portuguese">Boost de Oxigênio</h4>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form WH">
-                  <div class="timer-additional-info">
-                      <b class="english">Breaths | Hold | Hold 2</b>
-                      <b class="portuguese">Respirações | Retenção | Retenção 2 </b>
-                  </div>  
                   <div class="form-line">
+                      <img src="assets/images/breaths.png">
                       <input value="30" #breathsInputWH min="1" readonly>
                   </div>
                   <div class="form-line">
+                      <img src="assets/images/hold.png">
                       <input value="∞" #hold1InputWH min="1" readonly>
                   </div>
                   <div class="form-line">
+                    <img src="assets/images/pause.png">
                     <input type="number" value="15" #hold2InputWH min="1" readonly>
                 </div>
               </div>
@@ -48,7 +46,7 @@
                 <button #startBtnWH class="ballButton">
                   <div #WHball class="ball">
                       <span #WHballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -74,10 +72,8 @@
         <span class="close" id="closeModalWH" #closeModalWH>&times;</span>
         <div class="slideshow-container">
           <div class="mySlides fadeModal slides">
-              <div class="numbertext english">INTRO</div>
-              <div class="numbertext portuguese">Introdução</div>
-              <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
-              <div class="text english">
+              <img src="assets/images/yogiclines.svg">
+               <div class="text english">
                 <p>This controlled hyperventilation breathing technique, followed by a breath hold is based on the principles of diaphragmatic and circular breathing, allowing you to fully oxygenate your body and hold your breath with no air in the lungs</p>
               </div>
               <div class="text portuguese">
@@ -85,95 +81,99 @@
               </div>
             </div>
             <div class="mySlides fadeModal slides">
-              <div class="numbertext english">STEP 1</div>
-              <div class="numbertext portuguese">Passo 1</div>
-              <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+              <img src="assets/images/breaths.png">
               <div class="text english">
                 <p>
-                  Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. In the settings, choose the speed of the breath and how many repetitions that you are comfortable with 
+                  In settings, choose the number of breaths to prepare for the breath hold
                 </p>
               </div>
               <div class="text portuguese">
                 <p>
-                  Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Nas configurações, escolha a velocidade da respiração e quantas repetições você se sente confortável
+                  Em conifigurações, escolha o número de respirações para preparar a retenção de respiração
                 </p>
               </div>
             </div>
             <div class="mySlides fadeModal slides">
-              <div class="numbertext english">STEP 2</div>
-              <div class="numbertext portuguese">Passo 2</div>
-              <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+              <img src="assets/images/nor.png">
               <div class="text english">
                 <p>
-                  Press 'Start' and follow guided breathing. It is ok to breathe in through the mouth in this exercise and ensure exhalation is strong
+                  In settings, choose the speed of breaths to prepare for the breath hold
                 </p>
+              </div>
+              <div class="text portuguese">
                 <p>
+                  Em conifigurações, escolha a velocidade de respirações para preparar a retenção de respiração
+                </p>
+              </div>
+            </div>
+            <div class="mySlides fadeModal slides">
+              <img src="assets/images/airhunger.svg">
+              <div class="text english">
+                <p>
+                  Press 'Start' and follow guided breathing. It is ok to breathe in through the mouth in this exercise and ensure exhalation is strong.                   
                   Once the hyperventilation is finished, you will exhale (about 70%) and hold your breath
                 </p>
               </div>
               <div class="text portuguese">
                 <p>
-                  Pressione 'Iniciar' e siga a respiração guiada. É ok respirar pela boca neste exercício e garantir que a exalação seja forte
-                </p>
-                <p>
-                    Uma vez que a hiperventilação terminar, você irá exalar (cerca de 70%) e segurar sua respiração
+                  Pressione 'Iniciar' e siga a respiração guiada. É ok respirar pela boca neste exercício e garantir que a exalação seja forte.                    
+                  Uma vez que a hiperventilação terminar, você irá exalar (cerca de 70%) e segurar sua respiração
                 </p>
               </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 3</div>
-                <div class="numbertext portuguese">Passo 3</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/hold.png">
                 <div class="text english">
                   <p>
-                    When you cannot hold any longer, press the circle again, fully inhale and hold your breath for 15 seconds in the recovery round
-                  </p>
+                    Let go n and hold your breath for as long as you can with no air in the lungs
+                 </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Quando você não conseguir segurar mais, pressione o circulo novamente, inale totalmente e segure sua respiração por 15 segundos na rodada de recuperação
+                    Espire e segure a respiração pelo maior tempo que puder sem ar nos pulmões
                   </p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 4</div>
-                <div class="numbertext portuguese">Passo 4</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/calm.svg">
+                <img src="assets/images/pause.png">
                 <div class="text english">
                   <p>
-                    After the recovery round, you can go to the next round. If you do not want to keep going, press 'Pausar' and save your results
-                  </p>
+                    Once you cannot hold it any longer, press the circle inhale and hold again for 15 seconds in the recovery round
+                 </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Após a rodada de recuperação, você pode ir para a próxima rodada. Se você não quiser continuar, pressione 'Pausar' e salve seus resultados
+                    Quando não conseguir mais segurar, pressione o círculo, inspire e segure novamente por 15 segundos na rodada de recuperação                
                   </p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">KEEP IN MIND</div>
-                <div class="numbertext portuguese">Nota</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    During the breath hold, try to stay calm and focus on your heart beat. During the recovery exercise, squeeze your pelvic floor muscles and engage your core
-                  </p>
-                  <p>
-                      Do not do this technique inside the water or any place that may be dangerous if you lose your consciousness. Do not attemp to go over your limit, as you might pass out. If you have never done it before, it is a good idea to have someone to look after you during the exercise
+                    During the breath hold, try to stay calm and focus on your heart beat.                       
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Durante a retenção de respiração, tente permanecer calmo e focado no seu batimento cardíaco. Durante o exercício de recuperação, aperte os músculos do assoalho pélvico e engaje seu core
-                  </p>
-                  <p>
-                      Não faça esta técnica dentro da água ou em qualquer lugar que possa ser perigoso se você perder a consciência. Não tente ultrapassar seu limite, pois você pode desmaiar. Se você nunca fez isso antes, é uma boa ideia ter alguém para cuidar de você durante o exercício
+                    Durante a retenção de respiração, tente permanecer calmo e focado no seu batimento cardíaco.                       
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #WHprev>&#10094;</a>
-            <a class="next" #WHnext>&#10095;</a>
+            <div class="mySlides fadeModal slides">
+                <img src="assets/images/mindful.svg">
+                <div class="text english">
+                  <p>
+                    Do not do this technique inside the water or any place that may be dangerous if you lose your consciousness. Do not attemp to go over your limit, as you might pass out
+                  </p>
+                </div>
+                <div class="text portuguese">
+                  <p>
+                    Não faça esta técnica dentro da água ou em qualquer lugar que possa ser perigoso se você perder a consciência. Não tente ultrapassar seu limite, pois você pode desmaiar
+                  </p>
+                </div>
+            </div>
+            <div class="dots" #WHdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
       </div>
   </div>

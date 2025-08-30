@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { AuthService } from './auth.service';
+import { AudioService } from './audio.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +12,13 @@ export class GlobalService {
   isModalOpen$ = this.isModalOpenSubject.asObservable();
 
   
-  constructor(private authService: AuthService) {}  
-  
+  constructor(private audioService: AudioService) {}  
+  private get isPT() { return localStorage.getItem('isPortuguese') === 'true'; }
+  private get L() {
+    return this.isPT
+      ? { next: 'Próximo', start: 'Começar' }
+      : { next: 'Next',    start: 'Get started' };
+  }
   openModal2(): void {
     this.isModalOpenSubject.next(true); // Show modal
      // Ensure the modal is loaded before checking content
@@ -44,126 +49,190 @@ export class GlobalService {
     this.isModalOpenSubject.next(false); // Hide modal
   }
   
-    // Method to hide all <option> elements with a specific class
-    hideElementsByClass(className: string): void {
-        const elements = document.getElementsByClassName(className);
+  // Method to hide all <option> elements with a specific class
+  hideElementsByClass(className: string): void {
+      const elements = document.getElementsByClassName(className);
 
-        for (let i = elements.length - 1; i >= 0; i--) { // Iterate in reverse to avoid index shifting issues
-            const element = elements[i] as HTMLOptionElement;
+      for (let i = elements.length - 1; i >= 0; i--) { // Iterate in reverse to avoid index shifting issues
+          const element = elements[i] as HTMLOptionElement;
 
-            if (element.tagName.toLowerCase() === 'option') {
-                element.remove(); // Completely remove the option from the DOM
-            } else {
-                element.style.display = 'none';
-            }
-        }
-    }
-
-    // Method to show all <option> elements with a specific class
-    showElementsByClass(className: 'english' | 'portuguese'): void { // Explicitly define the allowed types for `className`
-
-        const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
-
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
-            element.style.display = 'block';
-        }
-    }
-
-
-
-  // Method to open modalBB
-  openModal(element: any): void {
-      if (element) {
-      element.nativeElement.style.display = 'block';
-      this.showSlides(this.slideIndex += 0, "slides", element);
-      } else {
-      console.error('Modal element not found.');
+          if (element.tagName.toLowerCase() === 'option') {
+              element.remove(); // Completely remove the option from the DOM
+          } else {
+              element.style.display = 'none';
+          }
       }
   }
 
-  // Method to close modalBB
-  closeModal(element: any): void {
-      element.nativeElement.style.display = 'none';
-      this.slideIndex = 1;
+  // Method to show all <option> elements with a specific class
+  showElementsByClass(className: 'english' | 'portuguese'): void { // Explicitly define the allowed types for `className`
+
+      const elements = document.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>;
+
+      for (let i = 0; i < elements.length; i++) {
+          const element = elements[i];
+          element.style.display = 'block';
+      }
   }
-    showSlides(n: number, className: string, element: any): void {
-        if (!element) {
-            console.warn('Slide container not found.');
-            return;
-        }
 
-        const slides = Array.from(
-            element.nativeElement.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
-        );
+  // Track per-modal state without leaking memory
+  private sliderState = new WeakMap<HTMLElement, {
+  slides: HTMLElement[];
+  dotsHost: HTMLElement;
+  index: number;
+  }>();
 
-        if (slides.length === 0) {
-            console.warn('No slides found within the slide container.');
-            return;
-        }
+  private controlsState = new WeakMap<HTMLElement, {
+      footer: HTMLElement;
+      button: HTMLButtonElement;
+  }>();
 
-        // Prevent invalid index
-        if (n > slides.length) {
-            this.slideIndex = slides.length;
-        } else if (n < 1) {
-            this.slideIndex = 1;
-        } else {
-            this.slideIndex = n;
-        }
+    /** Initialize a bullet slider for a given modal/container */
+  initBulletSlider(
+    containerRef: { nativeElement: HTMLElement },
+    dotsRef: { nativeElement: HTMLElement },
+    className: string
+    ): void {
+    const host = containerRef?.nativeElement;
+    const dotsHost = dotsRef?.nativeElement;
+    if (!host || !dotsHost) return;
 
-        // Hide all slides first
-        slides.forEach((slide) => {
-            slide.style.display = 'none';
-        });
+    const slides = Array.from(host.getElementsByClassName(className)) as HTMLElement[];
+    if (!slides.length) return;
 
-        // Show the current slide
-        slides[this.slideIndex - 1].style.display = 'block';
+    // Build/refresh dots
+    dotsHost.innerHTML = '';
+    slides.forEach((_, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        b.addEventListener('click', () => this.goToSlide(host, i));
+        dotsHost.appendChild(b);
+    });
 
-        // Hide or show arrows
-        const nextArrow = element.nativeElement.querySelector(".next");
-        const prevArrow = element.nativeElement.querySelector(".prev");
+    // Save state and show first slide
+    this.sliderState.set(host, { slides, dotsHost, index: 0 });
+    this.renderSlide(host, 0);
 
-        if (nextArrow) {
-            nextArrow.style.display = this.slideIndex === slides.length ? "none" : "block";
-        }
-        if (prevArrow) {
-            prevArrow.style.display = this.slideIndex === 1 ? "none" : "block";
-        }
+    // Optional: swipe to navigate
+    this.attachSwipe(host);
+  }
+  private ensureControls(host: HTMLElement) {
+    if (this.controlsState.get(host)) return;
+
+    const footer = document.createElement('div');
+    footer.className = 'modal-controls'; // style this in your global css
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'modal-primary';     // style this in your global css
+
+    btn.addEventListener('click', () => {
+      const s = this.sliderState.get(host);
+      if (!s) return;
+      const last = s.index >= s.slides.length - 1;
+      if (!last) {
+        this.goToSlide(host, s.index + 1);      // Next
+      } else {
+        // Get started = close modal
+        this.closeModal({ nativeElement: host }); // reuse your function
+      }
+    });
+
+    footer.appendChild(btn);
+
+    // Append footer at end of modal content
+    host.appendChild(footer);
+
+    this.controlsState.set(host, { footer, button: btn });
+  }
+
+  /** Programmatically go to an index */
+  goToSlide(containerEl: HTMLElement, i: number): void {
+    const state = this.sliderState.get(containerEl);
+    if (!state) return;
+    const clamped = Math.max(0, Math.min(i, state.slides.length - 1));
+    if (clamped === state.index) return;
+    this.renderSlide(containerEl, clamped);
     }
 
+   private renderSlide(containerEl: HTMLElement, idx?: number): void {
+    const state = this.sliderState.get(containerEl);
+    if (!state) return;
 
-    // Method to navigate slides
-    plusSlides(n: number, className: string, element: any): void {
-        if (!element) {
-            console.warn('Slide container not found.');
-            return;
-        }
+    const nextIdx = (typeof idx === 'number') ? idx : state.index;
+    state.slides.forEach((el, i) => el.classList.toggle('active', i === nextIdx));
 
-        const slides = Array.from(
-            element.nativeElement.getElementsByClassName(className) as HTMLCollectionOf<HTMLElement>
-        );
+    const dots = Array.from(state.dotsHost.children) as HTMLElement[];
+    dots.forEach((d, i) => d.classList.toggle('active', i === nextIdx));
 
-        if (slides.length === 0) {
-            console.warn('No slides found within the slide container.');
-            return;
-        }
+    state.index = nextIdx;
 
-        // Check slideIndex boundaries before updating
-        if ((this.slideIndex === slides.length && n > 0) || (this.slideIndex === 1 && n < 0)) {
-            return; // Stop navigation if already at the last or first slide
-        }
-
-        this.showSlides(this.slideIndex += n, className, element);
+    // Update button label based on slide position and language  // NEW
+    const ctrl = this.controlsState.get(containerEl);
+    if (ctrl) {
+      const last = nextIdx >= state.slides.length - 1;
+      ctrl.button.textContent = last ? this.L.start : this.L.next;
+      ctrl.button.setAttribute('aria-label', ctrl.button.textContent || '');
     }
+  }
 
+    /** Optional swipe (left/right) */
+  private attachSwipe(host: HTMLElement): void {
+    let startX = 0, curX = 0, down = false;
+    const onStart = (x: number) => { down = true; startX = curX = x; };
+    const onMove  = (x: number) => { if (down) curX = x; };
+    const onEnd   = () => {
+        if (!down) return;
+        const dx = curX - startX;
+        down = false;
+        const state = this.sliderState.get(host);
+        if (!state) return;
+        const THRESH = 40;
+        if (dx > THRESH) this.goToSlide(host, state.index - 1);
+        if (dx < -THRESH) this.goToSlide(host, state.index + 1);
+    };
+
+    host.addEventListener('pointerdown', e => onStart((e as PointerEvent).clientX));
+    host.addEventListener('pointermove',  e => onMove((e as PointerEvent).clientX));
+    host.addEventListener('pointerup',    onEnd);
+    host.addEventListener('pointercancel',onEnd);
+    host.addEventListener('pointerleave', onEnd);
+  }
+
+   /** Open modal and make sure button label matches current language */ // UPDATED
+  openModal(element: any, dotsRef?: any, className: string = 'slides'): void {
+    if (!element) return;
+    const host = element.nativeElement;
+    host.style.display = 'block';
+
+    if (!this.sliderState.get(host) && dotsRef?.nativeElement) {
+      this.initBulletSlider(element, dotsRef, className);
+    } else {
+      // Make sure controls exist & refresh label for current slide/language
+      this.ensureControls(host);                 // NEW
+      const state = this.sliderState.get(host);
+      if (state) this.renderSlide(host, state.index);
+    }
+  }
+  /** Close modal and reset index to 0 (optional) */
+  closeModal(element: any): void {
+    if (!element) return;
+    const host = element.nativeElement;
+    host.style.display = 'none';
+    const state = this.sliderState.get(host);
+    if (state) this.renderSlide(host, 0);
+  }
   // Method to change ball scale and duration
   changeBall(scale: number, duration: number, element: any): void {
       element.nativeElement.style.transform = `scale(${scale})`;
       element.nativeElement.style.transition = `transform ${duration}s ease`;
   }
   clearAllTimeouts(): void {
-      this.timeouts.forEach((timeoutId) => clearTimeout(timeoutId)); // Clear each timeout
-      this.timeouts.length = 0; // Optionally reset the array
-      this.timeouts = [];
+    this.audioService.pauseSelectedSong();
+    this.timeouts.forEach((timeoutId) => clearTimeout(timeoutId)); // Clear each timeout
+    this.timeouts.length = 0; // Optionally reset the array
+    this.timeouts = [];
   }
 }

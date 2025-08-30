@@ -1,48 +1,46 @@
 <ion-content>
-  <header class="mainHeader">
-    <div class="back-buttons">
+ <header class="mainHeader">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsBOX" #settingsBOX class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionBOX type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
   </header>  
   <div id="boxPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Sama Vritti - Box Breathing</h4>
-            <h4 class="volumeSettings portuguese">Sama Vritti - Respiração da Caixa</h4>
-            <div class="questionMark questionClass">
-              <button #questionBOX type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsBOX" #settingsBOX class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings">Sama Vritti</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form BOX">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | HOLD | EXHALE | HOLD</b>
-                      <b class="portuguese">INSPIRE | SEGURE | ESPIRE | SEGURE</b>
-                  </div>
                   <div class="form-line">
                     <button class="buttonminus" type="button" #minusBOX>-</button>
                   </div>  
                   <div class="form-line">
+                      <img src="assets/images/in.png">
                       <input type="number" value="4" #inhaleInputBOX min="1" readonly>
                   </div>
   
                   <div class="form-line">
+                      <img src="assets/images/pause.png">
                       <input type="number" value="4" #hold1InputBOX min="1" readonly>
                   </div>
   
                   <div class="form-line">
+                      <img src="assets/images/out.png">
                       <input type="number" value="4" #exhaleInputBOX min="1" readonly>
                   </div>
   
                   <div class="form-line">
+                    <img src="assets/images/pause.png">
                     <input type="number" value="4" #hold2InputBOX min="1" readonly>
                 </div>
                 <div class="form-line">
@@ -61,7 +59,7 @@
                 <button #startBtnBOX class="ballButton">
                   <div #BOXball class="ball">
                       <span #BOXballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -86,9 +84,7 @@
         <span class="close" id="closeModalBOX" #closeModalBOX>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/yogiclines.svg">
+                <img src="assets/images/yogiclines.svg">
                 <div class="text english">
                   <p>The Box Breathing technique is based on the principles of deep breathing and diaphragmatic breathing</p>
                 </div>
@@ -97,9 +93,7 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
@@ -112,42 +106,32 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for (5 to 10 minutes is recommended)
+                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p> 
-                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo (recomenda-se de 5 a 10 minutos)
-                  </p> 
+                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 3</div>
-                <div class="numbertext portuguese">Passo 3</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/mindful.svg">
+                <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again.
-                  </p>
-                  <p>
-                    In the end, save your results to track your improvement over time
+                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again.  In the end, save your results to track your improvement over time
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente.
+                    Pressione 'Iniciar' e siga a técnica guiada. Se precisar pausar, basta clicar no círculo novamente. Salve seus resultados ao final
                   </p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">KEEP IN MIND</div>
-                <div class="numbertext portuguese">Nota</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/airhunger.svg">
+                <img src="assets/images/airhunger.svg">
                 <div class="text english">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you finding it too hard, stop doing it and choose a lower ratio
@@ -159,9 +143,7 @@
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #BOXprev>&#10094;</a>
-            <a class="next" #BOXnext>&#10095;</a>
+            <div class="dots" #BOXdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

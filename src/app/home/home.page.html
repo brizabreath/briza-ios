@@ -4,46 +4,48 @@
       <button class="goback"></button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" loading="eager" decoding="sync" fetchpriority="high" width="50" height="50" />
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
-  <div id="homepagegrid" #homepagegrid>
-    <div class="BRTtile">
-        <a routerLink="/brt"><img class="BRTtile__img" src="https://brizastorage.blob.core.windows.net/images/brt.svg" /></a>
-    </div>
+  <div id="homegrid">
+  <div id="homepagegrid" class="english">
+    <a routerLink="/program"><img id="hp-program" class="homepageimgs3" src="assets/images/bp.svg" loading="eager" decoding="sync" fetchpriority="high" /></a>
     <div class="row g-2">
-        <div class="col"><a routerLink="/program" routerLink="/program"><img class="homepageimgs2" src="https://brizastorage.blob.core.windows.net/images/brizaprogram.svg" /></a></div>
+        <div class="col"><a routerLink="/prana"><img id="hp-prana" class="homepageimgs" src="assets/images/prana.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
+        <div class="col"><a routerLink="/bh"><img id="hp-bh" class="homepageimgs" src="assets/images/bh.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
         <div class="w-100"></div>
-        <div class="col"><a routerLink="/bh"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/breathhold.svg" /></a></div>
-        <div class="col"><a routerLink="/prana"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/pranayama.svg" /></a></div>
+        <div class="col"><a routerLink="/lungs"><img id="hp-lungs" class="homepageimgs"  src="assets/images/lungs.svg" loading="eager" decoding="sync" fetchpriority="high"></a></div>
+        <div class="col"><a routerLink="/cust"><img id="hp-cust" class="homepageimgs" src="assets/images/cust.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
     </div>
-    <button type="button" class="guidedBTN2" routerLink="/cust"><div>Custom Breathwork</div></button>
   </div>
-  <footer id="homeFooter" #homeFooter>
+  <footer id="homeFooter" class="english">
     <div class="navbar">
-      <a class="active"><i class="fa fa-home active"></i>Home</a>
-      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
-      <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="active"><i class="fa fa-fire active"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga" id="hp-yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr" id="hp-bpr"><i class="fa fa-line-chart"></i>Results</a>
+      <a class="navIcons" routerLink="/profile" id="hp-profile"><i class="fa fa-user"></i>Profile</a>
     </div>
   </footer>
-  <div id="homepagegridBR" #homepagegridBR style="display: none;">
-    <div class="BRTtile">
-        <a routerLink="/brt"><img class="BRTtile__img" src="https://brizastorage.blob.core.windows.net/images/brtPT.svg" /></a>
-    </div>
+  <div id="homepagegridBR" class="portuguese" style="display: none;">
+    <a routerLink="/program"><img id="hp-programPT" class="homepageimgs3" src="assets/images/bpPT.svg" loading="eager" decoding="sync" fetchpriority="high" loading="eager" decoding="sync" fetchpriority="high"/></a>
     <div class="row g-2">
-        <div class="col"><a routerLink="/program"><img class="homepageimgs2" src="https://brizastorage.blob.core.windows.net/images/programabriza.svg" /></a></div>
+        <div class="col"><a routerLink="/prana"><img id="hp-pranaPT" class="homepageimgs" src="assets/images/pranaPT.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
+        <div class="col"><a routerLink="/bh"><img id="hp-bhPT" class="homepageimgs" src="assets/images/bhPT.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
         <div class="w-100"></div>
-        <div class="col"><a routerLink="/bh"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/retencao.svg" /></a></div>
-        <div class="col"><a routerLink="/prana"><img class="homepageimgs" src="https://brizastorage.blob.core.windows.net/images/pranayama.svg" /></a></div>
+        <div class="col"><a routerLink="/lungs"><img id="hp-lungsPT" class="homepageimgs"  src="assets/images/lungsPT.svg" loading="eager" decoding="sync" fetchpriority="high"></a></div>
+        <div class="col"><a routerLink="/cust"><img id="hp-custPT" class="homepageimgs" src="assets/images/custPT.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
     </div>
-    <button type="button" class="guidedBTN2" routerLink="/cust"><div>Respiração Personalizada</div></button>
   </div>
-  <footer id="homeFooterBR" #homeFooterBR>
+  </div>
+  <footer id="homeFooterBR" class="portuguese">
     <div class="navbar">
-      <a class="active"><i class="fa fa-home active"></i>Home</a>
-      <a id="navResults" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
-      <a id="navProfile" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="active"><i class="fa fa-fire active"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga" id="hp-yogaPT"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr" id="hp-bprPT"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="navIcons" routerLink="/profile" id="hp-profilePT"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
 </ion-content>

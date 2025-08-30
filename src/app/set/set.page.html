@@ -4,7 +4,7 @@
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
@@ -13,57 +13,78 @@
         <h1 class="english">Settings</h1>
         <h1 class="portuguese">Configurações</h1>
         <div class="volume-bar">
-          <h4 class="volumeSettings english">Play Voice?</h4>
-          <h4 class="volumeSettings portuguese">Tocar Voz?</h4>
-          <div class="audioButtons">
-              <div #setVaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
-              <div #setVmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          <h4 class="volumeSettings english">Voice</h4>
+          <h4 class="volumeSettings portuguese">Voz</h4>
+          <div class="settingsVolBut">
+            <div class="audioButtons">
+                <div #setVaudio class="audio"><img src="assets/images/speaker.png"></div>
+                <div #setVmute class="mute"><img src="assets/images/mute.png"></div>
+            </div>
+            <input type="range" #voiceBarSet min="0" max="1" step="1" value="1">
           </div>
-          <input type="range" #voiceBarSet min="0" max="1" step="1" value="1">
       </div>
       <hr />
       <div class="volume-bar">
-        <h4 class="volumeSettings english">Type of voice?</h4>
-        <h4 class="volumeSettings portuguese">Tipo de voz?</h4>
-        <div class="audioButtons">
-            <div #setFemale class="audio"><p class="english">Female</p><p class="portuguese">Feminina</p></div>
-            <div #setMale class="mute"><p class="english">Male</p><p class="portuguese">Masculina</p></div>
+        <h4 class="volumeSettings english">Voice type</h4>
+        <h4 class="volumeSettings portuguese">Tipo de voz</h4>
+        <div class="settingsVolBut">
+          <div class="audioButtons">
+              <div #setFemale class="audio"><div class="english">Female</div><div class="portuguese">Feminina</div></div>
+              <div #setMale class="mute"><div class="english">Male</div><div class="portuguese">Masculina</div></div>
+          </div>
+          <input type="range" #maleBarSet min="0" max="1" step="1" value="1">
         </div>
-        <input type="range" #maleBarSet min="0" max="1" step="1" value="1">
       </div>
       <hr />
       <div class="volume-bar">
-          <h4 class="volumeSettings english">Play Bell?</h4>
-          <h4 class="volumeSettings portuguese">Tocar Sino?</h4>
+        <h4 class="volumeSettings english">Breath sound</h4>
+        <h4 class="volumeSettings portuguese">Som das espirações</h4>
+        <div class="settingsVolBut">
           <div class="audioButtons">
-              <div #setBaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
-              <div #setBmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+              <div #setBraudio class="audio"><img src="assets/images/speaker.png"></div>
+              <div #setBrmute class="mute"><img src="assets/images/mute.png"></div>
           </div>
-          <input type="range" #bellBarSet min="0" max="1" step="1" value="1">
+          <input type="range" #breathBarSET min="0" max="1" step="1" value="1">
+        </div>
       </div>
       <hr />
       <div class="volume-bar">
-          <h4 class="volumeSettings english">Play Song?</h4>
-          <h4 class="volumeSettings portuguese">Tocar Música?</h4>
-          <div class="audioButtons">
-              <div #setaudio class="audio"><img src="https://brizastorage.blob.core.windows.net/images/speaker.png"></div>
-              <div #setmute class="mute"><img src="https://brizastorage.blob.core.windows.net/images/mute.png"></div>
+          <h4 class="volumeSettings english">Bell</h4>
+          <h4 class="volumeSettings portuguese">Sino</h4>
+          <div class="settingsVolBut">
+            <div class="audioButtons">
+                <div #setBaudio class="audio"><img src="assets/images/speaker.png"></div>
+                <div #setBmute class="mute"><img src="assets/images/mute.png"></div>
+            </div>
+            <input type="range" #bellBarSet min="0" max="1" step="1" value="1">
           </div>
-          <input type="range" #volumeBarSet min="0" max="1" step="1" value="1">
+      </div>
+      <hr />
+      <div class="volume-bar">
+          <h4 class="volumeSettings english">Song</h4>
+          <h4 class="volumeSettings portuguese">Música</h4>
+          <div class="settingsVolBut">
+            <div class="audioButtons">
+                <div #setaudio class="audio"><img src="assets/images/speaker.png"></div>
+                <div #setmute class="mute"><img src="assets/images/mute.png"></div>
+            </div>
+            <input type="range" #volumeBarSet min="0" max="1" step="1" value="1">
+          </div>
       </div>
       <hr />
     </div>
-</div>
 <div class="breathingpages set">
   <h4 class="volumeSettings english">Choose a song</h4>
-  <h4 class="volumeSettings portuguese">Escolha Música</h4>
+  <h4 class="volumeSettings portuguese">Escolha música</h4>
   <div class="song-container">
     <select id="song-selectSet" #songSelectSet class="song-select" (change)="onSongChange($event)">
-      <option value="https://brizastorage.blob.core.windows.net/audio/healingFrequency.mp3" selected>Healing Frequency</option>
-      <option value="https://brizastorage.blob.core.windows.net/audio/peacefulGarden.mp3">Peaceful Garden</option>
-      <option value="https://brizastorage.blob.core.windows.net/audio/skyMeditation.mp3">Autumn Sky</option>
+      <option value="assets/audio/healingFrequency.mp3" selected>Healing Frequency</option>
+      <option value="assets/audio/peacefulGarden.mp3">Peaceful Garden</option>
+      <option value="assets/audio/skyMeditation.mp3">Autumn Sky</option>
     </select>
   </div>
 </div>
+</div>
+
 </ion-content>
 

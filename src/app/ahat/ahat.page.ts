@@ -25,8 +25,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalAHAT') modalAHAT!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalAHAT') closeModalButtonAHAT!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionAHAT') questionAHAT!: ElementRef<HTMLButtonElement>;
-  @ViewChild('AHATprev') AHATprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('AHATnext') AHATnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('AHATdots') AHATdots!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATball') AHATball!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATballText') AHATballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('AHATtimeInput') AHATtimeInput!: ElementRef<HTMLSelectElement>;
@@ -55,17 +54,12 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   private AHATroundsResults: any[] = [];
   isModalOpen = false;
 
-
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonAHAT.nativeElement.onclick = () => this.globalService.closeModal(this.modalAHAT);
+    this.globalService.initBulletSlider(this.modalAHAT, this.AHATdots, 'slides');
+    this.closeModalButtonAHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalAHAT));
+    this.questionAHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalAHAT, this.AHATdots, 'slides');
     this.questionAHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalAHAT);
-    this.AHATnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalAHAT);
-    this.AHATprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalAHAT);
-    this.globalService.openModal(this.modalAHAT);
     //populate input
     for (let AHATi = 2; AHATi <= 12; AHATi++) { // assuming 1 to 12 rounds
       let AHAToption = document.createElement('option');
@@ -129,15 +123,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.setAHATduration();
     this.AHATResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("pinchRun");
-    this.audioService.initializeAudioObjects("lightNasal");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
-
   startAHAT(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAHAT.nativeElement.disabled = true;
@@ -149,7 +138,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.AHATtimeInput.nativeElement.style.display = "none";
       this.startCountdownAHAT();
       this.AHATballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
       this.audioService.playSelectedSong();
       }, 500);
@@ -300,7 +289,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Normal Breathing"
         }
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
         }, 3000);
@@ -384,7 +373,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
   saveAHAT(): void{
     const savedResults = JSON.parse(localStorage.getItem('AHATResults') || '[]'); // Retrieve existing results or initialize an empty array
-    savedResults.push({ date: new Date().toISOString(), result: this.AHATroundsResults, rounds: this.roundsAHAT}); // Add the new result with the current date
+    savedResults.push({ date: new Date().toISOString(), result:  this.timerDisplayAHAT.nativeElement.innerHTML, roundsResult: this.AHATroundsResults, rounds: this.roundsAHAT}); // Add the new result with the current date
     localStorage.setItem('AHATResults', JSON.stringify(savedResults)); // Save updated results back to local storage
 
     // Show the saved message

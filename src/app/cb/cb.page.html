@@ -1,36 +1,33 @@
 <ion-content>
-  <header class="mainHeader">
-    <div class="back-buttons">
+ <header class="mainHeader">
+    <div class="back-buttons"> 
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="https://brizastorage.blob.core.windows.net/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-  </header>  
+    <div class="settingButtons">
+      <button routerLink="/set" id="settingsCB" #settingsCB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+    </div>  
+    <div class="questionMark questionClass">
+      <button #questionCB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    </div>
+  </header>   
   <div id="cbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h4 class="volumeSettings english">Coherent Breathing</h4>
-            <h4 class="volumeSettings portuguese">Respiração Coerente</h4>
-            <div class="questionMark questionClass">
-              <button #questionCB type="button"><img class="questionIMG" src="https://brizastorage.blob.core.windows.net/images/question.png"></button>
-            </div>
-        </div>
-        <div class="settingButtons">
-          <button routerLink="/set" id="settingsCB" #settingsCB class="audioSet" type="button"><img src="https://brizastorage.blob.core.windows.net/images/settings.png"></button>
+            <h1 class="volumeSettings english">Coherent Breathing</h1>
+            <h1 class="volumeSettings portuguese">Respiração Coerente</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form CB">
-                  <div class="timer-additional-info">
-                      <b class="english">INHALE | EXHALE</b>
-                      <b class="portuguese">INSPIRE | ESPIRE</b>
-                  </div>  
                   <div class="form-line">
+                      <img src="assets/images/in.png">
                       <input type="number" value="5.5" #inhaleInputCB id="inhaleInputCB" min="1" readonly>
                   </div>
                   <div class="form-line">
+                      <img src="assets/images/out.png">
                       <input type="number" value="5.5" #exhaleInputCB id="exhaleInputCB" min="1" readonly>
                   </div>
               </div>
@@ -46,7 +43,7 @@
                 <button #startBtnCB class="ballButton">
                   <div #CBball class="ball">
                       <span #CBballText></span>
-                      <img src="https://brizastorage.blob.core.windows.net/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.svg" alt="3D Ball">
                     </div>
                 </button>
               </div>   
@@ -71,25 +68,16 @@
         <span class="close" id="closeModalCB" #closeModalCB>&times;</span>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">INTRO</div>
-                <div class="numbertext portuguese">Introdução</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/breathlight.svg">
+                <img src="assets/images/breathlight.svg">
                 <div class="text english">
                   <p>Coherent breathing is a breathing technique that involves inhaling and exhaling for a count of 5.5 seconds each, resulting in a breathing rate of around 5.5 breaths per minute</p>
-                  <p>Coherent breathing can help to balance the autonomic nervous system, which regulates the body's stress response. By slowing down the breath and reducing stress and anxiety, this technique may have several potential benefits, including: Lowered heart rate and blood pressure, 
-                  reduced stress and anxiety, improved cognitive function and memory, increased relaxation and feelings of calm, improved sleep quality .It's important to note that coherent breathing should be practiced regularly to experience the benefits</p>
                 </div>
                 <div class="text portuguese">
-                  <p>Aprenda a respirar tão suavemente que se houvesse uma pena sob seu nariz ela não se moveria</p>
                   <p>A respiração coerente é uma técnica de respiração que envolve inalar e exalar por uma contagem de 5,5 segundos cada, resultando em uma taxa de respiração de cerca de 5,5 respirações por minuto</p>
-                  <p>A respiração coerente pode ajudar a equilibrar o sistema nervoso autônomo, que regula a resposta ao estresse do corpo. Ao desacelerar a respiração e reduzir o estresse e a ansiedade, essa técnica pode ter vários benefícios potenciais, incluindo: Redução da frequência cardíaca e da pressão arterial, 
-                  redução do estresse e da ansiedade, melhoria da função cognitiva e da memória, aumento do relaxamento e sentimentos de calma, melhoria do sono. É importante notar que a respiração coerente deve ser praticada regularmente para experimentar os benefícios</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 1</div>
-                <div class="numbertext portuguese">Passo 1</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sit.svg">
+                <img src="assets/images/sit.svg">
                 <div class="text english">
                   <p>
                     Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth.
@@ -102,23 +90,19 @@
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
-                <div class="numbertext english">STEP 2</div>
-                <div class="numbertext portuguese">Passo 2</div>
-                <img src="https://brizastorage.blob.core.windows.net/images/sandTimer.svg">
+                <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' and follow the guided technique. Save your results at the end. You can also choose how long you want to do it for (5 to 10 minutes is recommended)
+                    Press 'Start' and follow the guided technique. Save your results at the end. You can also choose how long you want to do it for
                   </p>
                 </div>
                 <div class="text portuguese">
                   <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Você também pode escolher por quanto tempo deseja fazê-lo (recomenda-se de 5 a 10 minutos)
+                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p>
                 </div>
             </div>
-            <!-- Next and previous buttons -->
-            <a class="prev" #CBprev>&#10094;</a>
-            <a class="next" #CBnext>&#10095;</a>
+            <div class="dots" #CBdots role="tablist" aria-label="Slideshow pagination"></div>
         </div>
     </div>
   </div>

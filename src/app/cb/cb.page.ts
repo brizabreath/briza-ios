@@ -24,8 +24,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalCB') modalCB!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalCB') closeModalButtonCB!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionCB') questionCB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CBprev') CBprev!: ElementRef<HTMLButtonElement>;
-  @ViewChild('CBnext') CBnext!: ElementRef<HTMLButtonElement>;
+  @ViewChild('CBdots') CBdots!: ElementRef<HTMLDivElement>;
   @ViewChild('CBball') CBball!: ElementRef<HTMLDivElement>;
   @ViewChild('CBballText') CBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CBtimeInput') CBtimeInput!: ElementRef<HTMLSelectElement>;
@@ -52,16 +51,12 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   private CBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
 
-
-
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
   ngAfterViewInit(): void {
-    //modal events set up
-    this.closeModalButtonCB.nativeElement.onclick = () => this.globalService.closeModal(this.modalCB);
+    this.globalService.initBulletSlider(this.modalCB, this.CBdots, 'slides');
+    this.closeModalButtonCB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCB));
+    this.questionCB.nativeElement.onclick = () => this.globalService.openModal(this.modalCB, this.CBdots, 'slides');
     this.questionCB.nativeElement.onclick = () => this.globalService.openModal(this.modalCB);
-    this.CBnext.nativeElement.onclick = () => this.globalService.plusSlides(1, 'slides', this.modalCB);
-    this.CBprev.nativeElement.onclick = () => this.globalService.plusSlides(-1, 'slides', this.modalCB);
-    this.globalService.openModal(this.modalCB);
     //populate input
     for (let CBi = 2; CBi <= 60; CBi++) { // assuming 1 to 60 minutes
       let CBoption = document.createElement('option');
@@ -128,15 +123,11 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.setCBduration();
     this.CBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    //initialize sounds
-    this.audioService.initializeSong();
-    this.audioService.initializeAudioObjects("bell");
-    this.audioService.initializeAudioObjects("inhale");
-    this.audioService.initializeAudioObjects("exhale");
-    this.audioService.initializeAudioObjects("normalbreath");
+    this.audioService.initializeSong(); 
   }
- 
+  
   startCB(): void{
+    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCB.nativeElement.disabled = true;
@@ -148,7 +139,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.CBtimeInput.nativeElement.style.display = "none";
       this.startCountdownCB();
       this.CBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");;
+      this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -167,7 +158,8 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.CBball);
         this.CBinterval = setInterval(() => this.startTimerCB(), 500);
         this.CBTimer = setInterval(() => this.DisplayTimerCB(), 1000);
@@ -250,6 +242,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.inhaleCB = false;
       this.exhaleCB = true;
       this.audioService.playSound('exhale');
+      this.audioService.playBreathSound('exhaleBreath', this.CBcurrentValue); 
       if(this.isPortuguese){
         this.CBballText.nativeElement.textContent = "Espire"
       }else{
@@ -264,7 +257,8 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.CBcurrentValue = 5.5;
         this.exhaleCB = false;
         this.inhaleCB = true;
-        this.audioService.playSound('inhale');
+        this.audioService.playSound('inhale');        
+        this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
         if(this.isPortuguese){
           this.CBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -291,7 +285,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");;
+        this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.playSound('normalbreath');
         }, 500);
