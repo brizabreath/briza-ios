@@ -28,7 +28,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   @ViewChild('YBball') YBball!: ElementRef<HTMLDivElement>;
   @ViewChild('YBballText') YBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('YBtimeInput') YBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('YBcountdownInput') YBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('YBcountdownInput') YBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnYB') startBtnYB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnYB') stopBtnYB!: ElementRef<HTMLButtonElement>;
   @ViewChild('YBSave') YBSave!: ElementRef<HTMLButtonElement>;
@@ -38,7 +38,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   @ViewChild('exhaleInputYB') exhaleInputYB!: ElementRef<HTMLInputElement>;
   @ViewChild('hold2InputYB') hold2InputYB!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneYB') roundsDoneYB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayYB') timerDisplayYB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayYB') timerDisplayYB!: ElementRef<HTMLDivElement>;
   @ViewChild('YBResultSaved') YBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusYB') minusYB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusYB') plusYB!: ElementRef<HTMLButtonElement>;
@@ -64,7 +64,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalYB, this.YBdots, 'slides');
     this.closeModalButtonYB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalYB));
     this.questionYB.nativeElement.onclick = () => this.globalService.openModal(this.modalYB, this.YBdots, 'slides');
-    this.questionYB.nativeElement.onclick = () => this.globalService.openModal(this.modalYB);
     //populate input
     for (let YBi = 2; YBi <= 60; YBi++) { // assuming 1 to 60 minutes
       let YBoption = document.createElement('option');

@@ -28,7 +28,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
   @ViewChild('APball') APball!: ElementRef<HTMLDivElement>;
   @ViewChild('APballText') APballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('APtimeInput') APtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('APcountdownInput') APcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('APcountdownInput') APcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnAP') startBtnAP!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnAP') stopBtnAP!: ElementRef<HTMLButtonElement>;
   @ViewChild('APSave') APSave!: ElementRef<HTMLButtonElement>;
@@ -37,7 +37,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
   @ViewChild('hold1InputAP') hold1InputAP!: ElementRef<HTMLInputElement>;
   @ViewChild('exhaleInputAP') exhaleInputAP!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneAP') roundsDoneAP!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayAP') timerDisplayAP!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayAP') timerDisplayAP!: ElementRef<HTMLDivElement>;
   @ViewChild('APResultSaved') APResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusAP') minusAP!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusAP') plusAP!: ElementRef<HTMLButtonElement>;
@@ -61,7 +61,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
    this.globalService.initBulletSlider(this.modalAP, this.APdots, 'slides');
     this.closeModalButtonAP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalAP));
     this.questionAP.nativeElement.onclick = () => this.globalService.openModal(this.modalAP, this.APdots, 'slides');
-    this.questionAP.nativeElement.onclick = () => this.globalService.openModal(this.modalAP);
     //populate input
     //populate input
     for (let APi = 2; APi <= 60; APi++) { // assuming 1 to 60 minutes

@@ -28,7 +28,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('RBball') RBball!: ElementRef<HTMLDivElement>;
   @ViewChild('RBballText') RBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('RBtimeInput') RBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('RBcountdownInput') RBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('RBcountdownInput') RBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnRB') startBtnRB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnRB') stopBtnRB!: ElementRef<HTMLButtonElement>;
   @ViewChild('RBSave') RBSave!: ElementRef<HTMLButtonElement>;
@@ -37,7 +37,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('hold1InputRB') hold1InputRB!: ElementRef<HTMLInputElement>;
   @ViewChild('exhaleInputRB') exhaleInputRB!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneRB') roundsDoneRB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayRB') timerDisplayRB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayRB') timerDisplayRB!: ElementRef<HTMLDivElement>;
   @ViewChild('RBResultSaved') RBResultSaved!: ElementRef<HTMLDivElement>;
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -60,7 +60,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
    this.globalService.initBulletSlider(this.modalRB, this.RBdots, 'slides');
     this.closeModalButtonRB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalRB));
     this.questionRB.nativeElement.onclick = () => this.globalService.openModal(this.modalRB, this.RBdots, 'slides');
-    this.questionRB.nativeElement.onclick = () => this.globalService.openModal(this.modalRB);
     //populate input
     for (let RBi = 2; RBi <= 60; RBi++) { // assuming 1 to 60 minutes
       let RBoption = document.createElement('option');

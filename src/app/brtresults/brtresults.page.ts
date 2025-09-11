@@ -109,37 +109,46 @@ export class BrtresultsPage implements AfterViewInit {
   }
 
   getFeedbackText(): string {
-    const latestResult = this.latestTest.result;
+    const latestResult = this.latestTest.result; // seconds as number
+
     if (this.isPortuguese) {
       if (latestResult <= 15) {
-        return 'Com base no seu último teste (' + latestResult + ' segundos), parece que sua resistência ao CO2 é muito baixa.<br><br>'
-             + 'Você pode ter dificuldades para ter uma boa noite de sono, respiração pela boca frequente, acordar com a boca seca, bocejar frequentemente e baixos níveis de energia durante o dia.<br><br>'
-             + 'É recomendado que você se concentre em estabelecer uma rotina do Programa Briza para melhorar sua aptidão física e bem-estar.';
+        return `Com base no seu último teste (${latestResult} segundos), sua tolerância ao CO₂ está muito baixa<br><br>
+        Possíveis efeitos: respiração pela boca, sono leve ou fragmentado, bocejos frequentes e queda de energia e foco ao longo do dia<br><br>
+        Abra o Programa Briza no app e siga a rotina de hoje para aumentar sua tolerância com segurança`;
       } else if (latestResult <= 25) {
-        return 'Com base no seu último teste (' + latestResult + ' segundos), sua resistência ao CO2 é relativamente boa.<br><br>'
-             + 'Provavelmente você está respirando principalmente pelo nariz na maior parte do tempo e desfrutando de um sono tranquilo. Seus níveis de energia e concentração são geralmente satisfatórios.<br><br>'
-             + 'É recomendado que você estabeleça uma rotina do Programa Briza para melhorar a eficiência da sua respiração e obter melhores resultados.';
+        return `Com base no seu último teste (${latestResult} segundos), sua tolerância ao CO₂ é moderada<br><br>
+        Você pode alternar entre respiração nasal e bucal, às vezes desfrutando de um sono reparador e outras vezes acordando menos descansado. Energia e concentração ao longo do dia podem ser estáveis em alguns momentos, mas ainda variar em outros<br><br>
+        Siga o Programa Briza projetado para seu nível para melhorar resultados, aumentar seus níveis de energia, melhor qualidade de sono e muito mais`;      } else if (latestResult <= 35) {
+        return `Com base no seu último teste (${latestResult} segundos), sua tolerância ao CO₂ é boa<br><br>
+        Benefícios comuns incluem sono mais reparador, energia estável e foco claro<br><br>
+        Siga o Programa Briza no app para consolidar os ganhos e continuar progredindo`;
       } else {
-        return 'Com base no seu último teste (' + latestResult + ' segundos), sua resistência ao CO2 é excelente.<br><br>'
-             + 'Você provavelmente está experimentando os benefícios de uma respiração eficiente, incluindo sono restaurador, altos níveis de energia e boa concentração.<br><br>'
-             + 'É recomendado que você estabeleça uma rotina do Programa Briza para alcançar resultados ainda melhores e se sentir ilimitado.';
+        return `Excelente! Seu último teste (${latestResult} segundos) indica tolerância ao CO₂ muito boa<br><br>
+        Isso costuma vir com recuperação eficiente, sono restaurador e alto nível de foco<br><br>
+        Continue com o Programa Briza no aplicativo para melhorar resultados e atingir níveis imagináveis`;       
       }
     } else {
       if (latestResult <= 15) {
-        return 'Based on your latest test (' + latestResult + ' seconds), it seems that your resilience to CO2 is very low.<br><br>'
-             + 'You may experience difficulties getting a good night\'s sleep, frequent mouth breathing, waking up with a dry mouth, frequent yawning, and low energy levels during the day.<br><br>'
-             + 'It is recommended that you focus on establishing a Briza Program routine to improve your fitness and well-being.';
+        return `Based on your latest test (${latestResult} seconds), your CO₂ tolerance is very low<br><br>
+        You may notice mouth breathing, light or fragmented sleep, frequent yawning, and dips in daytime energy and focus<br><br>
+        Open the Briza Program in the app and follow today's routine to build tolerance safely`;
       } else if (latestResult <= 25) {
-        return 'Based on your latest test (' + latestResult + ' seconds), your resilience to CO2 is relatively good.<br><br>'
-             + 'You are likely breathing through your nose most of the time and enjoying restful sleep. Your energy levels and concentration are generally satisfactory.<br><br>'
-             + 'It is recommended that you establish a Briza Program routine to improve your breathing efficiency and gain better results.';
+        return `Based on your latest test (${latestResult} seconds), your CO₂ tolerance is moderate<br><br>
+        You may alternate between mouth and nasal breathing, sometimes experiencing restful sleep and other times waking less refreshed. Energy and focus during the day can feel steady at times but may still fluctuate<br><br>
+        Follow the Briza Program designed for your level to improve results, boost your energy levels, better quality of sleep and more`;
+      }else if (latestResult <= 35) {
+        return `Based on your latest test (${latestResult} seconds), your CO₂ tolerance is good<br><br>
+        Common benefits include more restorative sleep, stable energy, and clear focus<br><br>
+        Keep following the Briza Program in the app to consolidate gains and continue progressing`;
       } else {
-        return 'Based on your latest test (' + latestResult + ' seconds), your resilience to CO2 is excellent.<br><br>'
-             + 'You are likely experiencing the benefits of efficient breathing, including restorative sleep, high energy levels, and good focus.<br><br>'
-             + 'It is recommended that you establish a Briza Program routine to achieve even better results and feel limitless.';
+        return `Excellent! Your latest test (${latestResult} seconds) indicates very good CO₂ tolerance<br><br>
+        This often aligns with efficient recovery, restorative sleep, and strong focus<br><br>
+        Continue with the Briza Program in the app to improve results and reach imaginable levels`;
       }
     }
   }
+
 
   initializeChart(): void {
     const context = this.chartCanvas.nativeElement.getContext('2d');

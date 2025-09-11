@@ -167,7 +167,32 @@ export class HomePage {
         }
       ]);
 
-      this.shepherd.start();
+      const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+      if (tour?.on) {
+        tour.off?.('start', this.lockUIForTour);
+        tour.off?.('complete', this.unlockUIForTour);
+        tour.off?.('cancel', this.unlockUIForTour);
+        tour.off?.('inactive', this.unlockUIForTour);
+
+        tour.on('start', this.lockUIForTour);
+        tour.on('complete', this.unlockUIForTour);
+        tour.on('cancel', this.unlockUIForTour);
+        tour.on('inactive', this.unlockUIForTour);
+      }
+
+      this.shepherd.start();  
     }, 0);
   }
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
+
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
 }

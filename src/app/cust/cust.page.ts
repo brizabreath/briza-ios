@@ -28,7 +28,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('CUSTball') CUSTball!: ElementRef<HTMLDivElement>;
   @ViewChild('CUSTballText') CUSTballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CUSTtimeInput') CUSTtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('CUSTcountdownInput') CUSTcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('CUSTcountdownInput') CUSTcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnCUST') startBtnCUST!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnCUST') stopBtnCUST!: ElementRef<HTMLButtonElement>;
   @ViewChild('CUSTSave') CUSTSave!: ElementRef<HTMLButtonElement>;
@@ -38,7 +38,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('exhaleInputCUST') exhaleInputCUST!: ElementRef<HTMLInputElement>;
   @ViewChild('hold2InputCUST') hold2InputCUST!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneCUST') roundsDoneCUST!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayCUST') timerDisplayCUST!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayCUST') timerDisplayCUST!: ElementRef<HTMLDivElement>;
   @ViewChild('CUSTResultSaved') CUSTResultSaved!: ElementRef<HTMLDivElement>;
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -66,7 +66,6 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalCUST, this.CUSTdots, 'slides');
     this.closeModalButtonCUST.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCUST));
     this.questionCUST.nativeElement.onclick = () => this.globalService.openModal(this.modalCUST, this.CUSTdots, 'slides');
-    this.questionCUST.nativeElement.onclick = () => this.globalService.openModal(this.modalCUST);
     //populate input
     for (let CUSTi = 2; CUSTi <= 60; CUSTi++) { // assuming 1 to 60 minutes
       let CUSToption = document.createElement('option');

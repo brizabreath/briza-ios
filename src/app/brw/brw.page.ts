@@ -28,7 +28,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   @ViewChild('BRWball') BRWball!: ElementRef<HTMLDivElement>;
   @ViewChild('BRWballText') BRWballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BRWtimeInput') BRWtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('BRWcountdownInput') BRWcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('BRWcountdownInput') BRWcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnBRW') startBtnBRW!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnBRW') stopBtnBRW!: ElementRef<HTMLButtonElement>;
   @ViewChild('BRWSave') BRWSave!: ElementRef<HTMLButtonElement>;
@@ -39,7 +39,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   @ViewChild('hold2InputBRW') hold2InputBRW!: ElementRef<HTMLInputElement>;
   @ViewChild('hold3InputBRW') hold3InputBRW!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneBRW') roundsDoneBRW!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayBRW') timerDisplayBRW!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayBRW') timerDisplayBRW!: ElementRef<HTMLDivElement>;
   @ViewChild('BRWResultSaved') BRWResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusBRW') minusBRW!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusBRW') plusBRW!: ElementRef<HTMLButtonElement>;
@@ -66,7 +66,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
    this.globalService.initBulletSlider(this.modalBRW, this.BRWdots, 'slides');
     this.closeModalButtonBRW.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRW));
     this.questionBRW.nativeElement.onclick = () => this.globalService.openModal(this.modalBRW, this.BRWdots, 'slides');
-    this.questionBRW.nativeElement.onclick = () => this.globalService.openModal(this.modalBRW);
     //populate input
     for (let BRWi = 2; BRWi <= 60; BRWi++) { // assuming 1 to 60 minutes
       let BRWoption = document.createElement('option');

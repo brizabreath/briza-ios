@@ -28,13 +28,13 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('BBball') BBball!: ElementRef<HTMLDivElement>;
   @ViewChild('BBballText') BBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BBtimeInput') BBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('BBcountdownInput') BBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('BBcountdownInput') BBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnBB') startBtnBB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnBB') stopBtnBB!: ElementRef<HTMLButtonElement>;
   @ViewChild('BBSave') BBSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsBB') settingsBB!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneBB') roundsDoneBB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayBB') timerDisplayBB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayBB') timerDisplayBB!: ElementRef<HTMLDivElement>;
   @ViewChild('BBResultSaved') BBResultSaved!: ElementRef<HTMLDivElement>;
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -58,7 +58,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalBB, this.BBdots, 'slides');
     this.closeModalButtonBB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBB));
     this.questionBB.nativeElement.onclick = () => this.globalService.openModal(this.modalBB, this.BBdots, 'slides');
-    this.questionBB.nativeElement.onclick = () => this.globalService.openModal(this.modalBB);
     //populate input
     for (let BBi = 2; BBi <= 60; BBi++) { // assuming 1 to 60 minutes
       let BBoption = document.createElement('option');

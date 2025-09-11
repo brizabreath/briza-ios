@@ -97,27 +97,19 @@ strong{
   font-size: 18px;
 }
 .web-splash-screen {
-position: fixed;
-z-index: 9999;
-background-color: white; // match launch screen
-width: 100vw;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.web-splash-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: fixed;
+  z-index: 9999;
+  width: 100vw;
   height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: white; /* or your preferred background */
 }
 
 .loader {
-  border: 6px solid #b7b7b7;        /* Light gray */
-  border-top: 6px solid #001220;    /* Your highlight color (greenish) */
+  border: 6px solid #49b79d1c;        /* Light gray */
+  border-top: 6px solid #0661AA;    /* Your highlight color (greenish) */
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -518,7 +510,7 @@ p {
   margin: 0 auto;
   max-width: 680px;
   position: fixed;
-  top: 40%;
+  top: 35%;
   left: 50%;
   transform: translateX(-50%);
   padding: 30px;
@@ -696,3 +688,56 @@ display: none;
   padding: 0;
 }
 
+.vimeo-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+}
+.vimeo-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* Freeze your app's UI while a tour is active */
+.tour-active ion-content,
+.tour-active header,
+.tour-active footer,
+.tour-active .navbar,
+/* If you must target your own modals, exclude Shepherd below */
+.tour-active .modal:not(.shepherd-modal-overlay-container) {
+  pointer-events: none !important;
+}
+
+/* Keep Shepherd popovers & overlay interactive and on top */
+.tour-active .shepherd-element,
+.tour-active .shepherd-element *,
+.tour-active .shepherd-modal-overlay-container {
+  pointer-events: auto !important;
+  z-index: 100001 !important;
+}
+
+/* Overlay just under the popover, above your app */
+.shepherd-modal-overlay-container {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100000 !important;
+}
+
+/* Prevent background scrolling/gestures ONLY on your app shell */
+.tour-active ion-content,
+.tour-active header,
+.tour-active footer {
+  overscroll-behavior: none;
+  touch-action: none;
+}
+/* Only adjust the Yoga step arrow */
+.shepherd-element[data-shepherd-step-id="hp-yoga"] .shepherd-arrow {
+  transform: translateX(-20px); /* nudge left */
+}
+.goProgram{
+  margin-top: 10px;
+  text-decoration: none;
+  color: #49B79D;
+}

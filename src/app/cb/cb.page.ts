@@ -28,13 +28,13 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('CBball') CBball!: ElementRef<HTMLDivElement>;
   @ViewChild('CBballText') CBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CBtimeInput') CBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('CBcountdownInput') CBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('CBcountdownInput') CBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnCB') startBtnCB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnCB') stopBtnCB!: ElementRef<HTMLButtonElement>;
   @ViewChild('CBSave') CBSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsCB') settingsCB!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneCB') roundsDoneCB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayCB') timerDisplayCB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayCB') timerDisplayCB!: ElementRef<HTMLDivElement>;
   @ViewChild('CBResultSaved') CBResultSaved!: ElementRef<HTMLDivElement>;
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -56,7 +56,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalCB, this.CBdots, 'slides');
     this.closeModalButtonCB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCB));
     this.questionCB.nativeElement.onclick = () => this.globalService.openModal(this.modalCB, this.CBdots, 'slides');
-    this.questionCB.nativeElement.onclick = () => this.globalService.openModal(this.modalCB);
     //populate input
     for (let CBi = 2; CBi <= 60; CBi++) { // assuming 1 to 60 minutes
       let CBoption = document.createElement('option');

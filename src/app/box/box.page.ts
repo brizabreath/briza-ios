@@ -28,7 +28,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   @ViewChild('BOXball') BOXball!: ElementRef<HTMLDivElement>;
   @ViewChild('BOXballText') BOXballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BOXtimeInput') BOXtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('BOXcountdownInput') BOXcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('BOXcountdownInput') BOXcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnBOX') startBtnBOX!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnBOX') stopBtnBOX!: ElementRef<HTMLButtonElement>;
   @ViewChild('BOXSave') BOXSave!: ElementRef<HTMLButtonElement>;
@@ -38,7 +38,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   @ViewChild('exhaleInputBOX') exhaleInputBOX!: ElementRef<HTMLInputElement>;
   @ViewChild('hold2InputBOX') hold2InputBOX!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneBOX') roundsDoneBOX!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayBOX') timerDisplayBOX!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayBOX') timerDisplayBOX!: ElementRef<HTMLDivElement>;
   @ViewChild('BOXResultSaved') BOXResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusBOX') minusBOX!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusBOX') plusBOX!: ElementRef<HTMLButtonElement>;
@@ -64,7 +64,6 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalBOX, this.BOXdots, 'slides');
     this.closeModalButtonBOX.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBOX));
     this.questionBOX.nativeElement.onclick = () => this.globalService.openModal(this.modalBOX, this.BOXdots, 'slides');
-    this.questionBOX.nativeElement.onclick = () => this.globalService.openModal(this.modalBOX);
     //populate input
     for (let BOXi = 2; BOXi <= 60; BOXi++) { // assuming 1 to 60 minutes
       let BOXoption = document.createElement('option');

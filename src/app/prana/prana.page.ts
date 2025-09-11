@@ -31,7 +31,6 @@ export class PranaPage implements AfterViewInit{
    this.globalService.initBulletSlider(this.modalPrana, this.Pranadots, 'slides');
     this.closeModalButtonPrana.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalPrana));
     this.questionPrana.nativeElement.onclick = () => this.globalService.openModal(this.modalPrana, this.Pranadots, 'slides');
-    this.questionPrana.nativeElement.onclick = () => this.globalService.openModal(this.modalPrana);
   }
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
@@ -57,7 +56,7 @@ export class PranaPage implements AfterViewInit{
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
     }
-  }, 10); // Wait until DOM updates
+  }, 100); // Wait until DOM updates
   }
   // Method to navigate back
   goBack(): void {

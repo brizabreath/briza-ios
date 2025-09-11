@@ -28,14 +28,14 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('HATball') HATball!: ElementRef<HTMLDivElement>;
   @ViewChild('HATballText') HATballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('HATtimeInput') HATtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('HATcountdownInput') HATcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('HATcountdownInput') HATcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnHAT') startBtnHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnHAT') stopBtnHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATReset') HATReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATSave') HATSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsHAT') settingsHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneHAT') roundsDoneHAT!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayHAT') timerDisplayHAT!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayHAT') timerDisplayHAT!: ElementRef<HTMLDivElement>;
   @ViewChild('HATResultSaved') HATResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('HATResults') HATResults!: ElementRef<HTMLDivElement>;
 
@@ -58,7 +58,6 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalHAT, this.HATdots, 'slides');
     this.closeModalButtonHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHAT));
     this.questionHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalHAT, this.HATdots, 'slides');
-    this.questionHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalHAT);
     //populate input
     for (let HATi = 2; HATi <= 12; HATi++) { // assuming 1 to 12 rounds
       let HAToption = document.createElement('option');

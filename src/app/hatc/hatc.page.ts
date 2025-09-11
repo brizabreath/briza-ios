@@ -28,14 +28,14 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   @ViewChild('HATCball') HATCball!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCballText') HATCballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('HATCtimeInput') HATCtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('HATCcountdownInput') HATCcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('HATCcountdownInput') HATCcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnHATC') startBtnHATC!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnHATC') stopBtnHATC!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATCReset') HATCReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATCSave') HATCSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsHATC') settingsHATC!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneHATC') roundsDoneHATC!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayHATC') timerDisplayHATC!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayHATC') timerDisplayHATC!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCResultSaved') HATCResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('HATCResults') HATCResults!: ElementRef<HTMLDivElement>;
 
@@ -58,7 +58,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
    this.globalService.initBulletSlider(this.modalHATC, this.HATCdots, 'slides');
     this.closeModalButtonHATC.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHATC));
     this.questionHATC.nativeElement.onclick = () => this.globalService.openModal(this.modalHATC, this.HATCdots, 'slides');
-    this.questionHATC.nativeElement.onclick = () => this.globalService.openModal(this.modalHATC);
      //populate input
     for (let HATCi = 2; HATCi <= 12; HATCi++) { // assuming 1 to 12 rounds
       let HATCoption = document.createElement('option');

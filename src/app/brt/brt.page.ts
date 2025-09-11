@@ -58,7 +58,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     }
   }
  startBRTTour() {
-    // types don't include popperOptions; cast to any
     (this.shepherd as any).defaultStepOptions = {
       cancelIcon: { enabled: true },
       scrollTo: true,
@@ -138,11 +137,25 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         },
         
       ]);
+      const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+      if (tour?.on) {
+        tour.off?.('start', this.lockUIForTour);
+        tour.off?.('complete', this.unlockUIForTour);
+        tour.off?.('cancel', this.unlockUIForTour);
+        tour.off?.('inactive', this.unlockUIForTour);
 
-      this.shepherd.start();
+        tour.on('start', this.lockUIForTour);
+        tour.on('complete', this.unlockUIForTour);
+        tour.on('cancel', this.unlockUIForTour);
+        tour.on('inactive', this.unlockUIForTour);
+      }
+
+      this.shepherd.start();  
     }, 0);
   }
-
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
   ngAfterViewInit(): void {
     // Add event listeners for start, pause, stop, and save buttons
     this.brtStart.nativeElement.addEventListener('click', () => this.startTimerBRT());
@@ -164,7 +177,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalBRT, this.BRTdots, 'slides');
     this.closeModalButtonBRT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRT));
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
-    this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT);
   }
   ionViewWillEnter() {
     // Listen for app state changes
@@ -352,4 +364,13 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     }
     App.removeAllListeners();
   }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
+
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
 }

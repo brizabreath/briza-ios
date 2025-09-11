@@ -28,13 +28,13 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   @ViewChild('HUMball') HUMball!: ElementRef<HTMLDivElement>;
   @ViewChild('HUMballText') HUMballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('HUMtimeInput') HUMtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('HUMcountdownInput') HUMcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('HUMcountdownInput') HUMcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnHUM') startBtnHUM!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnHUM') stopBtnHUM!: ElementRef<HTMLButtonElement>;
   @ViewChild('HUMSave') HUMSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsHUM') settingsHUM!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneHUM') roundsDoneHUM!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayHUM') timerDisplayHUM!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayHUM') timerDisplayHUM!: ElementRef<HTMLDivElement>;
   @ViewChild('HUMResultSaved') HUMResultSaved!: ElementRef<HTMLDivElement>;
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -58,7 +58,6 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalHUM, this.HUMdots, 'slides');
     this.closeModalButtonHUM.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHUM));
     this.questionHUM.nativeElement.onclick = () => this.globalService.openModal(this.modalHUM, this.HUMdots, 'slides');
-    this.questionHUM.nativeElement.onclick = () => this.globalService.openModal(this.modalHUM);
       //populate input
     for (let HUMi = 2; HUMi <= 60; HUMi++) { // assuming 1 to 60 minutes
       let HUMoption = document.createElement('option');

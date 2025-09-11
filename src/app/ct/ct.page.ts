@@ -28,14 +28,14 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   @ViewChild('CTball') CTball!: ElementRef<HTMLDivElement>;
   @ViewChild('CTballText') CTballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('CTtimeInput') CTtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('CTcountdownInput') CTcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('CTcountdownInput') CTcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnCT') startBtnCT!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnCT') stopBtnCT!: ElementRef<HTMLButtonElement>;
   @ViewChild('CTReset') CTReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('CTSave') CTSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsCT') settingsCT!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneCT') roundsDoneCT!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayCT') timerDisplayCT!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayCT') timerDisplayCT!: ElementRef<HTMLDivElement>;
   @ViewChild('CTResultSaved') CTResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('inhaleInputCT') inhaleInputCT!: ElementRef<HTMLInputElement>;
   @ViewChild('hold1InputCT') hold1InputCT!: ElementRef<HTMLInputElement>;
@@ -61,7 +61,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
      this.globalService.initBulletSlider(this.modalCT, this.CTdots, 'slides');
     this.closeModalButtonCT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCT));
     this.questionCT.nativeElement.onclick = () => this.globalService.openModal(this.modalCT, this.CTdots, 'slides');
-    this.questionCT.nativeElement.onclick = () => this.globalService.openModal(this.modalCT);
     //populate input
     for (let CTi = 2; CTi <= 60; CTi++) { // assuming 1 to 60 minutes
       let CToption = document.createElement('option');

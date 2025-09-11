@@ -28,7 +28,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   @ViewChild('BREball') BREball!: ElementRef<HTMLDivElement>;
   @ViewChild('BREballText') BREballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('BREtimeInput') BREtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('BREcountdownInput') BREcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('BREcountdownInput') BREcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnBRE') startBtnBRE!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnBRE') stopBtnBRE!: ElementRef<HTMLButtonElement>;
   @ViewChild('BRESave') BRESave!: ElementRef<HTMLButtonElement>;
@@ -39,7 +39,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   @ViewChild('hold2InputBRE') hold2InputBRE!: ElementRef<HTMLInputElement>;
   @ViewChild('hold3InputBRE') hold3InputBRE!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneBRE') roundsDoneBRE!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayBRE') timerDisplayBRE!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayBRE') timerDisplayBRE!: ElementRef<HTMLDivElement>;
   @ViewChild('BREResultSaved') BREResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusBRE') minusBRE!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusBRE') plusBRE!: ElementRef<HTMLButtonElement>;
@@ -66,7 +66,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalBRE, this.BREdots, 'slides');
     this.closeModalButtonBRE.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRE));
     this.questionBRE.nativeElement.onclick = () => this.globalService.openModal(this.modalBRE, this.BREdots, 'slides');
-    this.questionBRE.nativeElement.onclick = () => this.globalService.openModal(this.modalBRE);
     //populate input
     for (let BREi = 2; BREi <= 60; BREi++) { // assuming 1 to 60 minutes
       let BREoption = document.createElement('option');

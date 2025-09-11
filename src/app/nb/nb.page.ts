@@ -28,7 +28,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('NBball') NBball!: ElementRef<HTMLDivElement>;
   @ViewChild('NBballText') NBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('NBtimeInput') NBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('NBcountdownInput') NBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('NBcountdownInput') NBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnNB') startBtnNB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnNB') stopBtnNB!: ElementRef<HTMLButtonElement>;
   @ViewChild('NBSave') NBSave!: ElementRef<HTMLButtonElement>;
@@ -38,7 +38,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('exhaleInputNB') exhaleInputNB!: ElementRef<HTMLInputElement>;
   @ViewChild('hold2InputNB') hold2InputNB!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneNB') roundsDoneNB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayNB') timerDisplayNB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayNB') timerDisplayNB!: ElementRef<HTMLDivElement>;
   @ViewChild('NBResultSaved') NBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusNB') minusNB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusNB') plusNB!: ElementRef<HTMLButtonElement>;
@@ -64,7 +64,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalNB, this.NBdots, 'slides');
     this.closeModalButtonNB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalNB));
     this.questionNB.nativeElement.onclick = () => this.globalService.openModal(this.modalNB, this.NBdots, 'slides');
-    this.questionNB.nativeElement.onclick = () => this.globalService.openModal(this.modalNB);
      //populate input
     for (let NBi = 2; NBi <= 60; NBi++) { // assuming 1 to 60 minutes
       let NBoption = document.createElement('option');

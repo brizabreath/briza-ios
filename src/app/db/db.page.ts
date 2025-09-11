@@ -28,7 +28,7 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   @ViewChild('DBball') DBball!: ElementRef<HTMLDivElement>;
   @ViewChild('DBballText') DBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('DBtimeInput') DBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('DBcountdownInput') DBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('DBcountdownInput') DBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnDB') startBtnDB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnDB') stopBtnDB!: ElementRef<HTMLButtonElement>;
   @ViewChild('DBSave') DBSave!: ElementRef<HTMLButtonElement>;
@@ -38,7 +38,7 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   @ViewChild('exhaleInputDB') exhaleInputDB!: ElementRef<HTMLInputElement>;
   @ViewChild('hold2InputDB') hold2InputDB!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneDB') roundsDoneDB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayDB') timerDisplayDB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayDB') timerDisplayDB!: ElementRef<HTMLDivElement>;
   @ViewChild('DBResultSaved') DBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusDB') minusDB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusDB') plusDB!: ElementRef<HTMLButtonElement>;
@@ -64,7 +64,6 @@ export class DbPage implements  AfterViewInit, OnDestroy {
      this.globalService.initBulletSlider(this.modalDB, this.DBdots, 'slides');
     this.closeModalButtonDB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalDB));
     this.questionDB.nativeElement.onclick = () => this.globalService.openModal(this.modalDB, this.DBdots, 'slides');
-    this.questionDB.nativeElement.onclick = () => this.globalService.openModal(this.modalDB);
     //populate input
     for (let DBi = 2; DBi <= 60; DBi++) { // assuming 1 to 60 minutes
       let DBoption = document.createElement('option');

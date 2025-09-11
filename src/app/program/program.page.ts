@@ -68,7 +68,6 @@ export class ProgramPage implements AfterViewInit {
    this.globalService.initBulletSlider(this.modalP, this.Pdots, 'slides');
     this.closeModalButtonP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalP));
     this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP, this.Pdots, 'slides');
-    this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP);
   }
 
   ionViewWillEnter() {

@@ -27,13 +27,13 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   @ViewChild('WHball') WHball!: ElementRef<HTMLDivElement>;
   @ViewChild('WHballText') WHballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('WHtimeInput') WHtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('WHcountdownInput') WHcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('WHcountdownInput') WHcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnWH') startBtnWH!: ElementRef<HTMLButtonElement>;
   @ViewChild('WHReset') WHReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('WHSave') WHSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsWH') settingsWH!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneWH') roundsDoneWH!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayWH') timerDisplayWH!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayWH') timerDisplayWH!: ElementRef<HTMLDivElement>;
   @ViewChild('WHResultSaved') WHResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('WHResults') WHResults!: ElementRef<HTMLDivElement>;
   @ViewChild('breathsInputWH') breathsInputWH!: ElementRef<HTMLInputElement>;
@@ -59,7 +59,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalWH, this.WHdots, 'slides');
     this.closeModalButtonWH.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalWH));
     this.questionWH.nativeElement.onclick = () => this.globalService.openModal(this.modalWH, this.WHdots, 'slides');
-    this.questionWH.nativeElement.onclick = () => this.globalService.openModal(this.modalWH);
     //populate input
     for (let WHi = 2; WHi <= 8; WHi++) { // assuming 1 to 8 rounds
       let WHoption = document.createElement('option');

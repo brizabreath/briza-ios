@@ -27,13 +27,13 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('KBball') KBball!: ElementRef<HTMLDivElement>;
   @ViewChild('KBballText') KBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('KBtimeInput') KBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('KBcountdownInput') KBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('KBcountdownInput') KBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnKB') startBtnKB!: ElementRef<HTMLButtonElement>;
   @ViewChild('KBReset') KBReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('KBSave') KBSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsKB') settingsKB!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneKB') roundsDoneKB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayKB') timerDisplayKB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayKB') timerDisplayKB!: ElementRef<HTMLDivElement>;
   @ViewChild('KBResultSaved') KBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('KBResults') KBResults!: ElementRef<HTMLDivElement>;
   @ViewChild('breathsInputKB') breathsInputKB!: ElementRef<HTMLInputElement>;
@@ -59,7 +59,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalKB, this.KBdots, 'slides');
     this.closeModalButtonKB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalKB));
     this.questionKB.nativeElement.onclick = () => this.globalService.openModal(this.modalKB, this.KBdots, 'slides');
-    this.questionKB.nativeElement.onclick = () => this.globalService.openModal(this.modalKB);
      //populate input
     for (let KBi = 2; KBi <= 8; KBi++) { // assuming 1 to 8 rounds
       let KBoption = document.createElement('option');

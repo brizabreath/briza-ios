@@ -29,14 +29,14 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('AHATball') AHATball!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATballText') AHATballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('AHATtimeInput') AHATtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('AHATcountdownInput') AHATcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('AHATcountdownInput') AHATcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnAHAT') startBtnAHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnAHAT') stopBtnAHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('AHATReset') AHATReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('AHATSave') AHATSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsAHAT') settingsAHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('roundsDoneAHAT') roundsDoneAHAT!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayAHAT') timerDisplayAHAT!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayAHAT') timerDisplayAHAT!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATResultSaved') AHATResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('AHATResults') AHATResults!: ElementRef<HTMLDivElement>;
 
@@ -59,7 +59,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalAHAT, this.AHATdots, 'slides');
     this.closeModalButtonAHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalAHAT));
     this.questionAHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalAHAT, this.AHATdots, 'slides');
-    this.questionAHAT.nativeElement.onclick = () => this.globalService.openModal(this.modalAHAT);
     //populate input
     for (let AHATi = 2; AHATi <= 12; AHATi++) { // assuming 1 to 12 rounds
       let AHAToption = document.createElement('option');

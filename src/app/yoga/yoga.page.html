@@ -41,12 +41,12 @@
     <div class="segment-content">
       <div *ngIf="filteredVideos.length > 0" class="video-list">
         <p class="section-subtitle">
-          <span *ngIf="selectedSegment === 'meditate'" class="english">Guided meditations to relax and focus.</span>
-          <span *ngIf="selectedSegment === 'meditate'" class="portuguese">Meditações guiadas para relaxar e focar.</span>
-          <span *ngIf="selectedSegment === 'move'" class="english">Move your body to energize your day.</span>
-          <span *ngIf="selectedSegment === 'move'" class="portuguese">Mexa seu corpo para energizar o dia.</span>
-          <span *ngIf="selectedSegment === 'slowdown'" class="english">Slow down with gentle movements and breath.</span>
-          <span *ngIf="selectedSegment === 'slowdown'" class="portuguese">Acalme-se com movimentos suaves e respiração.</span>
+          <span *ngIf="selectedSegment === 'meditate'" class="english">Guided meditations to relax and focus</span>
+          <span *ngIf="selectedSegment === 'meditate'" class="portuguese">Meditações guiadas para relaxar e focar</span>
+          <span *ngIf="selectedSegment === 'move'" class="english">Move your body to energize your day</span>
+          <span *ngIf="selectedSegment === 'move'" class="portuguese">Mexa seu corpo para energizar o dia</span>
+          <span *ngIf="selectedSegment === 'slowdown'" class="english">Slow down with gentle movements and breath</span>
+          <span *ngIf="selectedSegment === 'slowdown'" class="portuguese">Acalme-se com movimentos suaves e respiração</span>
         </p>
 
         <div *ngFor="let video of filteredVideos" class="video-card" (click)="onVideoClick(video)">
@@ -60,8 +60,8 @@
   </div>
 
   <div *ngIf="filteredVideos.length === 0" class="no-videos">
-    <p class="english">No videos found for this category.</p>
-    <p class="portuguese">Nenhum vídeo encontrado para esta categoria.</p>
+    <p class="english">No videos found for this category</p>
+    <p class="portuguese">Nenhum vídeo encontrado para esta categoria</p>
   </div>
 </div>
 

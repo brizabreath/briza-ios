@@ -130,13 +130,15 @@
             <img src="assets/images/splash.png" class="logo-img" />
 
             <div class="quote-container english" *ngIf="!isPortuguese">
-              <p class="quote-text">"{{ selectedQuote?.en?.text }}"</p>
-              <p class="quote-author">- {{ selectedQuote?.en?.author }}</p>
+              <p class="quote-text">"{{ selectedQuote?.text }}"</p>
+              <p class="quote-author">- {{ selectedQuote?.author }}</p>
             </div>
+
             <div class="quote-container portuguese" *ngIf="isPortuguese">
-              <p class="quote-text">"{{ selectedQuote?.pt?.text }}"</p>
-              <p class="quote-author">-{{ selectedQuote?.pt?.author }}</p>
+              <p class="quote-text">"{{ selectedQuote?.text }}"</p>
+              <p class="quote-author">- {{ selectedQuote?.author }}</p>
             </div>
+
             <button (click)="shareOpenScreen()" class="share-button"  #shareButton>
               {{ isPortuguese ? 'Compartilhar' : 'Share' }}
             </button>

@@ -226,7 +226,7 @@ async fetchVideosFromFirebase() {
         this.globalService.hideElementsByClass('portuguese');
         this.globalService.showElementsByClass('english');
       }
-    }, 10);
+    }, 100);
   }
 
   // Method to navigate back

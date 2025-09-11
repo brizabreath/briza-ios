@@ -32,7 +32,6 @@ export class BHPage implements AfterViewInit{
      this.globalService.initBulletSlider(this.modalBH, this.BHdots, 'slides');
     this.closeModalButtonBH.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBH));
     this.questionBH.nativeElement.onclick = () => this.globalService.openModal(this.modalBH, this.BHdots, 'slides');
-    this.questionBH.nativeElement.onclick = () => this.globalService.openModal(this.modalBH);
   }
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
@@ -58,7 +57,7 @@ export class BHPage implements AfterViewInit{
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
     }
-  }, 10); // Wait until DOM updates
+  }, 100); // Wait until DOM updates
   }
   // Method to navigate back
   goBack(): void {

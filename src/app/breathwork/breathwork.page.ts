@@ -8,7 +8,8 @@ import { GlobalService } from '../services/global.service';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { ShepherdService } from 'angular-shepherd';
-import { Capacitor } from '@capacitor/core';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { FirebaseService } from '../services/firebase.service';
 
 
 
@@ -39,88 +40,11 @@ export class BreathworkPage implements AfterViewInit {
   numberOfWeekSessions = 0;
   isModalOpen = false;
   private static hasInitialized = false;
-  selectedQuote: {
-    en: { text: string; author: string },
-    pt: { text: string; author: string }
-  } | null = null;
+  selectedQuote: { text: string; author: string } | null = null;
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-  quotes = [
-    {
-      en: { text: "The only way to prove that you're a good sport is to lose", author: "Ernie Banks" },
-      pt: { text: "A única maneira de provar que você é um bom esportista é perdendo", author: "Ernie Banks" }
-    },
-    {
-      en: { text: "Train hard, fight easy", author: "Alexander Suvorov" },
-      pt: { text: "Treine duro, lute fácil", author: "Alexander Suvorov" }
-    },
-    {
-      en: { text: "Discipline is the bridge between goals and accomplishment", author: "Jim Rohn" },
-      pt: { text: "Disciplina é a ponte entre metas e conquistas", author: "Jim Rohn" }
-    },
-    {
-      en: { text: "The body achieves what the mind believes", author: "Napoleon Hill" },
-      pt: { text: "O corpo conquista o que a mente acredita", author: "Napoleon Hill" }
-    },
-    {
-      en: { text: "Success is no accident. It is hard work, perseverance, learning, studying, and most of all, love of what you are doing", author: "Pelé" },
-      pt: { text: "Sucesso não acontece por acaso. É trabalho duro, perseverança, aprendizado, estudo e, acima de tudo, amor pelo que se faz", author: "Pelé" }
-    },
-    {
-      en: { text: "You miss 100% of the shots you don't take", author: "Wayne Gretzky" },
-      pt: { text: "Você perde 100% dos arremessos que não tenta", author: "Wayne Gretzky" }
-    },
-    {
-      en: { text: "Energy flows where attention goes", author: "Tony Robbins" },
-      pt: { text: "A energia flui para onde vai sua atenção", author: "Tony Robbins" }
-    },
-    {
-      en: { text: "Do one thing every day that scares you", author: "Eleanor Roosevelt" },
-      pt: { text: "Faça algo todos os dias que te assuste", author: "Eleanor Roosevelt" }
-    },
-    {
-      en: { text: "Don't count the days, make the days count", author: "Muhammad Ali" },
-      pt: { text: "Não conte os dias, faça os dias contarem", author: "Muhammad Ali" }
-    },
-    {
-      en: { text: "Fall seven times, stand up eight", author: "Japanese Proverb" },
-      pt: { text: "Caia sete vezes, levante-se oito", author: "Provérbio Japonês" }
-    },
-    {
-      en: { text: "Champions keep playing until they get it right", author: "Billie Jean King" },
-      pt: { text: "Campeões continuam jogando até acertarem", author: "Billie Jean King" }
-    },
-    {
-      en: { text: "Yoga is the journey of the self, through the self, to the self", author: "Bhagavad Gita" },
-      pt: { text: "Yoga é a jornada do eu, através do eu, para o eu", author: "Bhagavad Gita" }
-    },
-    {
-      en: { text: "Your breath is your anchor", author: "Tara Brach" },
-      pt: { text: "Sua respiração é sua âncora", author: "Tara Brach" }
-    },
-    {
-      en: { text: "Strength does not come from the physical capacity. It comes from an indomitable will", author: "Mahatma Gandhi" },
-      pt: { text: "A força não vem da capacidade física. Ela vem de uma vontade indomável", author: "Mahatma Gandhi" }
-    },
-    {
-      en: { text: "The more you sweat in practice, the less you bleed in battle", author: "Richard Marcinko" },
-      pt: { text: "Quanto mais você sua no treino, menos sangra na batalha", author: "Richard Marcinko" }
-    },
-    {
-      en: { text: "The fight is won or lost far away from witnesses—behind the lines, in the gym, and out there on the road, long before I dance under those lights", author: "Muhammad Ali" },
-      pt: { text: "A luta é vencida ou perdida longe dos olhos do público — atrás das linhas, na academia, na estrada, muito antes de eu dançar sob as luzes", author: "Muhammad Ali" }
-    },
-    {
-      en: { text: "A calm mind brings inner strength and self-confidence", author: "Dalai Lama" },
-      pt: { text: "Uma mente calma traz força interior e autoconfiança", author: "Dalai Lama" }
-    },
-    {
-      en: { text: "The mind is everything. What you think, you become", author: "Buddha" },
-      pt: { text: "A mente é tudo. O que você pensa, você se torna", author: "Buda" } 
-    } 
-  ];
   private _sharing = false;
 
-constructor(private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
+constructor(private globalService: GlobalService, private shepherd: ShepherdService, private router: Router, private firebaseService: FirebaseService) {}
   private startBreathTourNow() {
     const isPT = localStorage.getItem('isPortuguese') === 'true';
     const t = (en: string, pt: string) => (isPT ? pt : en);
@@ -136,12 +60,10 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
     } as any;
     this.shepherd.modal = true;
 
-    // If #hp-brt might be hidden (when user already did BRT today),
-    // attach to a safe fallback element instead.
     const anchor =
-      document.querySelector('#hp-brt')?.clientHeight
-        ? '#hp-brt'
-        : '.logoimg'; // fallback so the step still shows
+    (document.querySelector('#hp-brt') as HTMLElement)?.offsetParent
+      ? '#hp-brt'
+      : '.logoimg';
 
     this.shepherd.addSteps([
       {
@@ -163,14 +85,26 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
       }
     ]);
 
-    this.shepherd.start();
-  }
+     // Hook events on the raw Shepherd tour (not on the service)
+    const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+    if (tour?.on) {
+      tour.off?.('start', this.lockUIForTour);
+      tour.off?.('complete', this.unlockUIForTour);
+      tour.off?.('cancel', this.unlockUIForTour);
+      tour.off?.('inactive', this.unlockUIForTour);
 
-  ngAfterViewInit(): void {
-    if (this.quotes.length > 0) {
-      const randomIndex = Math.floor(Math.random() * this.quotes.length);
-      this.selectedQuote = this.quotes[randomIndex];
+      tour.on('start', this.lockUIForTour);
+      tour.on('complete', this.unlockUIForTour);
+      tour.on('cancel', this.unlockUIForTour);
+      tour.on('inactive', this.unlockUIForTour);
     }
+    this.shepherd.start();  
+  }
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
+  async ngAfterViewInit(): Promise<void> {
+    await this.loadRandomQuote();
 
     if (!BreathworkPage.hasInitialized) {
       BreathworkPage.hasInitialized = true;
@@ -182,6 +116,7 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
     this.questionBREATH.nativeElement.onclick = () => this.globalService.openModal(this.openScreen);
   }
   ionViewWillEnter() {
+    localStorage.setItem('isPortuguese', 'false');
     this.showBRTphrase();
     this.calculateWeeklyProgress();
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -330,12 +265,8 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
         };
         logo.onerror = reject;
       });
-
-      // Quote + author
-      const quoteData = this.isPortuguese ? this.selectedQuote.pt : this.selectedQuote.en;
-      const quote = quoteData.text;
-      const author = quoteData.author;
-
+      const quote = this.selectedQuote.text;
+      const author = this.selectedQuote.author;
       ctx.fillStyle = '#0661AA';
       try { await (document as any).fonts?.load?.('36px DellaRespira'); } catch {}
       ctx.font = '40px DellaRespira';
@@ -421,4 +352,61 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
     this.globalService.closeModal(this.openScreen);
     setTimeout(() => this.startBreathTourNow(), 0);
   }
+    private langKey(): 'EN' | 'PT' {
+    const isPT = localStorage.getItem('isPortuguese') === 'true';
+    return isPT ? 'PT' : 'EN';
+  }
+
+  private pickRandom<T>(arr: T[]): T | null {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  async loadRandomQuote(): Promise<void> {
+    const db = this.firebaseService.firestore;
+    const lang = this.langKey();
+    const cacheKey = `cachedQuotes_${lang}`;
+
+    // 1) Online → read Firestore
+    if (navigator.onLine && db) {
+      try {
+        const colRef = collection(db, 'quotes');
+        const qRef = query(colRef, where('language', '==', lang));
+        const snap = await getDocs(qRef);
+        const docs = snap.docs.map(d => d.data() as { text: string; author: string; language: string });
+
+        if (docs.length) {
+          localStorage.setItem(cacheKey, JSON.stringify(docs));
+          const pick = this.pickRandom(docs)!;
+          this.selectedQuote = { text: pick.text, author: pick.author };
+          return;
+        }
+      } catch (e) {
+        console.warn('Quotes fetch failed, will try cache:', e);
+      }
+    }
+
+    // 2) Fallback → cache (offline or query failed)
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      const arr = JSON.parse(cached) as { text: string; author: string }[];
+      const pick = this.pickRandom(arr);
+      if (pick) {
+        this.selectedQuote = { text: pick.text, author: pick.author };
+        return;
+      }
+    }
+
+    // 3) Final fallback
+    this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
+  }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
+
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
 }

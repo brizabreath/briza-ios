@@ -28,7 +28,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('UBball') UBball!: ElementRef<HTMLDivElement>;
   @ViewChild('UBballText') UBballText!: ElementRef<HTMLSpanElement>;
   @ViewChild('UBtimeInput') UBtimeInput!: ElementRef<HTMLSelectElement>;
-  @ViewChild('UBcountdownInput') UBcountdownInput!: ElementRef<HTMLSelectElement>;
+  @ViewChild('UBcountdownInput') UBcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnUB') startBtnUB!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnUB') stopBtnUB!: ElementRef<HTMLButtonElement>;
   @ViewChild('UBSave') UBSave!: ElementRef<HTMLButtonElement>;
@@ -36,7 +36,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('inhaleInputUB') inhaleInputUB!: ElementRef<HTMLInputElement>;
   @ViewChild('exhaleInputUB') exhaleInputUB!: ElementRef<HTMLInputElement>;
   @ViewChild('roundsDoneUB') roundsDoneUB!: ElementRef<HTMLDivElement>;
-  @ViewChild('timerDisplayUB') timerDisplayUB!: ElementRef<HTMLInputElement>;
+  @ViewChild('timerDisplayUB') timerDisplayUB!: ElementRef<HTMLDivElement>;
   @ViewChild('UBResultSaved') UBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('minusUB') minusUB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusUB') plusUB!: ElementRef<HTMLButtonElement>;
@@ -59,7 +59,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalUB, this.UBdots, 'slides');
     this.closeModalButtonUB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalUB));
     this.questionUB.nativeElement.onclick = () => this.globalService.openModal(this.modalUB, this.UBdots, 'slides');
-    this.questionUB.nativeElement.onclick = () => this.globalService.openModal(this.modalUB);
    //populate input
     for (let UBi = 2; UBi <= 60; UBi++) { // assuming 1 to 60 minutes
       let UBoption = document.createElement('option');

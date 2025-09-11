@@ -46,5 +46,6 @@ export const routes: Routes = [
   { path: 'whresults', loadComponent: () => import('./whresults/whresults.page').then(m => m.WHresultsPage), canActivate: [AuthGuard] },
   { path: 'kbresults', loadComponent: () => import('./kbresults/kbresults.page').then(m => m.KBresultsPage), canActivate: [AuthGuard] },
   { path: 'allresults', loadComponent: () => import('./allresults/allresults.page').then(m => m.ALLresultsPage), canActivate: [AuthGuard] },
+  { path: 'yogaresults', loadComponent: () => import('./yogaresults/yogaresults.page').then(m => m.YogaresultsPage), canActivate: [AuthGuard] },
   { path: 'sources', loadComponent: () => import('./sources/sources.page').then(m => m.SourcesPage), canActivate: [AuthGuard] }
 ];
