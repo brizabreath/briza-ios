@@ -7,7 +7,6 @@ import { Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { GlobalService } from '../services/global.service';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { ShepherdService } from 'angular-shepherd';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
 
@@ -44,64 +43,10 @@ export class BreathworkPage implements AfterViewInit {
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private _sharing = false;
 
-constructor(private globalService: GlobalService, private shepherd: ShepherdService, private router: Router, private firebaseService: FirebaseService) {}
+constructor(private globalService: GlobalService, private router: Router, private firebaseService: FirebaseService) {}
   private startBreathTourNow() {
-    const isPT = localStorage.getItem('isPortuguese') === 'true';
-    const t = (en: string, pt: string) => (isPT ? pt : en);
-
-    (this.shepherd as any).defaultStepOptions = {
-      cancelIcon: { enabled: true },
-      scrollTo: true,
-      canClickTarget: false,
-      modalOverlayOpeningPadding: 4,
-      modalOverlayOpeningRadius: 10,
-      classes: 'briza-tour',
-      popperOptions: { strategy: 'fixed' } // keeps it from sticking to the top
-    } as any;
-    this.shepherd.modal = true;
-
-    const anchor =
-    (document.querySelector('#hp-brt') as HTMLElement)?.offsetParent
-      ? '#hp-brt'
-      : '.logoimg';
-
-    this.shepherd.addSteps([
-      {
-        id: 'hp-brt',
-        text: `<h3>${t('Briza Retention Test','Teste de Retenção Briza')}</h3>
-              <p>${t('Do this quick test daily to track how your breathing and fitness improvement',
-                      'Faça este teste rápido diariamente para acompanhar a evolução da sua respiração e condicionamento')}</p>`,
-        attachTo: { element: anchor, on: 'bottom' },
-        buttons: [
-          {
-            text: t('Continue','Continuar'),
-            action: () => {
-              this.shepherd.complete();
-              localStorage.setItem('startBRTTour','true');
-              this.router.navigateByUrl('/brt');
-            }
-          }
-        ]
-      }
-    ]);
-
-     // Hook events on the raw Shepherd tour (not on the service)
-    const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
-    if (tour?.on) {
-      tour.off?.('start', this.lockUIForTour);
-      tour.off?.('complete', this.unlockUIForTour);
-      tour.off?.('cancel', this.unlockUIForTour);
-      tour.off?.('inactive', this.unlockUIForTour);
-
-      tour.on('start', this.lockUIForTour);
-      tour.on('complete', this.unlockUIForTour);
-      tour.on('cancel', this.unlockUIForTour);
-      tour.on('inactive', this.unlockUIForTour);
-    }
-    this.shepherd.start();  
-  }
-  ionViewDidLeave() {
-    this.unlockUIForTour();
+    localStorage.setItem('startHomeTour','true');
+    this.router.navigateByUrl('/home');  
   }
   async ngAfterViewInit(): Promise<void> {
     await this.loadRandomQuote();
@@ -244,7 +189,7 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
 
     try {
       const canvas = document.createElement('canvas');
-      const width = 800, height = 500;
+      const width = 800, height = 450;
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
@@ -254,22 +199,11 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, width, height);
 
-      // Logo
-      const logo = new Image();
-      logo.src = 'assets/images/splash.png';
-      await new Promise<void>((resolve, reject) => {
-        logo.onload = () => {
-          const logoSize = 150;
-          ctx.drawImage(logo, (width - logoSize * 2) / 2, 60, logoSize * 2, logoSize);
-          resolve();
-        };
-        logo.onerror = reject;
-      });
       const quote = this.selectedQuote.text;
       const author = this.selectedQuote.author;
       ctx.fillStyle = '#0661AA';
-      try { await (document as any).fonts?.load?.('36px DellaRespira'); } catch {}
-      ctx.font = '40px DellaRespira';
+      try { await (document as any).fonts?.load?.('55px DellaRespira'); } catch {}
+      ctx.font = '55px DellaRespira';
       ctx.textAlign = 'center';
 
       const words = quote.split(' ');
@@ -286,15 +220,25 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
       }
       lines.push(currentLine.trim());
 
-      const startY = 300;
-      const lineHeight = 50;
+      const startY = 150;
+      const lineHeight = 56;
       lines.forEach((line, i) => {
-        ctx.fillText(line, width / 2, startY + i * lineHeight);
+        ctx.fillText(line, width / 2, startY + i * lineHeight, width - 250);
       });
 
       ctx.font = 'italic 28px Arial';
-      ctx.fillText(`- ${author}`, width / 2, startY + lines.length * lineHeight + 40);
-
+      ctx.fillText(`- ${author}`, width / 2, startY + lines.length * lineHeight + 10);
+      // Logo
+      const logo = new Image();
+      logo.src = 'assets/images/B_DEGRAD.svg';
+      await new Promise<void>((resolve, reject) => {
+        logo.onload = () => {
+          const logoSize = 70;
+          ctx.drawImage(logo, (width - logoSize) / 2, 300, logoSize, logoSize);
+          resolve();
+        };
+        logo.onerror = reject;
+      });
       // Save to file
       const base64 = canvas.toDataURL('image/jpeg', 0.95);
       const base64Data = base64.split(',')[1];
@@ -317,9 +261,7 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
       // Share
       await Share.share({
         title: this.isPortuguese ? 'Compartilhar citação' : 'Share quote',
-        text: this.isPortuguese
-          ? 'Confira esta citação inspiradora do aplicativo Briza Breath and Performance'
-          : 'Check out this inspiring quote from the Briza Breath and Performance App',
+        text: 'brizabreath.com',
         files: [uri]
       });
 
@@ -340,9 +282,6 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
 
     } catch (err) {
       console.error('shareOpenScreen error:', err);
-      alert(this.isPortuguese
-        ? 'Não foi possível compartilhar agora.'
-        : 'Couldn’t share right now.');
     } finally {
       this._sharing = false;
     }
@@ -400,13 +339,4 @@ constructor(private globalService: GlobalService, private shepherd: ShepherdServ
     // 3) Final fallback
     this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
   }
-  private lockUIForTour = () => {
-    document.documentElement.classList.add('tour-active');
-    document.body.style.overflow = 'hidden'; // stop background scroll
-  };
-
-  private unlockUIForTour = () => {
-    document.documentElement.classList.remove('tour-active');
-    document.body.style.overflow = '';
-  };
 }

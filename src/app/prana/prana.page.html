@@ -1,133 +1,162 @@
 <ion-content>
   <header class="mainHeader">
-      <div class="back-buttons">
-          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
-      </div>
-      <div class="logo-container">
-          <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
-      </div>
-      <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-          <div class="questionMark questionClass2"><a id="questionPrana" #questionPrana><img class="questionIMG" src="assets/images/question.png" /></a></div>
-  </header>  
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+    <div class="questionMark questionClass2">
+      <a id="questionPrana" #questionPrana>
+        <img class="questionIMG" src="assets/images/question.png" />
+      </a>
+    </div>
+  </header>
+
   <div id="pranaPage">
+    <!-- Segmented Control -->
     <div class="segmented-control">
-      <button 
-        class="segment" 
-        [class.active]="selectedSegment === 'traditional'" 
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'traditional'"
         (click)="selectSegment('traditional')">
-        <div class="english">Traditional</div>
-        <div class="portuguese">Tradicional</div>
+        <div class="english" *ngIf="!isPortuguese">Traditional</div>
+        <div class="portuguese" *ngIf="isPortuguese">Tradicional</div>
       </button>
-      <button 
-        class="segment" 
-        [class.active]="selectedSegment === 'regulation'" 
+
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'regulation'"
         (click)="selectSegment('regulation')">
-        <div class="english">Regulation</div>
-        <div class="portuguese">Regulação</div>
+        <div class="english" *ngIf="!isPortuguese">Regulation</div>
+        <div class="portuguese" *ngIf="isPortuguese">Regulação</div>
       </button>
     </div>
 
+    <!-- Segment Content -->
     <div class="segment-content">
+      <!-- Traditional -->
       <div *ngIf="selectedSegment === 'traditional'" class="bhgrid">
-        <!-- Traditional Content Here -->
         <div class="row g-2">
-            <div class="col"><a routerLink="/ub"><img class="homepageimgs5 english" src="assets/images/ub.svg" /><img class="homepageimgs5 portuguese" src="assets/images/ubPT.svg" /></a></div>
-            <div class="col"><a routerLink="/yogic"><img class="homepageimgs5 english"  src="assets/images/yb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/ybPT.svg" /></a></div>
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/box"><img class="homepageimgs5 english"  src="assets/images/box.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/boxPT.svg" /></a></div>
-            <div class="col"><a routerLink="/nb"><img class="homepageimgs5 english"  src="assets/images/nb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/nbPT.svg" /></a></div>
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/kb"><img class="homepageimgs5 english"  src="assets/images/kb.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/kbPT.svg" /></a></div>
-            <div class="col"><a routerLink="/hum"><img class="homepageimgs5 english"  src="assets/images/hum.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/humPT.svg" /></a></div>
+          <div class="col">
+            <a routerLink="/ub">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/ubPT.svg' : 'assets/images/ub.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/yogic">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
+            </a>
+          </div>
+
+          <div class="w-100"></div>
+
+          <div class="col">
+            <a routerLink="/box">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/boxPT.svg' : 'assets/images/box.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/nb">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/nbPT.svg' : 'assets/images/nb.svg'" />
+            </a>
+          </div>
+
+          <div class="w-100"></div>
+
+          <div class="col">
+            <a routerLink="/kb">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/kbPT.svg' : 'assets/images/kb.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/hum">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/humPT.svg' : 'assets/images/hum.svg'" />
+            </a>
+          </div>
         </div>
       </div>
 
+      <!-- Regulation -->
       <div *ngIf="selectedSegment === 'regulation'" class="bhgrid">
-        <!-- Recovery Content Here -->
         <div class="row g-2">
-            <div class="col"><a routerLink="/rb"><img class="homepageimgs4 english"  src="assets/images/rb.svg"><img class="homepageimgs4 portuguese"  src="assets/images/rbPT.svg"></a></div>
-            <div class="col"><a routerLink="/cb"><img class="homepageimgs4 english"  src="assets/images/cb.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/cbPT.svg" /></a></div>            
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/bb"><img class="homepageimgs4 english"  src="assets/images/bb.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/bbPT.svg" /></a></div>
-            <div class="col"><a routerLink="/db"><img class="homepageimgs4 english"  src="assets/images/db.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/dbPT.svg" /></a></div>
+          <div class="col">
+            <a routerLink="/rb">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/rbPT.svg' : 'assets/images/rb.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/cb">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/cbPT.svg' : 'assets/images/cb.svg'" />
+            </a>
+          </div>
+
+          <div class="w-100"></div>
+
+          <div class="col">
+            <a routerLink="/bb">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/bbPT.svg' : 'assets/images/bb.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/db">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/dbPT.svg' : 'assets/images/db.svg'" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Safety notice -->
     <div class="breathingpages set">
-      <p class="atention portuguese"> NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios do App Briza Breath & Performance</p>
-      <p class="atention english"> Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath & Performance App`s exercises</p>
+      <p class="atention portuguese" *ngIf="isPortuguese">
+        NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios do App Briza Breath &amp; Performance
+      </p>
+      <p class="atention english" *ngIf="!isPortuguese">
+        Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath &amp; Performance App`s exercises
+      </p>
+    </div>
   </div>
-  </div>
+
+  <!-- Modal (kept minimal; hooks match your TS) -->
   <div id="myModalPrana" class="modal" #myModalPrana>
     <div class="modal-content">
-        <span class="close" id="closeModalPrana" #closeModalPrana>&times;</span>
-        <div class="slideshow-container">
+      <span class="close" id="closeModalPrana" #closeModalPrana>&times;</span>
+
+      <div class="slideshow-container">
+        <!-- Example slide 1 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/yogiclines.svg">
-            <div class="text english">
-                <p>
-                  Pranayama (Prana = life force, Yama = control), a key component of yoga, involves the control and regulation of breath and is known for its profound impact on physical, mental, and emotional well-being
-            </div>
-            <div class="text portuguese">
-                <p>
-                  Pranayama (Prana = força vital, Yama = controle), um componente chave do yoga, envolve o controle e a regulação da respiração e é conhecido por seu profundo impacto no bem-estar físico, mental e emocional
-                </p>
-            </div>
+          <img src="assets/images/coherentlines.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>Learn foundational breathing patterns that build control and calm.</p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>Aprenda padrões de respiração fundamentais que constroem controle e calma.</p>
+          </div>
         </div>
+
+        <!-- Example slide 2 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Increase the strength and capacity of your lungs by forcing them to work harder to deliver oxygen to your body</p>
-           </div>
-            <div class="text portuguese">
-              <p>Aumentar a força e a capacidade dos seus pulmões, forçando-os a trabalhar mais para entregar oxigênio ao seu corpo</p>
-           </div>
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>Use regulation techniques to balance energy and focus.</p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>Use técnicas de regulação para equilibrar energia e foco.</p>
+          </div>
         </div>
-        <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Help calm your mind and reduce stress and anxiety by slowing down your heart rate and promoting relaxation</p>
-            </div>
-            <div class="text portuguese">
-              <p>Ajudar a acalmar sua mente e reduzir o estresse e a ansiedade, diminuindo sua frequência cardíaca e promovendo relaxamento</p>
-            </div>
-        </div>
-        <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Improve your cardiovascular health by increasing the amount of oxygen your body can transport to your cells and tissues</p>
-           </div>
-            <div class="text portuguese">
-              <p>Melhorar sua saúde cardiovascular, aumentando a quantidade de oxigênio que seu corpo pode transportar para suas células e tecidos</p>
-            </div>
-        </div>
-        <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Help you focus and clear your mind by increasing blood flow and oxygenation to the brain</p>
-           </div>
-            <div class="text portuguese">
-              <p>Ajudar a focar e limpar sua mente, aumentando o fluxo sanguíneo e a oxigenação para o cérebro</p>
-           </div>
-        </div>
-        <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-               <p>Increase energy levels. Improved breathing patterns can lead to increased vitality and stamina, enabling individuals to perform better in their daily activities</p>
-            </div>
-            <div class="text portuguese">
-               <p>Aumentar os níveis de energia. Padrões de respiração melhorados podem levar a um aumento da vitalidade e resistência, permitindo que os indivíduos tenham um desempenho melhor em suas atividades diárias</p>
-            </div>
-        </div>
-        <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-               <p>Boost your immune system. These exercises strengthen the immune system, making the body more resilient to infections and diseases</p>
-            </div>
-            <div class="text portuguese">
-              <p>Impulsionar seu sistema imunológico. Esses exercícios fortalecem o sistema imunológico, tornando o corpo mais resiliente a infecções e doenças</p>
-            </div>
-        </div>
+
         <div class="dots" #Pranadots role="tablist" aria-label="Slideshow pagination"></div>
       </div>
     </div>

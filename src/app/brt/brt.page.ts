@@ -46,15 +46,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
   ionViewDidEnter() {
     const shouldStart = localStorage.getItem('startBRTTour') === 'true';
-    const shouldStartModal = localStorage.getItem('startBRTModal') === 'true';
     if (shouldStart) {
       localStorage.removeItem('startBRTTour');
       this.startBRTTour();
-    }else{
-      if (shouldStartModal) {
-        localStorage.removeItem('startBRTModal');
-        this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');    
-      }
     }
   }
  startBRTTour() {
@@ -126,16 +120,15 @@ export class BRTPage implements AfterViewInit, OnDestroy {
           attachTo: { element: '#brtSave', on: 'top' },
           buttons: [
             { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-            { text: t('Continue','Continuar'),
+            { text: t('Get Started','Comece Agora'),
               action: () => {
                 this.shepherd.complete();
-                localStorage.setItem('startHomeTour','true');
-                this.router.navigateByUrl('/home');
+                this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');    
               }
             },
           ]
         },
-        
+         
       ]);
       const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
       if (tour?.on) {

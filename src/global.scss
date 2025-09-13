@@ -278,6 +278,10 @@ ion-input {
     font-size: 18px;
   }
 }
+.lungsdescription{
+  position: fixed;
+  top: 47%;
+}
 .breath-button {
   display: flex;
   align-items: center;
@@ -603,7 +607,7 @@ display: none;
 .briza-tour.shepherd-element {
   max-width: 250px;
   border-radius: 14px;
-  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.56);
   background: rgba(236, 249, 246, 1);  
   border: 2px solid #0660aa65; /* teal border */
   font-family: 'Nunito', Arial, sans-serif;
@@ -679,10 +683,11 @@ display: none;
 .questionMark img,
 #hp-ball {
   display: block;
+  border-radius: 50%;
 }
 
 /* Tighter highlight rounding */
-.briza-highlight { border-radius: 20px; }
+.briza-highlight { border-radius: 20px; } 
 
 .timer-controls {
   padding: 0;

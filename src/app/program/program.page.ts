@@ -4,7 +4,8 @@ import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { ShepherdService } from 'angular-shepherd';
 
 @Component({
   selector: 'app-program',
@@ -62,18 +63,107 @@ export class ProgramPage implements AfterViewInit {
   latestBRTResultInSeconds = 0;
   resultsByDate: { [date: string]: any[] } = {};
 
-  constructor(private navCtrl: NavController, private globalService: GlobalService) {}
-
+  constructor(private navCtrl: NavController, private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
+  ionViewWillEnter() {
+    this.populateProgramContent();
+  }
+  ionViewDidEnter() {
+    const shouldStart = localStorage.getItem('startProgTour') === 'true';
+    if (shouldStart) {
+      localStorage.removeItem('startProgTour');
+      this.startBreathTourNow();
+    }
+  }
   ngAfterViewInit() {
    this.globalService.initBulletSlider(this.modalP, this.Pdots, 'slides');
     this.closeModalButtonP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalP));
     this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP, this.Pdots, 'slides');
   }
 
-  ionViewWillEnter() {
-    this.populateProgramContent();
+  private isVisible(el: HTMLElement): boolean {
+  if (!el) return false;
+  const style = getComputedStyle(el);
+  return (
+    el.offsetParent !== null &&                  // not display:none and not detached
+    style.visibility !== 'hidden' &&
+    style.display !== 'none' &&
+    el.getClientRects().length > 0               // has a box
+  );
+}
+
+  private firstVisible(selector: string): HTMLElement | null {
+    return Array.from(document.querySelectorAll<HTMLElement>(selector))
+    .find(el => this.isVisible(el)) || null;
   }
 
+  private startBreathTourNow() {
+    const isPT = localStorage.getItem('isPortuguese') === 'true';
+    const t = (en: string, pt: string) => (isPT ? pt : en);
+
+    (this.shepherd as any).defaultStepOptions = {
+      cancelIcon: { enabled: true },
+      scrollTo: true,
+      canClickTarget: false,
+      modalOverlayOpeningPadding: 4,
+      modalOverlayOpeningRadius: 10,
+      classes: 'briza-tour',
+      // if TS complains about popperOptions type, omit it or cast as any:
+      // popperOptions: { strategy: 'fixed' } as any
+    } as any;
+    this.shepherd.modal = true;
+
+    // Prefer the visible brt-link; fall back to logo if none found
+    const anchorEl =
+      this.firstVisible('.brt-link') ||
+      document.querySelector<HTMLElement>('.logoimg');
+
+    this.shepherd.addSteps([
+      {
+        id: 'brt-step',
+        text: `<h3>${t('Briza Retention Test','Teste de Retenção Briza')}</h3>
+              <p>${t('Do this test daily to track your breathing and fitness',
+                      'Faça este teste diariamente para acompanhar sua respiração e condicionamento')}</p>`,
+        // Shepherd accepts an Element ref here
+        attachTo: { element: anchorEl, on: 'bottom' },
+        buttons: [
+          {
+            text: t('Continue','Continuar'),
+            action: () => {
+              this.shepherd.complete();
+              localStorage.setItem('startBRTTour','true');
+              this.router.navigateByUrl('/brt');
+            }
+          }
+        ]
+      }
+    ]);
+     // Hook events on the raw Shepherd tour (not on the service)
+    const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+    if (tour?.on) {
+      tour.off?.('start', this.lockUIForTour);
+      tour.off?.('complete', this.unlockUIForTour);
+      tour.off?.('cancel', this.unlockUIForTour);
+      tour.off?.('inactive', this.unlockUIForTour);
+
+      tour.on('start', this.lockUIForTour);
+      tour.on('complete', this.unlockUIForTour);
+      tour.on('cancel', this.unlockUIForTour);
+      tour.on('inactive', this.unlockUIForTour);
+    }
+    setTimeout(() => this.shepherd.start(), 0);
+  }
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
+
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
   populateProgramContent(): void {
     this.loadResults();
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';

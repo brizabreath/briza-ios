@@ -1,129 +1,226 @@
 <ion-content>
   <header class="mainHeader">
-      <div class="back-buttons">
-          <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
-      </div>
-      <div class="logo-container">
-          <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
-      </div>
-      <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-      <div class="questionMark questionClass2"><a id="questionBH" #questionBH><img class="questionIMG" src="assets/images/question.png" /></a></div>
-  </header>  
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+    <div class="questionMark questionClass2">
+      <a id="questionBH" #questionBH>
+        <img class="questionIMG" src="assets/images/question.png" />
+      </a>
+    </div>
+  </header>
+
   <div id="bhPage">
+    <!-- Segmented Control -->
     <div class="segmented-control">
-      <button 
-        class="segment" 
-        [class.active]="selectedSegment === 'endurance'" 
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'endurance'"
         (click)="selectSegment('endurance')">
-        <div class="english">Endurance</div>
-        <div class="portuguese">Resistência</div>
+        <div class="english" *ngIf="!isPortuguese">Endurance</div>
+        <div class="portuguese" *ngIf="isPortuguese">Resistência</div>
       </button>
-      <button 
-        class="segment" 
-        [class.active]="selectedSegment === 'hold'" 
+
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'hold'"
         (click)="selectSegment('hold')">
-        <div class="english">Max Hold</div>
-        <div class="portuguese">Retenção Máxima</div>
+        <div class="english" *ngIf="!isPortuguese">Max Hold</div>
+        <div class="portuguese" *ngIf="isPortuguese">Retenção Máxima</div>
       </button>
     </div>
 
+    <!-- Segment Content -->
     <div class="segment-content">
+      <!-- Endurance -->
       <div *ngIf="selectedSegment === 'endurance'" class="bhgrid">
-        <!-- Traditional Content Here -->
         <div class="row g-2">
-            <div class="col"><a routerLink="/ap"><img class="homepageimgs4 english" src="assets/images/ap.svg" /><img class="homepageimgs4 portuguese" src="assets/images/apPT.svg" /></a></div>
-            <div class="col"><a routerLink="/ct"><img class="homepageimgs4 english"  src="assets/images/ct.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/ctPT.svg" /></a></div>
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/bre"><img class="homepageimgs4 english"  src="assets/images/bre.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/brePT.svg" /></a></div>
-            <div class="col"><a routerLink="/brw"><img class="homepageimgs4 english"  src="assets/images/brw.svg" /><img class="homepageimgs4 portuguese"  src="assets/images/brwPT.svg" /></a></div>
+          <div class="col">
+            <a routerLink="/ap">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/apPT.svg' : 'assets/images/ap.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/ct">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/ctPT.svg' : 'assets/images/ct.svg'" />
+            </a>
+          </div>
+          <div class="w-100"></div>
+          <div class="col">
+            <a routerLink="/bre">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/brePT.svg' : 'assets/images/bre.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/brw">
+              <img class="homepageimgs4"
+                   [src]="isPortuguese ? 'assets/images/brwPT.svg' : 'assets/images/brw.svg'" />
+            </a>
+          </div>
         </div>
       </div>
 
+      <!-- Hold -->
       <div *ngIf="selectedSegment === 'hold'" class="bhgrid">
-        <!-- Recovery Content Here -->
         <div class="row g-2">
-            <div class="col"><a routerLink="/wh"><img class="homepageimgs5 english"  src="assets/images/wh.svg"><img class="homepageimgs5 portuguese"  src="assets/images/whPT.svg"></a></div>
-            <div class="col"><a routerLink="/hat"><img class="homepageimgs5 english"  src="assets/images/hat.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/hatPT.svg" /></a></div>            
-            <div class="w-100"></div>
-            <div class="col"><a routerLink="/hatc"><img class="homepageimgs5 english"  src="assets/images/hatc.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/hatcPT.svg" /></a></div>
-            <div class="col"><a routerLink="/ahat"><img class="homepageimgs5 english"  src="assets/images/ahat.svg" /><img class="homepageimgs5 portuguese"  src="assets/images/ahatPT.svg" /></a></div>
+          <div class="col">
+            <a routerLink="/wh">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/whPT.svg' : 'assets/images/wh.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/hat">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/hatPT.svg' : 'assets/images/hat.svg'" />
+            </a>
+          </div>
+          <div class="w-100"></div>
+          <div class="col">
+            <a routerLink="/hatc">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/hatcPT.svg' : 'assets/images/hatc.svg'" />
+            </a>
+          </div>
+          <div class="col">
+            <a routerLink="/ahat">
+              <img class="homepageimgs5"
+                   [src]="isPortuguese ? 'assets/images/ahatPT.svg' : 'assets/images/ahat.svg'" />
+            </a>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Safety notice -->
     <div class="breathingpages set">
-      <p class="atention portuguese"> NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios deste aplicativo</p>
-      <p class="atention english"> Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of this app`s exercises</p>
+      <p class="atention portuguese" *ngIf="isPortuguese">
+        NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios deste aplicativo
+      </p>
+      <p class="atention english" *ngIf="!isPortuguese">
+        Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of this app`s exercises
+      </p>
     </div>
   </div>
+
+  <!-- Modal -->
   <div id="myModalBH" class="modal" #myModalBH>
     <div class="modal-content">
-        <span class="close" id="closeModalBH" #closeModalBH>&times;</span>
-        <div class="slideshow-container">
+      <span class="close" id="closeModalBH" #closeModalBH>&times;</span>
+
+      <div class="slideshow-container">
+        <!-- Slide 1 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/coherentlines.svg">
-            <div class="text english">
-                <p>
-                  Breath-holding exercises offer a range of benefits that can significantly enhance performance, particularly for athletes, swimmers, free divers and individuals seeking to improve their overall health and well-being. 
-                </p>
-            </div>
-            <div class="text portuguese">
-                <p>Exercícios de retenção de respiração oferecem uma série de benefícios que podem melhorar significativamente o desempenho, particularmente para atletas, nadadores, mergulhadores e indivíduos que buscam melhorar sua saúde geral e bem-estar</p>
-            </div>
+          <img src="assets/images/coherentlines.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Breath-holding exercises offer a range of benefits that can significantly enhance performance, particularly for athletes, swimmers, free divers and individuals seeking to improve their overall health and well-being.
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Exercícios de retenção de respiração oferecem uma série de benefícios que podem melhorar significativamente o desempenho, particularmente para atletas, nadadores, mergulhadores e indivíduos que buscam melhorar sua saúde geral e bem-estar
+            </p>
+          </div>
         </div>
+
+        <!-- Slide 2 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Increase lungs capacity and improve the efficiency of oxygen usage by the body. This means more oxygen can be delivered to muscles during intense activity, enhancing endurance and performance</p>
-            </div>
-            <div class="text portuguese">
-              <p>Aumentar a capacidade pulmonar e melhorar a eficiência do uso de oxigênio pelo corpo. Isso significa que mais oxigênio pode ser entregue aos músculos durante atividades intensas, melhorando a resistência e o desempenho</p>
-            </div>
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Increase lungs capacity and improve the efficiency of oxygen usage by the body. This means more oxygen can be delivered to muscles during intense activity, enhancing endurance and performance
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Aumentar a capacidade pulmonar e melhorar a eficiência do uso de oxigênio pelo corpo. Isso significa que mais oxigênio pode ser entregue aos músculos durante atividades intensas, melhorando a resistência e o desempenho
+            </p>
+          </div>
         </div>
+
+        <!-- Slide 3 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Improve the body's tolerance to carbon dioxide. Higher CO2 tolerance can delay the onset of fatigue, allowing for longer periods of intense exercise or activity</p>
-            </div>
-            <div class="text portuguese">
-              <p>Melhorar a tolerância do corpo ao dióxido de carbono. Maior tolerância ao CO2 pode atrasar o início da fadiga, permitindo períodos mais longos de exercício intenso ou atividade</p>
-            </div>
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Improve the body's tolerance to carbon dioxide. Higher CO2 tolerance can delay the onset of fatigue, allowing for longer periods of intense exercise or activity
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Melhorar a tolerância do corpo ao dióxido de carbono. Maior tolerância ao CO2 pode atrasar o início da fadiga, permitindo períodos mais longos de exercício intenso ou atividade
+            </p>
+          </div>
         </div>
+
+        <!-- Slide 4 -->
         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Improve diaphragm strength. These exercises strengthen the diaphragm, which plays a crucial role in breathing. A stronger diaphragm can enhance breathing efficiency, leading to better performance in physical activities</p>
-            </div>
-            <div class="text portuguese">
-              <p>Melhorar a força do diafragma. Estes exercícios fortalecem o diafragma, que desempenha um papel crucial na respiração. Um diafragma mais forte pode melhorar a eficiência da respiração, levando a um melhor desempenho em atividades físicas</p>
-            </div>
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Improve diaphragm strength. These exercises strengthen the diaphragm, which plays a crucial role in breathing. A stronger diaphragm can enhance breathing efficiency, leading to better performance in physical activities
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Melhorar a força do diafragma. Estes exercícios fortalecem o diafragma, que desempenha um papel crucial na respiração. Um diafragma mais forte pode melhorar a eficiência da respiração, levando a um melhor desempenho em atividades físicas
+            </p>
+          </div>
         </div>
-         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Increase anaerobic capacity allowing your body to perform better in situations where oxygen is scarce. This can be particularly beneficial in high-intensity sports or activities that require short bursts of effort</p>
-             </div>
-            <div class="text portuguese">
-              <p>Aumentar a capacidade anaeróbica permitindo que seu corpo tenha um desempenho melhor em situações onde o oxigênio é escasso. Isso pode ser particularmente benéfico em esportes de alta intensidade ou atividades que requerem explosões curtas de esforço</p>
-            </div>
+
+        <!-- Slide 5 -->
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Increase anaerobic capacity allowing your body to perform better in situations where oxygen is scarce. This can be particularly beneficial in high-intensity sports or activities that require short bursts of effort
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Aumentar a capacidade anaeróbica permitindo que seu corpo tenha um desempenho melhor em situações onde o oxigênio é escasso. Isso pode ser particularmente benéfico em esportes de alta intensidade ou atividades que requerem explosões curtas de esforço
+            </p>
+          </div>
         </div>
-         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Improve cardiovascular health. These exercises contribute to cardiovascular health by enhancing circulatory efficiency and lowering heart rate, which is beneficial for long-term heart health and performance</p>
-            </div>
-            <div class="text portuguese">
-              <p>Melhorar a saúde cardiovascular. Estes exercícios contribuem para a saúde cardiovascular, melhorando a eficiência circulatória e reduzindo a frequência cardíaca, o que é benéfico para a saúde do coração a longo prazo e desempenho</p>
-            </div>
+
+        <!-- Slide 6 -->
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Improve cardiovascular health. These exercises contribute to cardiovascular health by enhancing circulatory efficiency and lowering heart rate, which is beneficial for long-term heart health and performance
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Melhorar a saúde cardiovascular. Estes exercícios contribuem para a saúde cardiovascular, melhorando a eficiência circulatória e reduzindo a frequência cardíaca, o que é benéfico para a saúde do coração a longo prazo e desempenho
+            </p>
+          </div>
         </div>
-         <div class="mySlides fadeModal slides">
-            <img src="assets/images/breathlight.svg">
-            <div class="text english">
-              <p>Enhance mental toughness. The practice of holding one's breath teaches discipline, patience, and mental fortitude. These mental benefits can translate into improved performance in both physical and cognitive tasks</p>
-            </div>
-            <div class="text portuguese">
-              <p>Fortalecer a resistência mental. A prática de segurar a respiração ensina disciplina, paciência e fortaleza mental. Estes benefícios mentais podem se traduzir em melhor desempenho tanto em tarefas físicas quanto cognitivas</p>
-            </div>
+
+        <!-- Slide 7 -->
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg" />
+          <div class="text english" *ngIf="!isPortuguese">
+            <p>
+              Enhance mental toughness. The practice of holding one's breath teaches discipline, patience, and mental fortitude. These mental benefits can translate into improved performance in both physical and cognitive tasks
+            </p>
+          </div>
+          <div class="text portuguese" *ngIf="isPortuguese">
+            <p>
+              Fortalecer a resistência mental. A prática de segurar a respiração ensina disciplina, paciência e fortaleza mental. Estes benefícios mentais podem se traduzir em melhor desempenho tanto em tarefas físicas quanto cognitivas
+            </p>
+          </div>
         </div>
+
         <div class="dots" #BHdots role="tablist" aria-label="Slideshow pagination"></div>
       </div>
     </div>

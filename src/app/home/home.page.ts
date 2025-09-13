@@ -112,8 +112,8 @@ export class HomePage {
       {
         id: 'hp-yoga',
         text: `<h3>Yoga</h3>
-               <p>${t('Explore guided yoga classes, organized into three categories: Move, Slow Down, and Meditate',
-                'Explore aulas de yoga guiadas, organizadas em três categorias: Mexa-se, Acalme-se e Medite')}</p>`,
+               <p>${t('Move, slow down, and meditate with our guided yoga classes',
+                'Mexa-se, acalme-se e medite com nossas aulas de yoga guiadas')}</p>`,
         attachTo: { element: sel('#hp-yoga', '#hp-yogaPT'), on: 'top' },
         buttons: [
           { text: t('Back','Voltar'), action: () => this.shepherd.back() },
@@ -123,8 +123,8 @@ export class HomePage {
       {
         id: 'hp-bpr',
         text: `<h3>${t('Results','Resultados')}</h3>
-               <p>${t('Check your results and progress here',
-                      'Veja seus resultados e seu progresso aqui')}</p>`,
+               <p>${t('Check your progress',
+                      'Veja seu progresso')}</p>`,
         attachTo: { element: sel('#hp-bpr', '#hp-bprPT'), on: 'top' },
         buttons: [
           { text: t('Back','Voltar'), action: () => this.shepherd.back() },
@@ -134,8 +134,8 @@ export class HomePage {
       {
         id: 'hp-profile',
         text: `<h3>${t('Profile','Perfil')}</h3>
-               <p>${t('Manage your account and subscription here',
-                      'Gerencie sua conta e assinatura aqui')}</p>`,
+               <p>${t('Manage your account and subscription',
+                      'Gerencie sua conta e assinatura')}</p>`,
         attachTo: { element: sel('#hp-profile', '#hp-profilePT'), on: 'top' },
         buttons: [
           { text: t('Back','Voltar'), action: () => this.shepherd.back() },
@@ -158,7 +158,7 @@ export class HomePage {
             text: t('Start Program','Iniciar Programa'), 
             action: () => {
               this.shepherd.complete();
-              localStorage.setItem('startBRTModal','true');
+              localStorage.setItem('startProgTour','true');
               this.router.navigateByUrl('/program');
             },
             classes: 'briza-finish-btn' 
