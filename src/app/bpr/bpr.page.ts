@@ -21,8 +21,8 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
 export class BPRPage implements OnInit {
   exerciseLinks = [
     { nameEN: 'Briza Retention Test', namePT: 'Teste de Retenção Briza', keys: ['brtResults'], url: '/brtresults' },
-    { nameEN: 'High Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
-    { nameEN: 'Guided Hyperventilation', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
+    { nameEN: 'Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
+    { nameEN: 'Oxygen Boost', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
     { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults'], url: '/allresults' },
     { nameEN: 'Yoga Classes', namePT: 'Aulas de Yoga', keys: ['YogaResults'], url: '/yogaresults' }
@@ -121,7 +121,7 @@ export class BPRPage implements OnInit {
         HATResults: { en: 'High Altitude Training', pt: 'Treinamento de Alta Altitude' },
         HATCResults: { en: 'High Altitude Training Running', pt: 'Treinamento de Alta Altitude Correndo' },
         AHATResults: { en: 'Advanced High Altitude Training', pt: 'Treinamento Avançado de Alta Altitude' },
-        WHResults: { en: 'Guided Hyperventilation', pt: 'Hiperventilação Guiada' },
+        WHResults: { en: 'Oxygen Boost', pt: 'Hiperventilação Guiada' },
         KBResults: { en: 'Kapalabhati', pt: 'Kapalabhati' },
         BBResults: { en: 'Briza Breathing', pt: 'Respiração Briza' },
         YBResults: { en: 'Yogic Breathing', pt: 'Respiração Yogi' },

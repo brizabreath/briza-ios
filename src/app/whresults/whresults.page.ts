@@ -263,7 +263,7 @@ export class WHresultsPage implements AfterViewInit {
     const year = this.WHendDate.getFullYear();
     return this.isPortuguese
       ? `Seus resultados de Hiperventilação Guiada (${year})`
-      : `Your Guided Hyperventilation results (${year})`;
+      : `Your Oxygen Boost results (${year})`;
   }
 
   WHsetupScrolling(): void {

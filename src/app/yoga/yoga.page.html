@@ -24,7 +24,7 @@
         class="segment"
         [class.active]="selectedSegment === 'slowdown'"
         (click)="selectSegment('slowdown')">
-        <div class="english" *ngIf="!isPortuguese">Slow Down</div>
+        <div class="english" *ngIf="!isPortuguese">Slow</div>
         <div class="portuguese" *ngIf="isPortuguese">Acalme-se</div>
       </button>
 
@@ -36,6 +36,28 @@
         <div class="portuguese" *ngIf="isPortuguese">Medite</div>
       </button>
     </div>
+    <div class="filters">
+    <!-- Keyword Filter (single word) -->
+    <div class="keyword-filter">
+      <ion-item lines="none">
+        <ion-input
+          [value]="searchTerm"
+          (ionInput)="onSearchInput($event)"
+          (keydown.space)="$event.preventDefault()"
+          inputmode="text"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          maxlength="24"
+          [placeholder]="isPortuguese ? 'Buscar palavra...' : 'Search a word...'"
+        ></ion-input>
+        <ion-buttons slot="end" *ngIf="searchTerm">
+          <ion-button fill="clear" (click)="clearSearch()">
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-item>
+    </div>
 
     <!-- Duration Filter -->
     <div class="duration-filter">
@@ -43,7 +65,7 @@
         <option *ngFor="let f of filters" [value]="f">{{ f }}</option>
       </select>
     </div>
-
+    </div>
     <!-- Segment Content -->
     <div class="segment-content">
       <div *ngIf="filteredVideos.length > 0" class="video-list">

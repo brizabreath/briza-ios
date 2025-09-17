@@ -53,6 +53,12 @@ export class LungsPage implements OnDestroy {
       } catch (e) {
         console.warn('Lungs fetch failed, trying cache:', e);
       }
+    }else{
+      if (!this.isPortuguese) {
+        alert('🌐 You are offline.\n\nConnect to the internet to watch this video');
+      } else {
+        alert('🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
+      }
     }
     if (!this.vimeoUrlEN || !this.vimeoUrlPT) {
       const cached = localStorage.getItem('cachedLungs');

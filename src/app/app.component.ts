@@ -10,6 +10,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { App } from '@capacitor/app';
 import { Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { YogaUpdateService } from './services/yoga-update.service';
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
 
 @Component({
@@ -36,6 +37,7 @@ export class AppComponent implements OnInit{
   constructor(private globalService: GlobalService, private reminders: LocalReminderService, private platform: Platform, private router: Router, private yogaUpdates: YogaUpdateService) {
     this.setupInactivityMonitor();
     this.initializeApp();
+    Keyboard.setResizeMode({ mode: KeyboardResize.None });
   }
   async initializeApp() {
     await this.platform.ready();

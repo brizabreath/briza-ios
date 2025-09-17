@@ -84,7 +84,7 @@ body {
     color: #0661AA;
 }
 #breathpagegrid h3, #breathpagegridBR h3{
-    margin-top: 2rem;
+    margin-top: 3rem;
     font-size: 20px;
     
 }
@@ -2545,10 +2545,11 @@ input[type="radio"]:checked {
 }
 .questionClass {
     z-index: 1;
+    margin-top: 5px;
 }
 .questionClass2 {
     position: absolute;
-    top: 50px;
+    top: 55px;
     right: 10px;
     font-size: 30px;
     z-index: 1;
@@ -2565,6 +2566,7 @@ input[type="radio"]:checked {
 #programPage {
     text-align: center;
     margin-top: 8rem;
+    margin-bottom: 120px;
 }
 .guidedBTN {
     width: 90%;
@@ -2634,7 +2636,7 @@ input#intervalDurationInputCB {
 }
 @media only screen and (min-height: 850px) {
     .homepageimgs {
-        height: 190px !important;
+        height: 15rem !important;
     }
 }
 

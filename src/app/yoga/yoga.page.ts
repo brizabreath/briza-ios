@@ -24,13 +24,17 @@ export class YogaPage implements OnInit {
   selectedSegment: 'move' | 'slowdown' | 'meditate' = 'move';
   isPortuguese = false;
 
-  selectedFilter: 'All' | '0-15 min' | '15-30 min' | '30-45 min' | '+45 min' = 'All';
-  filters = ['All', '0-15 min', '15-30 min', '30-45 min', '+45 min'] as const;
+  selectedFilter: 'Duration' | '0-15 min' | '15-30 min' | '30-45 min' | '+45 min' = 'Duration';
+  filters = ['Duration', '0-15 min', '15-30 min', '30-45 min', '+45 min'] as const;
 
   allVideos: any[] = [];
   filteredVideos: any[] = [];
 
   activeVideo: { title: string; url: SafeResourceUrl } | null = null;
+
+  // 🔎 SEARCH: state (enforce one word)
+  searchTerm = '';
+  private searchNorm = '';
 
   constructor(
     private navCtrl: NavController,
@@ -61,6 +65,26 @@ export class YogaPage implements OnInit {
       this.filterVideos();
       this.maybeOpenDeepLink();
     });
+  }
+
+  // 🔎 SEARCH: input handler — keep only the first “word” (letters/numbers), strip spaces/accents
+  onSearchInput(ev: any) {
+    const raw: string = ev?.detail?.value ?? '';
+    // Allow letters/numbers only; collapse to one token
+    const oneWord = raw
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim()
+      .split(' ')[0] || '';
+    this.searchTerm = oneWord;
+    this.searchNorm = this.normalize(oneWord);
+    this.filterVideos();
+  }
+
+  // 🔎 SEARCH: clear button
+  clearSearch() {
+    this.searchTerm = '';
+    this.searchNorm = '';
+    this.filterVideos();
   }
 
   private async initVideos() {
@@ -111,7 +135,7 @@ export class YogaPage implements OnInit {
             category: v.category,      // expected: 'move' | 'slowdown' | 'meditate'
             language: v.language,      // 'EN' | 'PT'
             duration: durationMinutes, // minutes
-            title: meta?.title ?? v.title ?? 'Video',
+            title: meta?.title ?? v.title ?? 'Untitled',
             description: (meta?.description ?? v.description ?? '').toString(),
             thumbnail: meta?.thumbnail_url ?? v.thumbnail ?? 'assets/images/lungs.svg',
             videoUrl: playerUrl,
@@ -126,20 +150,45 @@ export class YogaPage implements OnInit {
     }
   }
 
+  // 🔎 SEARCH: helpers (accent-insensitive, whole-word match)
+  private normalize(s: string): string {
+    return (s || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, ''); // remove accents
+  }
+  private tokenizeWords(s: string): string[] {
+    // pick sequences of letters/numbers as “words”
+    const m = this.normalize(s).match(/[\p{L}\p{N}]+/gu);
+    return m ? m : [];
+  }
+  // 🔎 SEARCH: match if any token starts with the search word
+  private textHasWord(title: string, description: string, word: string): boolean {
+    if (!word) return true;
+    const tokens = [...this.tokenizeWords(title), ...this.tokenizeWords(description)];
+    return tokens.some(t => t.startsWith(word));
+  }
+
+
   filterVideos() {
     const selectedLanguage = this.isPortuguese ? 'PT' : 'EN';
 
     this.filteredVideos = this.allVideos.filter((v) => {
       const matchesCategory = v.category === this.selectedSegment;
       const matchesDuration =
-        this.selectedFilter === 'All' ||
+        this.selectedFilter === 'Duration' ||
         (this.selectedFilter === '0-15 min' && v.duration <= 15) ||
         (this.selectedFilter === '15-30 min' && v.duration > 15 && v.duration <= 30) ||
         (this.selectedFilter === '30-45 min' && v.duration > 30 && v.duration <= 45) ||
         (this.selectedFilter === '+45 min' && v.duration > 45);
       const matchesLanguage = v.language === selectedLanguage;
 
-      return matchesCategory && matchesDuration && matchesLanguage;
+      // 🔎 SEARCH: title/description must contain the single word (whole-word, accent-insensitive)
+      const matchesText =
+        !this.searchNorm ||
+        this.textHasWord(v.title ?? '', v.description ?? '', this.searchNorm);
+
+      return matchesCategory && matchesDuration && matchesLanguage && matchesText;
     });
   }
 

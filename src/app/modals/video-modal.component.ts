@@ -36,7 +36,7 @@ import { CommentsComponent } from '../comments/comments.component';
   styles: [`
     .video-wrapper { width: 100%; aspect-ratio: 16/9; }
     iframe { width: 100%; height: 100%; border: 0; }
-    .video-meta { padding: 1rem; font-size: 16px; }
+    .video-meta { padding: 1rem; font-size: 16px; text-align: justify; }
   `],
   standalone: true,
   imports: [IonicModule, CommentsComponent]
