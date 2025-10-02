@@ -14,17 +14,18 @@ export class LocalReminderService {
 
     // --- Message pools (EN + PT) ---
   private messagesEN = [
-    "Good morning 🌞 Time to recharge — breathe and move today",
-    "Quick pause 🧘 Take 5 to breathe and reset your day",
-    "Your calm is calling ✨ Do a short breathing + yoga flow",
-    "Small steps, big gains 💪 A few mindful breaths right now?",
-    "Reset moment 🔄 Just a couple of minutes of breathing can change your day",
-    "Energy boost ⚡ Try a short flow and feel the difference",
-    "You’ve got this 🙌 One mindful pause and a breath to keep you on track.",
-    "Clear mind ahead 🌿 Breathe, stretch and relax",
-    "Focus upgrade 🎯 Some rounds of deep breaths today?",
-    "Gentle nudge 💚 Make space to breathe"
+    "Rise & shine 🌞 Recharge with a few mindful breaths",
+    "Pause & reset 🧘 Take 5 minutes just for you",
+    "Your calm is waiting ✨ Breathe & stretch today",
+    "Strong mind, strong body 💪 Start with mindful breathing",
+    "Quick reset 🔄 5 minutes of breath can shift your day",
+    "Boost your energy ⚡ Flow and recharge body & mind",
+    "Stay on track 🙌 One mindful pause makes the difference",
+    "Fresh air for your mind 🌿 Breathe, stretch, relax",
+    "Sharpen your focus 🎯 A few deep rounds of breath today?",
+    "Gentle reminder 💚 Take a moment — breathe with us"
   ];
+
 
   private messagesPT = [
     "Bom dia 🌞 Hora de recarregar—respire e mova hoje",

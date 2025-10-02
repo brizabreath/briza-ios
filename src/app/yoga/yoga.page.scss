@@ -7,7 +7,8 @@
   text-align: center;
 }
 .video-subtitle {
-  color: #49B79D;
+  color: #0661AA;
+  font-size: 14px;
 }
 .filters{
   display: flex;
@@ -18,6 +19,7 @@
   width: 10rem;
   display: flex;
   margin-bottom: 10px;
+  font-size: 16px;
 }
 .keyword-filter {
   ion-item {
@@ -63,26 +65,15 @@
 
 .video-info {
   margin-left: 12px;
+  height: 3rem;
 }
 .video-info h3{
   color: #0661AA;
-  font-size: 20px !important;
+  font-size: 16px !important;
 }
 
 .play-button {
-  position: absolute;
-  left: 0.7rem;
-  font-size: 24px;
-  color: white;
-  background-color: #0661AA;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Arial;
-  padding-left: 4px;
+  display: none;
 }
 
 .video-player-wrapper {
@@ -99,7 +90,7 @@
 }
 .duration-filter {
   select {
-    font-size: 18px;
+    font-size: 16px;
     border: 1px solid;
     height: 45px;
     width: 9rem;

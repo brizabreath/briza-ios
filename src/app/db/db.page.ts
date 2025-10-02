@@ -103,7 +103,7 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -132,7 +132,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     this.setDBduration();
     this.DBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
   minusRatioDB(): void{
@@ -159,9 +161,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.hold2InputDB.nativeElement.value) || 0) + 2).toString();
     }
   }
-  startDB(): void{
+  async startDB(): Promise<void>{
     this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsDB.nativeElement.disabled = true;
@@ -175,7 +176,7 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.DBtimeInput.nativeElement.style.display = "none";
       this.startCountdownDB();
       this.DBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
       this. audioService.playSelectedSong();
       }, 500);
@@ -188,14 +189,14 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         this.DBballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.DBballText.nativeElement.textContent = "Inspire";
         }else{
           this.DBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
         this.globalService.changeBall(1.3, parseInt(this.inhaleInputDB.nativeElement.value), this.DBball);
         this.DBinterval = setInterval(() => this.startTimerDB(), 1000);
         this.DBTimer = setInterval(() => this.DisplayTimerDB(), 1000);
@@ -275,13 +276,13 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.DBtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerDB(): void{ 
+  async startTimerDB(): Promise<void>{ 
     this.DBcurrentValue--;
     if(this.inhaleDB && this.DBcurrentValue == 1){
       this.DBcurrentValue = parseInt(this.hold1InputDB.nativeElement.value) + 1;
       this.inhaleDB = false;
       this.hold1DB = true;
-      this.audioService.playSound('pause');
+      await this.audioService.playSound('pause');
       this.DBballText.nativeElement.textContent = "Pause"
       this.globalService.changeBall(1.3, parseInt(this.hold1InputDB.nativeElement.value), this.DBball);
     }
@@ -289,8 +290,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.DBcurrentValue = parseInt(this.exhaleInputDB.nativeElement.value) + 1;
       this.hold1DB = false;
       this.exhaleDB = true;
-      this.audioService.playSound('inagain');        
-      this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
+      await this.audioService.playSound('inagain');        
+      await this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
       if(this.isPortuguese){
         this.DBballText.nativeElement.textContent = "Inspire"
       }else{
@@ -302,8 +303,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.DBcurrentValue = parseInt(this.hold2InputDB.nativeElement.value) + 1;
       this.exhaleDB = false;
       this.hold2DB = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.DBcurrentValue);       
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.DBcurrentValue);       
       if(this.isPortuguese){
         this.DBballText.nativeElement.textContent = "Espire"
       }else{
@@ -318,8 +319,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;
         this.hold2DB = false;
         this.inhaleDB = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
         if(this.isPortuguese){
           this.DBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -345,9 +346,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         }else{
           this.DBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

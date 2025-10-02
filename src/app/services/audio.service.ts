@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { App } from '@capacitor/app';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Injectable({
   providedIn: 'root',
@@ -8,25 +9,53 @@ export class AudioService {
   private audioContext!: AudioContext;
   private audioBuffers: { [key: string]: AudioBuffer[] } = {};
   private indexes: { [key: string]: number } = {};
-
-  private voiceMute = false;
-  private bellMute = false;
   private audioPlayerMute = false;
-  private breathMute = false;
+  private activeSources: AudioBufferSourceNode[] = [];
+  currentAudio: HTMLAudioElement | null = null;
 
- currentAudio: HTMLAudioElement | null = null;
+  /** Master list of all sounds in the app */
+  private ALL_SOUNDS = [
+    'bell',
+    'exhale',
+    'exhaleBreath',
+    'exhaleLeft',
+    'exhaleRight',
+    'fullyin',
+    'fullyinHold',
+    'fullyout',
+    'fullyout2',
+    'hold',
+    'hum',
+    'humming',
+    'inagain',
+    'inbelly',
+    'inchest',
+    'inhale',
+    'inhaleBreath',
+    'inhaleLeft',
+    'inhaleRight',
+    'inribs',
+    'letGo',
+    'letgoandhold',
+    'lightNasal',
+    'nextRound',
+    'normalbreath',
+    'pause',
+    'pinchRun',
+    'pinchWalk',
+    'recover'
+  ];
 
   constructor() {
     this.createAudioContext();
 
-    // Resume audio context when app comes back from background
-    App.addListener('resume', () => {
-      if (this.audioContext && this.audioContext.state === 'suspended') {
-        this.audioContext.resume().then(() => {
-          console.log('🔊 AudioContext resumed after resume');
-        }).catch(err => {
+    App.addListener('resume', async () => {
+      if (this.audioContext?.state === 'suspended') {
+        try {
+          await this.audioContext.resume();
+        } catch (err) {
           console.warn('⚠️ Failed to resume AudioContext:', err);
-        });
+        }
       }
     });
   }
@@ -37,8 +66,21 @@ export class AudioService {
     }
   }
 
+  async preloadAll(): Promise<void> {
+    if (this.audioContext?.state === 'suspended') {
+      try {
+        await this.audioContext.resume();
+        console.log('🔊 AudioContext resumed before preloading');
+      } catch (err) {
+        console.warn('⚠️ Failed to resume AudioContext before preload:', err);
+      }
+    }
+    await Promise.all(this.ALL_SOUNDS.map(name => this.loadAudio(name)));
+  }
+
+
   private async loadAudio(name: string): Promise<void> {
-    if (this.audioBuffers[name]) return; // Already loaded
+    if (this.audioBuffers[name]) return;
 
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     const isFemale = localStorage.getItem('isFemale') === 'true';
@@ -52,152 +94,271 @@ export class AudioService {
     else poolSize = 5;
 
     try {
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-
-      const decodedBuffers: AudioBuffer[] = [];
-      for (let i = 0; i < poolSize; i++) {
-        const buffer = await this.audioContext.decodeAudioData(arrayBuffer.slice(0));
-        decodedBuffers.push(buffer);
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
       }
 
-      this.audioBuffers[name] = decodedBuffers;
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      const buffer = await this.audioContext.decodeAudioData(arrayBuffer);
+
+      // ✅ reuse the same buffer in the pool (instead of decoding multiple times)
+      this.audioBuffers[name] = Array(poolSize).fill(buffer);
       this.indexes[name] = 0;
     } catch (error) {
-      console.error(`❌ Failed to load or decode ${name}:`, error);
-      delete this.audioBuffers[name]; // Mark as not loaded
+      console.error(`❌ Failed to load or decode ${url}:`, error);
+      delete this.audioBuffers[name];
     }
   }
 
-  private playBuffer(name: string): void {
+  private async playBuffer(name: string): Promise<void> {
     const buffers = this.audioBuffers[name];
-    if (!buffers || buffers.length === 0) return;
+    if (!buffers?.length) return;
+
+    if (this.audioContext.state !== 'running') {
+      await this.audioContext.resume();
+    }
 
     const index = this.indexes[name] ?? 0;
     const buffer = buffers[index];
     this.indexes[name] = (index + 1) % buffers.length;
+      console.log(`▶️ Playing ${name}, duration: ${buffer.duration.toFixed(2)}s`);
 
     const source = this.audioContext.createBufferSource();
     source.buffer = buffer;
     source.connect(this.audioContext.destination);
 
-    try {
-      source.start(0);
-    } catch (err) {
-      console.warn(`⚠️ Failed to start playback for ${name}:`, err);
-      this.audioContext.resume().catch(() => {});
-    }
+    // 👉 track active sources
+    this.activeSources.push(source);
+    source.onended = () => {
+      this.activeSources = this.activeSources.filter(s => s !== source);
+    };
+
+    source.start(0);
   }
+
 
   async playSound(name: string): Promise<void> {
-    this.voiceMute = localStorage.getItem('voiceMute') === 'true';
-    if (this.voiceMute) return;
+    // Skip voice if muted
+    if (localStorage.getItem('voiceMute') === 'true') return;
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+    // Ensure buffer exists, reload if necessary
+    if (!this.audioBuffers[name] || this.audioBuffers[name].length === 0) {
+      this.clearBuffer(name);
+      await this.loadAudio(name);
+    }
 
-    await this.loadAudio(name);
-    this.playBuffer(name);
+    await this.playBuffer(name);
   }
 
-  async playBell(name: string): Promise<void> {
-    this.bellMute = localStorage.getItem('bellMute') === 'true';
-    if (this.bellMute) return;
+  private clearBuffer(name: string): void {
+    delete this.audioBuffers[name];
+    delete this.indexes[name];
+  }
 
-    await this.loadAudio(name);
-    this.playBuffer(name);
+
+
+  async playBell(name: string = 'bell'): Promise<void> {
+    if (localStorage.getItem('bellMute') === 'true') return;
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+    // Ensure buffer exists, reload if necessary
+    if (!this.audioBuffers[name] || this.audioBuffers[name].length === 0) {
+      this.clearBuffer(name);
+      await this.loadAudio(name);
+    }
+
+    const buffers = this.audioBuffers[name];
+    if (!buffers?.length) {
+      console.warn(`⚠️ No bell buffers available for ${name}`);
+      return;
+    }
+
+    try {
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      const index = this.indexes[name] ?? 0;
+      const buffer = buffers[index];
+      this.indexes[name] = (index + 1) % buffers.length;
+
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.audioContext.destination);
+      source.start(0);
+    } catch (err) {
+      console.warn(`⚠️ Failed to play bell ${name}:`, err);
+    }
   }
 
   async playBreath(name: string): Promise<void> {
-    this.breathMute = localStorage.getItem('breathMute') === 'true';
-    if (this.breathMute) return;
+    if (localStorage.getItem('breathMute') === 'true') {
+      console.log(`🔇 Breath sound muted: ${name}`);
+      return;
+    }
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+    // Ensure buffer exists, reload if necessary
+    if (!this.audioBuffers[name] || this.audioBuffers[name].length === 0) {
+      this.clearBuffer(name);
+      await this.loadAudio(name);
+    }
 
-    await this.loadAudio(name);
-    this.playBuffer(name);
+    const buffers = this.audioBuffers[name];
+    if (!buffers?.length) {
+      console.warn(`⚠️ No breath buffers available for ${name}`);
+      return;
+    }
+
+    try {
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      const index = this.indexes[name] ?? 0;
+      const buffer = buffers[index];
+      this.indexes[name] = (index + 1) % buffers.length;
+
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.audioContext.destination);
+      source.start(0);
+    } catch (err) {
+      console.warn(`⚠️ Failed to play breath sound ${name}:`, err);
+    }
   }
 
-  initializeSong(): void {
+
+  async playBreathSound(
+    name: 'inhaleBreath' | 'exhaleBreath' | 'humming',
+    durationSec: number
+  ): Promise<void> {
+    if (localStorage.getItem('vibrMute') === 'true') {
+      console.log(`🔇 Vibration muted`);
+    }else{
+      await Haptics.vibrate();
+    }
+    if (localStorage.getItem('breathMute') === 'true') {
+      console.log(`🔇 Breath sound muted: ${name}`);
+      return;
+    }
+    if (this.audioContext.state === 'suspended') {
+      await this.audioContext.resume();
+    }
+    await this.loadAudio(name);
+
+    const buffers = this.audioBuffers[name];
+    if (!buffers || buffers.length === 0) {
+      console.warn(`⚠️ No buffers available for ${name}`);
+      return;
+    }
+
+    try {
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
+      const index = this.indexes[name] ?? 0;
+      const buffer = buffers[index];
+      this.indexes[name] = (index + 1) % buffers.length;
+
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+
+      // Stretch playback (use seconds consistently)
+      const originalDuration = buffer.duration; // in seconds
+      const rate = originalDuration / durationSec;
+      source.playbackRate.value = rate;
+
+      source.connect(this.audioContext.destination);
+      source.start(0);
+    } catch (err) {
+      console.warn(`⚠️ Failed to start breathSound ${name}:`, err);
+    }
+  }
+  async vibrateFor(durationMs: number, interval = 300) {
+    const endTime = Date.now() + durationMs;
+    while (Date.now() < endTime) {
+      await Haptics.vibrate();
+      await new Promise(res => setTimeout(res, interval));
+    }
+  }
+
+  // 🎵 Background music
+  async initializeSong(): Promise<void> {
     if (this.currentAudio) return;
 
-    const selectedSongUrl =
-      localStorage.getItem('selectedSong') || 'assets/audio/healingFrequency.mp3';
-
+    const selectedSongUrl = localStorage.getItem('selectedSong') || 'assets/audio/healingFrequency.mp3';
     if (!localStorage.getItem('selectedSong')) {
       localStorage.setItem('selectedSong', selectedSongUrl);
     }
-    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';  
-    if (this.audioPlayerMute){
-      this.currentAudio = new Audio('assets/audio/silent.mp3');
-    }else{
-      this.currentAudio = new Audio(selectedSongUrl);
-    }
+
+    this.audioPlayerMute = localStorage.getItem('audioPlayerMute') === 'true';
+    
+    this.currentAudio = this.audioPlayerMute
+      ? new Audio('assets/audio/silent.mp3')
+      : new Audio(selectedSongUrl);
+
     this.currentAudio.loop = true;
-    this.currentAudio.load();
+
+    await new Promise<void>((resolve) => {
+      this.currentAudio!.addEventListener('canplaythrough', () => resolve(), { once: true });
+      this.currentAudio!.load();
+    });
   }
 
   playSelectedSong(): void {
-    if (!this.currentAudio) {
-      this.initializeSong();
-    }
-
-    this.currentAudio?.play();
+    this.currentAudio?.play().catch(err => console.warn('⚠️ Failed to play song:', err));
+    this.disableMediaSession();
   }
+
+
 
   pauseSelectedSong(): void {
     if (this.currentAudio) {
       this.currentAudio.pause();
-      this.currentAudio.src = '';
-      this.currentAudio.load();
-      this.currentAudio = null;
+      this.currentAudio.currentTime = 0;
     }
 
+    // 🧹 Stop any lingering scheduled sounds
+    this.activeSources.forEach(s => {
+      try { s.stop(); } catch {}
+    });
+    this.activeSources = [];
+    this.disableMediaSession();
+  }
+
+  private disableMediaSession(): void {
     if ('mediaSession' in navigator) {
       try {
         navigator.mediaSession.metadata = null;
+        navigator.mediaSession.playbackState = 'none';
 
-        const nullHandler = () => {
+       const nullHandler = () => {
           console.log('🔒 Ignored lock screen media control');
         };
-
         navigator.mediaSession.setActionHandler('play', nullHandler);
         navigator.mediaSession.setActionHandler('pause', nullHandler);
-        navigator.mediaSession.setActionHandler('seekbackward', nullHandler);
-        navigator.mediaSession.setActionHandler('seekforward', nullHandler);
-        navigator.mediaSession.setActionHandler('previoustrack', nullHandler);
-        navigator.mediaSession.setActionHandler('nexttrack', nullHandler);
+        navigator.mediaSession.setActionHandler('seekbackward', null);
+        navigator.mediaSession.setActionHandler('seekforward', null);
+        navigator.mediaSession.setActionHandler('previoustrack', null);
+        navigator.mediaSession.setActionHandler('nexttrack', null);
+
+        console.log('🚫 MediaSession disabled completely');
       } catch (e) {
-        console.warn('⚠️ MediaSession handler clear failed', e);
+        console.warn('⚠️ Failed to disable MediaSession', e);
       }
     }
   }
+
+
   clearAllAudioBuffers(): void {
     this.audioBuffers = {};
-  }
-  async playBreathSound(name: 'inhaleBreath' | 'exhaleBreath' | 'humming', durationMs: number): Promise<void> {
-    this.breathMute = localStorage.getItem('breathMute') === 'true';
-    if (this.breathMute) return;
-
-    await this.loadAudio(name);
-
-    const buffers = this.audioBuffers[name];
-    if (!buffers || buffers.length === 0) return;
-
-    const index = this.indexes[name] ?? 0;
-    const buffer = buffers[index];
-    this.indexes[name] = (index + 1) % buffers.length;
-
-    const source = this.audioContext.createBufferSource();
-    source.buffer = buffer;
-
-    // PlaybackRate adjustment for stretching
-    const originalDuration = buffer.duration;
-    const rate = originalDuration / (durationMs);
-    source.playbackRate.value = rate;
-
-    source.connect(this.audioContext.destination);
-
-    try {
-      source.start(0);
-    } catch (err) {
-      console.warn(`⚠️ Failed to start breathSound ${name}:`, err);
-      this.audioContext.resume().catch(() => {});
-    }
+    this.indexes = {};
   }
 }

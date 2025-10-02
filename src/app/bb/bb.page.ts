@@ -95,7 +95,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() { 
+  async ionViewWillEnter() { 
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -124,11 +124,12 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.setBBduration();
     this.BBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();
+    await this.audioService.initializeSong(); 
   }
    
-  startBB(): void{
-    this.audioService.initializeSong(); 
+  async startBB(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBB.nativeElement.disabled = true;
@@ -140,7 +141,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBtimeInput.nativeElement.style.display = "none";
       this.startCountdownBB();
       this.BBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -153,14 +154,14 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.BBballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BBballText.nativeElement.textContent = "Inspire";
         }else{
           this.BBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BBcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.BBball);
         this.BBinterval = setInterval(() => this.startTimerBB(), 1000);
         this.BBTimer = setInterval(() => this.DisplayTimerBB(), 1000);
@@ -240,13 +241,13 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerBB(): void{ 
+  async startTimerBB(): Promise<void>{ 
     this.BBcurrentValue--;
     if(this.inhaleBB && this.BBcurrentValue == 1){
       this.BBcurrentValue = 3;
       this.inhaleBB = false;
       this.hold1BB = true;
-      this.audioService.playSound('pause');
+      await this.audioService.playSound('pause');
       this.BBballText.nativeElement.textContent = "Pause"
       this.globalService.changeBall(1.3, 3, this.BBball);
     }
@@ -254,8 +255,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBcurrentValue = 7;
       this.hold1BB = false;
       this.exhaleBB = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BBcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BBcurrentValue); 
       if(this.isPortuguese){
         this.BBballText.nativeElement.textContent = "Espire"
       }else{
@@ -267,8 +268,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.BBcurrentValue = 3;
       this.exhaleBB = false;
       this.hold2BB = true;
-      this.audioService.playSound('pause');
-              this.BBballText.nativeElement.textContent = "Pause"
+      await this.audioService.playSound('pause');
+      this.BBballText.nativeElement.textContent = "Pause"
       this.globalService.changeBall(1, 3, this.BBball);
       this.roundsBB++;
       this.roundsDoneBB.nativeElement.innerHTML = this.roundsBB.toString();
@@ -278,9 +279,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.BBcurrentValue = 5;
         this.hold2BB = false;
         this.inhaleBB = true;
-        
-        this.audioService.playBreathSound('inhaleBreath', this.BBcurrentValue); 
-
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BBcurrentValue); 
         if(this.isPortuguese){
           this.BBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -306,9 +306,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

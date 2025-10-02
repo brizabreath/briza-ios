@@ -19,7 +19,7 @@ import { App } from '@capacitor/app';
     FormsModule, 
     IonicModule,
     RouterModule
-  ],
+  ], 
 })
 export class AHATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('myModalAHAT') modalAHAT!: ElementRef<HTMLDivElement>;
@@ -83,6 +83,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('firstClick', "true");
     //initialize sounds 
     this.globalService.changeBall(1.3, 1, this.AHATball);
+    this.holdAHAT = true;
   }
   // Method to set the AHATduration after ViewChild is initialized
   setAHATduration(): void {
@@ -97,7 +98,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -122,10 +123,11 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.setAHATduration();
     this.AHATResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
-  startAHAT(): void{
-    this.audioService.initializeSong(); 
+  async startAHAT(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAHAT.nativeElement.disabled = true;
@@ -137,7 +139,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.AHATtimeInput.nativeElement.style.display = "none";
       this.startCountdownAHAT();
       this.AHATballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
       this.audioService.playSelectedSong();
       }, 500);
@@ -150,16 +152,15 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.AHATballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.AHATballText.nativeElement.textContent = "Comece a correr";
         }else{
           this.AHATballText.nativeElement.textContent = "Start running";
         }
-        this.audioService.playSound('pinchRun');
+        await this.audioService.playSound('pinchRun');
         this.AHATinterval = setInterval(() => this.startTimerAHAT(), 1000);
         this.AHATTimer = setInterval(() => this.DisplayTimerAHAT(), 1000);
-        this.startBtnAHAT.nativeElement.disabled = false;
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -220,14 +221,18 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
   startCountdownAHAT(): void {
     if (this.AHATduration !== Infinity) {
-      this.AHATcountdownInput.nativeElement.value = this.AHATduration.toString() + " rounds";   
+      if (this.AHATduration <= 1) {
+        this.AHATcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.AHATcountdownInput.nativeElement.value = this.AHATduration.toString() + " rounds left";   
+      }
     } else {
       this.AHATcountdownInput.nativeElement.value = '∞';
       this.AHATcountdownInput.nativeElement.style.display = "inline";
       this.AHATtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerAHAT(): void{ 
+  async startTimerAHAT(): Promise<void>{ 
     if(this.normalAHAT || this.lightAHAT){
       this.AHATcurrentValue--;
       if(this.isPortuguese){
@@ -253,19 +258,20 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       }else{
         this.AHATballText.nativeElement.textContent = "Normal Breathing"
       }
-      this.audioService.playSound('normalbreath');
+      await this.audioService.playSound('normalbreath');
     }
     else if(this.normalAHAT && this.AHATcurrentValue == 1){
       if(this.AHATduration !== 0){
         this.normalAHAT = false;
         this.holdAHAT = true;
         this.AHATcurrentValue = 0;
+        this.startBtnAHAT.nativeElement.disabled = true;
         if(this.isPortuguese){
           this.AHATballText.nativeElement.textContent = "Segure"
         }else{
           this.AHATballText.nativeElement.textContent = "Hold"
         }
-        this.audioService.playSound('pinchRun');
+        await this.audioService.playSound('pinchRun');
         this.stopBtnAHAT.nativeElement.disabled = false;
         this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
       } 
@@ -288,7 +294,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Normal Breathing"
         }
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
         }, 3000);
@@ -339,7 +345,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.AHATResults.nativeElement.innerHTML = "";
 
   }
-  pauseAHAT(): void{
+  async pauseAHAT(): Promise<void>{
+    this.startBtnAHAT.nativeElement.disabled = false;
     this.clearIntervalsAHAT();
     this.holdAHAT = false;
     this.normalAHAT = false;
@@ -351,15 +358,19 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     }else{
       this.AHATballText.nativeElement.textContent = "Light Breathing"
     }
-    this.audioService.playSound('lightNasal');
+    await this.audioService.playSound('lightNasal');
     this.roundsAHAT++;
     this.roundsDoneAHAT.nativeElement.innerHTML = this.roundsAHAT.toString();
     this.AHATduration = this.AHATduration - 1;
     if (this.AHATduration !== Infinity) {
-      this.AHATcountdownInput.nativeElement.value = this.AHATduration.toString() + " rounds";   
+      if (this.AHATduration <= 1) {
+        this.AHATcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.AHATcountdownInput.nativeElement.value = this.AHATduration.toString() + " rounds left";   
+      }
     } else {
       this.AHATcountdownInput.nativeElement.value = '∞';
-    }    
+    }       
     if (this.isPortuguese) {
       this.AHATResults.nativeElement.innerHTML += "<div class='NOfSteps'> <div>Round " + this.roundsAHAT + "</div><div>" + this.AHATcurrentValue + " segundos</div></div>";
     } else {

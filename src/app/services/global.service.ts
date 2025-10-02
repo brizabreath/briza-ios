@@ -26,22 +26,22 @@ export class GlobalService {
   }
   checkIfModalIsEmpty() {
     const modalContent = document.querySelector('.modalPrices');
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     const membershipStatus = localStorage.getItem('membershipStatus') || 'inactive';
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
-    if(membershipStatus == 'failed'){
-        return;
+    if (membershipStatus === 'failed') {
+      return; // modal will show "Manage Payment" button
     }
     if (!modalContent) {
-      console.error('Modal content not found');
+      console.warn('⚠️ Subscription offerings did not load.');
+      const message = isPortuguese
+        ? 'Não foi possível carregar planos de assinatura. Feche o app e tente novamente.'
+        : 'Unable to load subscription plans. close app and try again';
 
-        const message = isPortuguese 
-            ?'Para acessar esta página, você precisa ter uma assinatura ativa. Parece que seu Apple ID já possui uma assinatura vinculada a outra conta. Para continuar, faça login com essa conta existente ou altere seu Apple ID nas Configurações e tente novamente.'
-            :'To access this page, you need an active subscription. It looks like your Apple ID already has a subscription linked to another account. To proceed, log in with that existing account or change your Apple ID in Settings and try again.';
-        alert(message);
-        this.closeModal2(); // Close the modal if it's empty
+      alert(message);
+      // Don’t close modal immediately — let user retry inside ModalComponent
     } else {
-      console.log('✅ Content detected in the modal.');
+      console.log('✅ Subscription options detected in the modal.');
     }
   }
   
@@ -234,5 +234,36 @@ export class GlobalService {
     this.timeouts.forEach((timeoutId) => clearTimeout(timeoutId)); // Clear each timeout
     this.timeouts.length = 0; // Optionally reset the array
     this.timeouts = [];
+  }
+  showMembershipMessage(status: 'offline' | 'no_store' | 'failed' | 'inactive'): void {
+    let message = '';
+
+    switch (status) {
+      case 'offline':
+        message = this.isPT
+          ? 'Você está offline. Conecte-se à internet para assinar e acessar este conteúdo.'
+          : 'You are offline. Connect to the internet to purchase a subscription and access this content.';
+        break;
+
+      case 'no_store':
+        message = this.isPT
+          ? 'Faça login na sua conta Apple/Google para continuar.'
+          : 'Please log in to your Apple/Google account to continue.';
+        break;
+
+      case 'failed':
+        message = this.isPT
+          ? 'Você não possui uma assinatura ativa. Escolha um plano para desbloquear o conteúdo.'
+          : 'You don’t have an active subscription. Choose a plan to unlock content.';
+        break;
+
+      case 'inactive':
+        message = this.isPT
+          ? 'Você não possui uma assinatura ativa. Escolha um plano para desbloquear o conteúdo.'
+          : 'You don’t have an active subscription. Choose a plan to unlock content.';
+        break;
+    }
+
+    alert(message);
   }
 }

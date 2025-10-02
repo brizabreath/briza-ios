@@ -93,7 +93,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -122,11 +122,12 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     this.setCBduration();
     this.CBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
   
-  startCB(): void{
-    this.audioService.initializeSong(); 
+  async startCB(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCB.nativeElement.disabled = true;
@@ -138,7 +139,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.CBtimeInput.nativeElement.style.display = "none";
       this.startCountdownCB();
       this.CBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -151,14 +152,14 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.CBballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.CBballText.nativeElement.textContent = "Inspire";
         }else{
           this.CBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.CBball);
         this.CBinterval = setInterval(() => this.startTimerCB(), 500);
         this.CBTimer = setInterval(() => this.DisplayTimerCB(), 1000);
@@ -234,14 +235,14 @@ export class CBPage implements  AfterViewInit, OnDestroy {
       this.CBtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerCB(): void{ 
+  async startTimerCB(): Promise<void>{ 
     this.CBcurrentValue = this.CBcurrentValue-0.5;
     if(this.inhaleCB && this.CBcurrentValue == 0.5){
       this.CBcurrentValue = 5.5;
       this.inhaleCB = false;
       this.exhaleCB = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.CBcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.CBcurrentValue); 
       if(this.isPortuguese){
         this.CBballText.nativeElement.textContent = "Espire"
       }else{
@@ -256,8 +257,8 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         this.CBcurrentValue = 5.5;
         this.exhaleCB = false;
         this.inhaleCB = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.CBcurrentValue); 
         if(this.isPortuguese){
           this.CBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -284,9 +285,9 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

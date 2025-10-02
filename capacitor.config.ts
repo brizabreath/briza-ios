@@ -10,15 +10,12 @@ const config: CapacitorConfig = {
     overrideUserAgent: "",
     appendUserAgent: "",
   }, 
-    plugins: {
-      Purchases: {
-        apiKey: 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH' // Use the iOS API Key from RevenueCat
-      },
-      StatusBar: {
-        style: 'light',
-        backgroundColor: '#ffffff'
-      }
+  plugins: {
+    StatusBar: {
+      style: 'light',
+      backgroundColor: '#ffffff'
     }
+  }
 };
 
 export default config;

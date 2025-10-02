@@ -95,7 +95,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() { 
+  async ionViewWillEnter() { 
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -124,11 +124,12 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     this.setHUMduration();
     this.HUMResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
-  startHUM(): void{
-    this.audioService.initializeSong(); 
+  async startHUM(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHUM.nativeElement.disabled = true;
@@ -140,7 +141,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.HUMtimeInput.nativeElement.style.display = "none";
       this.startCountdownHUM();
       this.HUMballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -153,14 +154,14 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         this.HUMballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.HUMballText.nativeElement.textContent = "Inspire";
         }else{
           this.HUMballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.HUMcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.HUMcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.HUMball);
         this.HUMinterval = setInterval(() => this.startTimerHUM(), 1000);
         this.HUMTimer = setInterval(() => this.DisplayTimerHUM(), 1000);
@@ -240,13 +241,13 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.HUMtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerHUM(): void{ 
+  async startTimerHUM(): Promise<void>{ 
     this.HUMcurrentValue--;
     if(this.inhaleHUM && this.HUMcurrentValue == 1){
       this.HUMcurrentValue = 3;
       this.inhaleHUM = false;
       this.hold1HUM = true;
-      this.audioService.playSound('pause');
+      await this.audioService.playSound('pause');
       this.HUMballText.nativeElement.textContent = "Pause"
       this.globalService.changeBall(1.3, 3, this.HUMball);
     }
@@ -254,8 +255,8 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.HUMcurrentValue = 7;
       this.hold1HUM = false;
       this.exhaleHUM = true;
-      this.audioService.playSound('hum');
-      this.audioService.playBreathSound('humming', this.HUMcurrentValue - 1); 
+      await this.audioService.playSound('hum');
+      await this.audioService.playBreathSound('humming', this.HUMcurrentValue - 1); 
       if(this.isPortuguese){
         this.HUMballText.nativeElement.textContent = "Zumbir"
       }else{
@@ -267,7 +268,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.HUMcurrentValue = 3;
       this.exhaleHUM = false;
       this.hold2HUM = true;
-      this.audioService.playSound('pause');
+      await this.audioService.playSound('pause');
       this.HUMballText.nativeElement.textContent = "Pause"
       this.globalService.changeBall(1, 3, this.HUMball);
       this.roundsHUM++;
@@ -278,8 +279,8 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         this.HUMcurrentValue = 5;
         this.hold2HUM = false;
         this.inhaleHUM = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.HUMcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.HUMcurrentValue); 
         if(this.isPortuguese){
           this.HUMballText.nativeElement.textContent = "Inspire"
         }else{
@@ -305,9 +306,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HUMballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

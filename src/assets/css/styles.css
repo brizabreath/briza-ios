@@ -65,26 +65,30 @@ body {
     margin-top: 30px;
     width: 100%;
 }
-#kbsetSettingsPage, #whsetSettingsPage, #setSettingsPage{
+#setSettingsPage{
     position: fixed;
+    width: 100%;
+}
+#kbsetSettingsPage, #whsetSettingsPage{
     width: 100%;
 }
 #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR {
     text-align: center;
-    max-width: 500px;
+    max-width: 45rem;
     width: 95%;
     margin: auto;
     margin-top: 8rem;
+    height: 100%;
 }
 #breathpagegrid, #breathpagegridBR {
-    max-width: 500px;
+    max-width: 45rem;
     width: 90%;
     margin: auto;
     margin-top: 8rem;
     color: #0661AA;
 }
 #breathpagegrid h3, #breathpagegridBR h3{
-    margin-top: 3rem;
+    margin-top: 12%;
     font-size: 20px;
     
 }
@@ -106,15 +110,13 @@ body {
 }
 .homepageimgs {
     width: 97%;
-    max-width: 400px;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
-    height: 12rem;
+    height: 100%;
     background-color: rgba(238, 238, 218, 0.39);
 }
 .homepageimgs2 {
     width: 97%;
-    max-width: 400px;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 6rem;
@@ -122,16 +124,13 @@ body {
 }
 .homepageimgs3 {
     width: 99%;
-    max-width: 400px;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
-    height: 8rem;
     background-color:#49b79d1c;
     margin-bottom: 15px;
 }
 .homepageimgs4 {
     width: 97%;
-    max-width: 400px;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 12rem;
@@ -139,7 +138,6 @@ body {
 }
 .homepageimgs5 {
     width: 97%;
-    max-width: 400px;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 12rem;
@@ -671,27 +669,29 @@ input#timerDisplayLungs {
 }
 
 .buttonplus {
-    font-size: 40px;
+    font-size: 50px;
     border: none;
     border-radius: 5px;
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
     color: #49B79D;
-    
-    margin-top: 1rem;
+    margin-top: -1.5rem;
+    font-weight: bold;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.49);
 }
 
 .buttonminus {
-    font-size: 40px;
+    font-size: 50px;
     border: none;
     border-radius: 5px;
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
     color: #49B79D;
-    
-    margin-top: 1.2rem;
+    margin-top: -1.3rem;
+    font-weight: bold;
+    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.49);
 }
 #minusKB, #plusKB, #SminusKB, #SplusKB, #minusWH, #plusWH, #SminusWH, #SplusWH{
     margin-top: 0;
@@ -762,8 +762,7 @@ input#timerDisplayLungs {
 }
 .volume-bar {
     display: flex;
-    margin: 2rem;
-    margin-bottom: 1rem;
+    margin: 1rem 2rem 1rem;
     justify-content: space-between;
 }
 .volume-bar  h4{
@@ -779,26 +778,58 @@ input#timerDisplayLungs {
     font-size: 18px !important;
     
 }
-.volume-bar input[type="range"] {
-    width: 30px;
-    background: #49B79D;
-    border-radius: 3px;
-    outline: none;
-}
+
 .settingBreaths{
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
+    width: 80%;
+    margin: auto;
 }
-.volume-bar input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    background: #0661AA;
-    border: none;
-    border-radius: 50%;
+.volume-bar input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 50px;       /* make it wider */
+  background: #ddd;   /* fallback track color */
+  border-radius: 8px; /* round corners */
+  outline: none;
 }
 
+/* Track */
+.volume-bar input[type="range"]::-webkit-slider-runnable-track {
+  height: 18px; 
+  background: linear-gradient(to right, #49b79d, #0661aa);
+  border-radius: 10px;
+}
+.volume-bar input[type="range"]::-moz-range-track {
+  height: 18px;
+  background: linear-gradient(to right, #49b79d, #0661aa);
+  border-radius: 10px;
+}
+
+/* Thumb */
+.volume-bar input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px; 
+  height: 24px; 
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #49b79d;
+  margin-top: -4px; /* centers thumb in thick track */
+  cursor: grab;
+}
+.volume-bar input[type="range"]::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #49b79d;
+  cursor: grab;
+}
+.female{
+    margin-left: -2rem;
+}
+.male{
+    margin-left: -1rem;
+}
 .song-container {
     display: flex;
     justify-content: center;
@@ -2397,7 +2428,8 @@ input.btn.btn-danger.CO2delete-button {
     height: 100%;
     border-radius: 50%;
     border-radius: 50%;
-    box-shadow: 0 0 22px 2px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 0 20px 34px rgba(6, 97, 170, 0.08) inset, /* inside shadow */
+    3px 6px 33px -4px rgba(0, 0, 0, 0.22);
 }
 
 .ball span {
@@ -2472,6 +2504,7 @@ li::marker {
 }
 .manageSubsModal{
     font-size: 12px !important; 
+    margin-top: 1rem;
 }
 
 .flexModal {
@@ -2632,11 +2665,6 @@ input#intervalDurationInputCB {
 @media only screen and (min-width: 500px){
     .form-control, .form-button {
         width: 400px !important;
-    }
-}
-@media only screen and (min-height: 850px) {
-    .homepageimgs {
-        height: 15rem !important;
     }
 }
 

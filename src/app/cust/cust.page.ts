@@ -103,7 +103,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -141,11 +141,12 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.hold1InputCUST.nativeElement.disabled = false;
     this.exhaleInputCUST.nativeElement.disabled = false;
     this.hold2InputCUST.nativeElement.disabled = false;
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong();  
   }
    
-  startCUST(): void{
-    this.audioService.initializeSong(); 
+  async startCUST(): Promise<void>{
     this.customizableIn = this.inhaleInputCUST.nativeElement.value;
     this.customizableH1 = this.hold1InputCUST.nativeElement.value;
     this.customizableOut = this.exhaleInputCUST.nativeElement.value;
@@ -170,7 +171,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.CUSTtimeInput.nativeElement.style.display = "none";
       this.startCountdownCUST();
       this.CUSTballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -183,14 +184,14 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         this.CUSTballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.CUSTballText.nativeElement.textContent = "Inspire";
         }else{
           this.CUSTballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputCUST.nativeElement.value), this.CUSTball);
         this.CUSTinterval = setInterval(() => this.startTimerCUST(), 1000);
         this.CUSTTimer = setInterval(() => this.DisplayTimerCUST(), 1000);
@@ -270,7 +271,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.CUSTtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerCUST(): void{ 
+  async startTimerCUST(): Promise<void>{ 
     this.CUSTcurrentValue--;
     if(this.inhaleCUST && (this.CUSTcurrentValue == 1 || this.CUSTcurrentValue == 0)){
       this.CUSTcurrentValue = parseInt(this.hold1InputCUST.nativeElement.value) + 1;
@@ -278,8 +279,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         this.CUSTcurrentValue = parseInt(this.exhaleInputCUST.nativeElement.value) + 1;
         this.inhaleCUST = false;
         this.exhaleCUST = true;
-        this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
+        await this.audioService.playSound('exhale');
+        await this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
         if(this.isPortuguese){
           this.CUSTballText.nativeElement.textContent = "Espire"
         }else{
@@ -289,7 +290,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       }else{
         this.inhaleCUST = false;
         this.hold1CUST = true;
-        this.audioService.playSound('hold');
+        await this.audioService.playSound('hold');
         if(this.isPortuguese){
           this.CUSTballText.nativeElement.textContent = "Segure"
         }else{
@@ -302,8 +303,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.CUSTcurrentValue = parseInt(this.exhaleInputCUST.nativeElement.value) + 1;
       this.hold1CUST = false;
       this.exhaleCUST = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.CUSTcurrentValue); 
       if(this.isPortuguese){
         this.CUSTballText.nativeElement.textContent = "Espire"
       }else{
@@ -318,8 +319,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
           this.CUSTcurrentValue = parseInt(this.inhaleInputCUST.nativeElement.value) + 1;
           this.exhaleCUST = false;
           this.inhaleCUST = true;
-          this.audioService.playSound('inhale');        
-          this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
+          await this.audioService.playSound('inhale');        
+          await this.audioService.playBreathSound('inhaleBreath', this.CUSTcurrentValue); 
           if(this.isPortuguese){
             this.CUSTballText.nativeElement.textContent = "Inspire"
           }else{
@@ -331,7 +332,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.exhaleCUST = false;
           this.hold2CUST = true;
-          this.audioService.playSound('hold');
+          await this.audioService.playSound('hold');
           if(this.isPortuguese){
             this.CUSTballText.nativeElement.textContent = "Segure"
           }else{
@@ -360,9 +361,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CUSTballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
@@ -373,7 +374,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.CUSTcurrentValue = parseInt(this.inhaleInputCUST.nativeElement.value) + 1;
       this.hold2CUST = false;
       this.inhaleCUST = true;
-      this.audioService.playSound('inhale');
+      await this.audioService.playSound('inhale');
       if(this.isPortuguese){
         this.CUSTballText.nativeElement.textContent = "Inspire"
       }else{

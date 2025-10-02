@@ -36,7 +36,11 @@ export class SetPage implements AfterViewInit, OnDestroy {
   @ViewChild('songSelectSet') songSelectSet!: ElementRef<HTMLSelectElement>; 
   @ViewChild('setBrmute') setBrmute!: ElementRef<HTMLDivElement>;
   @ViewChild('setBraudio') setBraudio!: ElementRef<HTMLDivElement>;
+  @ViewChild('setVrmute') setVrmute!: ElementRef<HTMLDivElement>;
+  @ViewChild('setVraudio') setVraudio!: ElementRef<HTMLDivElement>;
   @ViewChild('breathBarSET') breathBarSET!: ElementRef<HTMLInputElement>;
+  @ViewChild('vibrBarSET') vibrBarSET!: ElementRef<HTMLInputElement>;
+
 
 
   private currentAudio: HTMLAudioElement | null = null; // To keep track of the currently playing audio
@@ -46,12 +50,14 @@ export class SetPage implements AfterViewInit, OnDestroy {
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private isFemale = localStorage.getItem('isFemale') === 'true';
   private breathMute = localStorage.getItem('breathMute') === 'true';
+  private vibrMute = localStorage.getItem('vibrMute') === 'true';
+
 
 
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
-  onSongChange(event: Event): void {
+  async onSongChange(event: Event): Promise<void> {
     const selectElement = event.target as HTMLSelectElement;
     const selectedSong = selectElement.value;
     localStorage.setItem('selectedSong', selectedSong); // Save the selected song in local storage
@@ -68,6 +74,12 @@ export class SetPage implements AfterViewInit, OnDestroy {
     this.currentAudio.muted = false;
     this.currentAudio.load();
     this.currentAudio.play();
+    if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
 
     // Set a timeout to pause the audio after 15 seconds
     this.timeoutIdSet = setTimeout(() => {
@@ -76,6 +88,7 @@ export class SetPage implements AfterViewInit, OnDestroy {
         this.currentAudio.currentTime = 0; // Reset the audio to the start
       }
     }, 15000);
+
   }
 
   // Lifecycle hook to initialize the DOM elements and set the selected song
@@ -100,6 +113,8 @@ export class SetPage implements AfterViewInit, OnDestroy {
     this.bellBarSet.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSet.nativeElement.addEventListener('input', () => this.handleMaleChange());
     this.breathBarSET.nativeElement.addEventListener('input', () => this.handleBreathChange());
+    this.vibrBarSET.nativeElement.addEventListener('input', () => this.handlevibrChange());
+
   }
 
   ionViewWillEnter() {
@@ -158,9 +173,18 @@ export class SetPage implements AfterViewInit, OnDestroy {
       this.setBrmute.nativeElement.style.display = 'none';
       this.setBraudio.nativeElement.style.display = 'block';
     }
+    if(this.vibrMute){
+      this.vibrBarSET.nativeElement.value = '0';
+      this.setVraudio.nativeElement.style.display = 'none';
+      this.setVrmute.nativeElement.style.display = 'block';
+    }else{
+      this.vibrBarSET.nativeElement.value = '1';
+      this.setVrmute.nativeElement.style.display = 'none';
+      this.setVraudio.nativeElement.style.display = 'block';
+    }
   }
   // Method to handle the volume change
-  handleVolumeChange(): void {
+  async handleVolumeChange(): Promise<void> {
     const volumeSet = parseFloat(this.volumeBarSet.nativeElement.value);
 
     // Check if volume is 0 and adjust the UI accordingly
@@ -168,10 +192,22 @@ export class SetPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('audioPlayerMute', 'true');
       this.setaudio.nativeElement.style.display = 'none';
       this.setmute.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+        this.audioService.currentAudio.src = '';
+        this.audioService.currentAudio.load();
+        this.audioService.currentAudio = null;
+        await this.audioService.initializeSong();
+      }
     } else {
       localStorage.setItem('audioPlayerMute', 'false');
       this.setmute.nativeElement.style.display = 'none';
       this.setaudio.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+        this.audioService.currentAudio.src = '';
+        this.audioService.currentAudio.load();
+        this.audioService.currentAudio = null;
+        await this.audioService.initializeSong();
+      }
     }
   }
   // Method to handle the volume change
@@ -233,6 +269,21 @@ export class SetPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('breathMute', 'false');
       this.setBrmute.nativeElement.style.display = 'none';
       this.setBraudio.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  handlevibrChange(): void {
+    const volumeSET = parseFloat(this.vibrBarSET.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSET === 0) {
+      localStorage.setItem('vibrMute', 'true');
+      this.setVraudio.nativeElement.style.display = 'none';
+      this.setVrmute.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('vibrMute', 'false');
+      this.setVrmute.nativeElement.style.display = 'none';
+      this.setVraudio.nativeElement.style.display = 'block';
     }
   }
   // Method to navigate back

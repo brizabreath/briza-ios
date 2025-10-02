@@ -103,7 +103,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -133,7 +133,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.YBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
   minusRatioYB(): void{
@@ -160,10 +162,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.hold2InputYB.nativeElement.value) || 0) + 3).toString();
     }
   }
-  startYB(): void{
+  async startYB(): Promise<void>{
     this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;
     //initialize sounds
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsYB.nativeElement.disabled = true;
@@ -177,7 +178,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.YBtimeInput.nativeElement.style.display = "none";
       this.startCountdownYB();
       this.YBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -190,14 +191,14 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         this.YBballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.YBballText.nativeElement.textContent = "Inspire";
         }else{
           this.YBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inbelly');        
-        this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue); 
+        await this.audioService.playSound('inbelly');        
+        await this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue); 
         this.globalService.changeBall(1.3, parseInt(this.inhaleInputYB.nativeElement.value), this.YBball);
         this.YBinterval = setInterval(() => this.startTimerYB(), 1000);
         this.YBTimer = setInterval(() => this.DisplayTimerYB(), 1000);
@@ -273,14 +274,14 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.YBtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerYB(): void{ 
+  async startTimerYB(): Promise<void>{ 
     this.YBcurrentValue--;
     if(this.inhaleYB && this.YBcurrentValue == 1){
       this.YBcurrentValue = parseInt(this.hold1InputYB.nativeElement.value) + 1;
       this.inhaleYB = false;
       this.hold1YB = true;
-      this.audioService.playSound('inribs');
-      this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue);     
+      await this.audioService.playSound('inribs');
+      await this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue);     
       if(this.isPortuguese){
         this.YBballText.nativeElement.textContent = "Inspire"
       }else{
@@ -292,8 +293,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.YBcurrentValue = parseInt(this.exhaleInputYB.nativeElement.value) + 1;
       this.hold1YB = false;
       this.exhaleYB = true;
-      this.audioService.playSound('inchest');
-      this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue);  
+      await this.audioService.playSound('inchest');
+      await this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue);  
       if(this.isPortuguese){
         this.YBballText.nativeElement.textContent = "Inspire"
       }else{
@@ -305,8 +306,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.YBcurrentValue = parseInt(this.hold2InputYB.nativeElement.value) + 1;
       this.exhaleYB = false;
       this.hold2YB = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.YBcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.YBcurrentValue); 
       if(this.isPortuguese){
         this.YBballText.nativeElement.textContent = "Espire"
       }else{
@@ -321,8 +322,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;
         this.hold2YB = false;
         this.inhaleYB = true;
-        this.audioService.playSound('inbelly');
-        this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue); 
+        await this.audioService.playSound('inbelly');
+        await this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue); 
         if(this.isPortuguese){
           this.YBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -348,9 +349,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         }else{
           this.YBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

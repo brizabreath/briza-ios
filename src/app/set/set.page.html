@@ -4,7 +4,7 @@
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
@@ -17,8 +17,8 @@
           <h4 class="volumeSettings portuguese">Voz</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
-                <div #setVaudio class="audio"><img src="assets/images/speaker.png"></div>
-                <div #setVmute class="mute"><img src="assets/images/mute.png"></div>
+                <div #setVaudio class="audio"><img src="assets/images/speaker.jpg"></div>
+                <div #setVmute class="mute"><img src="assets/images/mute.jpg"></div>
             </div>
             <input type="range" #voiceBarSet min="0" max="1" step="1" value="1">
           </div>
@@ -29,8 +29,8 @@
         <h4 class="volumeSettings portuguese">Tipo de voz</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
-              <div #setFemale class="audio"><div class="english">Female</div><div class="portuguese">Feminina</div></div>
-              <div #setMale class="mute"><div class="english">Male</div><div class="portuguese">Masculina</div></div>
+              <div #setFemale class="audio"><img src="assets/images/female.jpeg"></div>
+            <div #setMale class="mute"><img src="assets/images/male.jpeg"></div>
           </div>
           <input type="range" #maleBarSet min="0" max="1" step="1" value="1">
         </div>
@@ -38,13 +38,25 @@
       <hr />
       <div class="volume-bar">
         <h4 class="volumeSettings english">Breath sound</h4>
-        <h4 class="volumeSettings portuguese">Som das espirações</h4>
+        <h4 class="volumeSettings portuguese">Som das respirações</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
-              <div #setBraudio class="audio"><img src="assets/images/speaker.png"></div>
-              <div #setBrmute class="mute"><img src="assets/images/mute.png"></div>
+              <div #setBraudio class="audio"><img src="assets/images/wave.jpg"></div>
+              <div #setBrmute class="mute"><img src="assets/images/nowave.jpg"></div>
           </div>
           <input type="range" #breathBarSET min="0" max="1" step="1" value="1">
+        </div>
+      </div>
+      <hr />
+      <div class="volume-bar">
+        <h4 class="volumeSettings english">Vibrate on breath</h4>
+        <h4 class="volumeSettings portuguese">Vibrar nas respirações</h4>
+        <div class="settingsVolBut">
+          <div class="audioButtons">
+              <div #setVraudio class="audio"><img src="assets/images/vibrate.jpeg"></div>
+              <div #setVrmute class="mute"><img src="assets/images/nvibrate.jpeg"></div>
+          </div>
+          <input type="range" #vibrBarSET min="0" max="1" step="1" value="1">
         </div>
       </div>
       <hr />
@@ -53,8 +65,8 @@
           <h4 class="volumeSettings portuguese">Sino</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
-                <div #setBaudio class="audio"><img src="assets/images/speaker.png"></div>
-                <div #setBmute class="mute"><img src="assets/images/mute.png"></div>
+                <div #setBaudio class="audio"><img src="assets/images/bell.jpg"></div>
+                <div #setBmute class="mute"><img src="assets/images/nobell.jpg"></div>
             </div>
             <input type="range" #bellBarSet min="0" max="1" step="1" value="1">
           </div>
@@ -65,8 +77,8 @@
           <h4 class="volumeSettings portuguese">Música</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
-                <div #setaudio class="audio"><img src="assets/images/speaker.png"></div>
-                <div #setmute class="mute"><img src="assets/images/mute.png"></div>
+                <div #setaudio class="audio"><img src="assets/images/song.jpg"></div>
+                <div #setmute class="mute"><img src="assets/images/nosong.jpg"></div>
             </div>
             <input type="range" #volumeBarSet min="0" max="1" step="1" value="1">
           </div>

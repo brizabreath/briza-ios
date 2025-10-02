@@ -4,7 +4,7 @@
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="settingButtons">
       <button routerLink="/setkb" id="settingsKB" #settingsKB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
@@ -41,6 +41,11 @@
                   </select>
                   <input #KBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
+               <div *ngIf="showFixedRoundButton" class="fixed-round-button">
+                <button type="button" (click)="openFixedRoundsModal()">
+                  Set holding times
+                </button>
+              </div>
               <div class="center-container">
                 <button #startBtnKB class="ballButton">
                   <div #KBball class="ball">
@@ -64,6 +69,32 @@
           </div>
       </div>
       <div #KBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+  <!-- Modal for fixed round durations -->
+  <div id="fixedRoundsModalKB" class="modal" #fixedRoundsModalKB>
+    <div class="modal-content fixedRoundsModal">
+      <span class="close" (click)="closeFixedRoundsModal()">&times;</span>
+      <h3 class="english">Set time of holds</h3>
+      <p class="english">Leave 0 if you don't want to set time</p>
+      <h3 class="portuguese">Definir tempo de retencoes</h3>
+
+      <div *ngFor="let round of fixedRoundDurations; let i = index" class="round-input">
+        <label class="round-label">Hold {{ i + 1 }}</label>
+        <div class="time-inputs">
+          <input type="number" inputmode="numeric"
+                min="0"
+                [(ngModel)]="fixedRoundDurations[i].minutes"
+                placeholder="min" onblur="this.value = Math.max(0, Math.min(20, this.value))"/>
+          <span>min :</span>
+          <input type="number" inputmode="numeric"
+                min="0"
+                max="59"
+                [(ngModel)]="fixedRoundDurations[i].seconds"
+                placeholder="sec" onblur="this.value = Math.max(0, Math.min(59, this.value))"/>
+          <span>sec</span>
+        </div>
+      </div>
     </div>
   </div>
   <div id="myModalKB" class="modal" #myModalKB>

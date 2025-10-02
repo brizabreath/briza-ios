@@ -1,17 +1,17 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { ModalComponent } from './modal/modal.component';
-import { GlobalService } from './services/global.service';
-import { Platform } from '@ionic/angular';
-import { LocalReminderService } from './services/local-reminder.service';
-import { LocalNotifications } from '@capacitor/local-notifications';
+import { IonicModule, Platform } from '@ionic/angular';
+import { Router, RouterModule } from '@angular/router';
 import { App } from '@capacitor/app';
-import { Router, RouterModule } from '@angular/router'; // Import RouterModule
-import { YogaUpdateService } from './services/yoga-update.service';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 
+import { ModalComponent } from './modal/modal.component';
+import { GlobalService } from './services/global.service';
+import { LocalReminderService } from './services/local-reminder.service';
+import { YogaUpdateService } from './services/yoga-update.service';
+import { AudioService } from './services/audio.service';
 
 @Component({
   selector: 'app-root',
@@ -22,59 +22,82 @@ import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
     CommonModule,
     FormsModule,
     IonicModule,
-    ModalComponent, 
-    IonicModule, 
+    ModalComponent,
     RouterModule
   ]
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   isModalOpen: boolean = false;
   isPortuguese: boolean = false;
   private inactivityTimer: any;
   showWebSplash = true;
   private listenersRegistered = false;
 
-  constructor(private globalService: GlobalService, private reminders: LocalReminderService, private platform: Platform, private router: Router, private yogaUpdates: YogaUpdateService) {
+  constructor(
+    private globalService: GlobalService,
+    private reminders: LocalReminderService,
+    private platform: Platform,
+    private router: Router,
+    private yogaUpdates: YogaUpdateService,
+    private audioService: AudioService
+  ) {
     this.setupInactivityMonitor();
     this.initializeApp();
+
+    // Prevent keyboard from resizing UI
     Keyboard.setResizeMode({ mode: KeyboardResize.None });
   }
-  async initializeApp() {
+
+  private async initializeApp() {
     await this.platform.ready();
-     // Wait until your app or home content is ready
+
+    // Hide splash after a short delay
     setTimeout(() => {
       this.showWebSplash = false;
-    }, 2000); // adjust as needed
-  }
-  async ngOnInit(){
-    //save it for future tests
-    //await this.reminders.debugFireIn(10);
-    await this.reminders.startRollingReminders(); // ensure a next reminder exists
-    await this.reminders.tick();                  // double-check at launch
-     // ✅ Check for new yoga classes whenever the app launches
+    }, 2000);
+  } 
+
+  async ngOnInit() {
+    await this.audioService.preloadAll();
+    await this.audioService.initializeSong();     
+    App.addListener('appStateChange', async (state) => {
+      if (state.isActive) {
+        this.audioService.clearAllAudioBuffers();   // 🧹 clear
+        await this.audioService.preloadAll();       // 🔄 reload
+        await this.audioService.initializeSong();   // 🎵 reload bg music
+      }
+    });
+
+    // Start reminders & yoga updates
+    await this.reminders.startRollingReminders();
+    await this.reminders.tick();
     await this.yogaUpdates.checkOnAppStart();
 
+    // Resume events
     App.addListener('resume', async () => {
       await this.reminders.tick();
       await this.yogaUpdates.checkOnAppStart();
-      this.registerNotificationListener(); // safe due to guard
+      this.registerNotificationListener();
     });
 
+    // Handle foreground notifications
     LocalNotifications.addListener('localNotificationReceived', async () => {
       await this.reminders.chainNext();
     });
 
     this.registerNotificationListener();
+
     // Initialize language preference safely
     const isPortugueseValue = localStorage.getItem('isPortuguese');
     this.isPortuguese = isPortugueseValue === 'true';
-  
+
     // Subscribe to modal visibility changes
     this.globalService.isModalOpen$.subscribe({
       next: (isOpen) => (this.isModalOpen = isOpen),
       error: (err) => console.error('Error in modal state subscription:', err),
     });
   }
+
   private registerNotificationListener() {
     if (this.listenersRegistered) return;
     this.listenersRegistered = true;
@@ -95,10 +118,12 @@ export class AppComponent implements OnInit{
       }
     });
   }
+
   onModalClose(): void {
-    this.isModalOpen = false; // Fecha o modal
+    this.isModalOpen = false;
   }
-  setupInactivityMonitor(): void {
+
+  private setupInactivityMonitor(): void {
     const events = ['touchstart', 'click', 'mousemove', 'keydown'];
 
     events.forEach(event => {
@@ -108,7 +133,7 @@ export class AppComponent implements OnInit{
     this.resetInactivityTimer();
   }
 
-  resetInactivityTimer(): void {
+  private resetInactivityTimer(): void {
     clearTimeout(this.inactivityTimer);
 
     const overlay = document.querySelector('.dimOverlay') as HTMLElement;
@@ -116,6 +141,6 @@ export class AppComponent implements OnInit{
 
     this.inactivityTimer = setTimeout(() => {
       if (overlay) overlay.style.opacity = '0.8';
-    }, 60000); // 30 seconds
+    }, 60000); // 1 min (adjust as needed)
   }
 }

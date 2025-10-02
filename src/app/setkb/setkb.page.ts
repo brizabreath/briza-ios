@@ -42,7 +42,9 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   @ViewChild('SplusKB') SplusKB!: ElementRef<HTMLButtonElement>;
   @ViewChild('breathsetInputKB') breathsetInputKB!: ElementRef<HTMLInputElement>;
   @ViewChild('speedsetInputKB') speedsetInputKB!: ElementRef<HTMLInputElement>;
-
+  @ViewChild('setVrmuteKB') setVrmuteKB!: ElementRef<HTMLDivElement>;
+  @ViewChild('setVraudioKB') setVraudioKB!: ElementRef<HTMLDivElement>;
+  @ViewChild('vibrBarSETKB') vibrBarSETKB!: ElementRef<HTMLInputElement>;
 
   private currentAudio: HTMLAudioElement | null = null; // To keep track of the currently playing audio
   private timeoutIdSETKB: any; // To store the timeout ID for stopping audio playback
@@ -53,11 +55,12 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   private KBbreaths: any = null;
   private KBbreathSpeed: any = null; 
   private isFemale = localStorage.getItem('isFemale') === 'true';
+  private vibrMute = localStorage.getItem('vibrMute') === 'true';
 
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
-  onSongChange(event: Event): void {
+  async onSongChange(event: Event): Promise<void> {
     const selectElement = event.target as HTMLSelectElement;
     const selectedSong = selectElement.value;
     localStorage.setItem('selectedSong', selectedSong); // Save the selected song in local storage
@@ -74,6 +77,12 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     this.currentAudio.muted = false;
     this.currentAudio.load();
     this.currentAudio.play();
+    if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
 
     // SETKB a timeout to pause the audio after 15 seconds
     this.timeoutIdSETKB = setTimeout(() => {
@@ -106,6 +115,7 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     this.breathBarSETKB.nativeElement.addEventListener('input', () => this.handleBreathChange());
     this.bellBarSETKB.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSetKB.nativeElement.addEventListener('input', () => this.handleMaleChange());
+    this.vibrBarSETKB.nativeElement.addEventListener('input', () => this.handlevibrChange());
     // Add event listener for breath changes
     this.minusKB.nativeElement.onclick = () => this.handleMinusChange();
     this.plusKB.nativeElement.onclick = () => this.handlePlusChange();
@@ -168,6 +178,15 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
       this.maleBarSetKB.nativeElement.value = '1';
       this.setFemale.nativeElement.style.display = 'none';
       this.setMale.nativeElement.style.display = 'block';
+    }
+    if(this.vibrMute){
+      this.vibrBarSETKB.nativeElement.value = '0';
+      this.setVraudioKB.nativeElement.style.display = 'none';
+      this.setVrmuteKB.nativeElement.style.display = 'block';
+    }else{
+      this.vibrBarSETKB.nativeElement.value = '1';
+      this.setVrmuteKB.nativeElement.style.display = 'none';
+      this.setVraudioKB.nativeElement.style.display = 'block';
     }
     //set up breaths
     this.KBbreaths = localStorage.getItem('numberOfBreaths');
@@ -235,7 +254,22 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     }
   }
   // Method to handle the volume change
-  handleVolumeChange(): void {
+  handlevibrChange(): void {
+    const volumeSET = parseFloat(this.vibrBarSETKB.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSET === 0) {
+      localStorage.setItem('vibrMute', 'true');
+      this.setVraudioKB.nativeElement.style.display = 'none';
+      this.setVrmuteKB.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('vibrMute', 'false');
+      this.setVrmuteKB.nativeElement.style.display = 'none';
+      this.setVraudioKB.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  async handleVolumeChange(): Promise<void> {
     const volumeSETKB = parseFloat(this.volumeBarSETKB.nativeElement.value);
 
     // Check if volume is 0 and adjust the UI accordingly
@@ -243,10 +277,22 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('audioPlayerMute', 'true');
       this.setaudio.nativeElement.style.display = 'none';
       this.setmute.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
     } else {
       localStorage.setItem('audioPlayerMute', 'false');
       this.setmute.nativeElement.style.display = 'none';
       this.setaudio.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
     }
   }
   // Method to handle the volume change

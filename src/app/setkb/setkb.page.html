@@ -4,7 +4,7 @@
       <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/B_DEGRAD.svg" width="50" height="50" />
+        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
@@ -13,6 +13,7 @@
         <h1 class="english">Settings</h1>
         <h1 class="portuguese">Configurações</h1>
         <div class="settingBreaths">
+        <h4 class="volumeSettings english settingH4">Number of breaths</h4>
         <div class="settings-form settings-formWHKB">
           <div class="form-line kbSETForm">
               <button class="buttonminus" type="button" id="minusKB" #minusKB>-</button>
@@ -25,6 +26,7 @@
               <button class="buttonplus" type="button" id="plusKB" #plusKB>+</button>
           </div>
       </div>
+      <h4 class="volumeSettings english settingH4">Speed of breaths</h4>
       <div class="settings-form settings-formWHKB">
           <div class="form-line kbSETForm">
               <button class="buttonminus" type="button" id="SminusKB" #SminusKB>-</button>
@@ -43,8 +45,8 @@
           <h4 class="volumeSettings portuguese">Voz</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
-                <div #setVaudio class="audio"><img src="assets/images/speaker.png"></div>
-                <div #setVmute class="mute"><img src="assets/images/mute.png"></div>
+                <div #setVaudio class="audio"><img src="assets/images/speaker.jpg"></div>
+                <div #setVmute class="mute"><img src="assets/images/mute.jpg"></div>
             </div>
             <input type="range" #voiceBarSETKB min="0" max="1" step="1" value="1">
           </div>
@@ -55,8 +57,8 @@
         <h4 class="volumeSettings portuguese">Tipo de voz</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
-            <div #setFemale class="audio"><div class="english">Female</div><div class="portuguese">Feminina</div></div>
-            <div #setMale class="mute"><div class="english">Male</div><div class="portuguese">Masculina</div></div>
+            <div #setFemale class="audio"><img src="assets/images/female.jpeg"></div>
+            <div #setMale class="mute"><img src="assets/images/male.jpeg"></div>
           </div>
           <input type="range" #maleBarSetKB min="0" max="1" step="1" value="1">
         </div>
@@ -64,14 +66,26 @@
     <hr />
       <div class="volume-bar">
         <h4 class="volumeSettings english">Breath sound</h4>
-        <h4 class="volumeSettings portuguese">Som das espirações</h4>
+        <h4 class="volumeSettings portuguese">Som das respirações</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
-              <div #setBraudio class="audio"><img src="assets/images/speaker.png"></div>
-              <div #setBrmute class="mute"><img src="assets/images/mute.png"></div>
+              <div #setBraudio class="audio"><img src="assets/images/wave.jpg"></div>
+              <div #setBrmute class="mute"><img src="assets/images/nowave.jpg"></div>
           </div>
           <input type="range" #breathBarSETKB min="0" max="1" step="1" value="1">
         </div>
+    </div>
+    <hr />
+    <div class="volume-bar">
+      <h4 class="volumeSettings english">Vibrate on holding</h4>
+      <h4 class="volumeSettings portuguese">Vibrar nas retenções</h4>
+      <div class="settingsVolBut">
+        <div class="audioButtons">
+            <div #setVraudioKB class="audio"><img src="assets/images/vibrate.jpeg"></div>
+            <div #setVrmuteKB class="mute"><img src="assets/images/nvibrate.jpeg"></div>
+        </div>
+        <input type="range" #vibrBarSETKB min="0" max="1" step="1" value="1">
+      </div>
     </div>
     <hr />
     <div class="volume-bar">
@@ -79,8 +93,8 @@
       <h4 class="volumeSettings portuguese">Sino</h4>
       <div class="settingsVolBut">
         <div class="audioButtons">
-            <div #setBaudio class="audio"><img src="assets/images/speaker.png"></div>
-            <div #setBmute class="mute"><img src="assets/images/mute.png"></div>
+            <div #setBaudio class="audio"><img src="assets/images/bell.jpg"></div>
+            <div #setBmute class="mute"><img src="assets/images/nobell.jpg"></div>
         </div>
         <input type="range" #bellBarSETKB min="0" max="1" step="1" value="1">
       </div>
@@ -91,8 +105,8 @@
           <h4 class="volumeSettings portuguese">Música</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
-                <div #setaudio class="audio"><img src="assets/images/speaker.png"></div>
-                <div #setmute class="mute"><img src="assets/images/mute.png"></div>
+                <div #setaudio class="audio"><img src="assets/images/song.jpg"></div>
+                <div #setmute class="mute"><img src="assets/images/nosong.jpg"></div>
             </div>
             <input type="range" #volumeBarSETKB min="0" max="1" step="1" value="1">
           </div>

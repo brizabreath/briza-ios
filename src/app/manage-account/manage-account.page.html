@@ -6,7 +6,7 @@
     <div class="logo-container">
       <img
         class="logoimg"
-        src="assets/images/B_DEGRAD.svg"
+        src="assets/images/blogo.png"
         width="50"
         height="50"
       />
@@ -21,7 +21,7 @@
       <!-- Current Email (readonly) -->
       <ion-item>
         <ion-label position="stacked">Current Email</ion-label>
-        <ion-input class="form-control" type="email" [value]="email" readonly></ion-input>
+        <ion-input class="form-control currentEmail" type="email" [value]="email" readonly></ion-input>
       </ion-item>
       <!-- Name -->
       <ion-item>
@@ -36,7 +36,7 @@
 
   
       <ion-item>
-        <ion-label position="stacked">Current Password</ion-label>
+        <ion-label position="stacked">Current Password (required)</ion-label>
         <ion-input class="form-control" type="password" [(ngModel)]="password" name="password" required></ion-input>
       </ion-item>
   

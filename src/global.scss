@@ -291,7 +291,6 @@ ion-input {
   padding: 16px 20px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
   width: 100%;
-  max-width: 350px;
   text-align: left;
   margin: auto;
   text-decoration: none;
@@ -306,7 +305,6 @@ ion-input {
   padding: 16px 20px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
   width: 100%;
-  max-width: 350px;
   text-align: left;
   margin: auto;
   text-decoration: none;
@@ -521,7 +519,7 @@ p {
   text-align: center;
 }
 .mySlides.slides .text p {
-  font-size: 25px;
+  font-size: 22px;
   line-height: 1.5;
   margin: 0 0 12px;
 }
@@ -752,4 +750,33 @@ display: none;
 #lungsPage{
   position: fixed;
   width: 100%;
+}
+.settingH4{
+  font-size: 18px !important;
+  margin-top: 18px;
+}
+//android
+.md {
+  .mainHeader{
+  height: 80px;
+  padding-top: 20px;
+  }
+  #homeFooter, #homeFooterBR, #resultsFooter, #resultsFooterBR, #profileFooter, #profileFooterBR, #breathFooter, #breathFooterBR, #yogaFooter, #yogaFooterBR{
+    height: 80px;
+  }
+  #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR{
+    margin-top: 6rem;
+  }
+  .questionClass2{
+    top: 35px;
+  }
+  .segmented-control{
+    margin-top: 120px;
+  }
+  .results-container {
+    margin-top: 100px;
+  }
+  .breathingpages {
+    margin-top: 100px;
+  }
 }

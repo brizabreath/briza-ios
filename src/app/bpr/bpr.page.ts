@@ -118,9 +118,8 @@ export class BPRPage implements OnInit {
   getExerciseName(key: string): string {
     const exerciseNames: { [key: string]: { en: string; pt: string } } = {
         brtResults: { en: 'Briza Retention Test', pt: 'Teste de Retenção Briza' },
-        HATResults: { en: 'High Altitude Training', pt: 'Treinamento de Alta Altitude' },
-        HATCResults: { en: 'High Altitude Training Running', pt: 'Treinamento de Alta Altitude Correndo' },
-        AHATResults: { en: 'Advanced High Altitude Training', pt: 'Treinamento Avançado de Alta Altitude' },
+        HATResults: { en: 'Altitude Training', pt: 'Treinamento de Alta Altitude' },
+        HATCResults: { en: 'Altitude Training PRO', pt: 'Treinamento Avançado de Alta Altitude' },
         WHResults: { en: 'Oxygen Boost', pt: 'Hiperventilação Guiada' },
         KBResults: { en: 'Kapalabhati', pt: 'Kapalabhati' },
         BBResults: { en: 'Briza Breathing', pt: 'Respiração Briza' },

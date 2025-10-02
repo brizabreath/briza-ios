@@ -23,14 +23,14 @@
       </div>
       
 
-      <ul>{{ isPortuguese ? 'Programa Briza Personalizado' : 'Personalized Briza Program' }}</ul>
-      <ul>{{ isPortuguese ? 'Técnicas de respiração personalizáveis' : 'Customizable breathing techniques' }}</ul>
-      <ul>{{ isPortuguese ? 'Resultados para acompanhar seu progresso' : 'Results to track your progress' }}</ul>
-      <ul>{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
-      <ul>{{ isPortuguese ? 'Técnicas de Pranayama' : 'Paranayama Techniques' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Programa Briza Personalizado' : 'Personalized Briza Program' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de respiração personalizáveis' : 'Customizable breathing techniques' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Resultados para acompanhar seu progresso' : 'Results to track your progress' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de Pranayama' : 'Paranayama Techniques' }}</ul>
 
       <!-- Subscription Button -->
-      <button (click)="subscribe()" type="button" [disabled]="isLoading">
+      <button (click)="subscribe()" type="button" [disabled]="isLoading" class="manageSubmit">
         <span *ngIf="!isLoading">{{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}</span>
         <span *ngIf="isLoading">
           <ion-spinner name="crescent"></ion-spinner>
@@ -46,13 +46,18 @@
         }}
       </p>
     </div>
+    <div *ngIf="!offerings">
+      <p>{{ isPortuguese ? 'Não foi possível carregar planos de assinatura.' : 'Unable to load subscription plans.' }}</p>
+      <button (click)="fetchOfferings()">
+        {{ isPortuguese ? 'Tentar novamente' : 'Retry' }}
+      </button>
+    </div>
 
     <!-- Payment Failed Section -->
     <div *ngIf="membershipStatus === 'failed'">
-      <h1>{{ isPortuguese ? 'Pagamento Falhou' : 'Payment Failed' }}</h1>
-      <p>{{ isPortuguese ? 'Corrija seu pagamento para continuar' : 'Fix your payment to continue' }}</p>
-      <button type="button" (click)="openManageSubscription()">
-        {{ isPortuguese ? 'Gerenciar Pagamento' : 'Manage Payment' }}
+      <h1>{{ isPortuguese ? 'Renove assinatura' : 'Renew subscription' }}</h1>
+      <button type="button" (click)="openManageSubscription()" class="manageSubmit">
+        {{ isPortuguese ? 'Gerenciar Assinatura' : 'Manage Subscription' }}
       </button>
   </div>
 

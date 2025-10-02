@@ -1,27 +1,45 @@
 import { Injectable } from '@angular/core';
-import {
-  CanActivate,
-  ActivatedRouteSnapshot,
-  RouterStateSnapshot,
-  Router,
-} from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
+import { RevenuecatService } from '../services/revenuecat.service';
 import { GlobalService } from '../services/global.service';
-@Injectable({
-  providedIn: 'root',
-})
-export class MembershipGuard implements CanActivate {
-  constructor(private globalService: GlobalService, private router: Router) {}
 
-  async canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Promise<boolean> {
-    const membershipStatus = localStorage.getItem("membershipStatus");
-    if (membershipStatus === "active") {
-      return true; // Allow access
-    } else {
-      this.globalService.openModal2(); // Show subscription options
-      return false; // Deny access
+@Injectable({ providedIn: 'root' })
+export class MembershipGuard implements CanActivate {
+  constructor(
+    private revenuecat: RevenuecatService,
+    private globalService: GlobalService,
+    private router: Router
+  ) {}
+
+  async canActivate(): Promise<boolean> {
+    const status = await this.revenuecat.hasActiveSubscription();
+
+    if (status === 'active') {
+      return true;
     }
-  }  
+
+    if (status === 'offline') {
+      this.globalService.showMembershipMessage('offline');
+      return false;
+    }
+
+    if (status === 'no_store') {
+      this.globalService.showMembershipMessage('no_store');
+      return false;
+    }
+
+    if (status === 'failed') {
+      this.globalService.showMembershipMessage('failed');
+      this.globalService.openModal2();
+      return false;
+    }
+
+    if (status === 'inactive') {
+      this.globalService.showMembershipMessage('inactive');
+      this.globalService.openModal2();
+      return false;
+    }
+
+    return false;
+  }
 }

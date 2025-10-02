@@ -103,7 +103,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -132,7 +132,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.setBOXduration();
     this.BOXResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();
+    await this.audioService.initializeSong(); 
   }
    
   minusRatioBOX(): void{
@@ -159,9 +161,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.hold2InputBOX.nativeElement.value) || 0) + 1).toString();
     }
   }
-  startBOX(): void{
+  async startBOX(): Promise<void>{
     this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBOX.nativeElement.disabled = true;
@@ -175,7 +176,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.BOXtimeInput.nativeElement.style.display = "none";
       this.startCountdownBOX();
       this.BOXballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
       this. audioService.playSelectedSong();
       }, 500);
@@ -188,14 +189,14 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         this.BOXballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BOXballText.nativeElement.textContent = "Inspire";
         }else{
           this.BOXballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BOXcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BOXcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputBOX.nativeElement.value), this.BOXball);
         this.BOXinterval = setInterval(() => this.startTimerBOX(), 1000);
         this.BOXTimer = setInterval(() => this.DisplayTimerBOX(), 1000);
@@ -275,13 +276,13 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.BOXtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerBOX(): void{ 
+  async startTimerBOX(): Promise<void>{ 
     this.BOXcurrentValue--;
     if(this.inhaleBOX && this.BOXcurrentValue == 1){
       this.BOXcurrentValue = parseInt(this.hold1InputBOX.nativeElement.value) + 1;
       this.inhaleBOX = false;
       this.hold1BOX = true;
-      this.audioService.playSound('hold');
+      await this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BOXballText.nativeElement.textContent = "Segure"
       }else{
@@ -293,8 +294,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.BOXcurrentValue = parseInt(this.exhaleInputBOX.nativeElement.value) + 1;
       this.hold1BOX = false;
       this.exhaleBOX = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BOXcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BOXcurrentValue); 
       if(this.isPortuguese){
         this.BOXballText.nativeElement.textContent = "Espire"
       }else{
@@ -306,7 +307,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.BOXcurrentValue = parseInt(this.hold2InputBOX.nativeElement.value) + 1;
       this.exhaleBOX = false;
       this.hold2BOX = true;
-      this.audioService.playSound('hold');
+      await this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BOXballText.nativeElement.textContent = "Segure"
       }else{
@@ -321,8 +322,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;
         this.hold2BOX = false;
         this.inhaleBOX = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BOXcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BOXcurrentValue); 
         if(this.isPortuguese){
           this.BOXballText.nativeElement.textContent = "Inspire"
         }else{
@@ -349,9 +350,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BOXballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

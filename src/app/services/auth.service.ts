@@ -15,9 +15,8 @@ import {
 } from 'firebase/auth';
 import { Firestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
-import { NavController } from '@ionic/angular';
 import { Purchases } from '@revenuecat/purchases-capacitor';
-
+import { RevenuecatService } from './revenuecat.service';
 
 interface UserData {
   email: string;
@@ -28,7 +27,7 @@ interface UserData {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private firebaseService: FirebaseService, private navCtrl: NavController) {
+  constructor(private firebaseService: FirebaseService, private rc: RevenuecatService) {
     const auth = this.firebaseService.auth;
     if (auth) {
       onAuthStateChanged(auth, async (user) => {
@@ -126,6 +125,7 @@ export class AuthService {
     }
   
     try {
+      await this.rc.init();
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("✅ Login successful:", userCredential);
       const user = userCredential.user;
@@ -143,21 +143,10 @@ export class AuthService {
       }      
       // New: Ensure user has a name set in Firestore
       await this.ensureUserNameExists();
-      // 🔥 Log in to RevenueCat
-      const { customerInfo } = await Purchases.logIn({ appUserID: uid });
-  
-      // Check if the user has an active entitlement
-      const isSubscribed = customerInfo?.entitlements?.active["premium_access"] !== undefined;
-  
-      if (isSubscribed) {
-        localStorage.setItem("membershipStatus", "active");
-      } else {
-        if (customerInfo?.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
-          localStorage.setItem("membershipStatus", "failed"); // Payment failed / expired
-        } else {
-          localStorage.setItem("membershipStatus", "inactive"); // Never subscribed
-        }
-      }
+      // 🔥 Log in to RevenueCat with appUserID
+      await Purchases.logIn({ appUserID: uid });
+      // Use unified subscription logic
+      await this.rc.hasActiveSubscription();
   
       return true;
     } catch (error) {
@@ -260,19 +249,9 @@ export class AuthService {
     if (!user) return;
   
     try {
-      await Purchases.restorePurchases(); // Sync purchases with RevenueCat
-      const { customerInfo } = await Purchases.logIn({ appUserID: user.uid });
-  
-      const isSubscribed = customerInfo?.entitlements?.active?.["premium_access"] !== undefined;
-      if (isSubscribed) {
-        localStorage.setItem("membershipStatus", "active");
-      } else {
-        if (customerInfo?.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
-          localStorage.setItem("membershipStatus", "failed"); // Payment failed / expired
-        } else {
-          localStorage.setItem("membershipStatus", "inactive"); // Never subscribed
-        }
-      }  
+      await Purchases.logIn({ appUserID: user.uid });
+      await Purchases.restorePurchases();
+      await this.rc.hasActiveSubscription();
     } catch (error) {
       console.error('Error linking user with RevenueCat:', error);
     }

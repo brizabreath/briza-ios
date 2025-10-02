@@ -98,9 +98,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
      // Listen for app state changes
-     App.addListener('appStateChange', (state) => {
+     App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
         let breathingON = localStorage.getItem('breathingON');
         let firstClick = localStorage.getItem('firstClick');
@@ -127,7 +127,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     this.setUBduration();
     this.UBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
   minusRatioUB(): void{
@@ -146,10 +148,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.exhaleInputUB.nativeElement.value) || 0) + 1).toString();
     }
   }
-  startUB(): void{
+  async startUB(): Promise<void>{
     this.UBcurrentValue = parseInt(this.inhaleInputUB.nativeElement.value) + 1;
     //initialize sounds
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsUB.nativeElement.disabled = true;
@@ -163,7 +164,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       this.UBtimeInput.nativeElement.style.display = "none";
       this.startCountdownUB();
       this.UBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -176,14 +177,14 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.UBballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.UBballText.nativeElement.textContent = "Inspire";
         }else{
           this.UBballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.UBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.UBcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputUB.nativeElement.value), this.UBball);
         this.UBinterval = setInterval(() => this.startTimerUB(), 1000);
         this.UBTimer = setInterval(() => this.DisplayTimerUB(), 1000);
@@ -259,14 +260,14 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       this.UBtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerUB(): void{ 
+  async startTimerUB(): Promise<void>{ 
     this.UBcurrentValue--;
     if(this.inhaleUB && this.UBcurrentValue == 1){
       this.UBcurrentValue = parseInt(this.exhaleInputUB.nativeElement.value) + 1;
       this.inhaleUB = false;
       this.exhaleUB = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.UBcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.UBcurrentValue); 
       if(this.isPortuguese){
         this.UBballText.nativeElement.textContent = "Espire"
       }else{
@@ -281,8 +282,8 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.UBcurrentValue = parseInt(this.inhaleInputUB.nativeElement.value) + 1;
         this.exhaleUB = false;
         this.inhaleUB = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.UBcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.UBcurrentValue); 
         if(this.isPortuguese){
           this.UBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -308,9 +309,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.UBballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
@@ -351,7 +352,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     }else{
       this.UBballText.nativeElement.textContent = "Start"
     }
-    this.roundsUB = 0;
     this.roundsDoneUB.nativeElement.innerHTML = "0";
     this.timerDisplayUB.nativeElement.innerHTML = "00 : 00";
     this.audioService.pauseSelectedSong();

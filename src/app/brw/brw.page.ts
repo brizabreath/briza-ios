@@ -105,7 +105,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -134,7 +134,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.setBRWduration();
     this.BRWResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
   minusRatioBRW(): void{
@@ -149,8 +151,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.hold3InputBRW.nativeElement.value) || 0) + 1).toString();
     }
   }
-  startBRW(): void{
-    this.audioService.initializeSong(); 
+  async startBRW(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRW.nativeElement.disabled = true;
@@ -164,7 +165,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRW();
       this.BRWballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -177,14 +178,14 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.BRWballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BRWballText.nativeElement.textContent = "Inspire";
         }else{
           this.BRWballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.BRWball);
         this.BRWinterval = setInterval(() => this.startTimerBRW(), 1000);
         this.BRWTimer = setInterval(() => this.DisplayTimerBRW(), 1000);
@@ -264,14 +265,14 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerBRW(): void{ 
+  async startTimerBRW(): Promise<void>{ 
     this.BRWcurrentValue--;
     if(this.inhaleBRW && this.BRWcurrentValue == 1){
       this.BRWcurrentValue = parseInt(this.hold1InputBRW.nativeElement.value) + 1;
       this.inhaleBRW = false;
       this.hold1BRW = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -283,7 +284,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.exhaleInputBRW.nativeElement.value) + 1;
       this.hold1BRW = false;
       this.exhaleBRW = true;
-      this.audioService.playSound('inhale');
+      await this.audioService.playSound('inhale');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Inspire"
       }else{
@@ -295,8 +296,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.hold2InputBRW.nativeElement.value) + 1;
       this.exhaleBRW = false;
       this.hold2BRW = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BRWcurrentValue); 
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Espire"
       }else{
@@ -308,7 +309,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.BRWcurrentValue = parseInt(this.hold3InputBRW.nativeElement.value) + 1;
       this.hold2BRW = false;
       this.hold3BRW = true;
-      this.audioService.playSound('hold');
+      await this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BRWballText.nativeElement.textContent = "Segure"
       }else{
@@ -322,8 +323,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
         this.hold3BRW = false;
         this.inhaleBRW = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BRWcurrentValue); 
         if(this.isPortuguese){
           this.BRWballText.nativeElement.textContent = "Inspire"
         }else{
@@ -350,9 +351,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

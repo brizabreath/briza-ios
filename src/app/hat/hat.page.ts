@@ -95,7 +95,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
      // Listen for app state changes
      App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -120,11 +120,13 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.setHATduration();
     this.HATResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
+    this.holdHAT = true;
   }
   
-  startHAT(): void{
-    this.audioService.initializeSong(); 
+  async startHAT(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHAT.nativeElement.disabled = true;
@@ -136,7 +138,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       this.HATtimeInput.nativeElement.style.display = "none";
       this.startCountdownHAT();
       this.HATballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -149,16 +151,15 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.HATballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.HATballText.nativeElement.textContent = "Comece a andar";
         }else{
           this.HATballText.nativeElement.textContent = "Start walking";
         }
-        this.audioService.playSound('pinchWalk');
+        await this.audioService.playSound('pinchWalk');
         this.HATinterval = setInterval(() => this.startTimerHAT(), 1000);
         this.HATTimer = setInterval(() => this.DisplayTimerHAT(), 1000);
-        this.startBtnHAT.nativeElement.disabled = false;
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -219,14 +220,18 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
   startCountdownHAT(): void {
     if (this.HATduration !== Infinity) {
-      this.HATcountdownInput.nativeElement.value = this.HATduration.toString() + " rounds left";   
+      if (this.HATduration <= 1) {
+        this.HATcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.HATcountdownInput.nativeElement.value = this.HATduration.toString() + " rounds left";   
+      }
     } else {
       this.HATcountdownInput.nativeElement.value = '∞';
       this.HATcountdownInput.nativeElement.style.display = "inline";
       this.HATtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerHAT(): void{ 
+  async startTimerHAT(): Promise<void>{ 
     if(this.normalHAT || this.lightHAT){
       this.HATcurrentValue--;
       if(this.isPortuguese){
@@ -252,19 +257,20 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       }else{
         this.HATballText.nativeElement.textContent = "Normal Breathing"
       }
-      this.audioService.playSound('normalbreath');
+      await this.audioService.playSound('normalbreath');
     }
     else if(this.normalHAT && this.HATcurrentValue == 1){
       if(this.HATduration !== 0){
         this.normalHAT = false;
         this.holdHAT = true;
         this.HATcurrentValue = 0;
+        this.startBtnHAT.nativeElement.disabled = true;
         if(this.isPortuguese){
           this.HATballText.nativeElement.textContent = "Segure"
         }else{
           this.HATballText.nativeElement.textContent = "Hold"
         }
-        this.audioService.playSound('pinchWalk');
+        await this.audioService.playSound('pinchWalk');
         this.stopBtnHAT.nativeElement.disabled = false;
         this.stopBtnHAT.nativeElement.style.color = '#0661AA';
       } 
@@ -287,7 +293,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");         
+        await this.audioService.playBell("bell");         
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
         }, 3000);
@@ -338,7 +344,8 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.HATResults.nativeElement.innerHTML = "";
 
   }
-  pauseHAT(): void{
+  async pauseHAT(): Promise<void>{
+    this.startBtnHAT.nativeElement.disabled = false;
     this.clearIntervalsHAT();
     this.holdHAT = false;
     this.normalHAT = false;
@@ -350,11 +357,19 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     }else{
       this.HATballText.nativeElement.textContent = "Light Breathing"
     }
-    this.audioService.playSound('lightNasal');
+    await this.audioService.playSound('lightNasal');
     this.roundsHAT++;
     this.roundsDoneHAT.nativeElement.innerHTML = this.roundsHAT.toString();
     this.HATduration = this.HATduration - 1;
-    this.HATcountdownInput.nativeElement.value = this.HATduration.toString() + " rounds left";
+    if (this.HATduration !== Infinity) {
+      if (this.HATduration <= 1) {
+        this.HATcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.HATcountdownInput.nativeElement.value = this.HATduration.toString() + " rounds left";   
+      }
+    } else {
+      this.HATcountdownInput.nativeElement.value = '∞';
+    }        
     if (this.isPortuguese) {
       this.HATResults.nativeElement.innerHTML += "<div class='NOfSteps'> <div>Round " + this.roundsHAT + "</div><div>" + this.HATcurrentValue + " segundos</div></div>";
     } else {

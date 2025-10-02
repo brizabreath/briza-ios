@@ -1,0 +1,37 @@
+.fixed-round-button {
+  text-align: center;
+  margin-top: 10px;
+}
+.fixed-round-button button {
+  background-color: white;   
+  color: #0661AA;                 // white text
+  border: none;                // remove border
+  border-radius: 8px;          // rounded edges
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.round-input {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+
+.time-inputs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.time-inputs input {
+  width: 60px;
+  text-align: center;
+}
+.fixedRoundsModal{
+    padding-top: 6rem !important;
+}
+.round-label{
+    margin-top: 10px;
+}

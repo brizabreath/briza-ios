@@ -37,7 +37,10 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('KBResultSaved') KBResultSaved!: ElementRef<HTMLDivElement>;
   @ViewChild('KBResults') KBResults!: ElementRef<HTMLDivElement>;
   @ViewChild('breathsInputKB') breathsInputKB!: ElementRef<HTMLInputElement>;
+  @ViewChild('fixedRoundsModalKB') fixedRoundsModalKB!: ElementRef<HTMLDivElement>;
 
+  showFixedRoundButton = false;
+  fixedRoundDurations: { minutes: number, seconds: number }[] = [];
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private breathsKB = true;
   private hold1KB = false;
@@ -80,20 +83,33 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('firstClick', "true");
     this.globalService.changeBall(1, 1, this.KBball);
   }
+  // Modal control
+  openFixedRoundsModal(): void {
+    this.fixedRoundsModalKB.nativeElement.style.display = 'block';
+  }
+  closeFixedRoundsModal(): void {
+    this.fixedRoundsModalKB.nativeElement.style.display = 'none';
+  }
   // Method to set the KBduration after ViewChild is initialized
   setKBduration(): void {
-      const selectedValue = this.KBtimeInput.nativeElement.value;
-      
-      // Check if the value is '∞', then set KBduration accordingly
-      if (selectedValue === 'infinity') {
-        this.KBduration = Infinity;
-      } else {
-        // Otherwise, parse it as a number
-        this.KBduration = parseInt(selectedValue);
-      }
+    const selectedValue = this.KBtimeInput.nativeElement.value;
+    
+    // Check if the value is '∞', then set KBduration accordingly
+    if (selectedValue === 'infinity') {
+      this.KBduration = Infinity;
+      this.showFixedRoundButton = false;
+      this.fixedRoundDurations = [];
+    } else {
+      // Otherwise, parse it as a number
+      this.KBduration = parseInt(selectedValue);
+      this.showFixedRoundButton = true;
+      // initialize if not already set
+      this.fixedRoundDurations = Array.from({ length: this.KBduration }, (_, i) => {
+        return this.fixedRoundDurations[i] || { minutes: 0, seconds: 0 };
+      });
+    }
   }
-
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -108,7 +124,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.KBResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
     //set up breaths
     this.KBbreaths = localStorage.getItem('numberOfBreaths');
     // Check if it doesn't exist or is null
@@ -129,9 +147,8 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.breathsInputKB.nativeElement.value = (this.KBbreaths - 1).toString();
   }
    
-  startKB(): void{
+  async startKB(): Promise<void>{
     //initialize sounds
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsKB.nativeElement.disabled = true;
@@ -143,7 +160,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.KBtimeInput.nativeElement.style.display = "none";
       this.startCountdownKB();
       this.KBballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -152,8 +169,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.KBballText.nativeElement.textContent = "2";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
-      const timeoutId3 = setTimeout(() => {
+      const timeoutId3 = setTimeout(async () => {
         this.KBballText.nativeElement.textContent = "1";
+        await this.audioService.playSound('inhale');
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
       const timeoutId4 = setTimeout(() => {
@@ -162,8 +180,8 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Get started";
         }
-        this.KBinterval = setInterval(() => {
-          this.audioService.playBreath('fullyout2');
+        this.KBinterval = setInterval(async () => {
+          await this.audioService.playBreath('fullyout2');
           this.globalService.changeBall(1.3 , 0.2, this.KBball);
           this.startBreathsKB();
         }, this.KBbreathSpeed);
@@ -221,8 +239,8 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.KBinterval = setInterval(() => this.startTimerKB(), 1000);
         this.KBTimer = setInterval(() => this.DisplayTimerKB(), 1000);
       }else if(this.breathsKB){
-        this.KBinterval = setInterval(() => {
-          this.audioService.playBreath('fullyout2');
+        this.KBinterval = setInterval(async () => {
+          await this.audioService.playBreath('fullyout2');
           this.globalService.changeBall(1.3 , 0.2, this.KBball);
           this.startBreathsKB();
         }, this.KBbreathSpeed);
@@ -230,7 +248,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       }
     }
   }
-  startBreathsKB(): void{
+  async startBreathsKB(): Promise<void>{
     this.KBbreaths--;
     if(this.KBbreaths < 1){
       this.globalService.changeBall(0.5 , 1, this.KBball);
@@ -240,13 +258,15 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.breathsKB = false;
       this.hold1KB = true;
       this.KBbreaths = parseInt(this.breathsInputKB.nativeElement.value) + 1;
-      const timeoutId9 = setTimeout(() => {
+      await this.audioService.playBell("bell"); 
+      const timeoutId9 = setTimeout(async () => {
         if(this.isPortuguese){
           this.KBballText.nativeElement.textContent = "Inspire e Segure"    
         }else{
           this.KBballText.nativeElement.textContent = "Inhale and Hold"    
         }
-        this.audioService.playSound('fullyinHold');
+        await this.audioService.playSound('fullyinHold');
+        await this.audioService.playBreathSound('inhaleBreath', 2); 
       }, 700);
       this.globalService.timeouts.push(timeoutId9); // Store the timeout ID
       const timeoutId8 = setTimeout(() => {
@@ -263,7 +283,11 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
   startCountdownKB(): void {
     if (this.KBduration !== Infinity) {
-      this.KBcountdownInput.nativeElement.value = this.KBduration.toString() + " rounds left";   
+      if (this.KBduration <= 1) {
+        this.KBcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.KBcountdownInput.nativeElement.value = this.KBduration.toString() + " rounds left";   
+      }
     } else {
       this.KBcountdownInput.nativeElement.value = '∞';
       this.KBcountdownInput.nativeElement.style.display = "inline";
@@ -280,7 +304,12 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   
     return `${formattedMinutes}:${formattedSeconds}`;
   }
-  startTimerKB(): void{ 
+  getRoundTime(roundIndex: number): number {
+    const round = this.fixedRoundDurations[roundIndex];
+    if (!round) return 0;
+    return round.minutes * 60 + round.seconds;
+  }
+  async startTimerKB(): Promise<void>{ 
     if(this.hold2KB){
       this.KBcurrentValue--;
       if(this.isPortuguese){
@@ -289,12 +318,20 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.KBballText.nativeElement.textContent = this.KBcurrentValue.toString() + " seconds";
       }
     }
-    if(this.hold1KB){
+   if (this.hold1KB) {
       this.KBcurrentValue++;
-      if(this.isPortuguese){
-        this.KBballText.nativeElement.textContent = this.formatTime(this.KBcurrentValue);
-      }else{
-        this.KBballText.nativeElement.textContent = this.formatTime(this.KBcurrentValue);
+
+      // Show formatted time
+      this.KBballText.nativeElement.textContent = this.formatTime(this.KBcurrentValue);
+
+      // Check if there is a fixed time for this round
+      const roundTime = this.getRoundTime(this.roundsKB); 
+      // note: roundsKB is incremented in pauseKB(), so while you're *inside* a hold, 
+      // it's still the current round index (0-based).
+
+      if (roundTime > 0 && this.KBcurrentValue >= roundTime) {
+        // ✅ Automatically move to recovery (pause) when duration reached
+        this.pauseKB();
       }
     }
     if(this.hold2KB && this.KBcurrentValue == 1){
@@ -309,10 +346,10 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Next Round"
         }
-        this.audioService.playSound('nextRound');
+        await this.audioService.playSound('nextRound');
         const timeoutId7 = setTimeout(() => {
-          this.KBinterval = setInterval(() => {
-            this.audioService.playBreath('fullyout2');
+          this.KBinterval = setInterval(async () => {
+            await this.audioService.playBreath('fullyout2');
             this.globalService.changeBall(1.3 , this.KBbreathSpeed/2000, this.KBball);
             this.startBreathsKB();
           }, this.KBbreathSpeed);
@@ -337,9 +374,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Normal Breathing"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
@@ -389,7 +426,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.KBResults.nativeElement.innerHTML = "";
     this.globalService.changeBall(1.3, 1, this.KBball);
   }
-  pauseKB(): void{
+  async pauseKB(): Promise<void>{
     clearInterval(this.KBinterval);
     this.KBinterval = null;
     if(this.isPortuguese){
@@ -397,17 +434,21 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }else{
       this.KBballText.nativeElement.textContent = "Normal Breath"
     }
-    this.audioService.playSound('normalbreath');
+    await this.audioService.playSound('normalbreath');
     this.hold1KB = false;
     this.hold2KB = true;
     this.roundsKB++;
     this.roundsDoneKB.nativeElement.innerHTML = this.roundsKB.toString();
     this.KBduration = this.KBduration - 1;
     if (this.KBduration !== Infinity) {
-      this.KBcountdownInput.nativeElement.value = this.KBduration.toString() + " rounds left";   
+      if (this.KBduration <= 1) {
+        this.KBcountdownInput.nativeElement.value = "Final round";   
+      }else{
+        this.KBcountdownInput.nativeElement.value = this.KBduration.toString() + " rounds left";   
+      }
     } else {
       this.KBcountdownInput.nativeElement.value = '∞';
-    }
+    }    
     this.KBResults.nativeElement.innerHTML += "<div class='NOfSteps'> <div>Round " + this.roundsKB + "</div><div>" + this.formatTime(this.KBcurrentValue) + "</div></div>";
     this.KBroundsResults.push(this.KBcurrentValue);
     this.KBcurrentValue = 31;

@@ -25,7 +25,7 @@ import { FirebaseService } from '../services/firebase.service';
     RouterModule
   ],
 })
-export class BreathworkPage implements AfterViewInit {
+export class BreathworkPage {
   @ViewChild('openScreen') openScreen!: ElementRef<HTMLDivElement>;
   @ViewChild('closeModalBREATH2') closeModalButtonBREATH2!: ElementRef<HTMLSpanElement>;
   @ViewChild('questionBREATH') questionBREATH!: ElementRef<HTMLButtonElement>;  
@@ -48,19 +48,20 @@ constructor(private globalService: GlobalService, private router: Router, privat
     localStorage.setItem('startHomeTour','true');
     this.router.navigateByUrl('/home');  
   }
-  async ngAfterViewInit(): Promise<void> {
+  async ionViewWillEnter() {
     await this.loadRandomQuote();
 
     if (!BreathworkPage.hasInitialized) {
       BreathworkPage.hasInitialized = true;
-      // ✅ This code only runs once after app launch
+      this.isModalOpen = true;
       this.globalService.openModal(this.openScreen);
-    } 
+    }
     //modal events set up
-    this.closeModalButtonBREATH2.nativeElement.onclick = () => this.globalService.closeModal(this.openScreen);
+    this.closeModalButtonBREATH2.nativeElement.onclick = () => {
+      this.globalService.closeModal(this.openScreen);
+      this.isModalOpen = true;  // ✅ unhide page
+    };
     this.questionBREATH.nativeElement.onclick = () => this.globalService.openModal(this.openScreen);
-  }
-  ionViewWillEnter() {
     localStorage.setItem('isPortuguese', 'false');
     this.showBRTphrase();
     this.calculateWeeklyProgress();
@@ -189,7 +190,7 @@ constructor(private globalService: GlobalService, private router: Router, privat
 
     try {
       const canvas = document.createElement('canvas');
-      const width = 800, height = 450;
+      const width = 800, height = 600;
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
@@ -201,45 +202,105 @@ constructor(private globalService: GlobalService, private router: Router, privat
 
       const quote = this.selectedQuote.text;
       const author = this.selectedQuote.author;
-      ctx.fillStyle = '#0661AA';
+
+      // Load font (if available)
       try { await (document as any).fonts?.load?.('55px DellaRespira'); } catch {}
-      ctx.font = '55px DellaRespira';
-      ctx.textAlign = 'center';
 
-      const words = quote.split(' ');
-      const lines: string[] = [];
-      let currentLine = '';
-      for (const word of words) {
-        const testLine = currentLine + word + ' ';
-        if (ctx.measureText(testLine).width > width - 120) {
-          lines.push(currentLine.trim());
-          currentLine = word + ' ';
-        } else {
-          currentLine = testLine;
+      // --- DRAW QUOTE BLOCK ---
+      function drawQuoteBlock(
+        ctx: CanvasRenderingContext2D,
+        text: string,
+        x: number,
+        canvasWidth: number,
+        canvasHeight: number,
+        baseFont: string = "55px DellaRespira",
+        lineHeight: number = 56
+      ) {
+        const maxWidth = canvasWidth * 2 / 3;
+
+        // Start with base font
+        ctx.font = baseFont;
+        const fontFamily = baseFont.split(" ").slice(1).join(" ");
+        let fontSize = parseInt(baseFont);
+
+        // Split into lines (word wrap)
+        const words = text.split(" ");
+        const lines: string[] = [];
+        let currentLine = "";
+
+        for (const word of words) {
+          const testLine = currentLine + word + " ";
+          if (ctx.measureText(testLine).width > maxWidth) {
+            lines.push(currentLine.trim());
+            currentLine = word + " ";
+          } else {
+            currentLine = testLine;
+          }
         }
+        lines.push(currentLine.trim());
+
+        // Check widest line
+        let widest = 0;
+        for (const line of lines) {
+          widest = Math.max(widest, ctx.measureText(line).width);
+        }
+
+        // Shrink font if needed (affects all lines)
+        while (widest > maxWidth && fontSize > 20) {
+          fontSize -= 2;
+          ctx.font = `${fontSize}px ${fontFamily}`;
+          widest = 0;
+          for (const line of lines) {
+            widest = Math.max(widest, ctx.measureText(line).width);
+          }
+        }
+
+        // Vertically center block
+        const blockHeight = lines.length * lineHeight;
+        const startY = (canvasHeight - blockHeight) / 2;
+
+        // Draw each line
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#0661AA";
+        lines.forEach((line, i) => {
+          ctx.fillText(line, x, startY + i * lineHeight);
+        });
+
+        return {
+          fontSize,
+          lineCount: lines.length,
+          blockHeight,
+          startY
+        };
       }
-      lines.push(currentLine.trim());
 
-      const startY = 150;
-      const lineHeight = 56;
-      lines.forEach((line, i) => {
-        ctx.fillText(line, width / 2, startY + i * lineHeight, width - 250);
-      });
+      const { lineCount, blockHeight, startY } = drawQuoteBlock(
+        ctx,
+        quote,
+        width / 2,
+        width,
+        height
+      );
 
-      ctx.font = 'italic 28px Arial';
-      ctx.fillText(`- ${author}`, width / 2, startY + lines.length * lineHeight + 10);
-      // Logo
+      // --- DRAW AUTHOR ---
+      ctx.font = "italic 28px Arial";
+      ctx.fillStyle = "#0661AA";
+      const authorY = startY + blockHeight + 15;
+      ctx.fillText(`- ${author}`, width / 2, authorY);
+
+      // --- DRAW LOGO ---
       const logo = new Image();
-      logo.src = 'assets/images/B_DEGRAD.svg';
+      logo.src = 'assets/images/blogo.png';
       await new Promise<void>((resolve, reject) => {
         logo.onload = () => {
           const logoSize = 70;
-          ctx.drawImage(logo, (width - logoSize) / 2, 300, logoSize, logoSize);
+          ctx.drawImage(logo, (width - logoSize) / 2, authorY + 35, logoSize, logoSize);
           resolve();
         };
         logo.onerror = reject;
       });
-      // Save to file
+
+      // --- SAVE TO FILE ---
       const base64 = canvas.toDataURL('image/jpeg', 0.95);
       const base64Data = base64.split(',')[1];
       const fileName = `briza_${Date.now()}.jpeg`;
@@ -255,24 +316,23 @@ constructor(private globalService: GlobalService, private router: Router, privat
         path: fileName
       });
 
-      // Short delay to prevent UI race conditions
-      await new Promise(r => setTimeout(r, 80));
+      await new Promise(r => setTimeout(r, 80)); // small delay
 
-      // Share
+      // --- SHARE ---
       await Share.share({
         title: this.isPortuguese ? 'Compartilhar citação' : 'Share quote',
         text: 'brizabreath.com',
         files: [uri]
       });
 
-      // ✅ Cleanup: remove older briza_* files, keep only the last 3
+      // --- CLEANUP OLD FILES ---
       try {
         const dir = await Filesystem.readdir({ directory: Directory.Cache, path: '' });
         const brizaFiles = dir.files
           .filter(f => f.name.startsWith('briza_') && f.name.endsWith('.jpeg'))
           .sort((a, b) => (a.name > b.name ? -1 : 1)); // newest first
 
-        const oldFiles = brizaFiles.slice(3); // keep 3 latest
+        const oldFiles = brizaFiles.slice(3); // keep only 3 latest
         for (const file of oldFiles) {
           await Filesystem.deleteFile({ directory: Directory.Cache, path: file.name });
         }
@@ -289,6 +349,7 @@ constructor(private globalService: GlobalService, private router: Router, privat
 
   startAppGuide() {
     this.globalService.closeModal(this.openScreen);
+    this.isModalOpen = true;  // ✅ unhide page
     setTimeout(() => this.startBreathTourNow(), 0);
   }
     private langKey(): 'EN' | 'PT' {

@@ -171,7 +171,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.closeModalButtonBRT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRT));
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
   }
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -198,13 +198,14 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     }
     this.brtResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-   this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
   
   // Method to start the timer
-  startTimerBRT(): void {
+  async startTimerBRT(): Promise<void> {
     try{
-    this.audioService.initializeSong(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     if(firstClick == "true" && breathingON == "false"){
@@ -220,14 +221,14 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       }else{
         this.BRTballText.nativeElement.textContent = "Inhale";
       }
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
-      const timeoutId2 = setTimeout(() => {
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', 3); 
+      const timeoutId2 = setTimeout(async () => {
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', 3); 
         this.BRTballText.nativeElement.textContent = "3";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -239,14 +240,14 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         this.BRTballText.nativeElement.textContent = "1";
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
-      const timeoutId5 = setTimeout(() => {
+      const timeoutId5 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BRTballText.nativeElement.textContent = "Espire";
         }else{
           this.BRTballText.nativeElement.textContent = "Exhale";
         }
-        this.audioService.playSound('exhale');
-        this.audioService.playBreathSound('exhaleBreath', 3); 
+        await this.audioService.playSound('exhale');
+        await this.audioService.playBreathSound('exhaleBreath', 3); 
       }, 4000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       const timeoutId6 = setTimeout(() => {
@@ -261,13 +262,13 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         this.BRTballText.nativeElement.textContent = "1";
       }, 7000);
       this.globalService.timeouts.push(timeoutId8); // Store the timeout ID
-      const timeoutId9 = setTimeout(() => {
+      const timeoutId9 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BRTballText.nativeElement.textContent = "Segure";
         }else{
           this.BRTballText.nativeElement.textContent = "Hold";
         }
-        this.audioService.playSound('hold');
+        await this.audioService.playSound('hold');
         this.brtInt = setInterval(() => this.brtDisplayTimer(), 1000);
         this.brtStart.nativeElement.disabled = false;
         localStorage.setItem('breathingON', "true"); 
@@ -326,10 +327,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.BRTballText.nativeElement.textContent = "Start"
 
     }
-    // Stop and reset the selected song
-    if (this.audioService.currentAudio) { 
-      this.audioService.pauseSelectedSong();
-    }
+    this.audioService.pauseSelectedSong();
   }
 
   // Method to save the BRT result to local storage and reset
@@ -350,11 +348,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     clearInterval(this.brtInt);
-    if (this.audioService.currentAudio) {
-      this.audioService.pauseSelectedSong();
-      // Hide the "Result Successfully Saved" message when navigating away
-      this.brtResultSaved.nativeElement.style.display = 'none';
-    }
+    this.audioService.pauseSelectedSong();
+    // Hide the "Result Successfully Saved" message when navigating away
+    this.brtResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();
   }
   private lockUIForTour = () => {

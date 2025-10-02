@@ -101,7 +101,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -130,11 +130,12 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     this.setCTduration();
     this.CTResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong(); 
   }
    
-  startCT(): void{
-    this.audioService.initializeSong(); 
+  async startCT(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCT.nativeElement.disabled = true;
@@ -146,7 +147,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTtimeInput.nativeElement.style.display = "none";
       this.startCountdownCT();
       this.CTballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -159,14 +160,14 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.CTballText.nativeElement.textContent = "Inspire";
         }else{
           this.CTballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputCT.nativeElement.value), this.CTball);
         this.CTinterval = setInterval(() => this.startTimerCT(), 1000);
         this.CTTimer = setInterval(() => this.DisplayTimerCT(), 1000);
@@ -252,14 +253,14 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerCT(): void{ 
+  async startTimerCT(): Promise<void>{ 
     this.CTcurrentValue--;
     if(this.inhaleCT && this.CTcurrentValue == 1){
       this.CTcurrentValue = parseInt(this.exhaleInputCT.nativeElement.value) + 1;
       this.inhaleCT = false;
       this.exhaleCT = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.CTcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.CTcurrentValue); 
       if(this.isPortuguese){
         this.CTballText.nativeElement.textContent = "Espire"
       }else{
@@ -271,7 +272,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.CTcurrentValue = parseInt(this.hold1InputCT.nativeElement.value) + 1;
       this.exhaleCT = false;
       this.hold1CT = true;
-      this.audioService.playSound('hold');
+      await this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.CTballText.nativeElement.textContent = "Segure"
       }else{
@@ -288,8 +289,8 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTcurrentValue = parseInt(this.inhaleInputCT.nativeElement.value) + 1;
         this.hold1CT = false;
         this.inhaleCT = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.CTcurrentValue); 
         if(this.isPortuguese){
           this.CTballText.nativeElement.textContent = "Inspire"
         }else{
@@ -318,9 +319,9 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();
@@ -376,9 +377,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   resetCT(): void{
     this.stopBtnCT.nativeElement.disabled = true;
     this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
-    if (this.audioService.currentAudio) {
-      this.audioService.currentAudio.pause();
-    }
+    this.audioService.pauseSelectedSong();
     this.clearIntervalsCT();    
     this.CTcurrentValue = 4;
     this.exhaleInputCT.nativeElement.value = "3";

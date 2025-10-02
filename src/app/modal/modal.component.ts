@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Purchases, PurchasesOffering, PurchasesPackage } from '@revenuecat/purchases-capacitor';
 import { Browser } from '@capacitor/browser';
+import { RevenuecatService } from '../services/revenuecat.service'; // adjust the relative path if needed
+
 
 @Component({
   selector: 'app-modal',
@@ -29,41 +31,34 @@ export class ModalComponent implements OnInit {
   isLoading: boolean = false; // New loading state
 
 
-  constructor() {}
+  constructor(private rc: RevenuecatService) {}
 
   async ngOnInit() {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    await this.initializeRevenueCat();
-    this.checkSubscriptionStatus();
+    await this.rc.init();
+    const status = await this.rc.hasActiveSubscription(); 
+    this.membershipStatus = status;    
     await this.fetchOfferings();
-  }
-
-  async initializeRevenueCat() {
-    try {
-      const apiKey = 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH';
-      await Purchases.configure({ apiKey });
-      console.log('RevenueCat initialized successfully');
-    } catch (error) {
-      console.error('Error initializing RevenueCat:', error);
-    }
   }
 
   async fetchOfferings() {
     try {
-      await Purchases.invalidateCustomerInfoCache(); // Force refresh
-      const offerings = await Purchases.getOfferings();
-      console.log("Offerings fetched after invalidation:", offerings);
-  
-      if (offerings.current) {
+      await Purchases.invalidateCustomerInfoCache();
+      const offerings = await this.rc.getOfferings();
+
+      if (offerings && offerings.current) {
         this.offerings = offerings.current;
         console.log("✅ Offerings available:", this.offerings);
       } else {
-        console.warn("⚠️ No current offering available.");
+        this.offerings = null;
+        console.warn("⚠️ No offerings available");
       }
     } catch (error) {
       console.error("❌ Error fetching offerings:", error);
+      this.offerings = null;
     }
-  }  
+  }
+
 
   selectPackage(pkg: PurchasesPackage) {
     this.selectedPackage = pkg;
@@ -79,7 +74,8 @@ export class ModalComponent implements OnInit {
       const purchaseResult = await Purchases.purchasePackage({ aPackage: this.selectedPackage });
   
       if (purchaseResult && purchaseResult.customerInfo) {
-        await this.checkSubscriptionStatus();
+        const status = await this.rc.hasActiveSubscription();
+        this.membershipStatus = status;        
         alert(this.isPortuguese ? 'Assinatura realizada com sucesso!' : 'Subscription successful!');
         this.closeModal();
         window.location.href = '/breathwork'; // Redirect user
@@ -100,39 +96,9 @@ export class ModalComponent implements OnInit {
     this.isOpen = false;
     this.close.emit();
   }
-
-  async checkSubscriptionStatus(): Promise<void> {
-    const isOnline = navigator.onLine;
-    
-    if (!isOnline) {
-      this.membershipStatus = localStorage.getItem('membershipStatus') || 'inactive';
-      return;
-    }
-
-    try {
-      await Purchases.restorePurchases(); // Sync purchases with RevenueCat
-      const { customerInfo } = await Purchases.getCustomerInfo();
-      const isSubscribed = customerInfo?.entitlements?.active?.['premium_access'] !== undefined;
-      
-      if (isSubscribed) {
-        localStorage.setItem('membershipStatus', 'active');
-        this.membershipStatus = 'active';
-      } else {
-        if (customerInfo?.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
-          localStorage.setItem('membershipStatus', 'failed');
-          this.membershipStatus = 'failed';
-        } else {
-          localStorage.setItem('membershipStatus', 'inactive');
-          this.membershipStatus = 'inactive';
-        }
-      }
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-    }
-  }
   
   async openManageSubscription() {
-      await Browser.open({ url: 'https://apps.apple.com/account/subscriptions' });   
+      await Browser.open({ url: this.rc.getManageSubscriptionUrl() });  
   }
   
   formatTitle(title: string): string {

@@ -105,7 +105,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -134,7 +134,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.setBREduration();
     this.BREResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.audioService.initializeSong(); 
+    this.audioService.clearAllAudioBuffers();   // 🧹 clear
+    await this.audioService.preloadAll();       // 🔄 reload
+    await this.audioService.initializeSong();   
   }
   minusRatioBRE(): void{
     if(parseInt(this.hold3InputBRE.nativeElement.value) > 2){
@@ -148,8 +150,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       ((parseInt(this.hold3InputBRE.nativeElement.value) || 0) + 1).toString();
     }
   }
-  startBRE(): void{
-    this.audioService.initializeSong(); 
+  async startBRE(): Promise<void>{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRE.nativeElement.disabled = true;
@@ -163,7 +164,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREtimeInput.nativeElement.style.display = "none";
       this.startCountdownBRE();
       this.BREballText.nativeElement.textContent = "3";
-      this.audioService.playBell("bell");
+      await this.audioService.playBell("bell");
       const timeoutId1 = setTimeout(() => {
         this.audioService.playSelectedSong();
       }, 500);
@@ -176,14 +177,14 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.BREballText.nativeElement.textContent = "1";
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
         if(this.isPortuguese){
           this.BREballText.nativeElement.textContent = "Inspire";
         }else{
           this.BREballText.nativeElement.textContent = "Inhale";
         }
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.BREball);
         this.BREinterval = setInterval(() => this.startTimerBRE(), 1000);
         this.BRETimer = setInterval(() => this.DisplayTimerBRE(), 1000);
@@ -263,14 +264,14 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREtimeInput.nativeElement.style.display = "none";
     }
   }
-  startTimerBRE(): void{ 
+  async startTimerBRE(): Promise<void>{ 
     this.BREcurrentValue--;
     if(this.inhaleBRE && this.BREcurrentValue == 1){
       this.BREcurrentValue = parseInt(this.hold1InputBRE.nativeElement.value) + 1;
       this.inhaleBRE = false;
       this.hold1BRE = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -282,7 +283,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREcurrentValue = parseInt(this.exhaleInputBRE.nativeElement.value) + 1;
       this.hold1BRE = false;
       this.exhaleBRE = true;
-      this.audioService.playSound('inhale');
+      await this.audioService.playSound('inhale');
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Inspire"
       }else{
@@ -294,8 +295,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREcurrentValue = parseInt(this.hold2InputBRE.nativeElement.value) + 1;
       this.exhaleBRE = false;
       this.hold2BRE = true;
-      this.audioService.playSound('exhale');
-      this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
+      await this.audioService.playSound('exhale');
+      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -307,7 +308,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.BREcurrentValue = parseInt(this.hold3InputBRE.nativeElement.value) + 1;
       this.hold2BRE = false;
       this.hold3BRE = true;
-      this.audioService.playSound('hold');
+      await this.audioService.playSound('hold');
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Segure"
       }else{
@@ -321,8 +322,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 1;
         this.hold3BRE = false;
         this.inhaleBRE = true;
-        this.audioService.playSound('inhale');        
-        this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
+        await this.audioService.playSound('inhale');        
+        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
         if(this.isPortuguese){
           this.BREballText.nativeElement.textContent = "Inspire"
         }else{
@@ -348,9 +349,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BREballText.nativeElement.textContent = "Start"
         }
-        this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.playSound('normalbreath');
+        await this.audioService.playBell("bell");
+        setTimeout(async () => {
+          await this.audioService.playSound('normalbreath');
         }, 500);
         setTimeout(() => {
           this.audioService.pauseSelectedSong();

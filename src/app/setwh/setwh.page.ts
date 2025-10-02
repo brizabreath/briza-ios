@@ -42,7 +42,9 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   @ViewChild('setFemale') setFemale!: ElementRef<HTMLDivElement>;
   @ViewChild('setMale') setMale!: ElementRef<HTMLDivElement>;
   @ViewChild('maleBarSetWH') maleBarSetWH!: ElementRef<HTMLInputElement>;
-
+  @ViewChild('setVrmuteWH') setVrmuteWH!: ElementRef<HTMLDivElement>;
+  @ViewChild('setVraudioWH') setVraudioWH!: ElementRef<HTMLDivElement>;
+  @ViewChild('vibrBarSETWH') vibrBarSETWH!: ElementRef<HTMLInputElement>;
 
   private currentAudio: HTMLAudioElement | null = null; // To keep track of the currently playing audio
   private timeoutIdSETWH: any; // To store the timeout ID for stopping audio playback
@@ -53,13 +55,13 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   private WHbreaths: any = null;
   private WHbreathSpeed: any = null; 
   private isFemale = localStorage.getItem('isFemale') === 'true';
-
+  private vibrMute = localStorage.getItem('vibrMute') === 'true';
 
 
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
-  onSongChange(event: Event): void {
+  async onSongChange(event: Event): Promise<void> {
     const selectElement = event.target as HTMLSelectElement;
     const selectedSong = selectElement.value;
     localStorage.setItem('selectedSong', selectedSong); // Save the selected song in local storage
@@ -76,7 +78,12 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     this.currentAudio.muted = false;
     this.currentAudio.load();
     this.currentAudio.play();
-
+    if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
     // SETWH a timeout to pause the audio after 15 seconds
     this.timeoutIdSETWH = setTimeout(() => {
       if (this.currentAudio) {
@@ -108,6 +115,7 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     this.breathBarSETWH.nativeElement.addEventListener('input', () => this.handleBreathChange());
     this.bellBarSETWH.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSetWH.nativeElement.addEventListener('input', () => this.handleMaleChange());
+    this.vibrBarSETWH.nativeElement.addEventListener('input', () => this.handlevibrChange());
     // Add event listener for breath changes
     this.minusWH.nativeElement.onclick = () => this.handleMinusChange();
     this.plusWH.nativeElement.onclick = () => this.handlePlusChange();
@@ -170,6 +178,15 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
       this.maleBarSetWH.nativeElement.value = '1';
       this.setFemale.nativeElement.style.display = 'none';
       this.setMale.nativeElement.style.display = 'block';
+    }
+    if(this.vibrMute){
+      this.vibrBarSETWH.nativeElement.value = '0';
+      this.setVraudioWH.nativeElement.style.display = 'none';
+      this.setVrmuteWH.nativeElement.style.display = 'block';
+    }else{
+      this.vibrBarSETWH.nativeElement.value = '1';
+      this.setVrmuteWH.nativeElement.style.display = 'none';
+      this.setVraudioWH.nativeElement.style.display = 'block';
     }
     //set up breaths
     this.WHbreaths = localStorage.getItem('numberOfBreaths');
@@ -237,7 +254,22 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     }
   }
   // Method to handle the volume change
-  handleVolumeChange(): void {
+  handlevibrChange(): void {
+    const volumeSET = parseFloat(this.vibrBarSETWH.nativeElement.value);
+
+    // Check if volume is 0 and adjust the UI accordingly
+    if (volumeSET === 0) {
+      localStorage.setItem('vibrMute', 'true');
+      this.setVraudioWH.nativeElement.style.display = 'none';
+      this.setVrmuteWH.nativeElement.style.display = 'block';
+    } else {
+      localStorage.setItem('vibrMute', 'false');
+      this.setVrmuteWH.nativeElement.style.display = 'none';
+      this.setVraudioWH.nativeElement.style.display = 'block';
+    }
+  }
+  // Method to handle the volume change
+  async handleVolumeChange(): Promise<void> {
     const volumeSETWH = parseFloat(this.volumeBarSETWH.nativeElement.value);
 
     // Check if volume is 0 and adjust the UI accordingly
@@ -245,10 +277,22 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('audioPlayerMute', 'true');
       this.setaudio.nativeElement.style.display = 'none';
       this.setmute.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
     } else {
       localStorage.setItem('audioPlayerMute', 'false');
       this.setmute.nativeElement.style.display = 'none';
       this.setaudio.nativeElement.style.display = 'block';
+      if(this.audioService.currentAudio){
+      this.audioService.currentAudio.src = '';
+      this.audioService.currentAudio.load();
+      this.audioService.currentAudio = null;
+      await this.audioService.initializeSong();
+    }
     }
   }
   // Method to handle the volume change
