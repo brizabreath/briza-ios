@@ -6,11 +6,13 @@
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="settingButtons">
-      <button routerLink="/set" id="settingsHATC" #settingsHATC class="audioSet" type="button"><img src="assets/images/settings.png"></button>
-    </div>  
-    <div class="questionMark questionClass">
-      <button #questionHATC type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    <div class="placeholderHeader">
+      <div class="settingButtons">
+        <button routerLink="/set" id="settingsHATC" #settingsHATC class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+      </div>  
+      <div class="questionMark questionClass">
+        <button #questionHATC type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+      </div>
     </div>
   </header>  
   <div id="hatcPage">
@@ -42,16 +44,15 @@
                 <button #startBtnHATC class="ballButton">
                   <div #HATCball class="ball">
                       <span #HATCballText></span>
-                      <img src="assets/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.png" alt="3D Ball">
                     </div>
                 </button>
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnHATC" #stopBtnHATC><div class="english">Next</div><div class="portuguese">Próximo</div></button>
                   <button type="button" class="stopBtn" id="HATCReset" #HATCReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="HATCSave" #HATCSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
                   <form method="post" id="HATCForm">
-                      <button type="button" class="saveBtn" id="HATCSave" #HATCSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneHATC>0</div>
                           <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayHATC>00 : 00</div>
@@ -120,7 +121,7 @@
               <img src="assets/images/next.jpg">
               <div class="text english">
                 <p>
-                  The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press "Next"                    
+                  The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press the circle again                    
                 </p>
               </div>
               <div class="text portuguese">

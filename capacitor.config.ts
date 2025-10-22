@@ -15,6 +15,10 @@ const config: CapacitorConfig = {
       style: 'light',
       backgroundColor: '#ffffff'
     }
+  },
+  server: {
+    cleartext: true,
+    androidScheme: 'https'
   }
 };
 

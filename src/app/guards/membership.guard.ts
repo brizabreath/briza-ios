@@ -1,45 +1,61 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { RevenuecatService } from '../services/revenuecat.service';
+import { CanActivate } from '@angular/router';
 import { GlobalService } from '../services/global.service';
+import { GlobalAlertService } from '../services/global-alert.service';
+import { RevenuecatService } from '../services/revenuecat.service';
 
 @Injectable({ providedIn: 'root' })
 export class MembershipGuard implements CanActivate {
   constructor(
-    private revenuecat: RevenuecatService,
     private globalService: GlobalService,
-    private router: Router
+    private globalAlert: GlobalAlertService,
+    private revenuecat: RevenuecatService
   ) {}
 
   async canActivate(): Promise<boolean> {
-    const status = await this.revenuecat.hasActiveSubscription();
+    const snapshot = await this.revenuecat.getSnapshot();
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    const t = (en: string, pt: string) => (isPortuguese ? pt : en);
 
-    if (status === 'active') {
-      return true;
-    }
+    // Always update cache
+    localStorage.setItem('membershipStatus', snapshot.status);
+    localStorage.setItem('membershipSource', snapshot.source);
 
-    if (status === 'offline') {
-      this.globalService.showMembershipMessage('offline');
+    // ============================================================
+    // OFFLINE LOGIC
+    // ============================================================
+    if (!snapshot.online) {
+      const cachedStatus = localStorage.getItem('membershipStatus');
+      if (cachedStatus === 'active') return true;
+
+      this.globalAlert.showalert(
+        t('Offline Mode', 'Modo Offline'),
+        t(
+          'You are offline. Go online and get a subscription to access this content.',
+          'Você está offline. Vá online e adquira uma assinatura para acessar este conteúdo.'
+        )
+      );
       return false;
     }
 
-    if (status === 'no_store') {
-      this.globalService.showMembershipMessage('no_store');
-      return false;
-    }
+    // ============================================================
+    // ONLINE LOGIC
+    // ============================================================
+    if (snapshot.source === 'whitelist') return true;
+    if (snapshot.source === 'trial') return true;
+    if (snapshot.status === 'active') return true;
 
-    if (status === 'failed') {
-      this.globalService.showMembershipMessage('failed');
-      this.globalService.openModal2();
-      return false;
-    }
-
-    if (status === 'inactive') {
-      this.globalService.showMembershipMessage('inactive');
-      this.globalService.openModal2();
-      return false;
-    }
-
+    // ============================================================
+    // MEMBERSHIP REQUIRED (no sub, inactive, expired, or logged out)
+    // ============================================================
+    this.globalAlert.showalert(
+      t('Subscription Required', 'Assinatura Necessária'),
+      t(
+        `Choose a subscription to have full access of the app`,
+        `Escolha uma assinatura para ter acesso total do app`
+      )
+    );
+    this.globalService.openModal2Safe();
     return false;
   }
 }

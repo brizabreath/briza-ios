@@ -26,28 +26,28 @@
       <!-- Name -->
       <ion-item>
         <ion-label position="stacked">Name</ion-label>
-        <ion-input class="form-control" type="text" [(ngModel)]="name" name="name"></ion-input>
+        <ion-input class="form-control manageForm" type="text" [(ngModel)]="name" name="name"></ion-input>
       </ion-item>
       <!-- New Email (optional) -->
       <ion-item>
         <ion-label position="stacked">New Email</ion-label>
-        <ion-input class="form-control" type="email" [(ngModel)]="newEmail" name="newEmail"></ion-input>
+        <ion-input class="form-control manageForm" type="email" [(ngModel)]="newEmail" name="newEmail"></ion-input>
       </ion-item>
 
   
       <ion-item>
         <ion-label position="stacked">Current Password (required)</ion-label>
-        <ion-input class="form-control" type="password" [(ngModel)]="password" name="password" required></ion-input>
+        <ion-input class="form-control manageForm" type="password" [(ngModel)]="password" name="password" required></ion-input>
       </ion-item>
   
       <ion-item>
         <ion-label position="stacked">New Password</ion-label>
-        <ion-input class="form-control" type="password" [(ngModel)]="newPassword" name="newPassword"></ion-input>
+        <ion-input class="form-control manageForm" type="password" [(ngModel)]="newPassword" name="newPassword"></ion-input>
       </ion-item>
   
       <ion-item>
         <ion-label position="stacked">Confirm New Password</ion-label>
-        <ion-input class="form-control" type="password" [(ngModel)]="confirmPassword" name="confirmPassword"></ion-input>
+        <ion-input class="form-control manageForm" type="password" [(ngModel)]="confirmPassword" name="confirmPassword"></ion-input>
       </ion-item>
   
       <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>

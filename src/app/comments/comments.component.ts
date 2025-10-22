@@ -7,6 +7,7 @@ import {
   onSnapshot, doc, deleteDoc, type CollectionReference
 } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
+import { GlobalAlertService } from '../services/global-alert.service';
 
 interface VideoComment {
   id?: string;
@@ -109,7 +110,8 @@ export class CommentsComponent {
 
   constructor(
     private firebaseService: FirebaseService,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private globalAlert: GlobalAlertService
   ) {}
 
   ngOnInit() {
@@ -213,7 +215,14 @@ export class CommentsComponent {
 
   async deleteComment(c: VideoComment) {
     if (!this.guardOnline() || !c.id) return;
-    if (!confirm(this.isPT ? 'Excluir este comentário?' : 'Delete this comment?')) return;
+    const confirmed = await this.globalAlert.showConfirm(
+      'Delete comment',
+      'Delete this comment?',
+      'Yes',
+      'No'
+    );
+
+    if (!confirmed){return}
     const db = this.firebaseService.firestore!;
     await deleteDoc(doc(db, `videos/${this.videoId}/comments/${c.id}`));
   }

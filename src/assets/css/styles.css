@@ -60,9 +60,12 @@ body {
     margin-top: 20px;
     color: #0661AA;
 }
-#loginGrid, #forgotGrid, #registerGrid{
+#forgotGrid, #registerGrid{
     position: fixed;
     margin-top: 30px;
+    width: 100%;
+}
+#loginGrid{
     width: 100%;
 }
 #setSettingsPage{
@@ -217,8 +220,20 @@ body {
     border: none;
     background-color: white;
     font-weight: bold;
+    width: 100%;
+    margin: auto;
 }
-
+.profileBTN2 {
+    font-size: 18px;
+    color: #49B79D;
+    border: none;
+    text-decoration: none; 
+    font-size: 18px;
+    color: #49B79D;
+    border: none;
+    background-color: white;
+    font-weight: bold;
+}
 .profileMargin{
     margin-bottom: 150px !important;
 }
@@ -232,9 +247,7 @@ body {
 .profile {
     text-align: center;
     margin-top: 20px;
-    display: grid;
-    margin-bottom: 20px;
-    
+    display: grid;    
 }
 .profileLogin {
     text-align: center;
@@ -325,7 +338,8 @@ body {
 
 /* Placeholder styling to avoid interaction issues */
 .placeholderHeader {
-    opacity: 0; /* Keep it invisible but retain space */
+    opacity: 1;
+    justify-content: end;
 }
 
 /* Go back button styles */
@@ -521,7 +535,7 @@ input#timerDisplayLungs {
     margin-bottom: 30px;
     margin-left: 1rem;
 }
-#CTSave, #HATSave, #HATCSave, #AHATSave {
+#CTSave{
     margin-top: 20px;
     width: 18rem;
     margin-left: 0;
@@ -556,7 +570,7 @@ input#timerDisplayLungs {
     margin-left: 1rem;
 }
 
-#CTReset, #HATReset, #HATCReset, #AHATReset {
+#CTReset{
     margin-right: 0 !important;
     margin-left: 20px;
 }

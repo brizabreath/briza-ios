@@ -10,6 +10,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
 import { VimeoMetaService } from '../services/vimeo-meta.service';
+import { GlobalAlertService } from '../services/global-alert.service';
+
 
 @Component({
   selector: 'app-lungs',
@@ -40,7 +42,8 @@ export class LungsPage implements OnDestroy {
     private globalService: GlobalService,
     private firebaseService: FirebaseService,
     private vimeoMeta: VimeoMetaService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private globalAlert: GlobalAlertService
   ) {}
 
   async ionViewDidEnter() {
@@ -55,9 +58,9 @@ export class LungsPage implements OnDestroy {
       }
     }else{
       if (!this.isPortuguese) {
-        alert('🌐 You are offline.\n\nConnect to the internet to watch this video');
+        this.globalAlert.showalert('OFFLINE', '🌐 You are offline.\n\nConnect to the internet to watch this video');
       } else {
-        alert('🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
+        this.globalAlert.showalert('OFFLINE', '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
       }
     }
     if (!this.vimeoUrlEN || !this.vimeoUrlPT) {

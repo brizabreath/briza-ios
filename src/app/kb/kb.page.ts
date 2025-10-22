@@ -110,6 +110,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }
   }
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');

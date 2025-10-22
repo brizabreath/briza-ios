@@ -104,6 +104,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {

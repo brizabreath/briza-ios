@@ -6,11 +6,12 @@
     <div class="logo-container">
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div>
-    <div class="questionMark questionClass2">
-      <a id="questionBH" #questionBH>
-        <img class="questionIMG" src="assets/images/question.png" />
-      </a>
+    <div class="placeholderHeader">
+      <div class="questionMark questionClass2">
+        <a id="questionBH" #questionBH>
+          <img class="questionIMG" src="assets/images/question.png" />
+        </a>
+      </div>
     </div>
   </header>
 
@@ -39,10 +40,11 @@
       <!-- Endurance -->
       <div *ngIf="selectedSegment === 'endurance'" class="bhgrid">
         <div class="row g-2">
-          <div class="col">
+          <div class="col locker-container">
             <a routerLink="/ap">
               <img class="homepageimgs4"
                    [src]="isPortuguese ? 'assets/images/apPT.svg' : 'assets/images/ap.svg'" />
+              <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
           <div class="col">

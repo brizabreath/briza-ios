@@ -113,6 +113,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -172,12 +173,12 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.WHballText.nativeElement.textContent = "2";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
-      const timeoutId3 = setTimeout(async () => {
+      const timeoutId3 = setTimeout( () => {
         this.WHballText.nativeElement.textContent = "1";
-        await this.audioService.playSound('inhale');
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
-      const timeoutId4 = setTimeout(() => {
+      const timeoutId4 = setTimeout(async () => {
+        await this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.WHballText.nativeElement.textContent = "Inspire";
         }else{

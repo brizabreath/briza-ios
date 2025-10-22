@@ -98,6 +98,7 @@ strong{
 }
 .web-splash-screen {
   position: fixed;
+  top: 0;
   z-index: 9999;
   width: 100vw;
   height: 100vh;
@@ -678,8 +679,7 @@ display: none;
 }
 /* Make header icons and ball not add inline gaps */
 .settingButtons img,
-.questionMark img,
-#hp-ball {
+.questionMark img {
   display: block;
   border-radius: 50%;
 }
@@ -758,11 +758,8 @@ display: none;
 //android
 .md {
   .mainHeader{
-  height: 80px;
-  padding-top: 20px;
-  }
-  #homeFooter, #homeFooterBR, #resultsFooter, #resultsFooterBR, #profileFooter, #profileFooterBR, #breathFooter, #breathFooterBR, #yogaFooter, #yogaFooterBR{
     height: 80px;
+    padding-top: 20px;
   }
   #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR{
     margin-top: 6rem;
@@ -778,5 +775,35 @@ display: none;
   }
   .breathingpages {
     margin-top: 100px;
+  }
+  #breathpagegrid, #breathpagegridBR {
+    margin-top: 7rem;
+  }
+}
+.profiletext{
+  text-align: center !important;
+}
+@media only screen and (min-width: 600px){
+  .homepageimgs{
+    height: 90% !important;
+  }
+}
+ion-alert {
+  --button-color: #0661AA;  /* black text for buttons */
+}
+.centeredText{
+  text-align: center !important;
+}
+.locker-container {
+  position: relative;
+  display: inline-block;
+
+  .locker-icon {
+    position: absolute;
+    top: 6px;        /* adjust to taste */
+    right: 12px;      /* adjust to taste */
+    width: 20px;     /* icon size */
+    height: 20px;
+    opacity: 0.9;    /* slightly transparent */
   }
 }

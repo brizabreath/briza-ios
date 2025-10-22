@@ -9,7 +9,9 @@ import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
-
+import { RevenuecatService } from '../services/revenuecat.service';
+import { AuthService } from '../services/auth.service';
+import { GlobalAlertService } from '../services/global-alert.service';
 
 
 @Component({
@@ -43,12 +45,50 @@ export class BreathworkPage {
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private _sharing = false;
 
-constructor(private globalService: GlobalService, private router: Router, private firebaseService: FirebaseService) {}
+constructor(
+  private globalService: GlobalService, 
+  private router: Router, 
+  private firebaseService: FirebaseService, 
+  private revenuecat: RevenuecatService,
+  private authService: AuthService,
+  private globalAlert: GlobalAlertService
+) {}
   private startBreathTourNow() {
     localStorage.setItem('startHomeTour','true');
     this.router.navigateByUrl('/home');  
   }
   async ionViewWillEnter() {
+    // 1️⃣ Check membership snapshot (already does whitelist, trial, RevenueCat)
+    const snapshot = await this.revenuecat.getSnapshot();
+
+    // 2️⃣ Handle device trial logic only if not already active member
+    if (snapshot.status !== 'active') {
+      const trialStatus = await this.authService.checkOrStartDeviceTrial();
+
+      // 🆕 Newly started trial (first ever time on this device)
+      if (trialStatus.newlyCreated) {
+        this.globalAlert.showalert(
+          this.isPortuguese ? 'Período de Teste' : 'Trial Started',
+          this.isPortuguese
+            ? 'Você tem 7 dias de acesso gratuito a todos os recursos do Briza'
+            : 'You have 7 days of free access to all features of Briza'
+        );
+        localStorage.setItem('membershipStatus', 'active');
+        localStorage.setItem('membershipSource', 'trial');
+      }
+
+      // ⏳ Trial expired for the first time → show downgrade message
+      else if (trialStatus.expiredNow) {
+        this.globalAlert.showalert(
+          this.isPortuguese ? 'Período de Teste Encerrado' : 'Trial Ended',
+          this.isPortuguese
+            ? 'Seu período de teste terminou. Você agora está no modo gratuito. Assine para obter acesso total novamente'
+            : 'Your trial period has ended. You are now in free mode. Subscribe to regain full access'
+        );
+        localStorage.setItem('membershipStatus', 'inactive');
+        localStorage.setItem('membershipSource', 'trialExpired');
+      }
+    }
     await this.loadRandomQuote();
 
     if (!BreathworkPage.hasInitialized) {
@@ -67,7 +107,8 @@ constructor(private globalService: GlobalService, private router: Router, privat
     this.calculateWeeklyProgress();
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
-    const userName = localStorage.getItem('currentUserName') || '';
+    const fullName = localStorage.getItem('currentUserName') || '';
+    const userName = fullName.split(' ')[0];
     const currentHour = new Date().getHours();
 
     let greeting = '';
@@ -127,20 +168,26 @@ constructor(private globalService: GlobalService, private router: Router, privat
   }
   calculateWeeklyProgress(): void {
     const exerciseKeys = [
-      'HATResults', 'HATCResults', 'AHATResults', 
-      'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
-      'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-      'CBResults', 'RBResults', 'NBResults', 'CUSTResults', "LungsResults"
+      'HATResults', 'HATCResults', 'AHATResults',
+      'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
+      'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
+      'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
+      'YogaResults', 'DBResults', 'HUMResults'
     ];
 
     const today = new Date();
     const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    // --- Define current week range ---
     const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7)); // get Monday of current week
     monday.setHours(0, 0, 0, 0);
 
-    // Reset all circles to white first
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    // --- Reset weekly circles ---
     const allDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
     for (const day of allDays) {
       const circle = document.getElementById(`circle-${day}`);
@@ -148,35 +195,81 @@ constructor(private globalService: GlobalService, private router: Router, privat
     }
 
     const activeDays = new Set<string>();
-    let sessionCount = 0;
+    const activeDates = new Set<string>();
+    let weeklySessionCount = 0;
 
+    // --- Gather all exercise data ---
     for (const key of exerciseKeys) {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
-
       const entries = JSON.parse(raw);
+
       for (const result of entries) {
         const dateUTC = new Date(result.date);
         const localDate = new Date(dateUTC.toLocaleString('en-US', { timeZone: localTimezone }));
         const localDateOnly = new Date(localDate.getFullYear(), localDate.getMonth(), localDate.getDate());
+        const dateKey = localDateOnly.toISOString().split('T')[0];
+        activeDates.add(dateKey);
 
-        if (localDateOnly >= monday) {
-          const weekday = localDateOnly.getDay(); // 0 (Sun) to 6 (Sat)
-          const key = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][weekday];
-          activeDays.add(key);
-          sessionCount++;
+        // ✅ Only count for weekly fill if inside this week
+        if (localDateOnly >= monday && localDateOnly <= sunday) {
+          const weekday = localDateOnly.getDay(); // 0 = Sun, 6 = Sat
+          const keyDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][weekday];
+          activeDays.add(keyDay);
+          weeklySessionCount++;
         }
       }
     }
 
-    this.numberOfWeekSessions = sessionCount;
-    if(this.numberOfWeekSessions == 0){
-      this.numberOfSessions.nativeElement.innerHTML = this.isPortuguese? "Voce ainda nao praticou essa semana" : "You have not practiced this week yet";
+    this.numberOfWeekSessions = weeklySessionCount;
+    const isPT = this.isPortuguese;
+
+    // --- Streak logic (cross-week, unaffected) ---
+    const sortedDates = Array.from(activeDates).sort();
+    let streak = 0;
+    let currentStreak = 0;
+
+    if (sortedDates.length) {
+      let prev = new Date(sortedDates[0]);
+      currentStreak = 1;
+      for (let i = 1; i < sortedDates.length; i++) {
+        const curr = new Date(sortedDates[i]);
+        const diff = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
+        if (diff === 1) currentStreak++;
+        else if (diff > 1) {
+          streak = Math.max(streak, currentStreak);
+          currentStreak = 1;
+        }
+        prev = curr;
+      }
+      streak = Math.max(streak, currentStreak);
     }
-    else{
-      this.numberOfSessions.nativeElement.innerHTML = this.isPortuguese? "Você já praticou " + this.numberOfWeekSessions + "x essa semana" : "You have practiced " + this.numberOfWeekSessions + "x this week";
+
+    // --- Validate streak still active (no missed full days)
+    if (streak > 0) {
+      const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+      const diffToToday = Math.floor(
+        (today.setHours(0, 0, 0, 0) - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (diffToToday > 1) streak = 0; // missed a day → reset
     }
-    // Fill circles based on actual data
+
+    // --- Display logic ---
+    if (streak >= 5) {
+      this.numberOfSessions.nativeElement.innerHTML = isPT
+        ? `Parabéns! Você está em uma sequência de ${streak} ${streak === 1 ? 'dia' : 'dias'} seguidos!`
+        : `Well done! ${streak} ${streak === 1 ? 'day' : 'days'} of practice in a row!`;
+    } else if (this.numberOfWeekSessions === 0) {
+      this.numberOfSessions.nativeElement.innerHTML = isPT
+        ? 'Você ainda não praticou essa semana'
+        : 'You have not practiced this week yet';
+    } else {
+      this.numberOfSessions.nativeElement.innerHTML = isPT
+        ? `Você já praticou ${this.numberOfWeekSessions}x essa semana`
+        : `You have practiced ${this.numberOfWeekSessions}x this week`;
+    }
+
+    // --- Fill current week circles ---
     const filledColor = '#49B79D';
     for (const day of activeDays) {
       const circle = document.getElementById(`circle-${day}`);
@@ -184,27 +277,35 @@ constructor(private globalService: GlobalService, private router: Router, privat
     }
   }
 
+
+
   async shareOpenScreen() {
     if (this._sharing || !this.selectedQuote) return;
     this._sharing = true;
 
     try {
       const canvas = document.createElement('canvas');
-      const width = 800, height = 600;
+      const width = 1080; // Instagram Story format
+      const height = 1920;
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // Background
-      ctx.fillStyle = '#ffffff';
+      // --- BACKGROUND GRADIENT ---
+      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      gradient.addColorStop(0, "#E8F7F6"); // soft turquoise top
+      gradient.addColorStop(1, "#FFFFFF"); // white bottom
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
       const quote = this.selectedQuote.text;
       const author = this.selectedQuote.author;
 
-      // Load font (if available)
-      try { await (document as any).fonts?.load?.('55px DellaRespira'); } catch {}
+      
+
+      // Load custom font (if available)
+      try { await (document as any).fonts?.load?.('70px DellaRespira'); } catch {}
 
       // --- DRAW QUOTE BLOCK ---
       function drawQuoteBlock(
@@ -213,21 +314,20 @@ constructor(private globalService: GlobalService, private router: Router, privat
         x: number,
         canvasWidth: number,
         canvasHeight: number,
-        baseFont: string = "55px DellaRespira",
-        lineHeight: number = 56
+        baseFont: string = "70px DellaRespira",
+        lineHeight: number = 85
       ) {
-        const maxWidth = canvasWidth * 2 / 3;
+        const maxWidth = canvasWidth * 0.8; // balanced side margins
 
-        // Start with base font
         ctx.font = baseFont;
         const fontFamily = baseFont.split(" ").slice(1).join(" ");
         let fontSize = parseInt(baseFont);
 
-        // Split into lines (word wrap)
         const words = text.split(" ");
         const lines: string[] = [];
         let currentLine = "";
 
+        // Word wrap
         for (const word of words) {
           const testLine = currentLine + word + " ";
           if (ctx.measureText(testLine).width > maxWidth) {
@@ -239,66 +339,49 @@ constructor(private globalService: GlobalService, private router: Router, privat
         }
         lines.push(currentLine.trim());
 
-        // Check widest line
+        // Shrink font if needed
         let widest = 0;
-        for (const line of lines) {
-          widest = Math.max(widest, ctx.measureText(line).width);
-        }
-
-        // Shrink font if needed (affects all lines)
-        while (widest > maxWidth && fontSize > 20) {
+        for (const line of lines) widest = Math.max(widest, ctx.measureText(line).width);
+        while (widest > maxWidth && fontSize > 28) {
           fontSize -= 2;
           ctx.font = `${fontSize}px ${fontFamily}`;
           widest = 0;
-          for (const line of lines) {
-            widest = Math.max(widest, ctx.measureText(line).width);
-          }
+          for (const line of lines) widest = Math.max(widest, ctx.measureText(line).width);
         }
 
-        // Vertically center block
         const blockHeight = lines.length * lineHeight;
         const startY = (canvasHeight - blockHeight) / 2;
 
-        // Draw each line
+        // Draw each line normally (no letter spacing)
         ctx.textAlign = "center";
         ctx.fillStyle = "#0661AA";
-        lines.forEach((line, i) => {
-          ctx.fillText(line, x, startY + i * lineHeight);
-        });
+        for (let i = 0; i < lines.length; i++) {
+          ctx.fillText(lines[i], x, startY + i * lineHeight);
+        }
 
-        return {
-          fontSize,
-          lineCount: lines.length,
-          blockHeight,
-          startY
-        };
+        return { blockHeight, startY };
       }
 
-      const { lineCount, blockHeight, startY } = drawQuoteBlock(
-        ctx,
-        quote,
-        width / 2,
-        width,
-        height
-      );
-
-      // --- DRAW AUTHOR ---
-      ctx.font = "italic 28px Arial";
-      ctx.fillStyle = "#0661AA";
-      const authorY = startY + blockHeight + 15;
-      ctx.fillText(`- ${author}`, width / 2, authorY);
-
-      // --- DRAW LOGO ---
+      const { blockHeight, startY } = drawQuoteBlock(ctx, quote, width / 2, width, height);
+      
+      // --- LOGO ---
       const logo = new Image();
-      logo.src = 'assets/images/blogo.png';
+      logo.src = 'assets/images/splash.png';
       await new Promise<void>((resolve, reject) => {
         logo.onload = () => {
-          const logoSize = 70;
-          ctx.drawImage(logo, (width - logoSize) / 2, authorY + 35, logoSize, logoSize);
+          const logoSize = 400;
+          ctx.drawImage(logo, (width - logoSize) / 2, 350, logoSize, logoSize/2);
           resolve();
         };
         logo.onerror = reject;
       });
+
+      // --- AUTHOR ---
+      ctx.font = "42px Arial";
+      ctx.fillStyle = "#0660aa9f";
+      const authorY = startY + blockHeight + 70;
+      ctx.fillText(`- ${author}`, width / 2, authorY);
+
 
       // --- SAVE TO FILE ---
       const base64 = canvas.toDataURL('image/jpeg', 0.95);
@@ -316,8 +399,6 @@ constructor(private globalService: GlobalService, private router: Router, privat
         path: fileName
       });
 
-      await new Promise(r => setTimeout(r, 80)); // small delay
-
       // --- SHARE ---
       await Share.share({
         title: this.isPortuguese ? 'Compartilhar citação' : 'Share quote',
@@ -330,9 +411,9 @@ constructor(private globalService: GlobalService, private router: Router, privat
         const dir = await Filesystem.readdir({ directory: Directory.Cache, path: '' });
         const brizaFiles = dir.files
           .filter(f => f.name.startsWith('briza_') && f.name.endsWith('.jpeg'))
-          .sort((a, b) => (a.name > b.name ? -1 : 1)); // newest first
+          .sort((a, b) => (a.name > b.name ? -1 : 1));
 
-        const oldFiles = brizaFiles.slice(3); // keep only 3 latest
+        const oldFiles = brizaFiles.slice(3);
         for (const file of oldFiles) {
           await Filesystem.deleteFile({ directory: Directory.Cache, path: file.name });
         }
@@ -346,6 +427,8 @@ constructor(private globalService: GlobalService, private router: Router, privat
       this._sharing = false;
     }
   }
+
+
 
   startAppGuide() {
     this.globalService.closeModal(this.openScreen);

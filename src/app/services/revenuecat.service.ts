@@ -1,107 +1,180 @@
 import { Injectable } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
+import { FirebaseService } from './firebase.service';
+import { doc, getDoc } from 'firebase/firestore';
 import {
   Purchases,
-  CustomerInfo,
   PurchasesOfferings,
 } from '@revenuecat/purchases-capacitor';
 
-
 @Injectable({ providedIn: 'root' })
 export class RevenuecatService {
-  private initialized = false;
+  constructor(private firebaseService: FirebaseService) {}
 
-  private readonly CACHE_KEY = 'lastRevenueCatStatus';
+  // 🔹 Unified snapshot (used by Guard and Profile)
+  async getSnapshot(): Promise<any> {
+    const isOnline = navigator.onLine;
+    const email = this.firebaseService.auth?.currentUser?.email;
+    const firestore = this.firebaseService.firestore;
 
-  private readonly RC_KEYS = {
-    ios: 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH',
-    android: 'goog_pkpJjBXrBipISmYfhOZTJEaoeuD',
-  };
+    // Base snapshot
+    let result = {
+      online: isOnline,
+      platform: this.getPlatform(),
+      status: 'inactive',
+      source: 'none',
+      whitelistActive: false,
+      trialActive: false,
+      trialDaysLeft: 0,
+      rcActive: false,
+    };
 
-  async init(): Promise<void> {
-    if (this.initialized) return;
+    // ============================================================
+    // 1️⃣ WHITELIST (query by email field, not document ID)
+    // ============================================================
+    try {
+      if (firestore && email) {
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        const q = query(
+          collection(firestore, 'freeAccessUsers'),
+          where('email', '==', email),
+          where('active', '==', true)
+        );
+        const snap = await getDocs(q);
 
-    const platform = Capacitor.getPlatform();
-    let apiKey = '';
-
-    if (platform === 'ios') {
-      apiKey = this.RC_KEYS.ios;
-    } else if (platform === 'android') {
-      apiKey = this.RC_KEYS.android;
-    } else {
-      // Optional: if you ever run web builds
-      console.warn('[RevenueCat] Non-mobile platform detected; skipping configure.');
-      this.initialized = true;
-      return;
+        if (!snap.empty) {
+          result.status = 'active';
+          result.source = 'whitelist';
+          result.whitelistActive = true;
+          localStorage.setItem('membershipStatus', 'active');
+          localStorage.setItem('membershipSource', 'whitelist');
+          return result;
+        }
+      }
+    } catch (err) {
+      console.error('⚠️ Whitelist check failed:', err);
     }
 
-    await Purchases.configure({ apiKey });
-    this.initialized = true;
-    console.log(`[RevenueCat] Initialized for ${platform}`);
+
+    // ============================================================
+    // 2️⃣ TRIAL
+    // ============================================================
+    try {
+      const { Device } = await import('@capacitor/device');
+      const device = await Device.getId();
+      const db = this.firebaseService.firestore;
+      if (db) {
+        const deviceRef = doc(db, 'devices', device.identifier);
+        const snap = await getDoc(deviceRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          const expiresAt = data['trialExpiresAt'];
+          const now = new Date();
+          if (expiresAt && expiresAt.toMillis() > now.getTime()) {
+            const diffDays = Math.ceil(
+              (expiresAt.toMillis() - now.getTime()) / (1000 * 60 * 60 * 24)
+            );
+            result.status = 'active';
+            result.source = 'trial';
+            result.trialActive = true;
+            result.trialDaysLeft = diffDays;
+            localStorage.setItem('membershipStatus', 'active');
+            localStorage.setItem('membershipSource', 'trial');
+            return result;
+          }
+        }
+      }
+    } catch (err) {
+      console.error('⚠️ Trial check failed:', err);
+    }
+
+    // ============================================================
+    // 3️⃣ OFFLINE FALLBACK
+    // ============================================================
+    if (!isOnline) {
+      const cachedStatus = localStorage.getItem('membershipStatus');
+      const cachedSource = localStorage.getItem('membershipSource');
+      if (cachedStatus === 'active') {
+        result.status = 'active';
+        result.source = cachedSource || 'cache';
+        return result;
+      } else {
+        result.status = 'inactive';
+        result.source = 'cache';
+        return result;
+      }
+    }
+
+    // ============================================================
+    // 4️⃣ REVENUECAT
+    // ============================================================
+    try {
+      await this.init();
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      const activeEntitlements = Object.keys(customerInfo.entitlements.active || {});
+
+      if (activeEntitlements.length > 0) {
+        result.status = 'active';
+        result.source = 'revenuecat';
+        result.rcActive = true;
+        localStorage.setItem('membershipStatus', 'active');
+        localStorage.setItem('membershipSource', 'revenuecat');
+        return result;
+      } else {
+      }
+    } catch (err) {
+      console.error('❌ RevenueCat check failed:', err);
+    }
+
+    // ============================================================
+    // 5️⃣ FINAL FALLBACK → INACTIVE
+    // ============================================================
+    console.warn('❌ No active membership found');
+    result.status = 'inactive';
+    result.source = 'none';
+    localStorage.setItem('membershipStatus', 'inactive');
+    localStorage.setItem('membershipSource', 'none');
+    return result;
   }
 
-  async getCustomerInfo(): Promise<CustomerInfo | null> {
-    await this.init();
-    const result: any = await Purchases.getCustomerInfo();
-    return (result?.customerInfo ?? result) as CustomerInfo;
+
+  // ============================================================
+  // PLATFORM + MANAGEMENT LINKS
+  // ============================================================
+  getPlatform(): 'ios' | 'android' | 'web' {
+    const ua = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua)) return 'ios';
+    if (/android/.test(ua)) return 'android';
+    return 'web';
+  }
+
+  getManageSubscriptionUrl(): string {
+    return this.getPlatform() === 'android'
+      ? 'https://play.google.com/store/account/subscriptions'
+      : 'https://apps.apple.com/account/subscriptions';
+  }
+
+  // ============================================================
+  // INIT + OFFERINGS
+  // ============================================================
+  async init() {
+    try {
+      const apiKey =
+        this.getPlatform() === 'ios'
+          ? 'appl_UDDWAlWhfDSufpIcYmsNiqwTSqH'
+          : 'goog_pkpJjBXrBipISmYfhOZTJEaoeuD';
+      await Purchases.configure({ apiKey });
+    } catch (err) {
+      console.error('❌ RevenueCat init failed:', err);
     }
+  }
 
   async getOfferings(): Promise<PurchasesOfferings | null> {
     await this.init();
     try {
-        return await Purchases.getOfferings();
+      return await Purchases.getOfferings();
     } catch (err) {
-        console.error('[RevenueCat] Failed to fetch offerings:', err);
-        return null; // instead of throwing
-    }
-    }
-
-  // Small helper for "Manage Subscription" URL
-  getManageSubscriptionUrl(): string {
-    const platform = Capacitor.getPlatform();
-    return platform === 'android'
-      ? 'https://play.google.com/store/account/subscriptions'
-      : 'https://apps.apple.com/account/subscriptions';
-  }
-  async hasActiveSubscription(): Promise<'active' | 'failed' | 'inactive' | 'offline' | 'no_store'> {
-    const isOnline = navigator.onLine;
-
-    if (!isOnline) {
-      const cached = localStorage.getItem(this.CACHE_KEY) as 'active' | 'failed' | 'inactive' | null;
-      if (cached === 'active') {
-        localStorage.setItem('membershipStatus', 'active');
-        return 'active';
-      }
-      localStorage.setItem('membershipStatus', 'inactive');
-      return 'offline';
-    }
-
-    try {
-      const customerInfo = await this.getCustomerInfo();
-      if (!customerInfo) {
-        localStorage.setItem('membershipStatus', 'inactive');
-        return 'no_store';
-      }
-
-      const isSubscribed = customerInfo.entitlements.active['premium_access'] !== undefined;
-      if (isSubscribed) {
-        localStorage.setItem('membershipStatus', 'active');
-        localStorage.setItem(this.CACHE_KEY, 'active'); // cache normalized
-        return 'active';
-      }
-
-      if (customerInfo.allExpirationDates && Object.keys(customerInfo.allExpirationDates).length > 0) {
-        localStorage.setItem('membershipStatus', 'failed');
-        return 'failed';
-      }
-
-      localStorage.setItem('membershipStatus', 'inactive');
-      return 'inactive';
-    } catch (err) {
-      console.error('Error checking subscription status:', err);
-      localStorage.setItem('membershipStatus', 'inactive');
-      return isOnline ? 'no_store' : 'offline';
+      console.error('⚠️ Failed to fetch offerings:', err);
+      return null;
     }
   }
-
 }

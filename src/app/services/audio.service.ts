@@ -48,16 +48,6 @@ export class AudioService {
 
   constructor() {
     this.createAudioContext();
-
-    App.addListener('resume', async () => {
-      if (this.audioContext?.state === 'suspended') {
-        try {
-          await this.audioContext.resume();
-        } catch (err) {
-          console.warn('⚠️ Failed to resume AudioContext:', err);
-        }
-      }
-    });
   }
 
   private createAudioContext(): void {
@@ -70,7 +60,6 @@ export class AudioService {
     if (this.audioContext?.state === 'suspended') {
       try {
         await this.audioContext.resume();
-        console.log('🔊 AudioContext resumed before preloading');
       } catch (err) {
         console.warn('⚠️ Failed to resume AudioContext before preload:', err);
       }
@@ -122,7 +111,6 @@ export class AudioService {
     const index = this.indexes[name] ?? 0;
     const buffer = buffers[index];
     this.indexes[name] = (index + 1) % buffers.length;
-      console.log(`▶️ Playing ${name}, duration: ${buffer.duration.toFixed(2)}s`);
 
     const source = this.audioContext.createBufferSource();
     source.buffer = buffer;
@@ -197,7 +185,6 @@ export class AudioService {
 
   async playBreath(name: string): Promise<void> {
     if (localStorage.getItem('breathMute') === 'true') {
-      console.log(`🔇 Breath sound muted: ${name}`);
       return;
     }
     if (this.audioContext.state === 'suspended') {
@@ -239,12 +226,10 @@ export class AudioService {
     durationSec: number
   ): Promise<void> {
     if (localStorage.getItem('vibrMute') === 'true') {
-      console.log(`🔇 Vibration muted`);
     }else{
       await Haptics.vibrate();
     }
     if (localStorage.getItem('breathMute') === 'true') {
-      console.log(`🔇 Breath sound muted: ${name}`);
       return;
     }
     if (this.audioContext.state === 'suspended') {
@@ -340,7 +325,6 @@ export class AudioService {
         navigator.mediaSession.playbackState = 'none';
 
        const nullHandler = () => {
-          console.log('🔒 Ignored lock screen media control');
         };
         navigator.mediaSession.setActionHandler('play', nullHandler);
         navigator.mediaSession.setActionHandler('pause', nullHandler);
@@ -349,16 +333,19 @@ export class AudioService {
         navigator.mediaSession.setActionHandler('previoustrack', null);
         navigator.mediaSession.setActionHandler('nexttrack', null);
 
-        console.log('🚫 MediaSession disabled completely');
       } catch (e) {
         console.warn('⚠️ Failed to disable MediaSession', e);
       }
     }
   }
 
-
   clearAllAudioBuffers(): void {
     this.audioBuffers = {};
     this.indexes = {};
+  }
+  async resetaudio(): Promise<void>{
+    this.clearAllAudioBuffers();
+    await this.preloadAll();
+    await this.initializeSong();
   }
 }

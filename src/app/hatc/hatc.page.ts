@@ -30,7 +30,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   @ViewChild('HATCtimeInput') HATCtimeInput!: ElementRef<HTMLSelectElement>;
   @ViewChild('HATCcountdownInput') HATCcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnHATC') startBtnHATC!: ElementRef<HTMLButtonElement>;
-  @ViewChild('stopBtnHATC') stopBtnHATC!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATCReset') HATCReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('HATCSave') HATCSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsHATC') settingsHATC!: ElementRef<HTMLButtonElement>;
@@ -67,11 +66,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     }
     // Initialize buttons
     this.startBtnHATC.nativeElement.onclick = () => this.startHATC();
-    this.stopBtnHATC.nativeElement.onclick = () => this.pauseHATC();
     this.HATCReset.nativeElement.onclick = () => this.stopHATC();
     this.HATCSave.nativeElement.onclick = () => this.saveHATC();
-    this.stopBtnHATC.nativeElement.disabled = true;
-    this.stopBtnHATC.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HATCReset.nativeElement.disabled = true;
     this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HATCSave.nativeElement.disabled = true;
@@ -96,6 +92,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
      // Listen for app state changes
      App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -135,7 +132,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.questionHATC.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnHATC.nativeElement.disabled = true;
-      this.holdHATC = true;
       this.HATCcountdownInput.nativeElement.style.display = "inline";
       this.HATCtimeInput.nativeElement.style.display = "none";
       this.startCountdownHATC();
@@ -166,8 +162,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
       const timeoutId5 = setTimeout(() => {
-        this.stopBtnHATC.nativeElement.disabled = false;
-        this.stopBtnHATC.nativeElement.style.color = '#0661AA';
+        this.startBtnHATC.nativeElement.disabled = false;
+        this.holdHATC = true;
         localStorage.setItem('breathingON', "true"); 
         localStorage.setItem('firstClick', "false"); 
       }, 6000);
@@ -178,8 +174,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       if(!this.holdHATC){
         this.clearIntervalsHATC();
         localStorage.setItem('breathingON', "false"); 
-        this.stopBtnHATC.nativeElement.disabled = true;
-        this.stopBtnHATC.nativeElement.style.color = 'rgb(177, 177, 177)';
         this.HATCReset.nativeElement.disabled = false;
         this.HATCReset.nativeElement.style.color = '#990000';
         if(this.roundsHATC > 0){
@@ -194,6 +188,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
           this.HATCballText.nativeElement.textContent = "Resume"
         }
         this.audioService.pauseSelectedSong();
+      }else{
+        this.pauseHATC();
       }
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
@@ -251,15 +247,12 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.normalHATC = false;
         this.holdHATC = true;
         this.HATCcurrentValue = 0;
-        this.startBtnHATC.nativeElement.disabled = true;
         if(this.isPortuguese){
           this.HATCballText.nativeElement.textContent = "Segure"
         }else{
           this.HATCballText.nativeElement.textContent = "Hold"
         }
         await this.audioService.playSound('pinchRun');
-        this.stopBtnHATC.nativeElement.disabled = false;
-        this.stopBtnHATC.nativeElement.style.color = '#0661AA';
       } 
       else{
         this.clearIntervalsHATC();
@@ -267,8 +260,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.startBtnHATC.nativeElement.disabled = true;
         this.settingsHATC.nativeElement.disabled = false;
         this.questionHATC.nativeElement.disabled = false;
-        this.stopBtnHATC.nativeElement.disabled = true;
-        this.stopBtnHATC.nativeElement.style.color = 'rgb(177, 177, 177)';
         this.HATCReset.nativeElement.disabled = false;
         this.HATCReset.nativeElement.style.color = '#990000';
         this.HATCSave.nativeElement.disabled = false;
@@ -306,8 +297,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.HATCtimeInput.nativeElement.style.display = "inline";
     this.HATCcurrentValue = 0;
     this.startBtnHATC.nativeElement.disabled = false;
-    this.stopBtnHATC.nativeElement.disabled = true;
-    this.stopBtnHATC.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HATCReset.nativeElement.disabled = true;
     this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HATCSave.nativeElement.disabled = true;
@@ -331,12 +320,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
 
   }
   async pauseHATC(): Promise<void>{
-    this.startBtnHATC.nativeElement.disabled = false;
     this.clearIntervalsHATC();
     this.holdHATC = false;
     this.normalHATC = true;
-    this.stopBtnHATC.nativeElement.disabled = true;
-    this.stopBtnHATC.nativeElement.style.color = 'rgb(177, 177, 177)';
     if(this.isPortuguese){
       this.HATCballText.nativeElement.textContent = "Respiração Normal"
     }else{

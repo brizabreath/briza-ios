@@ -6,11 +6,13 @@
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="settingButtons">
-      <button routerLink="/set" id="settingsAHAT" #settingsAHAT class="audioSet" type="button"><img src="assets/images/settings.png"></button>
-    </div>  
-    <div class="questionMark questionClass">
-      <button #questionAHAT type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    <div class="placeholderHeader"> <!-- Placeholder to balance the flexbox layout -->
+      <div class="settingButtons">
+        <button routerLink="/set" id="settingsAHAT" #settingsAHAT class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+      </div>  
+      <div class="questionMark questionClass">
+        <button #questionAHAT type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+      </div>
     </div>
   </header>  
   <div id="ahatPage">
@@ -46,16 +48,15 @@
                 <button #startBtnAHAT class="ballButton">
                   <div #AHATball class="ball">
                       <span #AHATballText></span>
-                      <img src="assets/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.png" alt="3D Ball">
                     </div>
                 </button>
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnAHAT" #stopBtnAHAT><div class="english">Next</div><div class="portuguese">Próximo</div></button>
                   <button type="button" class="stopBtn" id="AHATReset" #AHATReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="AHATSave" #AHATSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
                   <form method="post" id="AHATForm">
-                      <button type="button" class="saveBtn" id="AHATSave" #AHATSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneAHAT>0</div>
                           <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayAHAT>00 : 00</div>
@@ -124,7 +125,7 @@
               <img src="assets/images/next.jpg">
               <div class="text english">
                 <p>
-                  The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press "Next"                    
+                  The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press the circle again                      
                 </p>
               </div>
               <div class="text portuguese">

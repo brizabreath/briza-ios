@@ -60,7 +60,7 @@ export class YogaresultsPage implements AfterViewInit {
   }
 
   loadDataFromLocalStorage(): void {
-    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults', 'WHResults', 'LungsResults', 'YogaResults'];
+    const exerciseKeys = ['YogaResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};
 
     exerciseKeys.forEach(key => {

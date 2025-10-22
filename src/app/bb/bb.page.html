@@ -6,11 +6,13 @@
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="settingButtons">
-      <button routerLink="/set" id="settingsBB" #settingsBB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
-    </div>  
-    <div class="questionMark questionClass">
-      <button #questionBB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    <div class="placeholderHeader"> <!-- Placeholder to balance the flexbox layout -->
+      <div class="settingButtons">
+        <button routerLink="/set" id="settingsBB" #settingsBB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+      </div>  
+      <div class="questionMark questionClass">
+        <button #questionBB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+      </div>
     </div>
   </header>  
   <div id="bbPage">
@@ -47,11 +49,12 @@
                   </select>
                   <input #BBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
+              <p class="centeredText">Tip: Breathe as lightly as possible — maintain a gentle air hunger throughout the session</p>
               <div class="center-container">
                 <button #startBtnBB class="ballButton">
                   <div #BBball class="ball">
                       <span #BBballText></span>
-                      <img src="assets/images/3dBall.svg" alt="3D Ball">
+                      <img src="assets/images/3dBall.png" alt="3D Ball">
                     </div>
                 </button>
               </div>   

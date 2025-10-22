@@ -14,8 +14,8 @@
     <div class="placeholderHeader"></div>
   </header>
   <div class="breathingpages">
-    <h2 class="portuguese">Conta</h2>
-    <h2 class="english">Account</h2>
+    <h2 class="portuguese" *ngIf="isPortuguese">Conta</h2>
+    <h2 class="english" *ngIf="!isPortuguese">Account</h2>
     <div class="flexProfile">
       <div #userEmail></div>
     </div>
@@ -28,85 +28,50 @@
     </ion-button>
     <div class="flexProfile">
       <a
-        class="portuguese profileBTN"
+        *ngIf="isPortuguese"
+        class="portuguese profileBTN2"
         [class.disabled]="!isOnline"
         (click)="navigateToPage('/manageAccount', $event)"
         >GERENCIAR CONTA</a
       >
       <a
-        class="english profileBTN"
+        *ngIf="!isPortuguese"
+        class="english profileBTN2"
         [class.disabled]="!isOnline"
         (click)="navigateToPage('/manageAccount', $event)"
         >MANAGE ACCOUNT</a
       >
-      <a (click)="!isLoggingOut && onLogout()" [class.blinking]="isLoggingOut" class="profileBTN">
+      <a (click)="!isLoggingOut && onLogout()" [class.blinking]="isLoggingOut" class="profileBTN2">
         LOGOUT
       </a>      
     </div>
     <hr />
+    <!-- Subscription (always one button now) -->
     <div class="profile">
-      <h2 class="portuguese">Assinatura</h2>
-      <h2 class="english">Subscription</h2>
-      <div
-        *ngIf="membershipStatus === 'active' || membershipStatus === 'failed'"
-        class="manageMembership profile"
-      >
-        <button
-          type="button"
-          class="profileBTN portuguese"
-          [class.disabled]="!isOnline"
-          (click)="checkOnlineStatus($event)"
-          *ngIf="isPortuguese"
-          >GERENCIAR ASSINATURA</button
-        >
-        <button
-          type="button"
-          class="profileBTN english"
-          [class.disabled]="!isOnline"
-          (click)="checkOnlineStatus($event)"
-          *ngIf="!isPortuguese"
-          >MANAGE SUBSCRIPTION</button
-        >
-        <p id="subscribeNow2" class="portuguese" *ngIf="isPortuguese">
-          Gerencie sua assinatura, atualize os detalhes de pagamento ou cancele a qualquer momento.
-        </p>
-        <p id="subscribeNow2" class="english" *ngIf="!isPortuguese">
-          Manage your subscription, update payment details, or cancel anytime.
-        </p>
-      </div>
+      <h2 class="portuguese" *ngIf="isPortuguese">Assinatura</h2>
+      <h2 class="english" *ngIf="!isPortuguese">Subscription</h2>
 
-      <div
-        *ngIf="membershipStatus === 'inactive'"
-        class="noActiveMembership profile"
-      >
+      <div class="manageMembership profile">
         <button
           type="button"
-          class="profileBTN portuguese"
+          class="profileBTN"
           [class.disabled]="!isOnline"
-          (click)="checkOnlineStatus2($event)"
-          *ngIf="isPortuguese"
-          >OBTER ASSINATURA</button
-        >
-        <button
-          type="button"
-          class="profileBTN english"
-          [class.disabled]="!isOnline"
-          (click)="checkOnlineStatus2($event)"
-          *ngIf="!isPortuguese"
-          >GET SUBSCRIPTION</button
-        >
-        <p id="subscribeNow" class="portuguese" *ngIf="isPortuguese">
-          Obtenha uma assinatura e tenha acesso a todo o conteúdo do aplicativo.
+          (click)="onManageSubscriptionClick($event)">
+          {{ isPortuguese ? 'GERENCIAR ASSINATURA' : 'MANAGE SUBSCRIPTION' }}
+        </button>
+        <p class="portuguese profiletext" *ngIf="isPortuguese">
+          Gerencie sua assinatura, atualize os detalhes de pagamento ou cancele a qualquer momento
         </p>
-        <p id="subscribeNow" class="english" *ngIf="!isPortuguese">
-          Get a subscription and gain access to all app's content.
+        <p class="english profiletext" *ngIf="!isPortuguese">
+          Manage your subscription, update payment details, or cancel anytime
         </p>
       </div>
     </div>
+
     <hr />
     <div class="profile">
-      <h2 class="portuguese">Contato</h2>
-      <h2 class="english">Contact</h2>
+      <h2 class="portuguese" *ngIf="isPortuguese">Contato</h2>
+      <h2 class="english" *ngIf="!isPortuguese">Contact</h2>
       <div class="contactProfile">
         <p>Email</p>
         <a href="mailto:info@brizabreath.com">info&#64;brizabreath.com</a>
@@ -121,8 +86,38 @@
       </div>
     </div>
     <hr />
+  <div class="profile">
+    <h2>Newsletter</h2>
+    <div class="newsletterSection">
+      <p class="portuguese profiletext" *ngIf="newsletterActive && isPortuguese">Você está inscrito na nossa newsletter</p>
+      <p class="english profiletext" *ngIf="newsletterActive && !isPortuguese">You are subscribed to our newsletter</p>
+
+      <p class="portuguese profiletext" *ngIf="!newsletterActive && isPortuguese">Você não está inscrito na nossa newsletter</p>
+      <p class="english profiletext" *ngIf="!newsletterActive && !isPortuguese">You are not subscribed to our newsletter</p>
+      <button
+        type="button"
+        class="profileBTN english"
+        *ngIf="newsletterActive"
+        (click)="toggleNewsletter(false)"
+      >
+        {{ isPortuguese ? 'CANCELAR' : 'UNSUBSCRIBE' }}
+      </button>
+
+      <button
+        type="button"
+        class="profileBTN english"
+        *ngIf="!newsletterActive"
+        (click)="toggleNewsletter(true)"
+      >
+        {{ isPortuguese ? 'ISCREVER-SE' : 'SUBSCRIBE' }}
+      </button>
+    </div>
+  </div>
+
+    <hr />
     <div class="profile termsPrivacyBtn profileMargin">
       <a
+        *ngIf="isPortuguese"
         id="TermsBtn"
         class="portuguese"
         href="https://brizabreath.com/terms-conditions-br/"
@@ -130,6 +125,7 @@
         >Termos e Condições</a
       >
       <a
+        *ngIf="isPortuguese"
         id="PrivacyBtn"
         class="portuguese"
         href="https://brizabreath.com/privacy-policy-br"
@@ -137,6 +133,7 @@
         >Política de Privacidade</a
       >
       <a
+        *ngIf="!isPortuguese"
         id="TermsBtn"
         class="english"
         href="https://brizabreath.com/terms-conditions/"
@@ -144,6 +141,7 @@
         >Terms & Conditions</a
       >
       <a
+        *ngIf="!isPortuguese"
         id="PrivacyBtn"
         class="english"
         href="https://brizabreath.com/privacy-policy"
@@ -157,7 +155,7 @@
       >
     </div>
   </div>
-  <footer id="profileFooter" class="portuguese">
+  <footer id="profileFooter" class="portuguese" *ngIf="isPortuguese">
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -166,7 +164,7 @@
       <a class="active"><i class="fa fa-user active"></i>Perfil</a>
     </div>
   </footer>
-  <footer id="profileFooter" class="english">
+  <footer id="profileFooter" class="english" *ngIf="!isPortuguese">
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>

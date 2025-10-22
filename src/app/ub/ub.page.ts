@@ -99,6 +99,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
      // Listen for app state changes
      App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {

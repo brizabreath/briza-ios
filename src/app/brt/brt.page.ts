@@ -172,6 +172,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
   }
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -227,6 +228,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
       const timeoutId2 = setTimeout(async () => {
+        this.globalService.changeBall(1.5,3,this.BRTball);
         await this.audioService.playSound('inhale');        
         await this.audioService.playBreathSound('inhaleBreath', 3); 
         this.BRTballText.nativeElement.textContent = "3";
@@ -246,6 +248,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
         }else{
           this.BRTballText.nativeElement.textContent = "Exhale";
         }
+        this.globalService.changeBall(1.2,3,this.BRTball);
         await this.audioService.playSound('exhale');
         await this.audioService.playBreathSound('exhaleBreath', 3); 
       }, 4000);
@@ -296,7 +299,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     }
     }catch (error) {
     console.error("startTimerBRT error:", error);
-    alert("Error: " + (error instanceof Error ? error.message : JSON.stringify(error)));
   }
   }
     // Method to display the timer

@@ -21,13 +21,16 @@ export class PranaPage implements OnInit, AfterViewInit {
 
   selectedSegment: 'traditional' | 'regulation' = 'traditional';
   isPortuguese = false;
+  isMember = false;
+
 
   constructor(
     private navCtrl: NavController,
-    private globalService: GlobalService
+    private globalService: GlobalService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.isMember = localStorage.getItem('membershipStatus') === 'active';
     // Read once before first render to prevent any initial flash
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
@@ -35,6 +38,9 @@ export class PranaPage implements OnInit, AfterViewInit {
     window.addEventListener('storage', (e) => {
       if (e.key === 'isPortuguese') {
         this.isPortuguese = e.newValue === 'true';
+      }
+      if (e.key === 'membershipStatus') {
+        this.isMember = e.newValue === 'active';
       }
     });
   }
@@ -57,7 +63,6 @@ export class PranaPage implements OnInit, AfterViewInit {
     // Refresh language when returning to page
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   }
-
   selectSegment(segment: 'traditional' | 'regulation') {
     this.selectedSegment = segment;
   }

@@ -17,6 +17,9 @@ import { Firestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { RevenuecatService } from './revenuecat.service';
+import { GlobalAlertService } from '../services/global-alert.service';
+import { Device } from '@capacitor/device';
+import { Timestamp } from 'firebase/firestore';
 
 interface UserData {
   email: string;
@@ -27,7 +30,7 @@ interface UserData {
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private firebaseService: FirebaseService, private rc: RevenuecatService) {
+  constructor(private firebaseService: FirebaseService, private rc: RevenuecatService, private globalAlert: GlobalAlertService) {
     const auth = this.firebaseService.auth;
     if (auth) {
       onAuthStateChanged(auth, async (user) => {
@@ -73,14 +76,15 @@ export class AuthService {
     return localStorage.getItem('isPortuguese') === 'true';
   }
 
-  showAlert(message: { en: string; pt: string }): void {
-    alert(this.isPortuguese() ? message.pt : message.en);
+  showAlert(header: string, message: { en: string; pt: string }): void {
+    this.globalAlert.showalert(header, this.isPortuguese() ? message.pt : message.en);
   }
 
   async register(email: string, password: string, name?: string): Promise<boolean> {
     const auth = this.firebaseService.auth;
     if (!auth) {
-      this.showAlert({
+      this.showAlert(
+        'OFFLINE',{
         en: 'Cannot register while offline',
         pt: 'Não é possível registrar enquanto estiver offline',
       });
@@ -106,7 +110,7 @@ export class AuthService {
       return true;
     } catch (error) {
       console.error('Error during registration:', error);
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'Registration failed. Please try again later',
         pt: 'Falha no registro. Por favor, tente novamente mais tarde',
       });
@@ -117,7 +121,7 @@ export class AuthService {
   async login(email: string, password: string): Promise<boolean> {
     const auth = this.firebaseService.auth;
     if (!auth) {
-      this.showAlert({
+      this.showAlert('OFFLINE',{
         en: 'You cannot log in while offline',
         pt: 'Você não pode entrar enquanto estiver offline',
       });
@@ -127,7 +131,6 @@ export class AuthService {
     try {
       await this.rc.init();
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("✅ Login successful:", userCredential);
       const user = userCredential.user;
   
       const uid = user.uid;
@@ -146,12 +149,11 @@ export class AuthService {
       // 🔥 Log in to RevenueCat with appUserID
       await Purchases.logIn({ appUserID: uid });
       // Use unified subscription logic
-      await this.rc.hasActiveSubscription();
-  
+      await this.rc.getSnapshot();  
       return true;
     } catch (error) {
       console.error('❌ Error during login:', error);
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'Login failed. Please check your credentials',
         pt: 'Falha no login. Por favor, verifique suas credenciais',
       });
@@ -168,7 +170,7 @@ export class AuthService {
   async logout(): Promise<void> {
     const auth = this.firebaseService.auth;
     if (!auth) {
-      this.showAlert({
+      this.showAlert('OFFLINE',{
         en: 'You cannot log out while offline',
         pt: 'Você não pode sair enquanto estiver offline',
       });
@@ -176,7 +178,7 @@ export class AuthService {
     }
   
     if (!navigator.onLine) {
-      this.showAlert({
+      this.showAlert('OFFLINE',{
         en: 'You need to be online to log out. This ensures your results are synchronized with the database',
         pt: 'É necessário estar conectado à internet para sair. Isso garante que seus resultados sejam sincronizados com o banco de dados',
       });
@@ -185,7 +187,7 @@ export class AuthService {
   
     const uid = localStorage.getItem('currentUserUID');
     if (!uid) {
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'No user found to log out',
         pt: 'Nenhum usuário encontrado para sair',
       });
@@ -197,11 +199,11 @@ export class AuthService {
       // Prepare data to save
       const resultsToSave: Record<string, any> = {};
       const exerciseLinks = [
-        { keys: ['brtResults'] },
-        { keys: ['HATResults', 'HATCResults', 'AHATResults'] },
-        { keys: ['WHResults'] },
-        { keys: ['KBResults'] },
-        { keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults'] },
+        { keys: ['brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
+        'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
+        'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
+        'YogaResults', 'DBResults', 'HUMResults'] },
       ];
 
       exerciseLinks.forEach((exercise) => {
@@ -232,7 +234,7 @@ export class AuthService {
       localStorage.removeItem('wasSignedIn');
     } catch (error) {
       console.error('Error during logout:', error);
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'An error occurred during logout. Please try again',
         pt: 'Ocorreu um erro ao sair. Por favor, tente novamente',
       });
@@ -251,7 +253,7 @@ export class AuthService {
     try {
       await Purchases.logIn({ appUserID: user.uid });
       await Purchases.restorePurchases();
-      await this.rc.hasActiveSubscription();
+      await this.rc.getSnapshot();  
     } catch (error) {
       console.error('Error linking user with RevenueCat:', error);
     }
@@ -268,7 +270,7 @@ export class AuthService {
       if (!user) throw new Error('No user is currently logged in');
 
       await updatePassword(user, newPassword);
-      this.showAlert({
+      this.showAlert('Success',{
         en: 'Password updated successfully. Please log in again',
         pt: 'Senha atualizada com sucesso. Por favor, faça login novamente',
       });
@@ -286,7 +288,7 @@ export class AuthService {
     const emailExists = await this.checkIfEmailExistsByTryingToRegister(email);
 
     if (!emailExists) {
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'This email does not exist in our database. Make sure you enter the same email as you used before',
         pt: 'Este e-mail não existe em nosso banco de dados. Certifique-se de digitar o mesmo e-mail que você usou anteriormente',
       });
@@ -295,14 +297,14 @@ export class AuthService {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      this.showAlert({
+      this.showAlert('Success',{
         en: 'Password reset email sent',
         pt: 'E-mail para redefinir a senha enviado',
       });
       return true;
     } catch (error) {
       console.error('[forgotPassword] Failed to send reset email:', error);
-      this.showAlert({
+      this.showAlert('Error',{
         en: 'An unexpected error occurred. Please try again later.',
         pt: 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
       });
@@ -369,15 +371,12 @@ export class AuthService {
       const db = this.firebaseService.firestore;
       const userDocRef = doc(db, `users/${userId}`);
       await deleteDoc(userDocRef);
-      console.log('✅ User data deleted from Firestore');
 
       // 🏷️ Delete from RevenueCat if they exist
       await Purchases.logOut(); // Ensures user is unlinked from RevenueCat
-      console.log('✅ User logged out from RevenueCat');
 
       // 🔥 Delete user from Firebase Authentication
       await deleteUser(user);
-      console.log('✅ User deleted from Firebase Authentication');
 
       // ✅ Clear local storage
       localStorage.clear();
@@ -396,7 +395,7 @@ export class AuthService {
   
     try {
       await verifyBeforeUpdateEmail(user, newEmail);
-      this.showAlert({
+      this.showAlert('Success',{
         en: 'Verification email sent to the new address. Please confirm it to complete the update',
         pt: 'E-mail de verificação enviado para o novo endereço. Por favor, confirme para concluir a atualização',
       });
@@ -461,7 +460,6 @@ export class AuthService {
         const sanitizedName = this.sanitizeName(email.split('@')[0]);
 
         await setDoc(userDocRef, { name: sanitizedName }, { merge: true });
-        console.log(`User ${uid} name set to '${sanitizedName}'`);
       }
     }
   }
@@ -478,6 +476,45 @@ export class AuthService {
     // Update localStorage
     localStorage.setItem('currentUserName', newName);
 
-    console.log(`User name updated to: ${newName}`);
   }
+  
+  async checkOrStartDeviceTrial(): Promise<{ active: boolean; expiredNow?: boolean; newlyCreated?: boolean }> {
+    const db = this.getFirestore();
+    const { Device } = await import('@capacitor/device');
+    const device = await Device.getId();
+    const deviceRef = doc(db, 'devices', device.identifier);
+    const snap = await getDoc(deviceRef);
+    const now = Timestamp.now();
+
+    // ⏱️ Helper: 7 days from now
+    const expires = Timestamp.fromMillis(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+    if (!snap.exists()) {
+      // 🆕 First login on this device — start new trial
+      await setDoc(deviceRef, {
+        trialStartedAt: now,
+        trialExpiresAt: expires,
+        lastMessageShown: false,
+      });
+      return { active: true, newlyCreated: true };
+    }
+
+    const data = snap.data();
+    const expiresAt: Timestamp = data['trialExpiresAt'];
+    const lastMessageShown = data['lastMessageShown'] || false;
+    const expired = now.toMillis() > expiresAt.toMillis();
+
+    if (!expired) {
+      return { active: true, newlyCreated: false };
+    }
+
+    // Trial expired
+    if (expired && !lastMessageShown) {
+      await setDoc(deviceRef, { lastMessageShown: true }, { merge: true });
+      return { active: false, expiredNow: true };
+    }
+
+    return { active: false };
+  }
+
 }

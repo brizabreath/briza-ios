@@ -7,9 +7,11 @@
             <img class="logoimg" src="assets/images/blogo.png" width="50"
                 height="50" />
         </div>
-        <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-        <div class="questionMark questionClass2"><a id="questionP" #questionP><img class="questionIMG"
-                        src="assets/images/question.png" /></a></div>
+        <div class="placeholderHeader"> 
+            <div class="questionMark questionClass2"><a id="questionP" #questionP><img class="questionIMG"
+                src="assets/images/question.png" /></a>
+            </div>
+        </div>
     </header>
     <div id="programPage">
         <div id="personalizedBriza" #personalizedBriza>
@@ -505,7 +507,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -688,7 +690,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -728,6 +730,18 @@
                                     <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
                                 </div>
                                 <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
+                            </a>
+                            <h3 class="english">Morning Session</h3>
+                            <h3 class="portuguese">Seção pela manhã</h3>
+                            <a class="breath-button3" routerLink="/bb">
+                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
+                                <div class="textBP">
+                                    <div class="titleBP english">Briza<br>Breathing</div>
+                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
+                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
+                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
+                                </div>
+                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
                             </a>
                             <h3 class="english">Mid-afternoon Session</h3>
                             <h3 class="portuguese">Seção pela tarde</h3>
@@ -774,12 +788,24 @@
                                 </div>
                                 <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
                             </a>
+                            <h3 class="english">Morning Session</h3>
+                            <h3 class="portuguese">Seção pela manhã</h3>
+                            <a class="breath-button3" routerLink="/bb">
+                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
+                                <div class="textBP">
+                                    <div class="titleBP english">Briza<br>Breathing</div>
+                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
+                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
+                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
+                                </div>
+                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
+                            </a>
                             <h3 class="english">Mid-afternoon Session</h3>
                             <h3 class="portuguese">Seção pela tarde</h3>
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -919,7 +945,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1000,7 +1026,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1163,7 +1189,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1220,7 +1246,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1324,7 +1350,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1498,7 +1524,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1660,7 +1686,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
@@ -1788,7 +1814,7 @@
                             <a class="breath-button3" routerLink="/wh">
                                 <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
                                 <div class="textBP">
-                                    <div class="titleBP english">Oxigen<br>Boost</div>
+                                    <div class="titleBP english">Oxygen<br>Boost</div>
                                     <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
                                     <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
                                     <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>

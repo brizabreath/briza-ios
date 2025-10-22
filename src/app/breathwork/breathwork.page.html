@@ -6,16 +6,17 @@
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-    <div class="questionMark questionClass2">
-      <button #questionBREATH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+    <div class="placeholderHeader"> <!-- Placeholder to balance the flexbox layout -->
+      <div class="questionMark questionClass2">
+        <button #questionBREATH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+      </div>
     </div>
   </header>  
   <div id="breathgrid">
     <div id="breathpagegrid">
       <div class="welcomeDisplay"><h2 #name></h2></div>
       <div #noBRTresult style="display: none;">
-        <h2 class="english homeH2">Have you done your retention test today?</h2>
+        <h2 class="english homeH2">Check your retention test daily</h2>
         <h2 class="portuguese homeH2">Voce ja fez seu teste de retencao hoje?</h2>
         <a class="breath-button" routerLink="/brt">
             <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
@@ -28,7 +29,7 @@
         </a>
       </div>
       <div #BRTresult style="display: none;">
-          <h2 class="english homeH2">Your retention test score is <b>{{ latestBRTResultInSeconds }}</b> seconds </h2> 
+          <h2 class="english homeH2">Follow the Briza Program to improve your retention test of <b>{{ latestBRTResultInSeconds }}</b> seconds</h2> 
           <h2 class="portuguese homeH2">Seu resultado no teste de rentencao e de <b>{{ latestBRTResultInSeconds }}</b> segundos</h2>
           <a class="breath-button" routerLink="/program">
             <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
@@ -61,8 +62,8 @@
             </a>   
           </div>
       </div>
-      <h3 class="english homeWeek">Week progress</h3>
-      <h3 class="portuguese homeWeek">Progresso Semanal</h3>
+      <h3 class="english homeWeek">Your progress</h3>
+      <h3 class="portuguese homeWeek">Seu progresso</h3>
       <p #numberOfSessions></p>
      
 

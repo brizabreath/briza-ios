@@ -240,10 +240,11 @@ export class ProgramPage implements AfterViewInit {
   }
   loadResults(): void {
     const exerciseKeys = [
-        'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
+       'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults'
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
+        'YogaResults', 'DBResults', 'HUMResults'
     ];
 
     this.resultsByDate = {};

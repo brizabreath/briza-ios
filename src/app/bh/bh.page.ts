@@ -21,13 +21,16 @@ export class BHPage implements OnInit, AfterViewInit {
 
   selectedSegment: string = 'endurance';
   isPortuguese = false;
+  isMember = false;
+
 
   constructor(
     private navCtrl: NavController,
-    private globalService: GlobalService
+    private globalService: GlobalService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.isMember = localStorage.getItem('membershipStatus') === 'active';
     // Read once before first render (prevents initial flash)
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
@@ -35,6 +38,9 @@ export class BHPage implements OnInit, AfterViewInit {
     window.addEventListener('storage', (e) => {
       if (e.key === 'isPortuguese') {
         this.isPortuguese = e.newValue === 'true';
+      }
+      if (e.key === 'membershipStatus') {
+        this.isMember = e.newValue === 'active';
       }
     });
   }
@@ -53,11 +59,10 @@ export class BHPage implements OnInit, AfterViewInit {
       this.globalService.openModal(this.modalBH, this.BHdots, 'slides');
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     // Refresh language when returning to the page
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   }
-
   selectSegment(segment: 'endurance' | 'hold') {
     this.selectedSegment = segment;
   }

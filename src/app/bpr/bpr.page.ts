@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { GlobalAlertService } from '../services/global-alert.service';
 
 @Component({
   selector: 'app-bpr',
@@ -24,7 +25,7 @@ export class BPRPage implements OnInit {
     { nameEN: 'Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
     { nameEN: 'Oxygen Boost', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
-    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults'], url: '/allresults' },
+    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults', 'DBResults', 'HUMResults'], url: '/allresults' },
     { nameEN: 'Yoga Classes', namePT: 'Aulas de Yoga', keys: ['YogaResults'], url: '/yogaresults' }
   ];
 
@@ -51,6 +52,7 @@ export class BPRPage implements OnInit {
     private navCtrl: NavController,
     private globalService: GlobalService,
     private renderer: Renderer2,
+    private globalAlert: GlobalAlertService
   ) {}
 
   ngOnInit(): void {}
@@ -83,8 +85,15 @@ export class BPRPage implements OnInit {
     this.isModalOpen2 = true;
   }
   
-  confirmDelete(resultToDelete: any): void {
-    if (confirm("Are you sure you want to delete this result?")) {
+  async confirmDelete(resultToDelete: any): Promise<void> {
+    const confirmed = await this.globalAlert.showConfirm(
+      'Delete result',
+      'Are you sure you want to delete this result?',
+      'Yes',
+      'No'
+    );
+
+    if (confirmed){
         const exerciseKey = resultToDelete.exerciseKey;
         const results = JSON.parse(localStorage.getItem(exerciseKey) || '[]');
 
@@ -124,6 +133,8 @@ export class BPRPage implements OnInit {
         KBResults: { en: 'Kapalabhati', pt: 'Kapalabhati' },
         BBResults: { en: 'Briza Breathing', pt: 'Respiração Briza' },
         YBResults: { en: 'Yogic Breathing', pt: 'Respiração Yogi' },
+        DBResults: { en: 'Reset Breathing', pt: 'Respiração Reset' },
+        HUMResults: { en: 'Humming Breathing', pt: 'Respiração Zumbido' },
         BREResults: { en: 'Breath Recovery Exercise', pt: 'Recuperando o Fôlego' },
         BRWResults: { en: 'Walking Recovery Exercise', pt: 'Recuperando o Fôlego Andando' },
         CTResults: { en: 'CO2 Tolerance Training', pt: 'Treinamento de Tolerância ao CO2' },
@@ -157,7 +168,8 @@ export class BPRPage implements OnInit {
         'brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 'YogaResults'
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
+        'YogaResults', 'DBResults', 'HUMResults'
     ];
 
     this.resultsByDate = {};

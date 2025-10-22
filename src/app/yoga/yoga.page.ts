@@ -12,6 +12,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { VimeoMetaService } from '../services/vimeo-meta.service';
 import { ActivatedRoute } from '@angular/router';
 import { LocalReminderService } from '../services/local-reminder.service';
+import { GlobalAlertService } from '../services/global-alert.service';
 
 @Component({
   selector: 'app-yoga',
@@ -44,7 +45,8 @@ export class YogaPage implements OnInit {
     private firebaseService: FirebaseService,
     private vimeoMeta: VimeoMetaService,
     private reminders: LocalReminderService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private globalAlert: GlobalAlertService
   ) {}
 
   ngOnInit() {
@@ -118,37 +120,48 @@ export class YogaPage implements OnInit {
         base.map(async (v) => {
           const rawUrl = v.url || v.videoUrl;
           let meta: any = {};
+
           try {
-            meta = await this.vimeoMeta.getMeta(rawUrl);
+            // 🔁 Force cache-busting to ensure fresh data
+            meta = await this.vimeoMeta.getMeta(rawUrl, true);
           } catch (e) {
-            console.warn('Vimeo meta failed for', rawUrl, e);
+            console.warn('⚠️ Vimeo meta failed for', rawUrl, e);
           }
 
           const playerUrl = this.vimeoMeta.toPlayerUrl(rawUrl);
-
           const durationMinutes = meta?.duration
             ? Math.round(meta.duration / 60)
             : v.duration ?? null;
 
+          // ✅ Always prioritize Vimeo data over Firestore
+          const finalTitle = meta?.title?.trim() || v.title || 'Untitled';
+          const finalDescription =
+            (meta?.description && meta.description.trim() !== ''
+              ? meta.description
+              : v.description) || '';
+          const finalThumbnail =
+            meta?.thumbnail_url?.trim() || v.thumbnail || 'assets/images/lungs.svg';
           return {
             id: v.id,
-            category: v.category,      // expected: 'move' | 'slowdown' | 'meditate'
-            language: v.language,      // 'EN' | 'PT'
-            duration: durationMinutes, // minutes
-            title: meta?.title ?? v.title ?? 'Untitled',
-            description: (meta?.description ?? v.description ?? '').toString(),
-            thumbnail: meta?.thumbnail_url ?? v.thumbnail ?? 'assets/images/lungs.svg',
+            category: v.category,
+            language: v.language,
+            duration: durationMinutes,
+            title: finalTitle,
+            description: finalDescription,
+            thumbnail: finalThumbnail,
             videoUrl: playerUrl,
           };
         })
       );
 
+      // 💾 Save updated cache
       localStorage.setItem('cachedYogaVideos', JSON.stringify(enriched));
       this.allVideos = enriched;
     } catch (err) {
-      console.error('Failed to fetch videos from Firestore:', err);
+      console.error('❌ Failed to fetch videos from Firestore:', err);
     }
   }
+
 
   // 🔎 SEARCH: helpers (accent-insensitive, whole-word match)
   private normalize(s: string): string {
@@ -200,16 +213,16 @@ export class YogaPage implements OnInit {
     // 1) Block if offline
     if (!navigator.onLine) {
       if (!this.isPortuguese) {
-        alert('🌐 You are offline.\n\nConnect to the internet to watch this video');
+        this.globalAlert.showalert('OFFLINE', '🌐 You are offline.\n\nConnect to the internet to watch this video');
       } else {
-        alert('🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
+        this.globalAlert.showalert('OFFLINE', '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
       }
       return;
     }
 
     // 2) Gate by membership
     if (!this.isMemberActive()) {
-      this.globalService.openModal2(); // your paywall/subscription modal
+      this.globalService.openModal2Safe(); // your paywall/subscription modal
       return;
     }
 

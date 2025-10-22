@@ -2,41 +2,40 @@
   <div class="modal-content">
     <span class="close" (click)="closeModal()">&times;</span>
 
-    <!-- Display subscription options -->
-    <div *ngIf="membershipStatus === 'inactive'">
+    <ng-container *ngIf="membershipStatus === 'inactive'">
       <h1>{{ isPortuguese ? 'Assine agora' : 'Subscribe now' }}</h1>
       <p>{{ isPortuguese ? 'Escolha uma opção de assinatura para obter acesso total' : 'Choose a subscription option to unlock all features' }}</p>
 
-      <div class="flexModal" *ngIf="offerings">
-        <div class="modalPrices" *ngFor="let pkg of offerings.availablePackages">
+      <div class="flexModal" *ngIf="availablePackages.length > 0; else loadingOrError">
+        <div class="modalPrices" *ngFor="let pkg of availablePackages">
           <h2>{{ formatTitle(pkg.product.title) }}</h2>
           <h3>{{ formatPrice(pkg.product.priceString) }}</h3>
           <p>{{ formatSubscriptionPeriod(pkg.product.subscriptionPeriod || '') }}</p>
-      
-          <input
-            type="radio"
-            name="subscriptionOption"
-            [value]="pkg"
-            (change)="selectPackage(pkg)"
-          />
+          <input type="radio" name="subscriptionOption" [value]="pkg" (change)="selectPackage(pkg)" />
         </div>
       </div>
-      
+
+      <ng-template #loadingOrError>
+        <p *ngIf="isLoading">
+          <ion-spinner name="crescent"></ion-spinner>
+          {{ isPortuguese ? 'Carregando planos...' : 'Loading plans...' }}
+        </p>
+        <p *ngIf="!isLoading && availablePackages.length === 0">
+          {{ isPortuguese ? 'Não foi possível carregar planos de assinatura.' : 'Unable to load subscription plans.' }}
+        </p>
+        <button (click)="fetchOfferings()">{{ isPortuguese ? 'Tentar novamente' : 'Retry' }}</button>
+      </ng-template>
 
       <ul class="ulManage">{{ isPortuguese ? 'Programa Briza Personalizado' : 'Personalized Briza Program' }}</ul>
       <ul class="ulManage">{{ isPortuguese ? 'Técnicas de respiração personalizáveis' : 'Customizable breathing techniques' }}</ul>
       <ul class="ulManage">{{ isPortuguese ? 'Resultados para acompanhar seu progresso' : 'Results to track your progress' }}</ul>
       <ul class="ulManage">{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
-      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de Pranayama' : 'Paranayama Techniques' }}</ul>
+      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de Pranayama' : 'Pranayama Techniques' }}</ul>
 
-      <!-- Subscription Button -->
       <button (click)="subscribe()" type="button" [disabled]="isLoading" class="manageSubmit">
         <span *ngIf="!isLoading">{{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}</span>
-        <span *ngIf="isLoading">
-          <ion-spinner name="crescent"></ion-spinner>
-        </span>
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </button>
-
 
       <p class="manageSubsModal">
         {{
@@ -45,21 +44,6 @@
             : 'Your membership starts as soon as you set up payment. Your monthly/yearly auto-renew charge will occur on the last day of the current billing period. We will renew your membership for you (unless you have canceled your subscription in the profile page 24 hours before end of billing cycle)'
         }}
       </p>
-    </div>
-    <div *ngIf="!offerings">
-      <p>{{ isPortuguese ? 'Não foi possível carregar planos de assinatura.' : 'Unable to load subscription plans.' }}</p>
-      <button (click)="fetchOfferings()">
-        {{ isPortuguese ? 'Tentar novamente' : 'Retry' }}
-      </button>
-    </div>
-
-    <!-- Payment Failed Section -->
-    <div *ngIf="membershipStatus === 'failed'">
-      <h1>{{ isPortuguese ? 'Renove assinatura' : 'Renew subscription' }}</h1>
-      <button type="button" (click)="openManageSubscription()" class="manageSubmit">
-        {{ isPortuguese ? 'Gerenciar Assinatura' : 'Manage Subscription' }}
-      </button>
-  </div>
-
+    </ng-container>
   </div>
 </div>

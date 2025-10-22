@@ -7,4 +7,20 @@
     50% { opacity: 0.5; }
     100% { opacity: 1; }
   }
-  
+  .centeredTextlog{
+    margin-top: 30px;
+    margin-bottom: 30px;
+    color: #0661AA;
+    text-align: center;
+  }
+  .logbuttons{
+    margin-bottom: 15px !important;
+    width: 80%;
+    margin: auto;
+  }
+  .google{
+    --ion-color-light-contrast: #0661AA !important;
+  }
+  .apple{
+  --ion-color-base: #0661AA !important;
+  }

@@ -61,11 +61,10 @@ export class AppComponent implements OnInit {
     await this.audioService.preloadAll();
     await this.audioService.initializeSong();     
     App.addListener('appStateChange', async (state) => {
-      if (state.isActive) {
-        this.audioService.clearAllAudioBuffers();   // 🧹 clear
-        await this.audioService.preloadAll();       // 🔄 reload
-        await this.audioService.initializeSong();   // 🎵 reload bg music
-      }
+      this.audioService.resetaudio();
+    });
+    document.addEventListener('visibilitychange', async () => {
+        this.audioService.resetaudio();
     });
 
     // Start reminders & yoga updates
@@ -75,6 +74,7 @@ export class AppComponent implements OnInit {
 
     // Resume events
     App.addListener('resume', async () => {
+      this.audioService.resetaudio();
       await this.reminders.tick();
       await this.yogaUpdates.checkOnAppStart();
       this.registerNotificationListener();
@@ -140,7 +140,7 @@ export class AppComponent implements OnInit {
     if (overlay) overlay.style.opacity = '0';
 
     this.inactivityTimer = setTimeout(() => {
-      if (overlay) overlay.style.opacity = '0.8';
+      if (overlay) overlay.style.opacity = '0.6';
     }, 60000); // 1 min (adjust as needed)
   }
 }

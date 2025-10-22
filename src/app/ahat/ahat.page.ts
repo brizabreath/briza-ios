@@ -31,7 +31,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   @ViewChild('AHATtimeInput') AHATtimeInput!: ElementRef<HTMLSelectElement>;
   @ViewChild('AHATcountdownInput') AHATcountdownInput!: ElementRef<HTMLInputElement>;
   @ViewChild('startBtnAHAT') startBtnAHAT!: ElementRef<HTMLButtonElement>;
-  @ViewChild('stopBtnAHAT') stopBtnAHAT!: ElementRef<HTMLButtonElement>;
   @ViewChild('AHATReset') AHATReset!: ElementRef<HTMLButtonElement>;
   @ViewChild('AHATSave') AHATSave!: ElementRef<HTMLButtonElement>;
   @ViewChild('settingsAHAT') settingsAHAT!: ElementRef<HTMLButtonElement>;
@@ -68,11 +67,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     }
     // Initialize buttons
     this.startBtnAHAT.nativeElement.onclick = () => this.startAHAT();
-    this.stopBtnAHAT.nativeElement.onclick = () => this.pauseAHAT();
     this.AHATReset.nativeElement.onclick = () => this.stopAHAT();
     this.AHATSave.nativeElement.onclick = () => this.saveAHAT();
-    this.stopBtnAHAT.nativeElement.disabled = true;
-    this.stopBtnAHAT.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.AHATReset.nativeElement.disabled = true;
     this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.AHATSave.nativeElement.disabled = true;
@@ -99,6 +95,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
+      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -134,7 +131,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.questionAHAT.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnAHAT.nativeElement.disabled = true;
-      this.holdAHAT = true;
       this.AHATcountdownInput.nativeElement.style.display = "inline";
       this.AHATtimeInput.nativeElement.style.display = "none";
       this.startCountdownAHAT();
@@ -165,10 +161,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
       const timeoutId5 = setTimeout(() => {
-        this.stopBtnAHAT.nativeElement.disabled = false;
-        this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
+        this.startBtnAHAT.nativeElement.disabled = false;
         localStorage.setItem('breathingON', "true"); 
         localStorage.setItem('firstClick', "false"); 
+        this.holdAHAT = true;
       }, 6000);
       this.globalService.timeouts.push(timeoutId5); // Store the timeout ID
       
@@ -177,8 +173,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       if(!this.holdAHAT){
         this.clearIntervalsAHAT();
         localStorage.setItem('breathingON', "false"); 
-        this.stopBtnAHAT.nativeElement.disabled = true;
-        this.stopBtnAHAT.nativeElement.style.color = 'rgb(177, 177, 177)';
         this.AHATReset.nativeElement.disabled = false;
         this.AHATReset.nativeElement.style.color = '#990000';
         if(this.roundsAHAT > 0){
@@ -193,6 +187,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
           this.AHATballText.nativeElement.textContent = "Resume"
         }
         this.audioService.pauseSelectedSong();
+      }else{
+        this.pauseAHAT();
       }
       //unpause function
     }else if(firstClick == "false" && breathingON == "false"){
@@ -265,15 +261,12 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.normalAHAT = false;
         this.holdAHAT = true;
         this.AHATcurrentValue = 0;
-        this.startBtnAHAT.nativeElement.disabled = true;
         if(this.isPortuguese){
           this.AHATballText.nativeElement.textContent = "Segure"
         }else{
           this.AHATballText.nativeElement.textContent = "Hold"
         }
         await this.audioService.playSound('pinchRun');
-        this.stopBtnAHAT.nativeElement.disabled = false;
-        this.stopBtnAHAT.nativeElement.style.color = '#0661AA';
       } 
       else{
         this.clearIntervalsAHAT();
@@ -281,8 +274,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.startBtnAHAT.nativeElement.disabled = true;
         this.settingsAHAT.nativeElement.disabled = false;
         this.questionAHAT.nativeElement.disabled = false;
-        this.stopBtnAHAT.nativeElement.disabled = true;
-        this.stopBtnAHAT.nativeElement.style.color = 'rgb(177, 177, 177)';
         this.AHATReset.nativeElement.disabled = false;
         this.AHATReset.nativeElement.style.color = '#990000';
         this.AHATSave.nativeElement.disabled = false;
@@ -320,8 +311,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.AHATtimeInput.nativeElement.style.display = "inline";
     this.AHATcurrentValue = 0;
     this.startBtnAHAT.nativeElement.disabled = false;
-    this.stopBtnAHAT.nativeElement.disabled = true;
-    this.stopBtnAHAT.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.AHATReset.nativeElement.disabled = true;
     this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.AHATSave.nativeElement.disabled = true;
@@ -346,13 +335,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
 
   }
   async pauseAHAT(): Promise<void>{
-    this.startBtnAHAT.nativeElement.disabled = false;
     this.clearIntervalsAHAT();
     this.holdAHAT = false;
     this.normalAHAT = false;
     this.lightAHAT = true;
-    this.stopBtnAHAT.nativeElement.disabled = true;
-    this.stopBtnAHAT.nativeElement.style.color = 'rgb(177, 177, 177)';
     if(this.isPortuguese){
       this.AHATballText.nativeElement.textContent = "Respiração Leve"
     }else{

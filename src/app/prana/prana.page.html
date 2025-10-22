@@ -6,12 +6,13 @@
     <div class="logo-container">
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div>
-    <div class="questionMark questionClass2">
-      <a id="questionPrana" #questionPrana>
-        <img class="questionIMG" src="assets/images/question.png" />
-      </a>
-    </div>
+    <div class="placeholderHeader">
+      <div class="questionMark questionClass2">
+        <a id="questionPrana" #questionPrana>
+          <img class="questionIMG" src="assets/images/question.png" />
+        </a>
+      </div>
+      </div>
   </header>
 
   <div id="pranaPage">
@@ -39,25 +40,27 @@
       <!-- Traditional -->
       <div *ngIf="selectedSegment === 'traditional'" class="bhgrid">
         <div class="row g-2">
-          <div class="col">
+          <div class="col locker-container">
             <a routerLink="/ub">
               <img class="homepageimgs5"
                    [src]="isPortuguese ? 'assets/images/ubPT.svg' : 'assets/images/ub.svg'" />
+              <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
-          <div class="col">
-            <a routerLink="/yogic">
+          <div class="col locker-container">
+            <a routerLink="/box">
               <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
+                   [src]="isPortuguese ? 'assets/images/boxPT.svg' : 'assets/images/box.svg'" />
+              <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
 
           <div class="w-100"></div>
 
           <div class="col">
-            <a routerLink="/box">
+            <a routerLink="/yogic">
               <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/boxPT.svg' : 'assets/images/box.svg'" />
+                   [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
             </a>
           </div>
           <div class="col">
@@ -87,16 +90,18 @@
       <!-- Regulation -->
       <div *ngIf="selectedSegment === 'regulation'" class="bhgrid">
         <div class="row g-2">
-          <div class="col">
+          <div class="col locker-container">
             <a routerLink="/rb">
               <img class="homepageimgs4"
                    [src]="isPortuguese ? 'assets/images/rbPT.svg' : 'assets/images/rb.svg'" />
+              <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
-          <div class="col">
+          <div class="col locker-container">
             <a routerLink="/cb">
               <img class="homepageimgs4"
                    [src]="isPortuguese ? 'assets/images/cbPT.svg' : 'assets/images/cb.svg'" />
+              <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
 
