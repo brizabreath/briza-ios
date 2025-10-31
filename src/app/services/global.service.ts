@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { AudioService } from './audio.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { RevenuecatService } from '../services/revenuecat.service'; // ✅ NEW import
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,9 @@ export class GlobalService {
   public timeouts: any[] = [];
   private isModalOpenSubject = new BehaviorSubject<boolean>(false);
   isModalOpen$ = this.isModalOpenSubject.asObservable();
-
+  private autoplayAbort = { stop: false };
+  public autoplayStopped$ = new Subject<void>();
+  
   constructor(
     private audioService: AudioService,
     private globalAlert: GlobalAlertService,
@@ -197,6 +200,7 @@ export class GlobalService {
     const state = this.sliderState.get(host);
     if (state) this.renderSlide(host, 0);
   }
+
 
   changeBall(scale: number, duration: number, element: any): void {
     element.nativeElement.style.transform = `scale(${scale})`;

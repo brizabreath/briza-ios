@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-bb',
   templateUrl: './bb.page.html',
@@ -52,8 +53,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   private BBTimer: any = null;
   private BBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalBB, this.BBdots, 'slides');
     this.closeModalButtonBB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBB));
@@ -81,7 +83,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the BBduration after ViewChild is initialized
   setBBduration(): void {
       const selectedValue = this.BBtimeInput.nativeElement.value;
@@ -96,7 +100,6 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio(); 
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -131,6 +134,7 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   }
    
   async startBB(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBB.nativeElement.disabled = true;
@@ -307,13 +311,11 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -385,6 +387,8 @@ export class BBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopBB(); 
     this.BBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

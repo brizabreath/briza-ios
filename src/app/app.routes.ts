@@ -12,6 +12,7 @@ export const routes: Routes = [
   { path: 'forgot-password', loadComponent: () => import('./forgot-password/forgot-password.page').then(m => m.ForgotPasswordPage) },
   { path: 'manageAccount', loadComponent: () => import('./manage-account/manage-account.page').then(m => m.ManageAccountPage), canActivate: [AuthGuard]  },
   { path: 'brt', loadComponent: () => import('./brt/brt.page').then(m => m.BRTPage), canActivate: [AuthGuard] },
+  { path: 'timer', loadComponent: () => import('./timer/timer.page').then(m => m.TIMERPage), canActivate: [AuthGuard] },
   { path: 'program', loadComponent: () => import('./program/program.page').then(m => m.ProgramPage), canActivate: [AuthGuard] },
   { path: 'bb', loadComponent: () => import('./bb/bb.page').then(m => m.BBPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'db', loadComponent: () => import('./db/db.page').then(m => m.DbPage), canActivate: [MembershipGuard, AuthGuard] },
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'lungs', loadComponent: () => import('./lungs/lungs.page').then(m => m.LungsPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'wh', loadComponent: () => import('./wh/wh.page').then(m => m.WHPage), canActivate: [MembershipGuard, AuthGuard] },
   { path: 'setwh', loadComponent: () => import('./setwh/setwh.page').then(m => m.SETWHPage), canActivate: [AuthGuard] },
+  { path: 'setMED', loadComponent: () => import('./setMED/setMED.page').then(m => m.SetMEDPage), canActivate: [AuthGuard] },
   { path: 'setkb', loadComponent: () => import('./setkb/setkb.page').then(m => m.SETKBPage), canActivate: [AuthGuard] },
   { path: 'bh', loadComponent: () => import('./bh/bh.page').then(m => m.BHPage), canActivate: [AuthGuard] },
   { path: 'ap', loadComponent: () => import('./ap/ap.page').then(m => m.APPage), canActivate: [AuthGuard] },
@@ -47,5 +49,6 @@ export const routes: Routes = [
   { path: 'kbresults', loadComponent: () => import('./kbresults/kbresults.page').then(m => m.KBresultsPage), canActivate: [AuthGuard] },
   { path: 'allresults', loadComponent: () => import('./allresults/allresults.page').then(m => m.ALLresultsPage), canActivate: [AuthGuard] },
   { path: 'yogaresults', loadComponent: () => import('./yogaresults/yogaresults.page').then(m => m.YogaresultsPage), canActivate: [AuthGuard] },
+  { path: 'timerresults', loadComponent: () => import('./timerresults/timerresults.page').then(m => m.TIMERresultsPage), canActivate: [AuthGuard] },
   { path: 'sources', loadComponent: () => import('./sources/sources.page').then(m => m.SourcesPage), canActivate: [AuthGuard] }
 ];

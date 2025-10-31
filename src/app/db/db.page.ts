@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-db',
   templateUrl: './db.page.html',
@@ -58,8 +59,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   private DBTimer: any = null;
   private DBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
      this.globalService.initBulletSlider(this.modalDB, this.DBdots, 'slides');
     this.closeModalButtonDB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalDB));
@@ -90,7 +92,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the DBduration after ViewChild is initialized
   setDBduration(): void {
       const selectedValue = this.DBtimeInput.nativeElement.value;
@@ -104,7 +108,6 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -163,6 +166,7 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startDB(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -347,13 +351,11 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         }else{
           this.DBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -427,6 +429,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopDB(); 
     this.DBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

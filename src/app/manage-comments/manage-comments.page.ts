@@ -16,6 +16,7 @@ import {
   deleteDoc,
   addDoc,
   serverTimestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { ToastController } from '@ionic/angular';
 import { FirebaseService } from '../services/firebase.service';
@@ -59,7 +60,12 @@ export class ManageComments {
     for (const v of videosSnap.docs) {
       const videoId = v.id;
       const videoData = v.data() as any;
-      const title = videoData.title || '(untitled)';
+      const title =
+        videoData.title ||
+        videoData.videoTitle ||
+        videoData.name ||
+        videoData.meta?.title ||
+        '(untitled)';
 
       const commentsRef = collection(db, `videos/${videoId}/comments`) as CollectionReference<any>;
       const q = query(commentsRef, orderBy('createdAt', 'desc'));
@@ -77,9 +83,10 @@ export class ManageComments {
         });
       });
     }
-
+    all.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
     this.comments.set(all);
   }
+
 
   filtered = computed(() => {
     const term = this.q.toLowerCase();
@@ -144,11 +151,12 @@ export class ManageComments {
     const db = this.firebase.firestore!;
     const commentsRef = collection(db, `videos/${parent.videoId}/comments`) as CollectionReference<any>;
 
-    await addDoc(commentsRef, {
+    // 🟢 Save reply as a new comment under the video
+    const replyDoc = await addDoc(commentsRef, {
       text,
       userId: user.uid,
       userName: name,
-      parentId: parent.id,               // <-- link as reply
+      parentId: parent.id,
       createdAt: serverTimestamp(),
     });
 
@@ -156,10 +164,45 @@ export class ManageComments {
     this.replyText = '';
     this.replyOpenId = null;
 
-    // Optional toast
+    // 🔄 re-fetch comments so the admin sees the new one
+    await this.ionViewWillEnter();
+
     const t = await this.toastCtrl.create({ message: 'Reply posted.', duration: 1200 });
     await t.present();
+
+    // ==============================
+    // 📨 Notify the original commenter
+    // ==============================
+    try {
+      const parentSnap = await getDoc(doc(db, `videos/${parent.videoId}/comments/${parent.id}`));
+      if (!parentSnap.exists()) {
+        console.warn('⚠️ Parent comment not found');
+        return;
+      }
+
+      const parentData = parentSnap.data() as any;
+      const parentUserId = parentData.userId;
+
+      if (!parentUserId) {
+        console.warn('⚠️ Parent comment missing userId');
+        return;
+      }
+
+      const replyId = replyDoc.id; // use actual reply ID
+      await setDoc(doc(db, `users/${parentUserId}/notifications/${replyId}`), {
+        type: 'commentReply',
+        videoId: parent.videoId,
+        replierName: name,
+        createdAt: serverTimestamp(),
+        seen: false,
+      });
+
+      console.log(`💾 Saved notification for user ${parentUserId} about reply ${replyId}`);
+    } catch (err) {
+      console.error('❌ Failed to save Firestore notification:', err);
+    }
   }
+
     // Method to navigate back
   goBack(): void {
     this.navCtrl.back();

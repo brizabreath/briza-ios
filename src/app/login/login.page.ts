@@ -63,7 +63,7 @@ export class LoginPage implements OnInit {
       await GoogleOneTapAuth.initialize({
         clientId: this.isIOS
           ? '740921696216-hmlq7oqqjlvdl0abnlb9pg7qmiv7j54b.apps.googleusercontent.com'
-          : '740921696216-n97uji1tnoqq9s2ih1s20q2dnrp2uchl.apps.googleusercontent.com',
+          : '740921696216-u54m62rnm9793uameptrgu4a502a575h.apps.googleusercontent.com',
       });
     } catch (err) {
       console.error('⚠️ Google init failed', err);
@@ -252,15 +252,24 @@ export class LoginPage implements OnInit {
         console.warn('⚠️ Could not sign out previous session:', err);
       }
 
-      // ✅ Then start the normal flow
-      let result: any = await GoogleOneTapAuth.tryAutoOrOneTapSignIn();
+      let result: any;
 
-      if (!result.isSuccess) {
+      try {
+        result = await GoogleOneTapAuth.tryAutoOrOneTapSignIn();
+        if (!result?.isSuccess) {
+          result = await GoogleOneTapAuth.signInWithGoogleButtonFlowForNativePlatform();
+        }
+      } catch (err) {
+        console.warn('One Tap fallback triggered:', err);
         result = await GoogleOneTapAuth.signInWithGoogleButtonFlowForNativePlatform();
       }
 
-      const tokenData = result.success || result.credential || result;
-      const idToken = tokenData?.idToken;
+      const idToken =
+        result?.success?.idToken ||
+        result?.credential?.idToken ||
+        result?.idToken ||
+        null;
+
 
       if (!result?.isSuccess || !idToken) {
         console.warn('❌ No Google credential received');
@@ -269,8 +278,8 @@ export class LoginPage implements OnInit {
       }
 
       const credential = GoogleAuthProvider.credential(idToken);
-      const email = tokenData?.email ?? 'unknown@user.com';
-      const name = tokenData?.displayName ?? email.split('@')[0];
+      const email = idToken?.email ?? 'unknown@user.com';
+      const name = idToken?.displayName ?? email.split('@')[0];
 
       const auth = getAuth();
       try {

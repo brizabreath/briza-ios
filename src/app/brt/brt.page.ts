@@ -10,6 +10,7 @@ import { App } from '@capacitor/app';
 import { ShepherdService } from 'angular-shepherd';
 
 
+
 @Component({
   selector: 'app-brt',
   templateUrl: './brt.page.html',
@@ -42,8 +43,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   private brtInt: any = null;
   private brtResult = ''; // Variable to store the BRT result as a string
   private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
   ionViewDidEnter() {
     const shouldStart = localStorage.getItem('startBRTTour') === 'true';
     if (shouldStart) {
@@ -170,9 +172,10 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.globalService.initBulletSlider(this.modalBRT, this.BRTdots, 'slides');
     this.closeModalButtonBRT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRT));
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
+    
   }
+
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -206,6 +209,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   
   // Method to start the timer
   async startTimerBRT(): Promise<void> {
+    this.audioService.resetaudio();
     try{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -349,6 +353,8 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.navCtrl.back(); // Goes back to the previous page in the history stack
   }
   ngOnDestroy(): void {
+    
+    
     clearInterval(this.brtInt);
     this.audioService.pauseSelectedSong();
     // Hide the "Result Successfully Saved" message when navigating away

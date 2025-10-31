@@ -82,6 +82,11 @@
   <div id="myModalDB" class="modal" #myModalDB>
     <div class="modal-content">
       <span class="close" id="closeModalDB" #closeModalDB>&times;</span>
+      <div class="autoPlayBtnContainer">
+        <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+      </div>
       <div class="slideshow-container">
 
         <!-- Intro -->
@@ -154,12 +159,10 @@
         <div class="mySlides fadeModal slides">
           <img src="assets/images/mindful.svg">
           <div class="text english">
-            <p>Press 'Start' to begin the guided exercise. If needed, click the circle again to pause.</p>
-            <p>At the end, save your results to track your progress.</p>
+            <p>Press 'Start' to begin the guided exercise. If needed, click the circle again to pause. At the end, save your results to track your progress.</p>
           </div>
           <div class="text portuguese">
-            <p>Pressione 'Iniciar' para começar o exercício guiado. Se necessário, clique novamente no círculo para pausar.</p>
-            <p>No final, salve seus resultados para acompanhar seu progresso.</p>
+            <p>Pressione 'Iniciar' para começar o exercício guiado. Se necessário, clique novamente no círculo para pausar. No final, salve seus resultados para acompanhar seu progresso.</p>
           </div>
         </div>
 

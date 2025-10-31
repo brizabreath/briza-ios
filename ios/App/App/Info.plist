@@ -4,32 +4,20 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-
 	<key>CFBundleDisplayName</key>
 	<string>Briza</string>
-
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
-
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-
-	<key>CFBundleVersion</key>
-	<string>$(CURRENT_PROJECT_VERSION)</string>
-
-	<!-- ✅ GOOGLE SIGN-IN URL SCHEME -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -39,94 +27,82 @@
 			<string>GoogleAuth</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<!-- Reversed client ID from Google Cloud Console -->
 				<string>com.googleusercontent.apps.740921696216-hmlq7oqqjlvdl0abnlb9pg7qmiv7j54b</string>
 			</array>
 		</dict>
 	</array>
-
-	<!-- ✅ GOOGLE CLIENT ID (required to prevent 'No active configuration' crash) -->
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GIDClientID</key>
 	<string>740921696216-hmlq7oqqjlvdl0abnlb9pg7qmiv7j54b.apps.googleusercontent.com</string>
-
-	<!-- ✅ APPLE SIGN-IN CONFIGURATION (match Firebase + Apple Developer) -->
-	<key>SignInWithApple</key>
-	<dict>
-	<key>ClientID</key>
-	<string>com.brizabreath.app</string>
-	<key>RedirectURI</key>
-	<string>https://brizabreath-ea097.firebaseapp.com/__/auth/handler</string>
-	</dict>
-
-
-	<!-- 📱 App Capabilities & Permissions -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app may need access to your photo library to let you choose and upload photos.</string>
-
 	<key>NSCameraUsageDescription</key>
 	<string>This app may use your camera for profile or video features.</string>
-
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app may need access to your photo library to let you choose and upload photos.</string>
+	<key>SignInWithApple</key>
+	<dict>
+		<key>ClientID</key>
+		<string>com.brizabreath.app</string>
+		<key>RedirectURI</key>
+		<string>https://brizabreath-ea097.firebaseapp.com/__/auth/handler</string>
+	</dict>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 	</array>
-
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
 	</array>
-
+	<key>UIRequiresFullScreen</key>
+	<false/>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDarkContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-
-	<key>UISupportedInterfaceOrientations~iphone</key>
-	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
-
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-
-	<!-- ✅ For embedded videos -->
 	<key>WebKitAllowsInlineMediaPlayback</key>
 	<true/>
 	<key>WebKitMediaPlaybackAllowsAirPlay</key>
 	<true/>
 	<key>WebKitMediaPlaybackRequiresUserAction</key>
 	<false/>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-	<key>UIApplicationSupportsMultipleScenes</key>
-	<false/>
-	<key>UISceneConfigurations</key>
-	<dict>
-		<key>UIWindowSceneSessionRoleApplication</key>
-		<array>
-		<dict>
-			<key>UISceneConfigurationName</key>
-			<string>Default Configuration</string>
-			<key>UISceneDelegateClassName</key>
-			<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-		</dict>
-		</array>
-	</dict>
-	</dict>
 </dict>
 </plist>

@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  
-//
-//  Created by Kaue Macruz on 19/10/2025.
-//
-
 import UIKit
 import Capacitor
 

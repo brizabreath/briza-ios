@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-bre',
   templateUrl: './bre.page.html',
@@ -60,8 +61,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   private BRETimer: any = null;
   private BREResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalBRE, this.BREdots, 'slides');
     this.closeModalButtonBRE.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRE));
@@ -92,7 +94,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the BREduration after ViewChild is initialized
   setBREduration(): void {
       const selectedValue = this.BREtimeInput.nativeElement.value;
@@ -106,7 +110,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -152,6 +155,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startBRE(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRE.nativeElement.disabled = true;
@@ -350,13 +354,11 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BREballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -431,6 +433,8 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopBRE(); 
     this.BREResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

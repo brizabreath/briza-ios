@@ -9,6 +9,7 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
 
+
 @Component({
   selector: 'app-ahat',
   templateUrl: './ahat.page.html',
@@ -52,8 +53,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   private AHATTimer: any = null;
   private AHATroundsResults: any[] = [];
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalAHAT, this.AHATdots, 'slides');
     this.closeModalButtonAHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalAHAT));
@@ -80,6 +82,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     //initialize sounds 
     this.globalService.changeBall(1.3, 1, this.AHATball);
     this.holdAHAT = true;
+    
   }
   // Method to set the AHATduration after ViewChild is initialized
   setAHATduration(): void {
@@ -95,7 +98,6 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -125,6 +127,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     await this.audioService.initializeSong(); 
   }
   async startAHAT(): Promise<void>{
+    this.audioService.resetaudio();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAHAT.nativeElement.disabled = true;
@@ -140,7 +143,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
-      const timeoutId2 = setTimeout(() => {
+      const timeoutId2 = setTimeout(async () => {
+        await this.audioService.playSound('exhale');
         this.AHATballText.nativeElement.textContent = "2";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -154,12 +158,13 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Start running";
         }
-        await this.audioService.playSound('pinchRun');
+        setTimeout(async () => {
+          await this.audioService.playSound('pinchRun');
+        }, 1000);
         this.AHATinterval = setInterval(() => this.startTimerAHAT(), 1000);
         this.AHATTimer = setInterval(() => this.DisplayTimerAHAT(), 1000);
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
-      this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
       const timeoutId5 = setTimeout(() => {
         this.startBtnAHAT.nativeElement.disabled = false;
         localStorage.setItem('breathingON', "true"); 
@@ -266,7 +271,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Hold"
         }
-        await this.audioService.playSound('pinchRun');
+        await this.audioService.playSound('exhale');
+        setTimeout(async () => {
+          await this.audioService.playSound('pinchRun');
+        }, 1000);
       } 
       else{
         this.clearIntervalsAHAT();
@@ -285,10 +293,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.AHATballText.nativeElement.textContent = "Normal Breathing"
         }
+      await this.audioService.pauseSelectedSong();
       await this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 3000);
       }
     }
   }
@@ -391,6 +397,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopAHAT(); 
     this.AHATResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

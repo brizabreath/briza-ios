@@ -7,57 +7,59 @@ import Capacitor
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         if let window = self.window {
             window.backgroundColor = UIColor.white
         }
-        
-        disableMediaControls()
+
+        // ✅ Keep the audio session active and configured for playback
+        configureAudioSession()
+        UIApplication.shared.isIdleTimerDisabled = true
         return true
-    }
-
-    func applicationWillResignActive(_ application: UIApplication) {
-        UIApplication.shared.isIdleTimerDisabled = false
-        disableMediaControls()
-    }
-
-    func applicationDidEnterBackground(_ application: UIApplication) {
-        disableMediaControls()
-    }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        disableMediaControls()
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         UIApplication.shared.isIdleTimerDisabled = true
-        disableMediaControls()
+        configureAudioSession()
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+        UIApplication.shared.isIdleTimerDisabled = false
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        disableMediaControls()
+        // no need to deactivate audio session here
     }
 
-  func disableMediaControls() {
+  private func configureAudioSession() {
+      let session = AVAudioSession.sharedInstance()
 
-          do {
-              let audioSession = AVAudioSession.sharedInstance()
-              try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
-          } catch {
-              print("⚠️ Error deactivating audio session: \(error.localizedDescription)")
+      do {
+          // Only reset if needed — avoids spamming logs and error -50
+          if session.category != .playback {
+              try session.setCategory(.playback, options: [.mixWithOthers, .allowBluetooth])
           }
-
-          // 🛑 Fully disable remote commands
-          let commandCenter = MPRemoteCommandCenter.shared()
-          commandCenter.playCommand.isEnabled = false
-          commandCenter.pauseCommand.isEnabled = false
-          commandCenter.stopCommand.isEnabled = false
-          commandCenter.togglePlayPauseCommand.isEnabled = false
-          commandCenter.previousTrackCommand.isEnabled = false
-          commandCenter.nextTrackCommand.isEnabled = false
-
-          // 🛑 Ensure remote control events are disabled
-          UIApplication.shared.endReceivingRemoteControlEvents()
-          MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+          try session.setActive(true, options: [])
+      } catch {
+          print("⚠️ Error configuring audio session safely: \(error.localizedDescription)")
       }
+
+      // Disable remote controls
+      let commandCenter = MPRemoteCommandCenter.shared()
+      [
+          commandCenter.playCommand,
+          commandCenter.pauseCommand,
+          commandCenter.stopCommand,
+          commandCenter.togglePlayPauseCommand,
+          commandCenter.previousTrackCommand,
+          commandCenter.nextTrackCommand
+      ].forEach { $0.isEnabled = false }
+
+      UIApplication.shared.endReceivingRemoteControlEvents()
+      MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+  }
+
 }

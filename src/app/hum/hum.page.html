@@ -23,6 +23,9 @@
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form HUM">
+                <div class="form-line">
+                    <button class="buttonminus" type="button" #minusHUM>-</button>
+                  </div>  
                   <div class="form-line">
                       <img src="assets/images/in.png">
                       <input type="number" value="4" #inhaleInputHUM min="1" readonly>
@@ -38,6 +41,9 @@
                   <div class="form-line">
                       <img src="assets/images/pause.png">
                     <input type="number" value="2" #hold2InputHUM min="1" readonly>
+                </div>
+                <div class="form-line">
+                  <button class="buttonplus" type="button" #plusHUM>+</button>
                 </div>
               </div>
               <div class="HUMtimer-container">
@@ -75,6 +81,11 @@
   <div id="myModalHUM" class="modal" #myModalHUM>
     <div class="modal-content">
         <span class="close" id="closeModalHUM" #closeModalHUM>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
@@ -133,7 +144,7 @@
                 <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                  The ratio of this exercise is fixed. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the cirlce again
+                  The ratio of this exercise is fixed. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the circle again
                   </p>
                 </div>
                 <div class="text portuguese">

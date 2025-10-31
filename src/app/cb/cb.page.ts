@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-cb',
   templateUrl: './cb.page.html',
@@ -50,8 +51,9 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   private CBTimer: any = null;
   private CBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalCB, this.CBdots, 'slides');
     this.closeModalButtonCB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCB));
@@ -79,7 +81,9 @@ export class CBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the CBduration after ViewChild is initialized
   setCBduration(): void {
       const selectedValue = this.CBtimeInput.nativeElement.value;
@@ -94,7 +98,6 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -129,6 +132,7 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   }
   
   async startCB(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCB.nativeElement.disabled = true;
@@ -286,13 +290,11 @@ export class CBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -362,6 +364,8 @@ export class CBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopCB(); 
     this.CBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

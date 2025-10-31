@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
+
 @Component({
   selector: 'app-bh',
   templateUrl: './bh.page.html',
@@ -22,11 +23,12 @@ export class BHPage implements OnInit, AfterViewInit {
   selectedSegment: string = 'endurance';
   isPortuguese = false;
   isMember = false;
-
+  
+  
 
   constructor(
     private navCtrl: NavController,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
   ) {}
 
   async ngOnInit() {
@@ -57,7 +59,9 @@ export class BHPage implements OnInit, AfterViewInit {
     // Open modal from the question icon
     this.questionBH.nativeElement.onclick = () =>
       this.globalService.openModal(this.modalBH, this.BHdots, 'slides');
+    
   }
+
 
   async ionViewWillEnter() {
     // Refresh language when returning to the page

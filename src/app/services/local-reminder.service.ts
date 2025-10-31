@@ -8,9 +8,9 @@ const NOTIF_ID = 3003; // stable id for this reminder series
 @Injectable({ providedIn: 'root' })
 export class LocalReminderService {
   // Schedule settings
-  private defaultHour = 9;      // 9:00 AM local time
+  private defaultHour = 7;      // 7:00 AM local time
   private defaultMinute = 0;    // :00
-  private gapDays = 2;          // every ~3 days
+  private gapDays = 2;          // every ~2 days
 
     // --- Message pools (EN + PT) ---
   private messagesEN = [
@@ -177,4 +177,40 @@ export class LocalReminderService {
       }]
     });
   }
+  async notifyCommentReply(replierName: string, videoId: string) {
+  console.log('📨 notifyCommentReply() called for video:', videoId);
+
+  if (!(await this.ensurePermission())) {
+    console.warn('⚠️ No notification permission');
+    return;
+  }
+
+  const title = 'Briza 💬';
+  const body = `${replierName} replied to your comment`;
+
+  const notificationData = {
+    id: Date.now(),
+    title,
+    body,
+    sound: 'default',
+    extra: { type: 'commentReply', videoId },
+  };
+
+  const isActive = document.visibilityState === 'visible';
+  console.log('📱 App visibility:', isActive ? 'ACTIVE' : 'BACKGROUND');
+
+  if (isActive) {
+    console.log('💬 Showing immediate local notification');
+    await LocalNotifications.schedule({
+      notifications: [{ ...notificationData, schedule: { at: new Date() } }],
+    });
+  } else {
+    console.log('💾 Saving pending notification for next app open...');
+    await Preferences.set({
+      key: 'pending_comment_reply',
+      value: JSON.stringify(notificationData),
+    });
+  }
+}
+
 }

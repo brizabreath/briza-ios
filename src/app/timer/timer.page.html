@@ -1,0 +1,53 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons"> 
+      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+    </div>
+    <div class="logo-container">
+        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"> 
+       <div class="settingButtons">
+        <button routerLink="/setMED" id="settingsUB" #settingsUB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
+      </div>  
+    </div>
+  </header>  
+  <div id="yogicPage">
+    <div class="breathingpages">
+        <div class="breathingpages">
+            <h1 class="volumeSettings">Meditation Timer</h1>
+        </div>
+        <p class="centeredText">Choose a time, press start and begin your meditation</p>
+        <div class="main-container">
+          <div class="timer-status">
+              <div class="TIMERtimer-container">
+                  <select #TIMERtimeInput class="countdownDisplay">
+                      <option value="60" class="english">1 minute</option>
+                      <option value="60" class="portuguese">1 minuto</option>
+                  </select>
+                  <input #TIMERcountdownInput class="countdownDisplay" style="display: none;" readonly />
+              </div>
+              <div class="center-container">
+                <button #startBtnTIMER class="ballButton">
+                  <div #TIMERball class="ball">
+                      <span #TIMERballText></span>
+                      <img src="assets/images/3dBall.png" alt="3D Ball">
+                    </div>
+                </button>
+              </div>   
+              <div class="timer-controls">
+                  <!--  Information about interval  -->
+                  <button type="button" class="stopBtn" id="stopBtnTIMER" #stopBtnTIMER><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="TIMERSave" #TIMERSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <form method="post" id="TIMERForm">
+                      <div class="roundbox" style="display:none !important">
+                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayTIMER>00 : 00</div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div #TIMERResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    </div>
+  </div>
+</ion-content>

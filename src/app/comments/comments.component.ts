@@ -4,10 +4,12 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import {
   collection, addDoc, serverTimestamp, query, orderBy,
-  onSnapshot, doc, deleteDoc, type CollectionReference
+  onSnapshot, doc, deleteDoc, type CollectionReference, setDoc
 } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
 import { GlobalAlertService } from '../services/global-alert.service';
+import { LocalReminderService } from '../services/local-reminder.service';
+import { getDoc } from 'firebase/firestore';
 
 interface VideoComment {
   id?: string;
@@ -111,7 +113,8 @@ export class CommentsComponent {
   constructor(
     private firebaseService: FirebaseService,
     private toastCtrl: ToastController,
-    private globalAlert: GlobalAlertService
+    private globalAlert: GlobalAlertService,
+    private localReminders: LocalReminderService
   ) {}
 
   ngOnInit() {
@@ -121,7 +124,17 @@ export class CommentsComponent {
 
     onSnapshot(q, (snap) => {
       const rows: VideoComment[] = [];
-      snap.forEach(d => rows.push({ id: d.id, ...(d.data() as VideoComment) }));
+      snap.forEach(d => {
+        const data = d.data() as VideoComment;
+        rows.push({
+          id: d.id,
+          text: data.text,
+          userId: data.userId,
+          userName: data.userName,
+          parentId: data.parentId ?? null, // 👈 normalize
+          createdAt: data.createdAt,
+        });
+      });
       this.comments.set(rows);
     });
   }
@@ -158,7 +171,8 @@ export class CommentsComponent {
 
   // ===== Derived data =====
   topLevel = computed(() => this.comments().filter(c => !c.parentId));
-  repliesByParent = (parentId: string) => this.comments().filter(c => c.parentId === parentId);
+  repliesByParent = (parentId: string) =>
+  this.comments().filter(c => (c.parentId ?? '') === parentId);
 
   // ===== UI actions =====
   toggleReplyBox(id: string | null) {
@@ -182,8 +196,8 @@ export class CommentsComponent {
     await addDoc(commentsRef, {
       text,
       userId: user.uid,
-      userName: name,          // <-- no email/displayName fallback
-      parentId: null,
+      userName: name,
+      parentId: null,  // 👈 ensure explicit null for top-level
       createdAt: serverTimestamp(),
     });
     this.newComment = '';
@@ -197,20 +211,77 @@ export class CommentsComponent {
     const user = this.firebaseService.auth!.currentUser;
     if (!user) { await this.needLoginToast(); return; }
 
-    // ✅ Only use stored user name
     const name = (localStorage.getItem('currentUserName') || 'User').trim();
-
     const db = this.firebaseService.firestore!;
     const commentsRef = collection(db, `videos/${this.videoId}/comments`) as CollectionReference<VideoComment>;
-    await addDoc(commentsRef, {
+
+    // 📝 Save reply in Firestore
+    const replyDoc = await addDoc(commentsRef, {
       text,
       userId: user.uid,
-      userName: name,          // <-- no email/displayName fallback
-      parentId,
+      userName: name,
+      parentId: parentId || null,  // 👈 ensure explicit null for top-level
       createdAt: serverTimestamp(),
     });
+
     this.replyText = '';
     this.replyBoxOpenId.set(null);
+    console.log('🟢 Reply attempt detected:', { parentId, videoId: this.videoId });
+
+try {
+  const parentSnap = await getDoc(doc(db, `videos/${this.videoId}/comments/${parentId}`));
+  if (!parentSnap.exists()) {
+    console.warn('⚠️ Parent comment not found');
+    return;
+  }
+
+  const parentData = parentSnap.data() as VideoComment;
+  const parentUserId = parentData.userId;
+  console.log('👤 Parent comment belongs to:', parentUserId);
+
+  const user = this.firebaseService.auth!.currentUser!;
+  console.log('🧑 Replier is:', user.uid);
+
+  if (parentUserId === user.uid) {
+    console.log('🟡 Same user replied to own comment — skip remote notify');
+    // comment this out if you want to test same user notifications
+    // return;
+  }
+  try {
+    const replyId = doc(collection(db, `videos/${this.videoId}/comments`)).id;
+    await setDoc(doc(db, `users/${parentUserId}/notifications/${replyId}`), {
+      type: 'commentReply',
+      videoId: this.videoId,
+      replierName: name,
+      createdAt: serverTimestamp(),
+      seen: false
+    });
+    console.log(`💾 Saved notification for user ${parentUserId} about reply ${replyId}`);
+  } catch (err) {
+    console.error('❌ Failed to save Firestore notification:', err);
+  }
+
+
+
+  const userDoc = await getDoc(doc(db, `users/${parentUserId}`));
+  const userData = userDoc.data();
+  console.log('📄 Parent user data loaded:', userData);
+
+  if (!userData) {
+    console.warn('⚠️ No userData for parent user');
+    return;
+  }
+
+  // Local notification for active member
+  if (localStorage.getItem('membershipStatus') === 'active') {
+    console.log('🔔 Member is active, scheduling local notification...');
+  await this.localReminders.notifyCommentReply(name, this.videoId);
+  } else {
+    console.log('🚫 Member not active — skipping notification');
+  }
+} catch (err) {
+  console.error('❌ Failed to send notification:', err);
+}
   }
 
   async deleteComment(c: VideoComment) {

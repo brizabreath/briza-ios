@@ -343,9 +343,41 @@ export class AudioService {
     this.audioBuffers = {};
     this.indexes = {};
   }
-  async resetaudio(): Promise<void>{
-    this.clearAllAudioBuffers();
-    await this.preloadAll();
-    await this.initializeSong();
+  async resetaudio(): Promise<void> {
+    try {
+      // ✅ 1. Ensure AudioContext exists or recreate it if closed
+      if (!this.audioContext || this.audioContext.state === 'closed') {
+        console.warn('AudioContext was closed — recreating...');
+        this.createAudioContext();
+      }
+
+      // ✅ 2. Resume if suspended (common after background)
+      if (this.audioContext.state === 'suspended') {
+        try {
+          await this.audioContext.resume();
+          console.log('🎧 AudioContext resumed');
+        } catch (err) {
+          console.warn('⚠️ Failed to resume AudioContext:', err);
+        }
+      }
+
+      // ✅ 3. Clean up inactive sources
+      this.activeSources = this.activeSources.filter(src => {
+        // The only reliable way is to check if it's still connected
+        try {
+          // Accessing src.buffer ensures it's valid
+          return !!src.buffer;
+        } catch {
+          return false;
+        }
+      });
+
+      // ✅ 4. Recreate or reconnect the background song if necessary
+      if (!this.currentAudio) {
+        await this.initializeSong();
+      }
+    } catch (err) {
+      console.error('❌ resetaudio critical error:', err);
+    }
   }
 }

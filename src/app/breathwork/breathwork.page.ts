@@ -44,6 +44,7 @@ export class BreathworkPage {
   selectedQuote: { text: string; author: string } | null = null;
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private _sharing = false;
+  showWebSplash = false;
 
 constructor(
   private globalService: GlobalService, 
@@ -58,6 +59,7 @@ constructor(
     this.router.navigateByUrl('/home');  
   }
   async ionViewWillEnter() {
+    this.showWebSplash = true;
     // 1️⃣ Check membership snapshot (already does whitelist, trial, RevenueCat)
     const snapshot = await this.revenuecat.getSnapshot();
 
@@ -135,6 +137,9 @@ constructor(
       }
       this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
     }
+     setTimeout(() => {
+      this.showWebSplash = false;
+    }, 1000);
   }
   timeStringToSeconds(time: string): number {
     const [minutes, seconds] = time.split(':').map(Number);
@@ -172,7 +177,7 @@ constructor(
       'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
       'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
       'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
-      'YogaResults', 'DBResults', 'HUMResults'
+      'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
     ];
 
     const today = new Date();

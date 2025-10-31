@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-ub',
   templateUrl: './ub.page.html',
@@ -53,8 +54,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   private UBMinutes = 0;
   private UBTimer: any = null;
   private UBResult = ''; // Variable to store the BRT result as a string
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalUB, this.UBdots, 'slides');
     this.closeModalButtonUB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalUB));
@@ -85,7 +87,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the UBduration after ViewChild is initialized
   setUBduration(): void {
       const selectedValue = this.UBtimeInput.nativeElement.value;
@@ -99,7 +103,6 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
      // Listen for app state changes
      App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
@@ -150,6 +153,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startUB(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.UBcurrentValue = parseInt(this.inhaleInputUB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
@@ -310,13 +314,11 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.UBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -387,6 +389,8 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopUB(); 
     this.UBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

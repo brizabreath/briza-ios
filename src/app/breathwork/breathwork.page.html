@@ -29,13 +29,13 @@
         </a>
       </div>
       <div #BRTresult style="display: none;">
-          <h2 class="english homeH2">Follow the Briza Program to improve your retention test of <b>{{ latestBRTResultInSeconds }}</b> seconds</h2> 
+          <h2 class="english homeH2">Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds</h2> 
           <h2 class="portuguese homeH2">Seu resultado no teste de rentencao e de <b>{{ latestBRTResultInSeconds }}</b> segundos</h2>
           <a class="breath-button" routerLink="/program">
             <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
             <div class="textBP">
                 <div class="titleBP english">Briza Program</div>
-                <div class="subtitleBP english">Improve your breathing efficiency</div>
+                <div class="subtitleBP english">Boost your breathing efficiency</div>
                 <div class="titleBP portuguese">Programa Briza</div>
                 <div class="subtitleBP portuguese">Melhore sua eficiência respiratória</div>
             </div>
@@ -123,6 +123,9 @@
       <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
 </ion-content>
 <div id="openScreen" class="modal" #openScreen>
     <div class="modal-content">

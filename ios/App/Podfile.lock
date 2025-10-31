@@ -9,40 +9,41 @@ PODS:
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
-  - Capacitor (7.4.3):
+  - Capacitor (6.2.0):
     - CapacitorCordova
-  - CapacitorApp (7.1.0):
+  - CapacitorApp (6.0.0):
     - Capacitor
-  - CapacitorBrowser (7.0.2):
+  - CapacitorBrowser (6.0.0):
     - Capacitor
-  - CapacitorCamera (7.0.2):
+  - CapacitorCamera (6.0.0):
     - Capacitor
-  - CapacitorCommunityAppleSignIn (7.1.0):
+  - CapacitorCommunityAppleSignIn (6.0.0):
     - Capacitor
-  - CapacitorCordova (7.4.3)
-  - CapacitorDevice (7.0.2):
+  - CapacitorCordova (6.2.0)
+  - CapacitorDevice (6.0.0):
     - Capacitor
-  - CapacitorFilesystem (7.1.4):
+  - CapacitorFilesystem (6.0.0):
     - Capacitor
-    - IONFilesystemLib (~> 1.0.1)
-  - CapacitorHaptics (7.0.2):
+  - CapacitorHaptics (6.0.0):
     - Capacitor
-  - CapacitorKeyboard (7.0.3):
+  - CapacitorKeyboard (6.0.0):
     - Capacitor
-  - CapacitorLocalNotifications (7.0.3):
+  - CapacitorLocalNotifications (6.0.0):
     - Capacitor
-  - CapacitorNativeGoogleOneTapSignin (7.0.3):
+  - CapacitorNativeGoogleOneTapSignin (6.1.8):
     - Capacitor
     - GoogleSignIn
-  - CapacitorPreferences (7.0.2):
+  - CapacitorPreferences (6.0.0):
     - Capacitor
-  - CapacitorShare (7.0.2):
+  - CapacitorScreenOrientation (6.0.0):
     - Capacitor
-  - CapacitorSplashScreen (7.0.3):
+  - CapacitorShare (6.0.0):
     - Capacitor
-  - CapacitorStatusBar (7.0.3):
+  - CapacitorSplashScreen (6.0.0):
     - Capacitor
-  - CordovaPlugins (7.4.3):
+  - CapacitorStatusBar (6.0.0):
+    - Capacitor
+  - CordovaPlugins (6.2.0):
     - CapacitorCordova
   - GoogleSignIn (9.0.0):
     - AppAuth (~> 2.0)
@@ -62,7 +63,6 @@ PODS:
     - AppAuth/Core (~> 2.0)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3)
   - GTMSessionFetcher/Core (3.5.0)
-  - IONFilesystemLib (1.0.1)
   - PromisesObjC (2.4.0)
   - PurchasesHybridCommon (13.26.0):
     - RevenueCat (= 5.20.0)
@@ -85,6 +85,7 @@ DEPENDENCIES:
   - "CapacitorLocalNotifications (from `../../node_modules/@capacitor/local-notifications`)"
   - CapacitorNativeGoogleOneTapSignin (from `../../node_modules/capacitor-native-google-one-tap-signin`)
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorScreenOrientation (from `../../node_modules/@capacitor/screen-orientation`)"
   - "CapacitorShare (from `../../node_modules/@capacitor/share`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
@@ -99,7 +100,6 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
-    - IONFilesystemLib
     - PromisesObjC
     - PurchasesHybridCommon
     - RevenueCat
@@ -131,6 +131,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-native-google-one-tap-signin"
   CapacitorPreferences:
     :path: "../../node_modules/@capacitor/preferences"
+  CapacitorScreenOrientation:
+    :path: "../../node_modules/@capacitor/screen-orientation"
   CapacitorShare:
     :path: "../../node_modules/@capacitor/share"
   CapacitorSplashScreen:
@@ -145,33 +147,33 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 1c1a8afa7e12f2ec3a294d9882dfa5ab7d3cb063
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
-  Capacitor: 28d6c01026a9a3f7156529498ec1f389a2a28dbc
-  CapacitorApp: 26587c2ce485d88ddb39adb21cac64f8e481afe3
-  CapacitorBrowser: 22541e48442de44dc629c214388290d6eecc6ae9
-  CapacitorCamera: f9e54db0a18bb218a8dc360907d63aaefe9209ff
-  CapacitorCommunityAppleSignIn: 271cb2860576fd2961508bbfa7a82117d93eadca
-  CapacitorCordova: 435121e81a2df4d0034f0fb11fcefab5104cfdb5
-  CapacitorDevice: 81ae78d5d1942707caad79276badd458bf6ec603
-  CapacitorFilesystem: f9bd850c41e048180e5dc0cbb90f2033ede9d2cc
-  CapacitorHaptics: b3fb2869e72c4466e18ce9ccbeb60a3d8723b3d4
-  CapacitorKeyboard: 62f36104f26d53d8b3a2a43f2a69fe714f1777d5
-  CapacitorLocalNotifications: 0811aef56ab2e5f7f9ae72f47d3473ab50c29038
-  CapacitorNativeGoogleOneTapSignin: cf622faf1f72c7532cb2fd975a4e2cc35b66a176
-  CapacitorPreferences: 65107ed7437d96ee72583df5763985e3c0ff2bc2
-  CapacitorShare: be166411fa995ead2d39b104aa0aae56d8615c66
-  CapacitorSplashScreen: e388b8e0ed0e982a9d3a40417f478e7a018a8763
-  CapacitorStatusBar: 0659ddc7b1713764a05831463d215b177a15d054
-  CordovaPlugins: 32fa8833e41de121e3f185b0c033815b1be91a13
+  Capacitor: 05d35014f4425b0740fc8776481f6a369ad071bf
+  CapacitorApp: 30145f2ea2311e4f3744472119ec87d2ddf4c0a7
+  CapacitorBrowser: 2c55e9f586ba5a825f09fe7abb51110adf1cd448
+  CapacitorCamera: de6cb68cccaa9e9dfaec96bd17ea998fabf8fdb2
+  CapacitorCommunityAppleSignIn: c9c2541ee7580618055a91b3516c3f0313fe2544
+  CapacitorCordova: b33e7f4aa4ed105dd43283acdd940964374a87d9
+  CapacitorDevice: 38ad323d74e3a86b56253680538ac23a2c9b4a68
+  CapacitorFilesystem: 9c2cc1e89d3b8b91503b316e9f6c2915c9bf9419
+  CapacitorHaptics: 0cea833e6a8bf489dd6acaaebf6d953b90086c59
+  CapacitorKeyboard: dc97fe50dcfdcbe12af56c49bbed150077d08043
+  CapacitorLocalNotifications: d051c73ec8bf38807214f5b905ee6426e13756f8
+  CapacitorNativeGoogleOneTapSignin: 7322a465025b7d5fe70679bfc04735bc291e557e
+  CapacitorPreferences: b2634203fb3c3a380a8eb01c0e25e4a10a91e522
+  CapacitorScreenOrientation: 1c94ddb4fb4f132a4373e74a7d131008f0cfce59
+  CapacitorShare: 785711ac46ecc2f98ac92525eb64bc78a665843d
+  CapacitorSplashScreen: 5a016b2f50a3b7aa15e12946c720017e46882d5f
+  CapacitorStatusBar: 129c68650d3f950e080e8e7e03d69c3b361dbe52
+  CordovaPlugins: 78296d16d1318ef0efe6429a85aa988f400540d1
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PurchasesHybridCommon: fa166fc8b385cf80f581f923c91d8ccffe5dd7f8
   RevenueCat: e47ff90dfd271fde155a4befe48e8fc02e8281e4
   RevenuecatPurchasesCapacitor: 6727a4dc1455bdf2374259420719ce5dfbe957fa
 
-PODFILE CHECKSUM: e894fb215f21db55834646a8bdabb1dc42b80f50
+PODFILE CHECKSUM: 8bea692f831fede2df4ddf823517387f32ba2b79
 
 COCOAPODS: 1.16.2

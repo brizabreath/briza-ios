@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-hatc',
   templateUrl: './hatc.page.html',
@@ -50,8 +51,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   private HATCTimer: any = null;
   private HATCroundsResults: any[] = [];
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     //modal events set up
    this.globalService.initBulletSlider(this.modalHATC, this.HATCdots, 'slides');
@@ -77,7 +79,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
     this.globalService.changeBall(1.3, 1, this.HATCball);
+    
   }
+
   // Method to set the HATCduration after ViewChild is initialized
   setHATCduration(): void {
       const selectedValue = this.HATCtimeInput.nativeElement.value;
@@ -92,7 +96,6 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
      // Listen for app state changes
      App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -125,6 +128,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
    
   async startHATC(): Promise<void>{
+    this.audioService.resetaudio(); 
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -141,7 +145,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
-      const timeoutId2 = setTimeout(() => {
+      const timeoutId2 = setTimeout(async () => {
+        await this.audioService.playSound('exhale');
         this.HATCballText.nativeElement.textContent = "2";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -155,12 +160,13 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Start running";
         }
-        await this.audioService.playSound('pinchRun');
+        setTimeout(async () => {
+          await this.audioService.playSound('pinchRun');
+        }, 1000);        
         this.HATCinterval = setInterval(() => this.startTimerHATC(), 1000);
         this.HATCTimer = setInterval(() => this.DisplayTimerHATC(), 1000);
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
-      this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
       const timeoutId5 = setTimeout(() => {
         this.startBtnHATC.nativeElement.disabled = false;
         this.holdHATC = true;
@@ -252,7 +258,10 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Hold"
         }
-        await this.audioService.playSound('pinchRun');
+        await this.audioService.playSound('exhale');
+        setTimeout(async () => {
+          await this.audioService.playSound('pinchRun');
+        }, 1000);
       } 
       else{
         this.clearIntervalsHATC();
@@ -271,10 +280,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATCballText.nativeElement.textContent = "Normal Breathing"
         }
+        this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 3000);
       }
     }
   }
@@ -375,6 +382,8 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopHATC(); 
     this.HATCResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

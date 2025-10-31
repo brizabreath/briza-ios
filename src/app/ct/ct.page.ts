@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-ct',
   templateUrl: './ct.page.html',
@@ -55,8 +56,9 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   private CTTimer: any = null;
   private CTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
      this.globalService.initBulletSlider(this.modalCT, this.CTdots, 'slides');
     this.closeModalButtonCT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCT));
@@ -87,7 +89,9 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
+    
   }
+
   // Method to set the CTduration after ViewChild is initialized
   setCTduration(): void {
       const selectedValue = this.CTtimeInput.nativeElement.value;
@@ -102,7 +106,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -137,6 +140,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
    
   async startCT(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCT.nativeElement.disabled = true;
@@ -320,13 +324,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CTballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -416,6 +418,8 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopCT(); 
     this.CTResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

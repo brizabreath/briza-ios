@@ -80,6 +80,11 @@
   <div id="myModalAP" class="modal" #myModalAP>
     <div class="modal-content">
         <span class="close" id="closeModalAP" #closeModalAP>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
@@ -133,7 +138,7 @@
                 <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    If the ratio chosen is making your heart beat acelerate and you finding it too hard, stop doing it and choose a lower ratio 
+                    If the ratio chosen is making your heart beat acelerate and you are finding it too hard, stop doing it and choose a lower ratio 
                   </p>
                 </div>
                 <div class="text portuguese">

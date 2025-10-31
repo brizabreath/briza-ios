@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-rb',
   templateUrl: './rb.page.html',
@@ -54,8 +55,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   private RBTimer: any = null;
   private RBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
    this.globalService.initBulletSlider(this.modalRB, this.RBdots, 'slides');
     this.closeModalButtonRB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalRB));
@@ -84,7 +86,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the RBduration after ViewChild is initialized
   setRBduration(): void {
       const selectedValue = this.RBtimeInput.nativeElement.value;
@@ -98,7 +102,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -134,6 +137,7 @@ export class RBPage implements  AfterViewInit, OnDestroy {
   }
    
   async startRB(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
@@ -308,13 +312,11 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }

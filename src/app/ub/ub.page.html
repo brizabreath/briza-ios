@@ -73,6 +73,11 @@
   <div id="myModalUB" class="modal" #myModalUB>
     <div class="modal-content">
         <span class="close" id="closeModalUB" #closeModalUB>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
@@ -122,9 +127,7 @@
                 <img src="assets/images/mindful.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the cirlce again.
-                  </p>
-                  <p>
+                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again.
                     In the end, save your results to track your improvement over time
                   </p>
                 </div>

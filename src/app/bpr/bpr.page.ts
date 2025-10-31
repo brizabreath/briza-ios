@@ -25,8 +25,9 @@ export class BPRPage implements OnInit {
     { nameEN: 'Altitude Training', namePT: 'Treinamento de Alta Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
     { nameEN: 'Oxygen Boost', namePT: 'Hiperventilação Guiada', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
-    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults', 'DBResults', 'HUMResults'], url: '/allresults' },
-    { nameEN: 'Yoga Classes', namePT: 'Aulas de Yoga', keys: ['YogaResults'], url: '/yogaresults' }
+    { nameEN: 'Yoga Classes', namePT: 'Aulas de Yoga', keys: ['YogaResults'], url: '/yogaresults' },
+    { nameEN: 'Meditation', namePT: 'Meditacao', keys: ['TIMERResults'], url: '/timerresults' },
+    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults'], url: '/allresults' }
   ];
 
   @ViewChild('resultsList', { static: true }) resultsList!: ElementRef<HTMLDivElement>;
@@ -147,6 +148,7 @@ export class BPRPage implements OnInit {
         NBResults: { en: 'Nadi Shodhana', pt: 'Nadi Shodhana' },
         LungsResults: { en: 'Lungs Expansion', pt: 'Expansão Pulmonar' },
         YogaResults: { en: 'Yoga Classes', pt: 'Aulas devYoga' },
+        TIMERResults: { en: 'Meditation Timer', pt: 'Meditation Timer'}
       };
     const language = this.isPortuguese ? 'pt' : 'en';
     return exerciseNames[key]?.[language] || 'Exercise Name Not Found';
@@ -169,7 +171,7 @@ export class BPRPage implements OnInit {
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
         'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
-        'YogaResults', 'DBResults', 'HUMResults'
+        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
     ];
 
     this.resultsByDate = {};

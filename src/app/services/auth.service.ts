@@ -203,7 +203,7 @@ export class AuthService {
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
         'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
-        'YogaResults', 'DBResults', 'HUMResults'] },
+        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'] },
       ];
 
       exerciseLinks.forEach((exercise) => {

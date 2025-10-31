@@ -13,6 +13,7 @@ import { VimeoMetaService } from '../services/vimeo-meta.service';
 import { ActivatedRoute } from '@angular/router';
 import { LocalReminderService } from '../services/local-reminder.service';
 import { GlobalAlertService } from '../services/global-alert.service';
+import { doc, setDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-yoga',
@@ -32,6 +33,13 @@ export class YogaPage implements OnInit {
   filteredVideos: any[] = [];
 
   activeVideo: { title: string; url: SafeResourceUrl } | null = null;
+  showWebSplash = false;
+  private readonly FREE_CLASSES = [
+    'GfTEiE4mNZqxukI1w01T', // Hip Release
+    'CyJy2Uf4dC6qoRsMphlc', // Let Go and Feel Light
+    'nDqZCNnlqYj9EmylcVPx'  // Start with Gratitude
+  ];
+
 
   // 🔎 SEARCH: state (enforce one word)
   searchTerm = '';
@@ -90,24 +98,34 @@ export class YogaPage implements OnInit {
   }
 
   private async initVideos() {
-    const isOnline = navigator.onLine;
+    this.showWebSplash = true;
 
-    if (isOnline) {
-      await this.fetchVideosFromFirebase();
-    } else {
-      const cached = localStorage.getItem('cachedYogaVideos');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        this.allVideos = parsed.map((v: any) => ({
-          ...v,
-          url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
-        }));
+    try {
+      const isOnline = navigator.onLine;
+
+      if (isOnline) {
+        await this.fetchVideosFromFirebase();
       } else {
-        console.warn('No cached videos available for offline use.');
-        this.allVideos = [];
+        const cached = localStorage.getItem('cachedYogaVideos');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          this.allVideos = parsed.map((v: any) => ({
+            ...v,
+            url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
+          }));
+        } else {
+          console.warn('No cached videos available for offline use.');
+          this.allVideos = [];
+        }
       }
+    } catch (err) {
+      console.error('❌ Failed to init videos:', err);
+    } finally {
+      // ✅ hide spinner only after all operations are fully done
+      this.showWebSplash = false;
     }
   }
+
 
   async fetchVideosFromFirebase() {
     try {
@@ -141,6 +159,20 @@ export class YogaPage implements OnInit {
               : v.description) || '';
           const finalThumbnail =
             meta?.thumbnail_url?.trim() || v.thumbnail || 'assets/images/lungs.svg';
+          try {
+            const db = this.firebaseService.firestore!;
+            await setDoc(
+              doc(db, 'videos', v.id),
+              {
+                title: finalTitle,
+                description: finalDescription,
+                thumbnail: finalThumbnail,
+              },
+              { merge: true }
+            );
+          } catch (err) {
+            console.warn('Could not sync video meta to Firestore', err);
+          }
           return {
             id: v.id,
             category: v.category,
@@ -154,9 +186,23 @@ export class YogaPage implements OnInit {
         })
       );
 
-      // 💾 Save updated cache
-      localStorage.setItem('cachedYogaVideos', JSON.stringify(enriched));
-      this.allVideos = enriched;
+      const withFreeFlags = enriched.map(v => ({
+        ...v,
+        isFree: this.FREE_CLASSES.includes(v.id)
+      }));
+
+      // ✅ Sort: free classes first within each category
+      this.allVideos = withFreeFlags.sort((a, b) => {
+        if (a.category === b.category) {
+          if (a.isFree && !b.isFree) return -1;
+          if (!a.isFree && b.isFree) return 1;
+        }
+        return 0;
+      });
+      
+      // 💾 Cache
+      localStorage.setItem('cachedYogaVideos', JSON.stringify(this.allVideos));
+
     } catch (err) {
       console.error('❌ Failed to fetch videos from Firestore:', err);
     }
@@ -203,32 +249,40 @@ export class YogaPage implements OnInit {
 
       return matchesCategory && matchesDuration && matchesLanguage && matchesText;
     });
+    this.filteredVideos.sort((a, b) => {
+      if (a.isFree && !b.isFree) return -1;
+      if (!a.isFree && b.isFree) return 1;
+      return 0;
+    });
   }
 
-  private isMemberActive(): boolean {
+ isMemberActive(): boolean {
     return localStorage.getItem('membershipStatus') === 'active';
   }
 
   async onVideoClick(video: any) {
-    // 1) Block if offline
+
     if (!navigator.onLine) {
-      if (!this.isPortuguese) {
-        this.globalAlert.showalert('OFFLINE', '🌐 You are offline.\n\nConnect to the internet to watch this video');
-      } else {
-        this.globalAlert.showalert('OFFLINE', '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
-      }
+      const msg = this.isPortuguese
+        ? '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo'
+        : '🌐 You are offline.\n\nConnect to the internet to watch this video';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
+    }
+    
+    if (video.isFree) {
+      await this.playVideo(video);
       return;
     }
 
-    // 2) Gate by membership
     if (!this.isMemberActive()) {
       this.globalService.openModal2Safe(); // your paywall/subscription modal
       return;
     }
 
-    // 3) Member + online => play
     await this.playVideo(video);
   }
+
 
   async playVideo(video: any) {
     const url = this.sanitizer.bypassSecurityTrustResourceUrl(video.videoUrl || video.url);

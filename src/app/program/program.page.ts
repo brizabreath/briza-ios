@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { ShepherdService } from 'angular-shepherd';
 
+
 @Component({
   selector: 'app-program',
   templateUrl: './program.page.html',
@@ -62,9 +63,18 @@ export class ProgramPage implements AfterViewInit {
 
   latestBRTResultInSeconds = 0;
   resultsByDate: { [date: string]: any[] } = {};
-
-  constructor(private navCtrl: NavController, private globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
+  
+  
+  constructor(private navCtrl: NavController, public globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
   ionViewWillEnter() {
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    if (isPortuguese) {
+      this.globalService.hideElementsByClass('english');
+      this.globalService.showElementsByClass('portuguese');
+    } else {
+      this.globalService.hideElementsByClass('portuguese');
+      this.globalService.showElementsByClass('english');
+    }
     this.populateProgramContent();
   }
   ionViewDidEnter() {
@@ -73,11 +83,20 @@ export class ProgramPage implements AfterViewInit {
       localStorage.removeItem('startProgTour');
       this.startBreathTourNow();
     }
+    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    if (isPortuguese) {
+      this.globalService.hideElementsByClass('english');
+      this.globalService.showElementsByClass('portuguese');
+    } else {
+      this.globalService.hideElementsByClass('portuguese');
+      this.globalService.showElementsByClass('english');
+    }
   }
   ngAfterViewInit() {
    this.globalService.initBulletSlider(this.modalP, this.Pdots, 'slides');
     this.closeModalButtonP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalP));
     this.questionP.nativeElement.onclick = () => this.globalService.openModal(this.modalP, this.Pdots, 'slides');
+    
   }
 
   private isVisible(el: HTMLElement): boolean {
@@ -166,33 +185,52 @@ export class ProgramPage implements AfterViewInit {
   };
   populateProgramContent(): void {
     this.loadResults();
+
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     const storedResults = localStorage.getItem('brtResults');
     const brtResults = storedResults ? JSON.parse(storedResults) : [];
 
     const BRTnumberOfTests = brtResults.length;
-    const BRTlatestResult = brtResults.length > 0 ? brtResults[brtResults.length - 1].result : '0:00';
-    const result = this.timeStringToSeconds(BRTlatestResult);
     const day = this.getEnglishWeekdayKey();
 
     this.resetAllSections();
 
     if (BRTnumberOfTests === 0) {
       this.noBrtResults.nativeElement.style.display = 'block';
-    } else {
-      this.latestBRTResultInSeconds = result;
-      const prefix = this.getRangePrefix(result);
-      const key = `${prefix}${day}`  as keyof this;
-      this.showSectionByKey(key);
+      return;
     }
+
+    // 🔹 Determine which results to use: latest only or average of last up to 7
+    let averageSeconds = 0;
+
+    if (BRTnumberOfTests === 1) {
+      // only one test
+      averageSeconds = this.timeStringToSeconds(brtResults[0].result);
+    } else {
+      // take last 7 results max
+      const lastResults = brtResults.slice(-7);
+      const totalSeconds = lastResults.reduce((sum: number, entry: any) => {
+        return sum + this.timeStringToSeconds(entry.result);
+      }, 0);
+      averageSeconds = totalSeconds / lastResults.length;
+    }
+
+    this.latestBRTResultInSeconds = averageSeconds;
+    // 🔹 Determine which content section to show
+    const prefix = this.getRangePrefix(averageSeconds);
+    const key = `${prefix}${day}` as keyof this;
+    this.showSectionByKey(key);
+
+    // 🔹 Handle language visibility
     if (isPortuguese) {
       this.globalService.hideElementsByClass('english');
       this.globalService.showElementsByClass('portuguese');
-    }else{
+    } else {
       this.globalService.hideElementsByClass('portuguese');
       this.globalService.showElementsByClass('english');
     }
   }
+
   private getEnglishWeekdayKey(): string {
     const weekdayIndex = new Date().getDay(); // 0 (Sunday) to 6 (Saturday)
     const weekdayKeys = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -244,7 +282,7 @@ export class ProgramPage implements AfterViewInit {
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
         'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
-        'YogaResults', 'DBResults', 'HUMResults'
+        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
     ];
 
     this.resultsByDate = {};

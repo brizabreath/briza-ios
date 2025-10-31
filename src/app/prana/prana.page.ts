@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 
+
 @Component({
   selector: 'app-prana',
   templateUrl: './prana.page.html',
@@ -22,11 +23,12 @@ export class PranaPage implements OnInit, AfterViewInit {
   selectedSegment: 'traditional' | 'regulation' = 'traditional';
   isPortuguese = false;
   isMember = false;
-
+  
+  
 
   constructor(
     private navCtrl: NavController,
-    private globalService: GlobalService,
+    public globalService: GlobalService,
   ) {}
 
   async ngOnInit() {
@@ -57,7 +59,9 @@ export class PranaPage implements OnInit, AfterViewInit {
     // Open modal
     this.questionPrana.nativeElement.onclick = () =>
       this.globalService.openModal(this.modalPrana, this.Pranadots, 'slides');
+    
   }
+
 
   ionViewWillEnter() {
     // Refresh language when returning to page

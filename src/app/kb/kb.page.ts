@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 
+
 @Component({
   selector: 'app-kb',
   templateUrl: './kb.page.html',
@@ -56,8 +57,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   private KBbreaths: any = null;
   private KBbreathSpeed: any = null;
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalKB, this.KBdots, 'slides');
     this.closeModalButtonKB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalKB));
@@ -82,7 +84,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
     this.globalService.changeBall(1, 1, this.KBball);
+    
   }
+
   // Modal control
   openFixedRoundsModal(): void {
     this.fixedRoundsModalKB.nativeElement.style.display = 'block';
@@ -110,7 +114,6 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     }
   }
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -149,6 +152,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
    
   async startKB(): Promise<void>{
+    this.audioService.resetaudio(); 
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -375,13 +379,11 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.KBballText.nativeElement.textContent = "Normal Breathing"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -479,6 +481,8 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopKB(); 
     this.KBResultSaved.nativeElement.style.display = 'none';
   }

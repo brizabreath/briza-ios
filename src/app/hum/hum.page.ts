@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-hum',
   templateUrl: './hum.page.html',
@@ -16,7 +17,7 @@ import { App } from '@capacitor/app';
   imports: [
     CommonModule,
     FormsModule,
-    IonicModule,
+    IonicModule, 
     RouterModule
   ],
 })
@@ -36,6 +37,13 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   @ViewChild('roundsDoneHUM') roundsDoneHUM!: ElementRef<HTMLDivElement>;
   @ViewChild('timerDisplayHUM') timerDisplayHUM!: ElementRef<HTMLDivElement>;
   @ViewChild('HUMResultSaved') HUMResultSaved!: ElementRef<HTMLDivElement>;
+  @ViewChild('minusHUM') minusHUM!: ElementRef<HTMLButtonElement>;
+  @ViewChild('plusHUM') plusHUM!: ElementRef<HTMLButtonElement>;
+  @ViewChild('inhaleInputHUM') inhaleInputHUM!: ElementRef<HTMLInputElement>;
+  @ViewChild('hold1InputHUM') hold1InputHUM!: ElementRef<HTMLInputElement>;
+  @ViewChild('exhaleInputHUM') exhaleInputHUM!: ElementRef<HTMLInputElement>;
+  @ViewChild('hold2InputHUM') hold2InputHUM!: ElementRef<HTMLInputElement>;
+  
 
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleHUM = true;
@@ -52,9 +60,12 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   private HUMTimer: any = null;
   private HUMResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
+    this.minusHUM.nativeElement.onclick = () => this.minusRatioHUM();
+    this.plusHUM.nativeElement.onclick = () => this.plusRatioHUM();
     this.globalService.initBulletSlider(this.modalHUM, this.HUMdots, 'slides');
     this.closeModalButtonHUM.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHUM));
     this.questionHUM.nativeElement.onclick = () => this.globalService.openModal(this.modalHUM, this.HUMdots, 'slides');
@@ -81,7 +92,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the HUMduration after ViewChild is initialized
   setHUMduration(): void {
       const selectedValue = this.HUMtimeInput.nativeElement.value;
@@ -95,8 +108,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       }
   }
 
-  async ionViewWillEnter() {
-      this.audioService.resetaudio(); 
+  async ionViewWillEnter() { 
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -129,12 +141,39 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     await this.audioService.preloadAll();       // 🔄 reload
     await this.audioService.initializeSong(); 
   }
-   
+   minusRatioHUM(): void{
+    if(parseInt(this.inhaleInputHUM.nativeElement.value) > 4){
+      this.inhaleInputHUM.nativeElement.value = 
+      ((parseInt(this.inhaleInputHUM.nativeElement.value) || 0) - 2).toString();
+      this.hold1InputHUM.nativeElement.value = 
+      ((parseInt(this.hold1InputHUM.nativeElement.value) || 0) - 1).toString();
+      this.exhaleInputHUM.nativeElement.value = 
+      ((parseInt(this.exhaleInputHUM.nativeElement.value) || 0) - 3).toString();
+      this.hold2InputHUM.nativeElement.value = 
+      ((parseInt(this.hold2InputHUM.nativeElement.value) || 0) - 1).toString();
+    }
+  }
+  plusRatioHUM():void{
+    if(parseInt(this.inhaleInputHUM.nativeElement.value) < 30){
+      this.inhaleInputHUM.nativeElement.value = 
+      ((parseInt(this.inhaleInputHUM.nativeElement.value) || 0) + 2).toString();
+      this.hold1InputHUM.nativeElement.value = 
+      ((parseInt(this.hold1InputHUM.nativeElement.value) || 0) + 1).toString();
+      this.exhaleInputHUM.nativeElement.value = 
+      ((parseInt(this.exhaleInputHUM.nativeElement.value) || 0) + 3).toString();
+      this.hold2InputHUM.nativeElement.value = 
+      ((parseInt(this.hold2InputHUM.nativeElement.value) || 0) + 1).toString();
+    }
+  }
   async startHUM(): Promise<void>{
+    this.audioService.resetaudio(); 
+    this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHUM.nativeElement.disabled = true;
     this.questionHUM.nativeElement.disabled = true;
+    this.minusHUM.nativeElement.disabled = true;
+    this.plusHUM.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnHUM.nativeElement.disabled = true;
       this.inhaleHUM = true;
@@ -245,7 +284,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   async startTimerHUM(): Promise<void>{ 
     this.HUMcurrentValue--;
     if(this.inhaleHUM && this.HUMcurrentValue == 1){
-      this.HUMcurrentValue = 3;
+      this.HUMcurrentValue = parseInt(this.hold1InputHUM.nativeElement.value) + 1;
       this.inhaleHUM = false;
       this.hold1HUM = true;
       await this.audioService.playSound('pause');
@@ -253,7 +292,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1.3, 3, this.HUMball);
     }
     else if(this.hold1HUM && this.HUMcurrentValue == 1){
-      this.HUMcurrentValue = 7;
+      this.HUMcurrentValue = parseInt(this.exhaleInputHUM.nativeElement.value) + 1;
       this.hold1HUM = false;
       this.exhaleHUM = true;
       await this.audioService.playSound('hum');
@@ -266,7 +305,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1, 7, this.HUMball);
     }
     else if(this.exhaleHUM && this.HUMcurrentValue == 1){
-      this.HUMcurrentValue = 3;
+      this.HUMcurrentValue = parseInt(this.hold2InputHUM.nativeElement.value) + 1;
       this.exhaleHUM = false;
       this.hold2HUM = true;
       await this.audioService.playSound('pause');
@@ -277,7 +316,7 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     }
     else if(this.hold2HUM && this.HUMcurrentValue == 1){
       if(this.HUMduration !== 0){
-        this.HUMcurrentValue = 5;
+      this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;
         this.hold2HUM = false;
         this.inhaleHUM = true;
         await this.audioService.playSound('inhale');        
@@ -307,13 +346,11 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HUMballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -334,12 +371,14 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     this.HUMcountdownInput.nativeElement.style.display = "none";
     this.HUMtimeInput.nativeElement.style.display = "inline";
-    this.HUMcurrentValue = 5;
+    this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;
     this.startBtnHUM.nativeElement.disabled = false;
     this.stopBtnHUM.nativeElement.disabled = true;
     this.stopBtnHUM.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HUMSave.nativeElement.disabled = true;
     this.HUMSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+     this.minusHUM.nativeElement.disabled = false;
+    this.plusHUM.nativeElement.disabled = false;
     this.inhaleHUM = true;
     this.hold1HUM = false;
     this.exhaleHUM = false;
@@ -385,6 +424,8 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopHUM(); 
     this.HUMResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

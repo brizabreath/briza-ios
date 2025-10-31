@@ -129,7 +129,7 @@
         NÃO se force além dos seus limites. Se você tem alguma condição de saúde grave, para garantir que estes exercícios de respiração sejam seguros para você, consulte um médico antes de praticar qualquer um dos exercícios do App Briza Breath &amp; Performance
       </p>
       <p class="atention english" *ngIf="!isPortuguese">
-        Do NOT push yourself over your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath &amp; Performance App`s exercises
+        Be aware of your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath &amp; Performance App`s exercises
       </p>
     </div>
   </div>
@@ -138,7 +138,11 @@
   <div id="myModalPrana" class="modal" #myModalPrana>
     <div class="modal-content">
       <span class="close" id="closeModalPrana" #closeModalPrana>&times;</span>
-
+      <div class="autoPlayBtnContainer">
+        <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+      </div>
       <div class="slideshow-container">
         <!-- Example slide 1 -->
         <div class="mySlides fadeModal slides">

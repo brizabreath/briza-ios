@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 
+
 @Component({
   selector: 'app-wh',
   templateUrl: './wh.page.html',
@@ -57,8 +58,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   private WHbreaths: any = null;
   private WHbreathSpeed: any = null;
   isModalOpen = false;
+  
 
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalWH, this.WHdots, 'slides');
     this.closeModalButtonWH.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalWH));
@@ -85,6 +87,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.globalService.changeBall(1, 1, this.WHball);
     
   }
+
   // Modal control
   openFixedRoundsModal(): void {
     this.fixedRoundsModal.nativeElement.style.display = 'block';
@@ -113,7 +116,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
@@ -152,6 +154,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
    
   async startWH(): Promise<void>{
+    this.audioService.resetaudio(); 
      //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -378,13 +381,11 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         }else{
           this.WHballText.nativeElement.textContent = "Normal Breathing"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -483,6 +484,8 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopWH(); 
     this.WHResultSaved.nativeElement.style.display = 'none';
   }

@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-box',
   templateUrl: './box.page.html',
@@ -58,8 +59,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   private BOXTimer: any = null;
   private BOXResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalBOX, this.BOXdots, 'slides');
     this.closeModalButtonBOX.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBOX));
@@ -90,7 +92,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the BOXduration after ViewChild is initialized
   setBOXduration(): void {
       const selectedValue = this.BOXtimeInput.nativeElement.value;
@@ -104,7 +108,6 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -163,6 +166,7 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startBOX(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -351,13 +355,11 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BOXballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -431,6 +433,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopBOX(); 
     this.BOXResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

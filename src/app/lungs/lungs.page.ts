@@ -36,6 +36,7 @@ export class LungsPage implements OnDestroy {
 
   private enLoaded = false;
   private ptLoaded = false;
+  showWebSplash = false;
 
   constructor(
     private navCtrl: NavController,
@@ -46,7 +47,8 @@ export class LungsPage implements OnDestroy {
     private globalAlert: GlobalAlertService
   ) {}
 
-  async ionViewDidEnter() {
+  async ionViewWillEnter() {
+    this.showWebSplash = true;
     // Toggle language visibility (same as before)
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     // Load URLs (online → Firestore, offline → cache)
@@ -55,6 +57,7 @@ export class LungsPage implements OnDestroy {
         await this.loadLungsVideosFromFirestore();
       } catch (e) {
         console.warn('Lungs fetch failed, trying cache:', e);
+        this.showWebSplash = false;
       }
     }else{
       if (!this.isPortuguese) {
@@ -62,6 +65,7 @@ export class LungsPage implements OnDestroy {
       } else {
         this.globalAlert.showalert('OFFLINE', '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
       }
+      this.showWebSplash = false;
     }
     if (!this.vimeoUrlEN || !this.vimeoUrlPT) {
       const cached = localStorage.getItem('cachedLungs');
@@ -122,7 +126,7 @@ export class LungsPage implements OnDestroy {
       this.ptPlayer = new Player(this.vimeoPTRef.nativeElement);
       this.ptPlayer.on('error', (e: any) => console.warn('Vimeo PT error', e));
     }
-  }
+  } 
 
   private setupActivePlayerTracking() {
     this.watchedLE = false;
@@ -134,9 +138,6 @@ export class LungsPage implements OnDestroy {
     player.off('timeupdate');
     player.off('ended');
 
-    player.on('play', () => {
-      player.requestFullscreen?.().catch(() => {});
-    });
 
     player.on('timeupdate', (data: { seconds: number; duration: number }) => {
       if (this.watchedLE) return;
@@ -207,6 +208,7 @@ export class LungsPage implements OnDestroy {
   }
 
   private async loadLungsVideosFromFirestore(): Promise<void> {
+    this.showWebSplash = true;
     const db = this.firebaseService.firestore;
     if (!db) return;
 
@@ -233,5 +235,8 @@ export class LungsPage implements OnDestroy {
     // Cache for offline (optional)
     const cache = { en: enUrlRaw || null, pt: ptUrlRaw || null };
     localStorage.setItem('cachedLungs', JSON.stringify(cache));
+    setTimeout(() => {
+      this.showWebSplash = false;
+    }, 1000);  
   }
 }

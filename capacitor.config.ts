@@ -14,12 +14,17 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: 'light',
       backgroundColor: '#ffffff'
+    },
+    LocalNotifications: {
+      smallIcon: "ic_stat_icon_config_sample",
+      iconColor: "#488AFF",
+      sound: "default"
     }
   },
   server: {
     cleartext: true,
     androidScheme: 'https'
-  }
+  },
 };
 
 export default config;

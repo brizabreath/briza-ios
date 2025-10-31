@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-hat',
   templateUrl: './hat.page.html',
@@ -51,8 +52,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   private HATTimer: any = null;
   private HATroundsResults: any[] = [];
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalHAT, this.HATdots, 'slides');
     this.closeModalButtonHAT.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalHAT));
@@ -77,7 +79,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true");
     this.globalService.changeBall(1.3, 1, this.HATball);
+    
   }
+
   // Method to set the HATduration after ViewChild is initialized
   setHATduration(): void {
       const selectedValue = this.HATtimeInput.nativeElement.value;
@@ -92,7 +96,6 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
      // Listen for app state changes
      App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -124,6 +127,7 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
   
   async startHAT(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHAT.nativeElement.disabled = true;
@@ -139,7 +143,8 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.audioService.playSelectedSong();
       }, 500);
       this.globalService.timeouts.push(timeoutId1); // Store the timeout ID
-      const timeoutId2 = setTimeout(() => {
+      const timeoutId2 = setTimeout(async () => {
+        await this.audioService.playSound('exhale');
         this.HATballText.nativeElement.textContent = "2";
       }, 1000);
       this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
@@ -153,12 +158,14 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATballText.nativeElement.textContent = "Start walking";
         }
-        await this.audioService.playSound('pinchWalk');
+        await this.audioService.playSound('exhale');
+        setTimeout(async () => {
+          await this.audioService.playSound('pinchWalk');
+        }, 1000);
         this.HATinterval = setInterval(() => this.startTimerHAT(), 1000);
         this.HATTimer = setInterval(() => this.DisplayTimerHAT(), 1000);
       }, 3000);
       this.globalService.timeouts.push(timeoutId4); // Store the timeout ID
-      this.globalService.timeouts.push(timeoutId2); // Store the timeout ID
       const timeoutId5 = setTimeout(() => {
       this.startBtnHAT.nativeElement.disabled = false;
         localStorage.setItem('breathingON', "true"); 
@@ -284,10 +291,8 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATballText.nativeElement.textContent = "Normal Breathing"
         }
+        this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");         
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 3000);
       }
     }
   }
@@ -390,6 +395,8 @@ export class HATPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopHAT(); 
     this.HATResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

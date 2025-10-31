@@ -86,6 +86,11 @@
   <div id="myModalBRE" class="modal" #myModalBRE>
     <div class="modal-content">
         <span class="close" id="closeModalBRE" #closeModalBRE>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/calm.svg">
@@ -113,7 +118,7 @@
                 <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Choose the appropriated breath hold time from 2 to 10 seconds and Press 'Start' when you are ready. If you need to pause, just click on the cirlce again.
+                    Choose the appropriated breath hold time from 2 to 10 seconds and Press 'Start' when you are ready. If you need to pause, just click on the circle again.
                   </p>
                 </div>
                 <div class="text portuguese">

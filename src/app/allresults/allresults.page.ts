@@ -60,7 +60,7 @@ export class ALLresultsPage implements AfterViewInit {
   }
 
   loadDataFromLocalStorage(): void {
-    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults', 'WHResults', 'LungsResults', 'DBResults', 'HUMResults'];
+    const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults', 'WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};
 
     exerciseKeys.forEach(key => {

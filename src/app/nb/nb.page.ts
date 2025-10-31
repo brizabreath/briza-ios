@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-nb',
   templateUrl: './nb.page.html',
@@ -58,8 +59,9 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   private NBTimer: any = null;
   private NBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalNB, this.NBdots, 'slides');
     this.closeModalButtonNB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalNB));
@@ -90,7 +92,9 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the NBduration after ViewChild is initialized
   setNBduration(): void {
       const selectedValue = this.NBtimeInput.nativeElement.value;
@@ -104,7 +108,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -164,6 +167,7 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startNB(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
@@ -359,13 +363,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.NBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -439,6 +441,8 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopNB(); 
     this.NBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

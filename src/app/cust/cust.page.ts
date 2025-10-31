@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-cust',
   templateUrl: './cust.page.html',
@@ -60,8 +61,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   private CUSTTimer: any = null;
   private CUSTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalCUST, this.CUSTdots, 'slides');
     this.closeModalButtonCUST.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalCUST));
@@ -90,7 +92,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the CUSTduration after ViewChild is initialized
   setCUSTduration(): void {
       const selectedValue = this.CUSTtimeInput.nativeElement.value;
@@ -104,7 +108,6 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -148,6 +151,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   }
    
   async startCUST(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.customizableIn = this.inhaleInputCUST.nativeElement.value;
     this.customizableH1 = this.hold1InputCUST.nativeElement.value;
     this.customizableOut = this.exhaleInputCUST.nativeElement.value;
@@ -362,13 +366,11 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         }else{
           this.CUSTballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
     else if(this.hold2CUST && this.CUSTcurrentValue == 1){
@@ -456,6 +458,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopCUST(); 
     this.CUSTResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

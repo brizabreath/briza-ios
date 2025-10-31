@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1062876241537",
+    "project_id": "brizabreath-ea097",
+    "storage_bucket": "brizabreath-ea097.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062876241537:android:168de631d8834a64637780",
+        "android_client_info": {
+          "package_name": "com.brizabreath.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062876241537-oou064qe5l4v0he7s6gssvulgtmt50kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brizabreath.app",
+            "certificate_hash": "7543646a81730f4f047ecfebaa38eee220991caa"
+          }
+        },
+        {
+          "client_id": "1062876241537-jpnhdk0mfrnu2v2gn354l7ov05os5bqk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPZwCTpPNpnVyQQ9qjwRoPpHNZ55lmSHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062876241537-2vpl2s58pltqvkog1493kh2il62nspk0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

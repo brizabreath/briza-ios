@@ -25,6 +25,7 @@ import { CommentsComponent } from '../comments/comments.component';
           frameborder="0"
           allow="autoplay; fullscreen; picture-in-picture"
           allowfullscreen
+          webkit-playsinline
         ></iframe>
       </div>
       <div class="video-meta">

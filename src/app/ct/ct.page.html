@@ -73,6 +73,11 @@
   <div id="myModalCT" class="modal" #myModalCT>
     <div class="modal-content">
         <span class="close" id="closeModalCT" #closeModalCT>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
@@ -100,7 +105,7 @@
                 <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                    Press 'Start' and follow the guided technique. If you need to pause, just click on the cirlce again
+                    Press 'Start' and follow the guided technique. If you need to pause, just click on the circle again
                   </p>
                 </div>
                 <div class="text portuguese">

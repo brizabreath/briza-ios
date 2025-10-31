@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest package="com.brizabreath.app" xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,11 +16,23 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:autofillHints="emailAddress, password">
+
+            <!-- 🟢 MAIN ENTRY POINT (must exist) -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- 🟢 GOOGLE LOGIN CALLBACK -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.googleusercontent.apps.740921696216-n16hm9549fqarrokhvbej2205r5elmj3" />
+            </intent-filter>
+
         </activity>
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -29,9 +41,24 @@
             android:grantUriPermissions="true">
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
+        <receiver
+            android:name="com.getcapacitor.plugin.notification.LocalNotificationReceiver"
+            android:exported="false" />
+        <receiver
+            android:name="com.getcapacitor.plugin.notification.LocalNotificationRestoreReceiver"
+            android:exported="false" />
+        <service
+            android:name="com.getcapacitor.plugin.notification.LocalNotificationService"
+            android:exported="false" />
+            <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.ClientId"
+            android:value="740921696216-n16hm9549fqarrokhvbej2205r5elmj3.apps.googleusercontent.com" />
     </application>
 
     <!-- Permissions -->
     <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 </manifest>

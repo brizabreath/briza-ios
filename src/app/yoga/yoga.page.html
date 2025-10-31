@@ -6,7 +6,11 @@
     <div class="logo-container">
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div>
+    <div class="placeholderHeader">
+      <div class="questionMark questionClass">
+        <a routerLink="/timer"><img class="timerIMG" src="assets/images/timer.png"></a>
+      </div>
+    </div>
   </header>
 
   <div id="yogaPage">
@@ -24,7 +28,7 @@
         class="segment"
         [class.active]="selectedSegment === 'slowdown'"
         (click)="selectSegment('slowdown')">
-        <div class="english" *ngIf="!isPortuguese">Slow</div>
+        <div class="english" *ngIf="!isPortuguese">Gentle</div>
         <div class="portuguese" *ngIf="isPortuguese">Acalme-se</div>
       </button>
 
@@ -95,14 +99,26 @@
           </span>
         </p>
 
-        <div *ngFor="let video of filteredVideos" class="video-card" (click)="onVideoClick(video)">
+        <div
+          *ngFor="let video of filteredVideos"
+          class="video-card"
+          [class.locked]="!video.isFree && !isMemberActive()"
+          (click)="onVideoClick(video)"
+        > <div>
           <img [src]="video.thumbnail" class="video-thumb" />
+          </div>
+
           <div class="video-info">
-            <h3>{{ video.title }}</h3>
+            <h3>
+              {{ video.title }}
+              <span *ngIf="video.isFree && !isMemberActive()" class="free-icon"> FREE</span>
+            </h3>
             <p class="video-subtitle">{{ video.duration }} min</p>
           </div>
+
           <div class="play-button">&#9658;</div>
         </div>
+
       </div>
 
       <div *ngIf="filteredVideos.length === 0" class="no-videos">
@@ -132,4 +148,8 @@
       <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
+  <!-- Splash screen shown while app loads -->
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
 </ion-content>

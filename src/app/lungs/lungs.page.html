@@ -8,46 +8,48 @@
     </div>
     <div class="placeholderHeader"></div>
   </header>
-<div id="lungsPage">
-  <!-- English Section -->
-  <div class="breathingpages english" *ngIf="!isPortuguese">
-    <h1>Lungs Expansion Training</h1>
-    <div class="vimeo-wrapper" *ngIf="vimeoUrlEN">
-      <iframe
-        #vimeoEN
-        [src]="vimeoUrlEN"
-        (load)="onIframeLoad('EN')"
-        title="Lungs Expansion Training"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen
-        playsinline
-      ></iframe>
+  <div id="lungsPage">
+    <!-- English Section -->
+    <div class="breathingpages english" *ngIf="!isPortuguese">
+      <h1>Lungs Expansion Training</h1>
+      <div class="vimeo-wrapper" *ngIf="vimeoUrlEN">
+        <iframe
+          #vimeoEN
+          [src]="vimeoUrlEN"
+          (load)="onIframeLoad('EN')"
+          title="Lungs Expansion Training"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+          playsinline
+        ></iframe>
+      </div>
+      <p class="description lungsdescription">
+        Follow this video and learn how to expand your lungs, create more volume capacity,
+        and make full use of your breathing system
+      </p>
     </div>
-    <p class="description lungsdescription">
-      Follow this video and learn how to expand your lungs, create more volume capacity,
-      and make full use of your breathing system
-    </p>
-  </div>
 
-  <!-- Portuguese Section -->
-  <div class="breathingpages portuguese" *ngIf="isPortuguese">
-    <h1>Treinamento de Expansão Pulmonar</h1>
-    <div class="vimeo-wrapper" *ngIf="vimeoUrlPT">
-      <iframe
-        #vimeoPT
-        [src]="vimeoUrlPT"
-        (load)="onIframeLoad('PT')"
-        title="Treinamento de Expansão Pulmonar"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowfullscreen
-        playsinline
-      ></iframe>
+    <!-- Portuguese Section -->
+    <div class="breathingpages portuguese" *ngIf="isPortuguese">
+      <h1>Treinamento de Expansão Pulmonar</h1>
+      <div class="vimeo-wrapper" *ngIf="vimeoUrlPT">
+        <iframe
+          #vimeoPT
+          [src]="vimeoUrlPT"
+          (load)="onIframeLoad('PT')"
+          title="Treinamento de Expansão Pulmonar"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen
+          playsinline
+        ></iframe>
+      </div>
+      <p class="description lungsdescription">
+        Siga este vídeo e aprenda como expandir seus pulmões, criando maior capacidade
+        de volume e fazendo uso completo do seu sistema respiratório
+      </p>
     </div>
-    <p class="description lungsdescription">
-      Siga este vídeo e aprenda como expandir seus pulmões, criando maior capacidade
-      de volume e fazendo uso completo do seu sistema respiratório
-    </p>
   </div>
-</div>
-
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
 </ion-content>

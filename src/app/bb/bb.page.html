@@ -49,7 +49,7 @@
                   </select>
                   <input #BBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
-              <p class="centeredText">Tip: Breathe as lightly as possible — maintain a gentle air hunger throughout the session</p>
+              <p class="centeredText">Breathe as lightly as possible — maintain a gentle air hunger throughout the session</p>
               <div class="center-container">
                 <button #startBtnBB class="ballButton">
                   <div #BBball class="ball">
@@ -77,6 +77,11 @@
   <div id="myModalBB" class="modal" #myModalBB>
     <div class="modal-content">
         <span class="close" id="closeModalBB" #closeModalBB>&times;</span>
+        <div class="autoPlayBtnContainer">
+          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
+            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
+          </button>-->
+        </div>
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
@@ -106,7 +111,7 @@
                 <img src="assets/images/sandTimer.svg">
                 <div class="text english">
                   <p>
-                  The ratio of this exercise is fixed. What makes it harder or easier is how much air you breathe in and how fast you are breathing. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the cirlce again.
+                  The ratio of this exercise is fixed. What makes it harder or easier is how much air you breathe in and how fast you are breathing. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the circle again.
                   </p>
                 </div>
                 <div class="text portuguese">

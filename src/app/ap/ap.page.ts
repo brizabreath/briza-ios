@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-ap',
   templateUrl: './ap.page.html',
@@ -55,8 +56,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
   private APMinutes = 0;
   private APTimer: any = null;
   private APResult = ''; // Variable to store the BRT result as a string
+  
 
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
    this.globalService.initBulletSlider(this.modalAP, this.APdots, 'slides');
     this.closeModalButtonAP.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalAP));
@@ -88,7 +90,10 @@ export class APPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
+
   // Method to set the APduration after ViewChild is initialized
   setAPduration(): void {
       const selectedValue = this.APtimeInput.nativeElement.value;
@@ -102,7 +107,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -157,6 +161,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startAP(): Promise<void>{
+    this.audioService.resetaudio();
     this.APcurrentValue = parseInt(this.inhaleInputAP.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -333,13 +338,11 @@ export class APPage implements  AfterViewInit, OnDestroy {
         }else{
           this.APballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -405,6 +408,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.APcountdown = null;
     this.APTimer = null;
   }
+
  // Method to navigate back
  goBack(): void {
   this.globalService.clearAllTimeouts();
@@ -412,6 +416,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopAP(); 
     this.APResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

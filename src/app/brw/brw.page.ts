@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-brw',
   templateUrl: './brw.page.html',
@@ -60,8 +61,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   private BRWTimer: any = null;
   private BRWResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  
+  
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
    this.globalService.initBulletSlider(this.modalBRW, this.BRWdots, 'slides');
     this.closeModalButtonBRW.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalBRW));
@@ -92,7 +94,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the BRWduration after ViewChild is initialized
   setBRWduration(): void {
       const selectedValue = this.BRWtimeInput.nativeElement.value;
@@ -106,7 +110,6 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -153,6 +156,7 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startBRW(): Promise<void>{
+    this.audioService.resetaudio(); 
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRW.nativeElement.disabled = true;
@@ -352,13 +356,11 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BRWballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -433,6 +435,8 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopBRW(); 
     this.BRWResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

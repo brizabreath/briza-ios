@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 
+
 @Component({
   selector: 'app-yogic',
   templateUrl: './yogic.page.html',
@@ -58,8 +59,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   private YBTimer: any = null;
   private YBResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
+  
 
-  constructor(private navCtrl: NavController, private audioService: AudioService, private globalService: GlobalService) {}
+  constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     this.globalService.initBulletSlider(this.modalYB, this.YBdots, 'slides');
     this.closeModalButtonYB.nativeElement.addEventListener('click', () => this.globalService.closeModal(this.modalYB));
@@ -90,7 +92,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
     localStorage.setItem('firstClick', "true"); 
+    
   }
+
   // Method to set the YBduration after ViewChild is initialized
   setYBduration(): void {
       const selectedValue = this.YBtimeInput.nativeElement.value;
@@ -104,7 +108,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-      this.audioService.resetaudio();
     // Listen for app state changes
     App.addListener('appStateChange', (state) => {
       if (!state.isActive) {
@@ -164,6 +167,7 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startYB(): Promise<void>{
+    this.audioService.resetaudio(); 
     this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
@@ -350,13 +354,11 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         }else{
           this.YBballText.nativeElement.textContent = "Start"
         }
+        await this.audioService.pauseSelectedSong();
         await this.audioService.playBell("bell");
         setTimeout(async () => {
           await this.audioService.playSound('normalbreath');
-        }, 500);
-        setTimeout(() => {
-          this.audioService.pauseSelectedSong();
-        }, 4000);
+        }, 1000);
       }
     }
   }
@@ -430,6 +432,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    
+    
     this.stopYB(); 
     this.YBResultSaved.nativeElement.style.display = 'none';
     App.removeAllListeners();

@@ -14,7 +14,7 @@
     <ion-item lines="full" *ngFor="let c of filtered()">
         <ion-label>
         <div class="title">
-            <b>{{ c.userName }}</b> on <b>{{ c.videoTitle || ('Video ' + c.videoId) }}</b>
+            <b>{{ c.userName }}</b> on <b>{{ c.videoTitle || ('Video ' + c.videoId) }}</b><b> on </b>
             <span class="time" *ngIf="c.createdAt">{{ c.createdAt | date:'short' }}</span>
         </div>
         <div class="textCom">{{ c.text }}</div>
