@@ -162,13 +162,10 @@ export class APPage implements  AfterViewInit, OnDestroy {
   }
   async startAP(): Promise<void>{
     this.audioService.resetaudio();
-    this.APcurrentValue = parseInt(this.inhaleInputAP.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAP.nativeElement.disabled = true;
     this.questionAP.nativeElement.disabled = true;
-    this.minusAP.nativeElement.disabled = true;
-    this.plusAP.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnAP.nativeElement.disabled = true;
       this.inhaleAP = true;
@@ -197,7 +194,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
         }else{
           this.APballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inhale');        
+        await this.audioService.playSound('inhale');     
+        this.APcurrentValue = parseInt(this.inhaleInputAP.nativeElement.value) + 1;   
         await this.audioService.playBreathSound('inhaleBreath', this.APcurrentValue); 
 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputAP.nativeElement.value), this.APball);
@@ -369,8 +367,6 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.stopBtnAP.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.APSave.nativeElement.disabled = true;
     this.APSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusAP.nativeElement.disabled = false;
-    this.plusAP.nativeElement.disabled = false;
     this.inhaleAP = true;
     this.hold1AP = false;
     this.exhaleAP = false;

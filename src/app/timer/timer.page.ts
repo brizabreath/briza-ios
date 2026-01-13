@@ -28,6 +28,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
   @ViewChild('startBtnTIMER') startBtnTIMER!: ElementRef<HTMLButtonElement>;
   @ViewChild('stopBtnTIMER') stopBtnTIMER!: ElementRef<HTMLButtonElement>;
   @ViewChild('TIMERSave') TIMERSave!: ElementRef<HTMLButtonElement>;
+  @ViewChild('settingsMED') settingsMED!: ElementRef<HTMLButtonElement>;
   @ViewChild('timerDisplayTIMER') timerDisplayTIMER!: ElementRef<HTMLInputElement>;
   @ViewChild('TIMERResultSaved') TIMERResultSaved!: ElementRef<HTMLDivElement>;
 
@@ -61,6 +62,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     this.startBtnTIMER.nativeElement.onclick = () => this.startTIMER();
     this.stopBtnTIMER.nativeElement.onclick = () => this.stopTIMER();
     this.TIMERSave.nativeElement.onclick = () => this.saveTIMER();
+    this.settingsMED.nativeElement.disabled = false;
     this.stopBtnTIMER.nativeElement.disabled = true;
     this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.TIMERSave.nativeElement.disabled = true;
@@ -102,7 +104,6 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
       this.globalService.showElementsByClass('english');
       this.TIMERballText.nativeElement.textContent = "Start"
     }
-    this.setTIMERduration();
     this.TIMERResultSaved.nativeElement.style.display = 'none';
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     //initialize sounds
@@ -117,7 +118,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     if(firstClick == "true" && breathingON == "false"){
+      this.setTIMERduration();
       this.startBtnTIMER.nativeElement.disabled = true;
+      this.settingsMED.nativeElement.disabled = true;
       this.TIMERcountdownInput.nativeElement.style.display = "none";
       this.TIMERtimeInput.nativeElement.style.display = "none";
       this.TIMERballText.nativeElement.textContent = "00 : 00";
@@ -139,6 +142,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     }else if(firstClick == "false" && breathingON == "true"){
       this.clearIntervalsTIMER();
       localStorage.setItem('breathingON', "false"); 
+      this.TIMERSave.nativeElement.disabled = false;
+      this.TIMERSave.nativeElement.style.color = '#49B79D';
+      this.settingsMED.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.style.color = '#990000';
       if(this.isPortuguese){
@@ -151,6 +157,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     }else if(firstClick == "false" && breathingON == "false"){
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
+      this.settingsMED.nativeElement.disabled = true;
       this.stopBtnTIMER.nativeElement.disabled = true;
       this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
       this.TIMERSave.nativeElement.disabled = true;
@@ -198,6 +205,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsTIMER();
       localStorage.setItem('breathingON', "false"); 
       this.startBtnTIMER.nativeElement.disabled = true;
+      this.settingsMED.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.style.color = '#990000';
       this.TIMERSave.nativeElement.disabled = false;
@@ -225,6 +233,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     this.TIMERcountdownInput.nativeElement.style.display = "none";
     this.TIMERtimeInput.nativeElement.style.display = "inline";
     this.startBtnTIMER.nativeElement.disabled = false;
+    this.settingsMED.nativeElement.disabled = false;
     this.stopBtnTIMER.nativeElement.disabled = true;
     this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.TIMERSave.nativeElement.disabled = true;
@@ -245,7 +254,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     this.TIMERcountdownInput.nativeElement.style.display = "none";
     this.TIMERtimeInput.nativeElement.style.display = "inline"; 
   }
-  saveTIMER(): void{
+  saveTIMER(): void{ 
     this.TIMERResult = this.timerDisplayTIMER.nativeElement.innerHTML;
     const savedResults = JSON.parse(localStorage.getItem('TIMERResults') || '[]'); // Retrieve existing results or initialize an empty array
     savedResults.push({ date: new Date().toISOString(), result: this.TIMERResult}); // Add the new result with the current date

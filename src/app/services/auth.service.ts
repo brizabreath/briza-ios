@@ -13,13 +13,11 @@ import {
   verifyBeforeUpdateEmail,
   onAuthStateChanged
 } from 'firebase/auth';
-import { Firestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import { Firestore, doc, setDoc, getDoc, deleteDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { FirebaseService } from './firebase.service';
 import { Purchases } from '@revenuecat/purchases-capacitor';
 import { RevenuecatService } from './revenuecat.service';
 import { GlobalAlertService } from '../services/global-alert.service';
-import { Device } from '@capacitor/device';
-import { Timestamp } from 'firebase/firestore';
 
 interface UserData {
   email: string;
@@ -63,7 +61,48 @@ export class AuthService {
       });
     }
   }
+  async getCurrentUserProviderId(): Promise<string | null> {
+    const auth = this.firebaseService.auth;
+    if (!auth) return null;
 
+    const user = auth.currentUser;
+    if (!user || !user.providerData || user.providerData.length === 0) {
+      return null;
+    }
+
+    return user.providerData[0]?.providerId || null; // 'password', 'google.com', 'apple.com'
+  }
+
+
+  async syncMembershipTypeToFirestore(snap : any): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return;
+
+    const uid = auth.currentUser.uid;
+    const newType = snap.membershipType || 'free';
+    const cachedType = localStorage.getItem('membershipType');
+
+    // Only write if changed
+    if (cachedType === newType) return;
+
+    localStorage.setItem('membershipType', newType);
+
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+    await setDoc(
+      userDocRef,
+      {
+        membership: {
+          type: newType,
+          status: snap.status, // active/inactive
+          source: snap.source,
+          rcProductId: snap.rcProductId || null,
+          rcPeriodType: snap.rcPeriodType || null,
+          updatedAt: serverTimestamp(),
+        },
+      },
+      { merge: true }
+    );
+  }
 
   private getFirestore(): Firestore {
     if (!this.firebaseService.firestore) {
@@ -80,43 +119,34 @@ export class AuthService {
     this.globalAlert.showalert(header, this.isPortuguese() ? message.pt : message.en);
   }
 
-  async register(email: string, password: string, name?: string): Promise<boolean> {
+  async register(email: string, password: string, name?: string): Promise<void> {
     const auth = this.firebaseService.auth;
     if (!auth) {
-      this.showAlert(
-        'OFFLINE',{
-        en: 'Cannot register while offline',
-        pt: 'Não é possível registrar enquanto estiver offline',
-      });
-      return false;
+      // This is a dev/config error, not a user-facing "offline" thing.
+      throw new Error('Firebase Auth is not initialized.');
     }
 
-    try {
-      const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    // Let Firebase throw its own errors (weak-password, email-already-in-use, etc)
+    const userCredential: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    const uid = user.uid;
 
-      const uid = user.uid;
-      // Use sanitized name or fallback to first word of email
-      let displayName = this.sanitizeName(name || email.split('@')[0]);
+    // Use sanitized name or fallback to first word of email
+    const displayName = this.sanitizeName(name || email.split('@')[0]);
 
-      const userDocRef = doc(this.getFirestore(), `users/${uid}`);
-      await setDoc(userDocRef, { email: user.email, name: displayName, results: {} });
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+    await setDoc(userDocRef, {
+      email: user.email,
+      name: displayName,
+      results: {},
+      newsletterActive: true
+    });
+    this.saveUserLocally(email);
 
-      this.saveUserLocally(email);
-
-      // No need to sign out — user stays logged in
-      await this.setRevenueCatUser(); // Log in to RevenueCat
-
-      return true;
-    } catch (error) {
-      console.error('Error during registration:', error);
-      this.showAlert('Error',{
-        en: 'Registration failed. Please try again later',
-        pt: 'Falha no registro. Por favor, tente novamente mais tarde',
-      });
-      return false;
-    }
+    // User stays logged in, link to RevenueCat
+    await this.setRevenueCatUser();
   }
+
 
   async login(email: string, password: string): Promise<boolean> {
     const auth = this.firebaseService.auth;
@@ -241,6 +271,33 @@ export class AuthService {
     }
   }
   
+  async updateDataResults (): Promise<void> {
+    const currentDate = Date.now();
+    localStorage.setItem('lastOpened', String(currentDate));
+    const uid = localStorage.getItem('currentUserUID');
+    // Prepare data to save
+      const resultsToSave: Record<string, any> = {};
+      const exerciseLinks = [
+        { keys: ['brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
+        'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
+        'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
+        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
+        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'] },
+      ];
+
+      exerciseLinks.forEach((exercise) => {
+        exercise.keys.forEach((key) => {
+          const data = localStorage.getItem(key);
+          if (data) {
+            resultsToSave[key] = JSON.parse(data);
+          }
+        });
+      });
+
+      // Save to Firestore using UID
+      const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+      await setDoc(userDocRef, { results: resultsToSave }, { merge: true });
+  }
   
 
   async setRevenueCatUser() {
@@ -388,23 +445,37 @@ export class AuthService {
   }
   async updateUserEmail(newEmail: string): Promise<void> {
     const auth = this.firebaseService.auth;
-    if (!auth) return;
-  
+    if (!auth) {
+      console.error('[updateUserEmail] Auth is not initialized');
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) throw new Error('No user is currently logged in');
-  
+
+    console.log('[updateUserEmail] currentUser:', {
+      uid: user.uid,
+      email: user.email,
+      providerData: user.providerData,
+    });
+    console.log('[updateUserEmail] Attempting to verifyBeforeUpdateEmail to:', newEmail);
+
     try {
       await verifyBeforeUpdateEmail(user, newEmail);
+      console.log('[updateUserEmail] verifyBeforeUpdateEmail resolved OK');
+
       this.showAlert('Success',{
         en: 'Verification email sent to the new address. Please confirm it to complete the update',
         pt: 'E-mail de verificação enviado para o novo endereço. Por favor, confirme para concluir a atualização',
       });
+
       await this.logout();
     } catch (error) {
-      console.error('Error sending verification for email update:', error);
+      console.error('[updateUserEmail] Error sending verification for email update:', error);
       throw error;
     }
-  }  
+  }
+
   async checkIfEmailExistsByTryingToRegister(email: string): Promise<boolean> {
     const auth = this.firebaseService.auth;
     if (!auth) return false;
@@ -516,5 +587,95 @@ export class AuthService {
 
     return { active: false };
   }
+  async ensureUserCreatedAt(): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return;
 
+    const uid = auth.currentUser.uid;
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+
+    // 1) local cache
+    const cached = localStorage.getItem('userCreatedAt');
+    if (cached) {
+      // Optional: if you want, you could also ensure Firestore has it, but not required
+      return;
+    }
+
+    // 2) check Firestore
+    const snap = await getDoc(userDocRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      const createdAt = data?.['userCreatedAt'];
+
+      // Firestore Timestamp
+      if (createdAt && typeof createdAt.toMillis === 'function') {
+        localStorage.setItem('userCreatedAt', String(createdAt.toMillis()));
+        return;
+      }
+
+      // if it was stored as number/string in older versions
+      if (typeof createdAt === 'number') {
+        localStorage.setItem('userCreatedAt', String(createdAt));
+        return;
+      }
+      if (typeof createdAt === 'string' && createdAt.trim() !== '') {
+        localStorage.setItem('userCreatedAt', createdAt);
+        return;
+      }
+    }
+
+    // 3) not in localStorage and not in Firestore → set it now
+    // Use serverTimestamp for consistency (server time).
+    await setDoc(
+      userDocRef,
+      { userCreatedAt: serverTimestamp() },
+      { merge: true }
+    );
+
+    // We don't get serverTimestamp value back immediately without re-read.
+    // If you want local cache immediately, store device time too:
+    localStorage.setItem('userCreatedAt', String(Date.now()));
+
+    // Optional (more accurate): re-read once to cache exact server time
+    try {
+      const snap2 = await getDoc(userDocRef);
+      const data2 = snap2.data();
+      const createdAt2 = data2?.['userCreatedAt'];
+      if (createdAt2 && typeof createdAt2.toMillis === 'function') {
+        localStorage.setItem('userCreatedAt', String(createdAt2.toMillis()));
+      }
+    } catch (e) {
+      // ignore; cache already has a value
+    }
+  }
+  async ensureUserLanguageSynced(): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return;
+
+    const uid = auth.currentUser.uid;
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+
+    // 1) localStorage: if missing, default to EN and persist it
+    const ls = localStorage.getItem('isPortuguese');
+    if (ls === null) {
+      localStorage.setItem('isPortuguese', 'false');
+
+      // Ensure Firestore has EN (merge so we don't overwrite other fields)
+      await setDoc(userDocRef, { language: 'EN' }, { merge: true });
+      return;
+    }
+
+    // 2) localStorage exists -> desired language
+    const isPT = ls === 'true';
+    const desired = isPT ? 'PT' : 'EN';
+
+    // 3) compare against Firestore
+    const snap = await getDoc(userDocRef);
+    const current = snap.exists() ? (snap.data()?.['language'] as string | undefined) : undefined;
+
+    // If missing or different -> update Firestore to match local preference
+    if (current !== desired) {
+      await setDoc(userDocRef, { language: desired }, { merge: true });
+    }
+  }
 }

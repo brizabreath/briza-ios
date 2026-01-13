@@ -26,12 +26,6 @@
         <button (click)="fetchOfferings()">{{ isPortuguese ? 'Tentar novamente' : 'Retry' }}</button>
       </ng-template>
 
-      <ul class="ulManage">{{ isPortuguese ? 'Programa Briza Personalizado' : 'Personalized Briza Program' }}</ul>
-      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de respiração personalizáveis' : 'Customizable breathing techniques' }}</ul>
-      <ul class="ulManage">{{ isPortuguese ? 'Resultados para acompanhar seu progresso' : 'Results to track your progress' }}</ul>
-      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de retenção de respiração' : 'Breath Holding Techniques' }}</ul>
-      <ul class="ulManage">{{ isPortuguese ? 'Técnicas de Pranayama' : 'Pranayama Techniques' }}</ul>
-
       <button (click)="subscribe()" type="button" [disabled]="isLoading" class="manageSubmit">
         <span *ngIf="!isLoading">{{ isPortuguese ? 'Assine Agora' : 'Subscribe Now' }}</span>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
@@ -44,6 +38,21 @@
             : 'Your membership starts as soon as you set up payment. Your monthly/yearly auto-renew charge will occur on the last day of the current billing period. We will renew your membership for you (unless you have canceled your subscription in the profile page 24 hours before end of billing cycle)'
         }}
       </p>
+     <p class="manageSubsModal">
+      <ng-container *ngIf="isPortuguese; else enTerms">
+        Ao clicar em "Assine Agora", você concorda com
+        <a href="https://brizabreath.com/terms-conditions/" target="_blank" rel="noopener noreferrer">
+          estes termos
+        </a>
+      </ng-container>
+
+      <ng-template #enTerms>
+        By clicking on "Subscribe Now" you are agreeing to
+        <a href="https://brizabreath.com/terms-conditions/" target="_blank" rel="noopener noreferrer">
+          these terms
+        </a>
+      </ng-template>
+    </p>
     </ng-container>
   </div>
 </div>

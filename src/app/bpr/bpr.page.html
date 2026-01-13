@@ -1,111 +1,183 @@
+<!-- bpr.page.html -->
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons">
-      <button class="goback"></button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
-</header>  
-  <div class="results-container">
-    <div class="calendar" #resultCalendar>
-      <div class="calendar-header">
-        <button (click)="changeMonth(-1)">&larr;</button> <!-- Left arrow -->
-        <span>{{ currentMonthName }} {{ currentYear }}</span>
-        <button (click)="changeMonth(1)">&rarr;</button> <!-- Right arrow -->
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <div class="results-container" #resultsTrue>
+    <!-- Segmented Control -->
+    <div class="segmented-control">
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'chart'"
+        (click)="selectSegment('chart')">
+        <div class="english" *ngIf="!isPortuguese">Bar Charts</div>
+        <div class="portuguese" *ngIf="isPortuguese">Gráfico de barras</div>
+      </button>
+
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'calendar'"
+        (click)="selectSegment('calendar')">
+        <div class="english" *ngIf="!isPortuguese">Calendar</div>
+        <div class="portuguese" *ngIf="isPortuguese">Calendário</div>
+      </button>
+    </div>
+
+    <!-- Segment Content -->
+    <div class="segment-content">
+      <div *ngIf="selectedSegment === 'chart'">
+        <div class="calendar">
+          <div class="chart-container">
+            <canvas #allChartCanvas></canvas>
+          </div>
+        </div>
+        <div class="calendarText english" *ngIf="!isPortuguese">
+          * Click on the bar to see results of that day
+        </div>
+        <div class="calendarText portuguese" *ngIf="isPortuguese">
+          * Clique na barra para ver resultados do dia
+        </div>
+        <h4 *ngIf="!isPortuguese" class="chartText">Other charts</h4>
+        <h4 *ngIf="isPortuguese" class="chartText">Outros gráficos</h4>
+        <div id="resultsList" #resultsList></div>
       </div>
-      
-      <div class="calendar-weekdays">
-        <div *ngFor="let day of weekdays">{{ day }}</div>
-      </div>
-      
-      <div class="calendar-grid">
-        <div *ngFor="let blank of blankDays" class="calendar-day empty"></div>
-        <div *ngFor="let day of daysInMonth" 
-          [class.current-day]="isToday(day)" 
-          [class.clickable]="hasResultsOnDay(day)"
-          class="calendar-day"
-          (click)="hasResultsOnDay(day) ? openResultsModal(day) : null">
-          <span>{{ day }}</span>
-          <div *ngIf="hasResultsOnDay(day)" class="dot"></div>
+      <div *ngIf="selectedSegment === 'calendar'">
+        <div class="calendar-header">
+          <button (click)="changeMonth(-1)">&larr;</button>
+          <span>{{ currentMonthName }} {{ currentYear }}</span>
+          <button (click)="changeMonth(1)">&rarr;</button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <div *ngFor="let day of weekdays">{{ day }}</div>
+        </div>
+
+        <div class="calendar-grid">
+          <div *ngFor="let blank of blankDays" class="calendar-day empty"></div>
+          <div
+            *ngFor="let day of daysInMonth"
+            [class.current-day]="isToday(day)"
+            [class.clickable]="hasResultsOnDay(day)"
+            class="calendar-day"
+            (click)="hasResultsOnDay(day) ? openResultsModal(day) : null">
+            <span>{{ day }}</span>
+            <div *ngIf="hasResultsOnDay(day)" class="dot"></div>
+          </div>
+        </div>
+
+        <div class="calendarText english" *ngIf="!isPortuguese">
+          * Click on the days with dot to see results of that day
+        </div>
+        <div class="calendarText portuguese" *ngIf="isPortuguese">
+          * Clique nos dias com um ponto para ver resultados do dia
+        </div>
+        <!-- Overview -->
+        <div class="overview-box allexercises">
+          <div class="overview-item">
+            <strong class="english" *ngIf="!isPortuguese">Longest day of practice</strong>
+            <strong class="portuguese" *ngIf="isPortuguese">Maior tempo de prática em um dia</strong>
+            <span class="english" *ngIf="!isPortuguese">{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
+            <span class="portuguese" *ngIf="isPortuguese">{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
+          </div>
+          <div class="overview-item">
+            <strong class="english" *ngIf="!isPortuguese">Total time practiced</strong>
+            <strong class="portuguese" *ngIf="isPortuguese">Tempo total praticado</strong>
+            <span>{{ totalPracticeFormatted }}</span>
+          </div>
+          <div class="overview-item">
+            <strong class="english" *ngIf="!isPortuguese">Sessions</strong>
+            <strong class="portuguese" *ngIf="isPortuguese">Sessões</strong>
+            <span>{{ totalSessions }}</span>
+          </div>
+
+          <!-- ✅ Longest streak ever (excluding BRT) -->
+          <div class="overview-item">
+            <strong class="english" *ngIf="!isPortuguese">Longest streak</strong>
+            <strong class="portuguese" *ngIf="isPortuguese">Maior sequência</strong>
+            <span class="english" *ngIf="!isPortuguese">{{ longestStreakEver }} days</span>
+            <span class="portuguese" *ngIf="isPortuguese">{{ longestStreakEver }} dias</span>
+          </div>
         </div>
       </div>
-      <div class="calendarText english">* Click on the days with dot to see results of that day</div>
-      <div class="calendarText portuguese">* Clique nos dias com um ponto para ver resultados do dia</div>
     </div>
-    <div id="resultsList" #resultsList></div>
-    <div class="breathingpages set english" #resultMSG>
-      <p>Monitor your results and track the advancement in your preferred breathing and breath-holding exercises. Observing your progress serves as a powerful motivator, encouraging you to continue your training and strive for better performance </p>
-    </div>
-    <div class="breathingpages set portuguese" #resultMSGpt>
-      <p>Acompanhe seus resultados e acompanhe o progresso em seus exercícios de respiração preferidos e de retenção de respiração. Observar seu progresso serve como um motivador poderoso, incentivando você a continuar seu treinamento e buscar um melhor desempenho.</p>
-    </div>
-    <div id="noResultsMessage" #noResultsMessage style="display: none;">
+  </div>
+  <div class="results-container" #noResultsMessage>
+    <div id="noResultsMessage">
       <div class="programpageStyle">
-        <h2 class="english justifyContent">Find out what your retention test score is to get started</h2>
-        <h2 class="portuguese justifyContent">Descubra qual é a sua pontuação no teste de renteção para começar</h2>
-        <a class="breath-button" routerLink="/brt">
+        <h2 class="english justifyContent widthadjust" *ngIf="!isPortuguese">Find out what your retention test score is to get started</h2>
+        <h2 class="portuguese justifyContent widthadjust" *ngIf="isPortuguese">Descubra qual é a sua pontuação no teste de retenção para começar</h2>
+
+        <a class="breath-button widthadjust" routerLink="/brt">
           <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
           <div class="textBP">
-              <div class="titleBP english">Briza<br>Retention Test</div>
-              <div class="subtitleBP english">Measure your fitness level</div>
-              <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-              <div class="subtitleBP portuguese">Medindo seu nível de condicionamento físico</div>
+            <div class="titleBP english" *ngIf="!isPortuguese">Briza<br />Retention Test</div>
+            <div class="subtitleBP english" *ngIf="!isPortuguese">Measure your fitness level</div>
+
+            <div class="titleBP portuguese" *ngIf="isPortuguese">Teste<br />de Retenção Briza</div>
+            <div class="subtitleBP portuguese" *ngIf="isPortuguese">Medindo seu condicionamento</div>
           </div>
         </a>
       </div>
     </div>
   </div>
-  <footer id="resultsFooter" class="english">
+  <footer id="resultsFooter" class="english" *ngIf="!isPortuguese">
     <div class="navbar">
-        <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
-        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
-        <a class="active"><i class="fa fa-line-chart active"></i>Results</a>
-        <a class="navIcons"routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="active"><i class="fa fa-line-chart active"></i>Results</a>
+      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
     </div>
   </footer>
-  <footer id="resultsFooterBR" class="portuguese">
+
+  <footer id="resultsFooterBR" class="portuguese" *ngIf="isPortuguese">
     <div class="navbar">
-        <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
-        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
-        <a class="active"><i class="fa fa-line-chart active"></i>Resultados</a>
-        <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+      <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="active"><i class="fa fa-line-chart active"></i>Resultados</a>
+      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
-  <ion-modal [isOpen]="isModalOpen2" (willDismiss)="closeModal()">
-    <div class="modal-content2">    
+
+  <ion-modal [isOpen]="isModalOpen2" [backdropDismiss]="true" (didDismiss)="closeModal()">
+    <div class="modal-content2">
       <div *ngIf="selectedDateResults.length; else noResults">
         <div class="modal-header">
           <div></div>
           <h2>{{ selectedDateHeader }}</h2>
-          <button (click)="closeModal()" class="close-button">X</button>
+          <button type="button" (click)="onCloseModalClick($event)" class="close-button">X</button>
         </div>
+
         <div *ngFor="let result of selectedDateResults" class="result-item">
-          <h3>{{ getExerciseName(result.exerciseKey) }}</h3> 
-  
-          <!-- For results with multiple rounds -->
+          <h3>{{ getExerciseName(result.exerciseKey) }}</h3>
+
           <div *ngIf="isMultiRoundExercise(result.exerciseKey)">
             <div *ngFor="let round of result.roundsResult; let i = index">
               <p>Round {{ i + 1 }}: {{ formatTime(round) }}</p>
             </div>
           </div>
 
-          <!-- For results with a single result -->
           <div *ngIf="!isMultiRoundExercise(result.exerciseKey)">
             <p *ngIf="result.result">Result: {{ result.result }}</p>
             <p *ngIf="result.rounds">Rounds: {{ result.rounds }}</p>
           </div>
-          
-          <button (click)="confirmDelete(result)" class="delete-button">Delete Result</button>
+
+          <button (click)="confirmDelete(result)" class="delete-button"><img class="logoimg" src="assets/images/trash.png" width="25" height="25" /></button>
         </div>
       </div>
-  
+
       <ng-template #noResults>
-        <p>No results available for this date.</p>
+        <p *ngIf="!isPortuguese">No results available for this date.</p>
+        <p *ngIf="isPortuguese">Nenhum resultado disponível para esta data.</p>
       </ng-template>
     </div>
-  </ion-modal>  
+  </ion-modal>
 </ion-content>

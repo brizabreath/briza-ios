@@ -1,242 +1,313 @@
-import { Component, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ModalController, NavController } from '@ionic/angular';
 import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
-import Player from '@vimeo/player';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { VideoModalComponent } from '../modals/video-modal.component';
 import { FirebaseService } from '../services/firebase.service';
+import { collection } from 'firebase/firestore';
 import { VimeoMetaService } from '../services/vimeo-meta.service';
 import { GlobalAlertService } from '../services/global-alert.service';
-
+import { getDocsFromServer } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-lungs',
   templateUrl: './lungs.page.html',
   styleUrls: ['./lungs.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
+  imports: [CommonModule, IonicModule, RouterModule, VideoModalComponent],
 })
-export class LungsPage implements OnDestroy {
-  isModalOpen = false;
-  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-  watchedLE = false;
+export class LungsPage implements OnInit {
+  selectedSegment: 'lungs' | 'mobility' = 'lungs';
+  isPortuguese = false;
 
-  vimeoUrlEN: SafeResourceUrl | null = null;
-  vimeoUrlPT: SafeResourceUrl | null = null;
+  allVideos: any[] = [];
+  filteredVideos: any[] = [];
 
-  @ViewChild('vimeoEN') vimeoENRef!: ElementRef<HTMLIFrameElement>;
-  @ViewChild('vimeoPT') vimeoPTRef!: ElementRef<HTMLIFrameElement>;
-
-  private enPlayer?: Player;
-  private ptPlayer?: Player;
-
-  private enLoaded = false;
-  private ptLoaded = false;
+  activeVideo: { title: string; url: SafeResourceUrl } | null = null;
   showWebSplash = false;
+
+  private watchedKey = 'watchedYogaIds';
+  private likedKey = 'likedYogaIds';
 
   constructor(
     private navCtrl: NavController,
     private globalService: GlobalService,
+    private sanitizer: DomSanitizer,
+    private modalCtrl: ModalController,
     private firebaseService: FirebaseService,
     private vimeoMeta: VimeoMetaService,
-    private sanitizer: DomSanitizer,
-    private globalAlert: GlobalAlertService
+    private globalAlert: GlobalAlertService,
+    private route: ActivatedRoute, 
+    private router: Router
   ) {}
 
-  async ionViewWillEnter() {
-    this.showWebSplash = true;
-    // Toggle language visibility (same as before)
+  isWatched(videoId: string): boolean {
+    const ids: string[] = JSON.parse(localStorage.getItem(this.watchedKey) || '[]');
+    return ids.includes(videoId);
+  }
+
+  hasLikedClasses(): boolean {
+    const ids: string[] = JSON.parse(localStorage.getItem(this.likedKey) || '[]');
+    return ids.length > 0;
+  }
+  goToLikedClasses(): void{
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    // Load URLs (online → Firestore, offline → cache)
-    if (navigator.onLine) {
-      try {
-        await this.loadLungsVideosFromFirestore();
-      } catch (e) {
-        console.warn('Lungs fetch failed, trying cache:', e);
-        this.showWebSplash = false;
+    if(this.hasLikedClasses()){
+      this.navCtrl.navigateRoot('/yogaLikedPage');
+    }
+    else{
+      this.globalAlert.showalert(
+        this.isPortuguese ? 'Aulas curtidas' : 'Liked classes',
+        this.isPortuguese
+          ? 'Você ainda não curtiu de nenhuma aula'
+          : 'You did not like any classes yet'
+      );
+    }
+  }
+  ngOnInit() {
+    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'isPortuguese') {
+        this.isPortuguese = e.newValue === 'true';
+        this.filterVideos();
       }
-    }else{
-      if (!this.isPortuguese) {
-        this.globalAlert.showalert('OFFLINE', '🌐 You are offline.\n\nConnect to the internet to watch this video');
-      } else {
-        this.globalAlert.showalert('OFFLINE', '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo');
+    });
+
+    this.initVideos().then(async () => {
+      this.filterVideos();
+      await this.openFromQueryParamIfAny();
+    });
+  }
+  private async openFromQueryParamIfAny(): Promise<void> {
+    const openId = this.route.snapshot.queryParamMap.get('open');
+    if (!openId) return;
+
+    // Ensure lungs segment so the pinned free class is visible
+    this.selectedSegment = 'lungs';
+    this.filterVideos();
+
+    const video = this.allVideos.find(v => v.id === openId);
+
+    if (video) {
+      await this.onVideoClick(video);
+    } else {
+      console.warn('openFromQueryParamIfAny: video not found for id', openId);
+    }
+
+    // Optional: remove the query param so it doesn't auto-open again on back/refresh
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { open: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+  private async initVideos() {
+    this.showWebSplash = true;
+
+    try {
+      const cachedRaw = localStorage.getItem('cachedYogaVideos');
+      let cachedVideos: any[] = [];
+
+      if (cachedRaw) {
+        try {
+          const cachedObj = JSON.parse(cachedRaw);
+          cachedVideos = cachedObj.videos ?? [];
+
+          // ✅ show cache instantly
+          this.allVideos = cachedVideos.map((v: any) => ({
+            ...v,
+            url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
+          }));
+        } catch (err) {
+          console.warn('Failed to parse cached lungs videos', err);
+        }
       }
+
+      if (!navigator.onLine) {
+        console.log('📴 Offline – using cache only');
+        return;
+      }
+
+      await this.fetchVideosFromFirebase();
+    } catch (err) {
+      console.error('❌ Failed to init lungs videos:', err);
+    } finally {
       this.showWebSplash = false;
     }
-    if (!this.vimeoUrlEN || !this.vimeoUrlPT) {
-      const cached = localStorage.getItem('cachedLungs');
-      if (cached) {
-        const { en, pt } = JSON.parse(cached);
-        if (en && !this.vimeoUrlEN) this.vimeoUrlEN = this.toSafePlayerUrl(en);
-        if (pt && !this.vimeoUrlPT) this.vimeoUrlPT = this.toSafePlayerUrl(pt);
-      }
+  }
+
+  async fetchVideosFromFirebase() {
+    try {
+      const colRef = collection(this.firebaseService.firestore!, 'videos');
+      const snapshot = await getDocsFromServer(colRef);
+
+      const base = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
+
+      const filteredBase = base.filter(
+        (v) => v?.category === 'lungs' || v?.category === 'mobility'
+      );
+
+      const enriched = filteredBase.map((v) => {
+        const rawUrl = v.url || v.videoUrl;
+        const playerUrl = this.vimeoMeta.toPlayerUrl(rawUrl);
+
+        return {
+          id: v.id,
+          category: v.category,
+          language: v.language,
+          duration: v.duration ?? null,
+          title: (v.title || '').trim() || 'Untitled',
+          description: (v.description || '').trim() || '',
+          thumbnail: (v.thumbnail || '').trim() || 'assets/images/lungs.svg',
+          videoUrl: playerUrl,
+          rawUrl,
+          addedOn: v.addedOn || '',
+          isFree: !!v.isFree, // set below
+        };
+      });
+
+      this.allVideos = enriched;
+
+      const cacheKey = 'cachedYogaVideos';
+      let cached: any[] = [];
+
+      try {
+        const raw = localStorage.getItem(cacheKey);
+        if (raw) cached = (JSON.parse(raw)?.videos ?? []);
+      } catch {}
+
+      const byId = new Map<string, any>();
+      for (const v of cached) byId.set(v.id, v);
+      for (const v of this.allVideos) byId.set(v.id, v); // lungs/mobility override same id
+
+      const mergedVideos = Array.from(byId.values());
+
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({ ts: Date.now(), videos: mergedVideos })
+      );
+    } catch (err) {
+      console.error('❌ Failed to fetch lungs videos from Firestore:', err);
+    }
+  }
+
+  filterVideos() {
+    const selectedLanguage = this.isPortuguese ? 'PT' : 'EN';
+
+    const base = this.allVideos.filter((v) => {
+      const matchesCategory = v.category === this.selectedSegment;
+      const matchesLanguage = v.language === selectedLanguage;
+      return matchesCategory && matchesLanguage;
+    });
+
+    // ✅ pin ALL free classes first (for this segment + language)
+    const pinned = base.filter(v => !!v.isFree);
+    const rest = base.filter(v => !v.isFree);
+    this.filteredVideos = [...pinned, ...rest];
+  }
+
+  selectSegment(segment: 'lungs' | 'mobility') {
+    this.selectedSegment = segment;
+    this.filterVideos();
+  }
+
+  isMemberActive(): boolean {
+    return localStorage.getItem('membershipStatus') === 'active';
+  }
+
+  async onVideoClick(video: any) {
+    if (!navigator.onLine) {
+      const msg = this.isPortuguese
+        ? '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo'
+        : '🌐 You are offline.\n\nConnect to the internet to watch this video';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
     }
 
-    // Now that src is set, init players and tracking
-    this.initPlayers();
-    this.setupActivePlayerTracking();
+    if (video.isFree) {
+      await this.playVideo(video);
+      return;
+    }
+
+    if (!this.isMemberActive()) {
+      this.globalService.openModal2Safe();
+      return;
+    }
+    await this.playVideo(video);
   }
 
-  ionViewWillLeave() {
-    this.destroyPlayers();
-  }
+  async playVideo(video: any) {
+    await this.enrichVideoOnOpen(video);
+    const url = this.sanitizer.bypassSecurityTrustResourceUrl(video.videoUrl || video.url);
 
-  ngOnDestroy(): void {
-    this.destroyPlayers();
+    const modal = await this.modalCtrl.create({
+      component: VideoModalComponent,
+      componentProps: {
+        url,
+        title: video.title,
+        description: video.description,
+        duration: video.duration, // not displayed here, but modal can still use it if present
+        videoId: video.id,
+        addedOn: video.addedOn,
+        category: video.category,
+      },
+      cssClass: 'video-modal',
+    });
+
+    await modal.present();
   }
 
   goBack(): void {
     this.navCtrl.back();
   }
 
-  /**
-   * Optional: if you add (load)="onIframeLoad('EN'|'PT')" in the template,
-   * this guarantees the Vimeo iframe finished loading before creating a Player.
-   */
-  onIframeLoad(lang: 'EN' | 'PT') {
-    if (lang === 'EN') this.enLoaded = true;
-    if (lang === 'PT') this.ptLoaded = true;
+  private isAdmin(): boolean {
+    // Use whatever you already use in Yoga page; if you have firebaseService.isAdmin(), use it.
+    return !!(this.firebaseService as any)?.isAdmin?.() && (this.firebaseService as any).isAdmin();
+  }
 
-    // Create players if not already created
-    if (lang === 'EN' && !this.enPlayer && this.vimeoENRef?.nativeElement) {
-      this.enPlayer = new Player(this.vimeoENRef.nativeElement);
-      this.enPlayer.on('error', (e: any) => console.warn('Vimeo EN error', e));
+  private async enrichVideoOnOpen(video: any): Promise<any> {
+    // Only admins should do Vimeo fetch + DB writes
+    if (!this.isAdmin()) return video;
+
+    const rawUrl = video.rawUrl || video.url || video.videoUrl || '';
+    if (!rawUrl) return video;
+
+    try {
+      const meta = await this.vimeoMeta.getMeta(rawUrl, true); // force refresh
+      const playerUrl = this.vimeoMeta.toPlayerUrl(rawUrl);
+
+      const title = (meta.title || video.title || '').trim();
+      const description = (meta.description || video.description || '').trim();
+      const thumbnail = (meta.thumbnail_url || video.thumbnail || '').trim();
+      const durationMinutes =
+        typeof meta.duration === 'number' ? Math.round(meta.duration / 60) : video.duration ?? null;
+
+      // Update Firestore (best-effort)
+      const patch: any = {
+        title,
+        description,
+        thumbnail,
+        duration: durationMinutes,
+        videoUrl: playerUrl,
+        url: rawUrl, // keep original too if you want
+      };
+
+      const ref = doc(this.firebaseService.firestore!, 'videos', video.id);
+      await updateDoc(ref, patch);
+
+      // Return enriched object for immediate UI/modal
+      return { ...video, ...patch };
+    } catch (e) {
+      console.warn('enrichVideoOnOpen failed:', e);
+      return video;
     }
-    if (lang === 'PT' && !this.ptPlayer && this.vimeoPTRef?.nativeElement) {
-      this.ptPlayer = new Player(this.vimeoPTRef.nativeElement);
-      this.ptPlayer.on('error', (e: any) => console.warn('Vimeo PT error', e));
-    }
-
-    // (Re)wire events for the active language
-    this.setupActivePlayerTracking();
-  }
-
-  private initPlayers() {
-    // Creates players if iframe elements are present.
-    // Safe even if onIframeLoad is also used; we call .off() before wiring events.
-    if (!this.enPlayer && this.vimeoENRef?.nativeElement) {
-      this.enPlayer = new Player(this.vimeoENRef.nativeElement);
-      this.enPlayer.on('error', (e: any) => console.warn('Vimeo EN error', e));
-    }
-    if (!this.ptPlayer && this.vimeoPTRef?.nativeElement) {
-      this.ptPlayer = new Player(this.vimeoPTRef.nativeElement);
-      this.ptPlayer.on('error', (e: any) => console.warn('Vimeo PT error', e));
-    }
-  } 
-
-  private setupActivePlayerTracking() {
-    this.watchedLE = false;
-
-    const player = this.isPortuguese ? this.ptPlayer : this.enPlayer;
-    if (!player) return;
-
-    player.off('play');
-    player.off('timeupdate');
-    player.off('ended');
-
-
-    player.on('timeupdate', (data: { seconds: number; duration: number }) => {
-      if (this.watchedLE) return;
-      if (data.duration > 0 && data.seconds / data.duration >= 0.95) {
-        this.saveLungsExpansion(this.formatTime(data.seconds));
-        this.watchedLE = true;
-      }
-    });
-
-    player.on('ended', async () => {
-      const duration = await player.getDuration();
-      if (!this.watchedLE) {
-        this.saveLungsExpansion(this.formatTime(duration));
-        this.watchedLE = true;
-      }
-    });
-  }
-
-  private destroyPlayers() {
-    if (this.enPlayer) {
-      this.enPlayer.unload().catch(() => {});
-      this.enPlayer = undefined;
-    }
-    if (this.ptPlayer) {
-      this.ptPlayer.unload().catch(() => {});
-      this.ptPlayer = undefined;
-    }
-    this.enLoaded = false;
-    this.ptLoaded = false;
-  }
-
-  private formatTime(secondsFloat: number): string {
-    const seconds = Math.max(0, Math.floor(secondsFloat));
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${this.padZero(minutes)} : ${this.padZero(secs)}`;
-  }
-
-  private padZero(value: number): string {
-    return value < 10 ? `0${value}` : `${value}`;
-  }
-
-  private saveLungsExpansion(minutesWatched: string): void {
-    const savedResults = JSON.parse(localStorage.getItem('LungsResults') || '[]');
-    savedResults.push({
-      date: new Date().toISOString(),
-      result: minutesWatched,
-    });
-    localStorage.setItem('LungsResults', JSON.stringify(savedResults));
-  }
-
-  private pickLatest(docs: any[]) {
-    if (!docs.length) return null;
-    // Prefer by createdAt if present (Firestore Timestamp); fallback to first
-    return docs
-      .slice()
-      .sort((a, b) => {
-        const as = a?.createdAt?.seconds ?? 0;
-        const bs = b?.createdAt?.seconds ?? 0;
-        return bs - as;
-      })[0];
-  }
-
-  private toSafePlayerUrl(raw: string): SafeResourceUrl {
-    // Reuse your VimeoMetaService transformer if the DB stores normal Vimeo links
-    const player = this.vimeoMeta.toPlayerUrl(raw); // e.g., https://player.vimeo.com/video/12345?h=...
-    return this.sanitizer.bypassSecurityTrustResourceUrl(player);
-  }
-
-  private async loadLungsVideosFromFirestore(): Promise<void> {
-    this.showWebSplash = true;
-    const db = this.firebaseService.firestore;
-    if (!db) return;
-
-    // Pull every video with category === 'lungs'
-    const colRef = collection(db, 'videos');
-    const qRef = query(colRef, where('category', '==', 'lungs'));
-    const snap = await getDocs(qRef);
-    const list = snap.docs.map(d => ({ id: d.id, ...(d.data() as any) }));
-
-    const enList = list.filter(v => (v.language || v.lang) === 'EN');
-    const ptList = list.filter(v => (v.language || v.lang) === 'PT');
-
-    const enPick = this.pickLatest(enList) || enList[0] || list.find(v => (v.language || v.lang) === 'EN') || list[0];
-    const ptPick = this.pickLatest(ptList) || ptList[0] || list.find(v => (v.language || v.lang) === 'PT') || list[0];
-
-    // Fallbacks if you only have one language in DB
-    const enUrlRaw = enPick?.videoUrl || enPick?.url || '';
-    const ptUrlRaw = ptPick?.videoUrl || ptPick?.url || '';
-
-    // If URLs are already player URLs, toPlayerUrl will no-op or still work fine.
-    if (enUrlRaw) this.vimeoUrlEN = this.toSafePlayerUrl(enUrlRaw);
-    if (ptUrlRaw) this.vimeoUrlPT = this.toSafePlayerUrl(ptUrlRaw);
-
-    // Cache for offline (optional)
-    const cache = { en: enUrlRaw || null, pt: ptUrlRaw || null };
-    localStorage.setItem('cachedLungs', JSON.stringify(cache));
-    setTimeout(() => {
-      this.showWebSplash = false;
-    }, 1000);  
   }
 }

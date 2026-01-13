@@ -4,6 +4,11 @@ import { Preferences } from '@capacitor/preferences';
 
 const PREF_KEY_NEXT_AT = 'briza_next_local_reminder_at';
 const NOTIF_ID = 3003; // stable id for this reminder series
+type YogaNewItem = {
+  id: string;
+  title?: string;
+  category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility';
+};
 
 @Injectable({ providedIn: 'root' })
 export class LocalReminderService {
@@ -12,6 +17,9 @@ export class LocalReminderService {
   private defaultMinute = 0;    // :00
   private gapDays = 2;          // every ~2 days
 
+  private getIsPortuguese(): boolean {
+    return localStorage.getItem('isPortuguese') === 'true';
+  }
     // --- Message pools (EN + PT) ---
   private messagesEN = [
     "Rise & shine 🌞 Recharge with a few mindful breaths",
@@ -92,8 +100,7 @@ export class LocalReminderService {
 
   /** Pick a random, language-aware message */
   private pickMessage(): { title: string; body: string } {
-    const lang = navigator.language?.toLowerCase() || 'en';
-    const isPT = lang.startsWith('pt');
+    const isPT = this.getIsPortuguese();
     const pool = isPT ? this.messagesPT : this.messagesEN;
     const body = pool[Math.floor(Math.random() * pool.length)];
     return { title: 'Briza', body };
@@ -131,52 +138,64 @@ export class LocalReminderService {
     const n = Number(r.value);
     return Number.isFinite(n) ? n : null;
   }
-  /** DEBUG: schedule a reminder that fires in N seconds (for quick testing) 
-    async debugFireIn(seconds = 10) {
-    const ok = await this.ensurePermission();
-    if (!ok) return;
 
-    const message = this.pickMessage();
-    const when = new Date(Date.now() + seconds * 1000);
+  private categoryLabel(category: YogaNewItem['category'], isPT: boolean): string {
+    const mapEN: Record<string, string> = {
+      move: 'Flow',
+      slowdown: 'Gentle',
+      meditate: 'Mindfulness',
+      lungs: 'Lungs',
+      mobility: 'Mobility',
+    };
 
-    await LocalNotifications.schedule({
-        notifications: [{
-        id: 987654,            // separate id from the 3-day series
-        title: message.title,
-        body: message.body,
-        schedule: { at: when },
-        sound: 'default',
-        }]
-    });
-    }
-    */
-   /** Notify user about new yoga classes (fires immediately). */
-  async notifyNewYogaClass(count: number, newIds: string[]) {
+    const mapPT: Record<string, string> = {
+      move: 'Flow',
+      slowdown: 'Suave',
+      meditate: 'Mindfulness',
+      lungs: 'Pulmões',
+      mobility: 'Mobilidade',
+    };
+    if (!category) return isPT ? 'Yoga' : 'Yoga';
+    return (isPT ? mapPT : mapEN)[category] ?? (isPT ? 'Yoga' : 'Yoga');
+  }
+
+  /** Notify user about new yoga classes (fires immediately). */
+  async notifyNewYogaClass(items: YogaNewItem[]) {
     if (!(await this.ensurePermission())) return;
 
-    const lang = navigator.language?.toLowerCase() || 'en';
-    const isPT = lang.startsWith('pt');
-
+    const isPT = this.getIsPortuguese();
     const title = 'Briza';
-    const body = isPT
-      ? (count > 1
-          ? `🆕 Novas aulas de yoga disponíveis — confira!`
-          : `🆕 Nova aula de yoga disponível — confira!`)
-      : (count > 1
-          ? `🆕 New yoga classes available — check them out!`
-          : `🆕 New yoga class available — check it out!`);
+
+    // Keep notification short (OS truncates long bodies)
+    const first = items[0];
+    const firstTitle = (first?.title || '').trim();
+    const section = this.categoryLabel(first?.category, isPT);
+
+    let body = '';
+
+    if (items.length === 1) {
+      body = isPT
+        ? `🆕 Nova aula: ${firstTitle || 'disponível'} — confira na seção ${section}`
+        : `🆕 New class: ${firstTitle || 'available'} — check it out in the ${section} section`;
+    } else {
+      const more = items.length - 1;
+      body = isPT
+        ? `🆕 Nova aula: ${firstTitle || 'disponível'} (+${more}) — veja na seção ${section}`
+        : `🆕 New class: ${firstTitle || 'available'} (+${more}) — see it in ${section}`;
+    }
 
     await LocalNotifications.schedule({
       notifications: [{
-        id: 4010, // distinct from the 3-day series
+        id: 4010,
         title,
         body,
         schedule: { at: new Date(Date.now() + 500) },
         sound: 'default',
-        extra: { type: 'yogaNew', ids: newIds }, // 👈 carry the IDs for deep link
+        extra: { type: 'yogaNew', items }, // keep IDs + meta for deep link handling
       }]
     });
   }
+
   async notifyCommentReply(replierName: string, videoId: string) {
   console.log('📨 notifyCommentReply() called for video:', videoId);
 

@@ -167,16 +167,18 @@ export class HatresultsPage implements AfterViewInit {
     this.HATlongestRound = longestRoundEntry.round;
     this.HATlongestRoundDate = this.formatDate(longestRoundEntry.date, true);
   
-    // Find the latest longest session average
-    const sessionAveragesWithDates = this.HATDataArray.map(entry => ({
-      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
-      date: entry.date
-    }));
-    const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
-      entry.average > max.average || (entry.average === max.average && entry.date > max.date) ? entry : max
-    );
-    this.HATlongestSessionAverage = parseFloat(longestSessionAverageEntry.average.toFixed(2));
-    this.HATlongestSessionAverageDate = this.formatDate(longestSessionAverageEntry.date, true);
+    // Calculate lifetime average (average of all breath holds ever recorded)
+    let totalHoldTime = 0;
+    let totalRounds = 0;
+
+    this.HATDataArray.forEach(entry => {
+      totalHoldTime += entry.roundsResult.reduce((a, b) => a + b, 0);
+      totalRounds += entry.roundsResult.length;
+    });
+
+    const lifetimeAverageSeconds = totalRounds > 0 ? totalHoldTime / totalRounds : 0;
+    this.HATlongestSessionAverage = parseFloat(lifetimeAverageSeconds.toFixed(2));
+    this.HATlongestSessionAverageDate = '';
   }  
 
   HATinitializeChart(): void {
@@ -397,16 +399,18 @@ export class HatresultsPage implements AfterViewInit {
     this.HATClongestRound = longestRoundEntry.round;
     this.HATClongestRoundDate = this.formatDate(longestRoundEntry.date, true);
   
-    // Find the latest longest session average
-    const sessionAveragesWithDates = this.HATCDataArray.map(entry => ({
-      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
-      date: entry.date
-    }));
-    const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
-      entry.average > max.average || (entry.average === max.average && entry.date > max.date) ? entry : max
-    );
-    this.HATClongestSessionAverage = parseFloat(longestSessionAverageEntry.average.toFixed(2));
-    this.HATClongestSessionAverageDate = this.formatDate(longestSessionAverageEntry.date, true);
+   // Calculate lifetime average (average of all breath holds ever recorded)
+    let totalHoldTime = 0;
+    let totalRounds = 0;
+
+    this.HATCDataArray.forEach(entry => {
+      totalHoldTime += entry.roundsResult.reduce((a, b) => a + b, 0);
+      totalRounds += entry.roundsResult.length;
+    });
+
+    const lifetimeAverageSeconds = totalRounds > 0 ? totalHoldTime / totalRounds : 0;
+    this.HATClongestSessionAverage = parseFloat(lifetimeAverageSeconds.toFixed(2));
+    this.HATClongestSessionAverageDate = '';
   }  
 
   HATCinitializeChart(): void {
@@ -627,16 +631,18 @@ export class HatresultsPage implements AfterViewInit {
     this.AHATlongestRound = longestRoundEntry.round;
     this.AHATlongestRoundDate = this.formatDate(longestRoundEntry.date, true);
   
-    // Find the latest longest session average
-    const sessionAveragesWithDates = this.AHATDataArray.map(entry => ({
-      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
-      date: entry.date
-    }));
-    const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
-      entry.average > max.average || (entry.average === max.average && entry.date > max.date) ? entry : max
-    );
-    this.AHATlongestSessionAverage = parseFloat(longestSessionAverageEntry.average.toFixed(2));
-    this.AHATlongestSessionAverageDate = this.formatDate(longestSessionAverageEntry.date, true);
+    // Calculate lifetime average (average of all breath holds ever recorded)
+    let totalHoldTime = 0;
+    let totalRounds = 0;
+
+    this.AHATDataArray.forEach(entry => {
+      totalHoldTime += entry.roundsResult.reduce((a, b) => a + b, 0);
+      totalRounds += entry.roundsResult.length;
+    });
+
+    const lifetimeAverageSeconds = totalRounds > 0 ? totalHoldTime / totalRounds : 0;
+    this.AHATlongestSessionAverage = parseFloat(lifetimeAverageSeconds.toFixed(2));
+    this.AHATlongestSessionAverageDate = '';
   }  
 
   AHATinitializeChart(): void {

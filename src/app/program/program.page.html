@@ -1,2056 +1,344 @@
 <ion-content>
-    <header class="mainHeader">
-        <div class="back-buttons">
-            <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader">
+      <div class="questionMark questionClass2">
+        <a id="questionP" #questionP>
+          <img class="questionIMG" src="assets/images/question.png" />
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div id="programPage">
+    <div id="personalizedBriza" #personalizedBriza>
+
+      <div id="noBrtResults" #noBrtResults style="display: none;">
+        <div class="programpageStyle">
+          <h2 class="english justifyContent">Find out what your retention test score is to get started with the Briza Program</h2>
+          <h2 class="portuguese justifyContent">Descubra qual é a sua pontuação no teste de renteção para começar com o Programa Briza</h2>
+          <a class="breath-button brt-link" routerLink="/brt" data-tour="brt">
+            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
+            <div class="textBP">
+              <div class="titleBP english">Briza<br>Retention Test</div>
+              <div class="subtitleBP english">Measure your fitness level</div>
+              <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
+              <div class="subtitleBP portuguese">Medindo seu condicionamento</div>
+            </div>
+          </a>
         </div>
-        <div class="logo-container">
-            <img class="logoimg" src="assets/images/blogo.png" width="50"
-                height="50" />
-        </div>
-        <div class="placeholderHeader"> 
-            <div class="questionMark questionClass2"><a id="questionP" #questionP><img class="questionIMG"
-                src="assets/images/question.png" /></a>
-            </div>
-        </div>
-    </header>
-    <div id="programPage">
-        <div id="personalizedBriza" #personalizedBriza>
-            <div id="noBrtResults" #noBrtResults style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english justifyContent">Find out what your retention test score is to get started with the Briza Program</h2>
-                    <h2 class="portuguese justifyContent">Descubra qual é a sua pontuação no teste de renteção para começar com o Programa Briza</h2>
-                        <a class="breath-button brt-link" routerLink="/brt" data-tour="brt">
-                        <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                        <div class="textBP">
-                            <div class="titleBP english">Briza<br>Retention Test</div>
-                            <div class="subtitleBP english">Measure your fitness level</div>
-                            <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                            <div class="subtitleBP portuguese">Medindo seu nível de condicionamento físico</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div id="brtResultMinus15Monday" #brtResultMinus15Monday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/yogic">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">Dirga</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/bre">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Breath Recovery<br>Seated</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Recupere o Fôlego<br> Sentado</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BRE navIcons" *ngIf="isExerciseDoneToday('BREResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Tuesday" #brtResultMinus15Tuesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                       <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/yogic">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">Dirga</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/brw">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/nb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">Nadi Shodhana</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox NB navIcons" *ngIf="isExerciseDoneToday('NBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Wednesday" #brtResultMinus15Wednesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/db">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Reset<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br> Reset</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox DB navIcons" *ngIf="isExerciseDoneToday('DBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                         <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/hum">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Bhramari</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox HUM navIcons" *ngIf="isExerciseDoneToday('HUMResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Thursday" #brtResultMinus15Thursday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                         <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/cb">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Coherent<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Coerente</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox CB navIcons" *ngIf="isExerciseDoneToday('CBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/brw">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Friday" #brtResultMinus15Friday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/bre">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Breath Recovery<br>Seated</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Recupere o Fôlego<br> Sentado</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BRE navIcons" *ngIf="isExerciseDoneToday('BREResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/rb">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">4-7-8</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox RB navIcons" *ngIf="isExerciseDoneToday('RBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Saturday" #brtResultMinus15Saturday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                       <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/yogic">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">Dirga</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus15Sunday" #brtResultMinus15Sunday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                       <h3 class="english">Morning Start</h3>
-                        <h3 class="portuguese">Ao acordar</h3>
-                        <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Retention Test</div>
-                                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                <div class="subtitleBP english">Duration:  ~ 1 min</div>
-                                <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                            </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Morning Session</h3>
-                        <h3 class="portuguese">Seção pela manhã</h3>
-                        <a class="breath-button3" routerLink="/hum">
-                            <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP">Bhramari</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox HUM navIcons" *ngIf="isExerciseDoneToday('HUMResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Mid-afternoon Session</h3>
-                        <h3 class="portuguese">Seção pela tarde</h3>
-                        <a class="breath-button3" routerLink="/db">
-                            <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Reset<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br> Reset</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox DB navIcons" *ngIf="isExerciseDoneToday('DBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                        <h3 class="english">Evening Wind Down</h3>
-                        <h3 class="portuguese">Antes de dormir</h3>
-                        <a class="breath-button3" routerLink="/bb">
-                            <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                            <div class="textBP">
-                                <div class="titleBP english">Briza<br>Breathing</div>
-                                <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                            </div>
-                            <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Monday" #brtResultMinus25Monday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/hat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude<br>Training</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino<br> de Altitude</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HAT navIcons" *ngIf="isExerciseDoneToday('HATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/yogic">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Dirga</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Tuesday" #brtResultMinus25Tuesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                            <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/nb">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Nadi Shodhana</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox NB navIcons" *ngIf="isExerciseDoneToday('NBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Wednesday" #brtResultMinus25Wednesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Expansão<br>Pulmonar</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/hum">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Bhramari</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox HUM navIcons" *ngIf="isExerciseDoneToday('HUMResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Thursday" #brtResultMinus25Thursday style="display: none;">
-                <div class="programpageStyle">
-                <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                                <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                                <a class="breath-button3" routerLink="/bb">
-                                    <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                    <div class="textBP">
-                                        <div class="titleBP english">Briza<br>Breathing</div>
-                                        <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                        <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                        <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                    </div>
-                                    <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                                </a>
-                                <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                                <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                                <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                                <a class="breath-button3" routerLink="/hat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude<br>Training</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino<br> de Altitude</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HAT navIcons" *ngIf="isExerciseDoneToday('HATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/box">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Sama Vritti</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BOX navIcons" *ngIf="isExerciseDoneToday('BOXResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Friday" #brtResultMinus25Friday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                                <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/db">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Reset<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br> Reset</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox DB navIcons" *ngIf="isExerciseDoneToday('DBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Saturday" #brtResultMinus25Saturday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/rb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">4-7-8</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox RB navIcons" *ngIf="isExerciseDoneToday('RBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus25Sunday" #brtResultMinus25Sunday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+      </div>
+
+      <ng-container *ngIf="todayProgram.length > 0">
+        <h3 class="english">Today's suggested breathing sessions, personalized for you</h3>
+        <h3 class="portuguese">Sugestões de sessões de respiração para hoje, personalizadas para você</h3>
+      </ng-container>
+
+      <ng-container *ngFor="let section of todayProgram">
+        <h3 class="english">{{ section.heading.en }}</h3>
+        <h3 class="portuguese">{{ section.heading.pt }}</h3>
+
+        <ng-container *ngFor="let card of section.cards">
+          <a
+            class="breath-button3"
+            (click)="goTo(card.def)"
+            [ngClass]="{ 'brt-link': card.def.key === 'brtResults' }"
+            [attr.data-tour]="card.def.key === 'brtResults' ? 'brt' : null"
+          >
+            <img [src]="card.def.icon" alt="icon" class="iconBP" />
+            <div class="textBP">
+              <div class="titleBP">{{ isPortuguese ? card.def.title.pt : card.def.title.en }}</div>
+              <div class="subtitleBP english">{{ card.def.duration.en }}</div>
+              <div class="subtitleBP portuguese">{{ card.def.duration.pt }}</div>
             </div>
 
-            <div id="brtResultMinus35Monday" #brtResultMinus35Monday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/hat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude<br>Training</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino<br> de Altitude</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HAT navIcons" *ngIf="isExerciseDoneToday('HATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/yogic">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Dirga</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div
+              class="checkbox watched-badge" 
+              [ngClass]="card.def.checkboxClass"
+              *ngIf="isExerciseDoneToday(card.def.key)"
+            >
+              ✓
             </div>
-            <div id="brtResultMinus35Tuesday" #brtResultMinus35Tuesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/box">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Sama Vritti</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BOX navIcons" *ngIf="isExerciseDoneToday('BOXResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus35Wednesday" #brtResultMinus35Wednesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/hum">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Bhramari</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox HUM navIcons" *ngIf="isExerciseDoneToday('HUMResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus35Thursday" #brtResultMinus35Thursday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/hatc">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training<br>Running</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude<br>Correndo</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HATC navIcons" *ngIf="isExerciseDoneToday('HATCResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/db">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Reset<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br> Reset</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox DB navIcons" *ngIf="isExerciseDoneToday('DBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus35Friday" #brtResultMinus35Friday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                           <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/rb">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">4-7-8</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox RB navIcons" *ngIf="isExerciseDoneToday('RBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus35Saturday" #brtResultMinus35Saturday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultMinus35Sunday" #brtResultMinus35Sunday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/hat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude<br>Training</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino<br> de Altitude</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HAT navIcons" *ngIf="isExerciseDoneToday('HATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/box">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Sama Vritti</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BOX navIcons" *ngIf="isExerciseDoneToday('BOXResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          </a>
+        </ng-container>
+      </ng-container>
 
-            <div id="brtResultPlus35Monday" #brtResultPlus35Monday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                           <a class="breath-button3" routerLink="/hat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude<br>Training</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino<br> de Altitude</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HAT navIcons" *ngIf="isExerciseDoneToday('HATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/yogic">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Dirga</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Tuesday" #brtResultPlus35Tuesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                           <a class="breath-button3" routerLink="/hatc">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training <br>Running</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude <br>Correndo</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HATC navIcons" *ngIf="isExerciseDoneToday('HATCResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/rb">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">4-7-8</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox RB navIcons" *ngIf="isExerciseDoneToday('RBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Wednesday" #brtResultPlus35Wednesday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ahat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training<br>Pro</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude<br>Pro</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox AHAT navIcons" *ngIf="isExerciseDoneToday('AHATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                             <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/hum">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Bhramari</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox HUM navIcons" *ngIf="isExerciseDoneToday('HUMResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Thursday" #brtResultPlus35Thursday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">After Exercising</h3>
-                            <h3 class="portuguese">Depois de se exercitar</h3>
-                            <a class="breath-button3" routerLink="/brw">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Breath Recovery<br>Walking</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Recupere o Fôlego<br>Caminhando</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BRW navIcons" *ngIf="isExerciseDoneToday('BRWResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/hatc">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training <br>Running</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude <br>Correndo</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HATC navIcons" *ngIf="isExerciseDoneToday('HATCResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/yogic">
-                                <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP">Dirga</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox YB navIcons" *ngIf="isExerciseDoneToday('YBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Friday" #brtResultPlus35Friday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ct">
-                                <img src="assets/images/ctt.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">CO2<br>Tolerance</div>
-                                    <div class="subtitleBP english">Duration: 4 - 10 min</div>
-                                    <div class="titleBP portuguese">Tolerancia<br>a CO2</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 10 min</div>
-                                </div>
-                                <div class="checkbox CT navIcons" *ngIf="isExerciseDoneToday('CTResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/ahat">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training<br>Pro</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude<br>Pro</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox AHAT navIcons" *ngIf="isExerciseDoneToday('AHATResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Mid-afternoon Session</h3>
-                            <h3 class="portuguese">Seção pela tarde</h3>
-                            <a class="breath-button3" routerLink="/lungs">
-                                <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Lungs<br>Expansion</div>
-                                    <div class="subtitleBP english">Duration: ~ 30 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 30 min</div>
-                                </div>
-                                <div class="checkbox Lungs navIcons" *ngIf="isExerciseDoneToday('LungsResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/db">
-                                <img src="assets/images/breathrecovery.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Reset<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br> Reset</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox DB navIcons" *ngIf="isExerciseDoneToday('DBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Saturday" #brtResultPlus35Saturday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                           <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/hatc">
-                                <img src="assets/images/highaltitude.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Altitude Training <br>Running</div>
-                                    <div class="subtitleBP english">Duration: 4 - 8 rounds</div>
-                                    <div class="titleBP portuguese">Treino de Altitude <br>Correndo</div>
-                                    <div class="subtitleBP portuguese">Duração: 4 - 8 rounds</div>
-                                </div>
-                                <div class="checkbox HATC navIcons" *ngIf="isExerciseDoneToday('HATCResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div id="brtResultPlus35Sunday" #brtResultPlus35Sunday style="display: none;">
-                <div class="programpageStyle">
-                    <h2 class="english">Today's breathing sessions, personalized for you</h2>
-                    <h2 class="portuguese">Sessões de respiração de hoje, personalizadas para você</h2>
-                    <div class="BHGrid">
-                        <div class="row g-2">
-                            <h3 class="english">Morning Start</h3>
-                            <h3 class="portuguese">Ao acordar</h3>
-                            <a class="breath-button3 brt-link" routerLink="/brt" data-tour="brt">
-                                <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Retention Test</div>
-                                    <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                                    <div class="subtitleBP english">Duration: ~ 1 min</div>
-                                    <div class="subtitleBP portuguese">Duração: ~ 1 min</div>
-                                </div>
-                                <div class="checkbox BRT navIcons" *ngIf="isExerciseDoneToday('brtResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Morning Session</h3>
-                            <h3 class="portuguese">Seção pela manhã</h3>
-                            <a class="breath-button3" routerLink="/wh">
-                                <img src="assets/images/hyperventilation.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Oxygen<br>Boost</div>
-                                    <div class="subtitleBP english">Duration: 3 - 5 rounds</div>
-                                    <div class="titleBP portuguese">Boost<br>de Oxigênio</div>
-                                    <div class="subtitleBP portuguese">Duração: 3 - 5 rounds</div>
-                                </div>
-                                <div class="checkbox WH navIcons" *ngIf="isExerciseDoneToday('WHResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                            <h3 class="english">Evening Wind Down</h3>
-                            <h3 class="portuguese">Antes de dormir</h3>
-                            <a class="breath-button3" routerLink="/bb">
-                                <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-                                <div class="textBP">
-                                    <div class="titleBP english">Briza<br>Breathing</div>
-                                    <div class="subtitleBP english">Duration: 5 - 10 min</div>
-                                    <div class="titleBP portuguese">Respiração<br>Briza</div>
-                                    <div class="subtitleBP portuguese">Duração: 5 - 10 min</div>
-                                </div>
-                                <div class="checkbox BB navIcons" *ngIf="isExerciseDoneToday('BBResults')"><i class="fa fa-check"></i></div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-    <div id="myModalP" class="modal" #myModalP>
-        <div class="modal-content">
-            <span class="close" id="closeModalP" #closeModalP>&times;</span>
-            <div class="autoPlayBtnContainer">
-                <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-            </div>
-            <div class="slideshow-container">
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/coherentlines.svg">
-                    <div class="text english">
-                        <p>
-                            The Briza Program is a collection of breathing and breath-holding exercises tailored to
-                            improve your breathing efficiency, especially during intense workouts
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>O Programa Briza consiste em uma série de exercícios de respiração e retenção de respiração
-                            projetados para melhorar a eficiência da sua respiração durante treinos intensos</p>
-                     </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/coherentlines.svg">
-                    <div class="text english">
-                        <p>
-                            For optimal results, it's essential to consistently breathe through your nose and use your diaphragm
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>
-                            Para maximizar os benefícios deste programa, é crucial respirar consistentemente pelo nariz e
-                            envolver o diafragma.</p>
-                     </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/coherentlines.svg">
-                    <div class="text english">
-                        <p>
-                            Your progress in the program will be tracked using the Briza Retention Test. With regular
-                            practice, it's possible to extend your score beyond 40 seconds in just a few months
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>O Teste de Retenção Briza será a medida do seu progresso neste programa. Em alguns meses, sua
-                            pontuação pode ultrapassar 40 segundos se os exercícios forem feitos consistentemente</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/breathlight.svg">
-                    <div class="text english">
-                        <p>
-                            Ensure to breathe through your nose at all times.
-                            Nasal breathing comes with many benefits, including:
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Garanta a respiração nasal em todos os momentos. Aqui estão alguns dos benefícios da
-                            respiração nasal:</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/breathlight.svg">
-                    <div class="text english">
-                        <p>Filtering, warming, and humidifying the air, increasing oxygen uptake, enhancing lung function, engaging the diaphragm</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Filtra, aquece e umidifica o ar, aumenta a captação de oxigênio, melhora a função pulmonar, reduz o estresse e a ansiedade</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/breathlight.svg">
-                    <div class="text english">
-                        <p>Decreasing stress and anxiety, improving sleep quality, boosting nitric oxide production</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Melhora o sono, aumenta a produção de óxido nítrico, ativa o diafragma</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/diaphragmlines.svg">
-                    <div class="text english">
-                        <p>
-                            The diaphragm is a big, dome-shaped muscle found at the bottom of the lungs. It's very
-                            important for breathing because it contracts and relaxes to let air move in and out of the
-                            lungs.
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>O diafragma é um músculo grande em forma de cúpula localizado na base dos pulmões que
-                            desempenha um papel crucial na respiração, contraindo e relaxando para permitir a entrada e
-                            saída de ar nos pulmões.</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/diaphragmlines.svg">
-                    <div class="text english">
-                        <p>Here's how to correctly use your diaphragm for breathing:</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Aprenda a usar seu diafragma:</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/diaphragmlines.svg">
-                    <div class="text english">
-                        <p>Put one hand on your belly and press gently, when you breathe in, your belly should push against your hand, as you breathe out, you'll feel your belly lower</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Coloque uma mão em sua barriga e pressione suavemente, ao inspirar, sinta sua barriga empurrando sua mão, ao expirar, sinta sua barriga descendo</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/diaphragmlines.svg">
-                    <div class="text english">
-                        <p>Make sure your shoulders stay still when you breathe in, try to breathe in a way that makes your belly and rib cage expand</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Seu ombro não deve se mover enquanto você inspira, foque na respiração para expandir sua barriga e caixa torácica</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/noseblock.svg">
-                    <div class="text english">
-                        <p>
-                            If your nose is blocked for any reason and you can't use it, try this technique before
-                            starting your breathing exercises:
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Caso você não consiga usar seu nariz porque está bloqueado, faça a seguinte técnica antes de
-                            fazer seus exercícios de respiração:</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/noseblock.svg">
-                    <div class="text english">
-                        <p>Fully exhale and pinch your nose, nod your head quickly while holding your breath</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Espire completamente e feche o nariz, balance a cabeça em um ritmo rápido enquanto segura a respiração</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/noseblock.svg">
-                    <div class="text english">
-                        <p>When you start to feel the need to breathe, inhale, and catch your breath, do this 4 to 6 times until your nose feels clear</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Quando sentir vontade de respirar, inspire e recupere sua respiração, repita de 4 a 6 vezes para desbloquear completamente o nariz</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/tape.svg">
-                    <div class="text english">
-                        <p>
-                            Consider taping your mouth during sleep
-                        </p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Coloque uma fita na boca enquanto dorme</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/tape.svg">
-                    <div class="text english">
-                        <p>Use micropore tape or something similar, stick it in the middle of your lips and leave a gap on the sides in case you need to breathe through your mouth</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Use fita micropore ou algo similar, cole no meio ddo seus labios e deixe uma lacuna nos lados caso precise respirar pela boca
-                        </p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/tape.svg">
-                    <div class="text english">
-                        <p>Do this every night. You may feel discomfort the first few nights, but once you get used to it, you'll have a deep, restful sleep, ensuring you're breathing through your nose all night</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Faça isso todas as noites. Você pode sentir desconforto nas primeiras noites, mas quando se
-                            acostumar, terá um sono profundo e tranquilo garantindo de que você está respirando pelo nariz a noite toda</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/yogiclines.svg">
-                    <div class="text english">
-                        <p>BENEFITS OF THIS PROGRAM. Enhanced breathing: breathe more easily and efficiently. Improved cardiovascular Health: boost your heart health and stamina</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>BENEFÍCIOS DESTE PROGRAMA. Respiração mais fácil, melhor cardio</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/yogiclines.svg">
-                    <div class="text english">
-                        <p>Increased energy: feel more energetic throughout the day. Heightened awareness: sharpen your focus and mindfulness. Accelerated healing: speed up your body's natural recovery processes</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Mais energia, melhor consciência, cura rápida</p>
-                    </div>
-                </div>
-                <div class="mySlides fadeModal slides">
-                    <img src="assets/images/yogiclines.svg">
-                    <div class="text english">
-                        <p>Improved sleep quality: enjoy a deeper, more restful sleep. Optimized oxygenation: ensure better oxygen supply to your organs and muscles</p>
-                    </div>
-                    <div class="text portuguese">
-                        <p>Melhor sono, mais fácil oxigenação de órgãos e músculos</p>
-                    </div>
-                </div>
-                <div class="dots" #Pdots role="tablist" aria-label="Slideshow pagination"></div>
-            </div>
-        </div>
+    <!-- Bottom controls: Remove / Add exercise -->
+    <div class="program-bottom-controls" *ngIf="todayProgram.length > 0">
+      <div class="program-dd-row">
+        <select
+          class="countdownDisplay"
+          [(ngModel)]="removeSelection"
+          (change)="onRemoveSelectionChange()"
+        >
+          <option value="" disabled>
+            {{ isPortuguese ? 'Remover exercício' : 'Remove exercise' }}
+          </option>
+          <option *ngFor="let opt of todayExerciseOptionsForRemove" [value]="opt.key">
+            {{ isPortuguese ? opt.label.pt : opt.label.en }}
+          </option>
+        </select>
+
+        <select
+          class="countdownDisplay"
+          [(ngModel)]="addSelection"
+          (change)="onAddSelectionChange()"
+        >
+          <option value="" disabled>
+            {{ isPortuguese ? 'Adicionar exercício' : 'Add exercise' }}
+          </option>
+          <option *ngFor="let opt of allExerciseOptionsForAdd" [value]="opt.key">
+            {{ isPortuguese ? opt.label.pt : opt.label.en }}
+          </option>
+        </select>
+      </div>
     </div>
+  </div>
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
+  <div id="myModalP" class="modal" #myModalP>
+    <div class="modal-content">
+      <span class="close" id="closeModalP" #closeModalP>&times;</span>
+      <div class="autoPlayBtnContainer"></div>
+
+      <div class="slideshow-container">
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/coherentlines.svg">
+          <div class="text english">
+            <p>
+              The Briza Program is a collection of breathing and breath-holding exercises tailored to
+              improve your breathing efficiency, especially during intense workouts
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>O Programa Briza consiste em uma série de exercícios de respiração e retenção de respiração
+              projetados para melhorar a eficiência da sua respiração durante treinos intensos</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/coherentlines.svg">
+          <div class="text english">
+            <p>
+              For optimal results, it's essential to consistently breathe through your nose and use your diaphragm
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>
+              Para maximizar os benefícios deste programa, é crucial respirar consistentemente pelo nariz e
+              envolver o diafragma.</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/coherentlines.svg">
+          <div class="text english">
+            <p>
+              Your progress in the program will be tracked using the Briza Retention Test. With regular
+              practice, it's possible to extend your score beyond 40 seconds in just a few months
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>O Teste de Retenção Briza será a medida do seu progresso neste programa. Em alguns meses, sua
+              pontuação pode ultrapassar 40 segundos se os exercícios forem feitos consistentemente</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg">
+          <div class="text english">
+            <p>
+              Ensure to breathe through your nose at all times.
+              Nasal breathing comes with many benefits, including:
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>Garanta a respiração nasal em todos os momentos. Aqui estão alguns dos benefícios da
+              respiração nasal:</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg">
+          <div class="text english">
+            <p>Filtering, warming, and humidifying the air, increasing oxygen uptake, enhancing lung function, engaging the diaphragm</p>
+          </div>
+          <div class="text portuguese">
+            <p>Filtra, aquece e umidifica o ar, aumenta a captação de oxigênio, melhora a função pulmonar, reduz o estresse e a ansiedade</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/breathlight.svg">
+          <div class="text english">
+            <p>Decreasing stress and anxiety, improving sleep quality, boosting nitric oxide production</p>
+          </div>
+          <div class="text portuguese">
+            <p>Melhora o sono, aumenta a produção de óxido nítrico, ativa o diafragma</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/diaphragmlines.svg">
+          <div class="text english">
+            <p>
+              The diaphragm is a big, dome-shaped muscle found at the bottom of the lungs. It's very
+              important for breathing because it contracts and relaxes to let air move in and out of the
+              lungs.
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>O diafragma é um músculo grande em forma de cúpula localizado na base dos pulmões que
+              desempenha um papel crucial na respiração, contraindo e relaxando para permitir a entrada e
+              saída de ar nos pulmões.</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/diaphragmlines.svg">
+          <div class="text english">
+            <p>Here's how to correctly use your diaphragm for breathing:</p>
+          </div>
+          <div class="text portuguese">
+            <p>Aprenda a usar seu diafragma:</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/diaphragmlines.svg">
+          <div class="text english">
+            <p>Put one hand on your belly and press gently, when you breathe in, your belly should push against your hand, as you breathe out, you'll feel your belly lower</p>
+          </div>
+          <div class="text portuguese">
+            <p>Coloque uma mão em sua barriga e pressione suavemente, ao inspirar, sinta sua barriga empurrando sua mão, ao expirar, sinta sua barriga descendo</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/diaphragmlines.svg">
+          <div class="text english">
+            <p>Make sure your shoulders stay still when you breathe in, try to breathe in a way that makes your belly and rib cage expand</p>
+          </div>
+          <div class="text portuguese">
+            <p>Seu ombro não deve se mover enquanto você inspira, foque na respiração para expandir sua barriga e caixa torácica</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/noseblock.svg">
+          <div class="text english">
+            <p>
+              If your nose is blocked for any reason and you can't use it, try this technique before
+              starting your breathing exercises:
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>Caso você não consiga usar seu nariz porque está bloqueado, faça a seguinte técnica antes de
+              fazer seus exercícios de respiração:</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/noseblock.svg">
+          <div class="text english">
+            <p>Fully exhale and pinch your nose, nod your head quickly while holding your breath</p>
+          </div>
+          <div class="text portuguese">
+            <p>Espire completamente e feche o nariz, balance a cabeça em um ritmo rápido enquanto segura a respiração</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/noseblock.svg">
+          <div class="text english">
+            <p>When you start to feel the need to breathe, inhale, and catch your breath, do this 4 to 6 times until your nose feels clear</p>
+          </div>
+          <div class="text portuguese">
+            <p>Quando sentir vontade de respirar, inspire e recupere sua respiração, repita de 4 a 6 vezes para desbloquear completamente o nariz</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/tape.svg">
+          <div class="text english">
+            <p>
+              Consider taping your mouth during sleep
+            </p>
+          </div>
+          <div class="text portuguese">
+            <p>Coloque uma fita na boca enquanto dorme</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/tape.svg">
+          <div class="text english">
+            <p>Use micropore tape or something similar, stick it in the middle of your lips and leave a gap on the sides in case you need to breathe through your mouth</p>
+          </div>
+          <div class="text portuguese">
+            <p>Use fita micropore ou algo similar, cole no meio ddo seus labios e deixe uma lacuna nos lados caso precise respirar pela boca
+            </p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/tape.svg">
+          <div class="text english">
+            <p>Do this every night. You may feel discomfort the first few nights, but once you get used to it, you'll have a deep, restful sleep, ensuring you're breathing through your nose all night</p>
+          </div>
+          <div class="text portuguese">
+            <p>Faça isso todas as noites. Você pode sentir desconforto nas primeiras noites, mas quando se
+              acostumar, terá um sono profundo e tranquilo garantindo de que você está respirando pelo nariz a noite toda</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/yogiclines.svg">
+          <div class="text english">
+            <p>BENEFITS OF THIS PROGRAM. Enhanced breathing: breathe more easily and efficiently. Improved cardiovascular Health: boost your heart health and stamina</p>
+          </div>
+          <div class="text portuguese">
+            <p>BENEFÍCIOS DESTE PROGRAMA. Respiração mais fácil, melhor cardio</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/yogiclines.svg">
+          <div class="text english">
+            <p>Increased energy: feel more energetic throughout the day. Heightened awareness: sharpen your focus and mindfulness. Accelerated healing: speed up your body's natural recovery processes</p>
+          </div>
+          <div class="text portuguese">
+            <p>Mais energia, melhor consciência, cura rápida</p>
+          </div>
+        </div>
+
+        <div class="mySlides fadeModal slides">
+          <img src="assets/images/yogiclines.svg">
+          <div class="text english">
+            <p>Improved sleep quality: enjoy a deeper, more restful sleep. Optimized oxygenation: ensure better oxygen supply to your organs and muscles</p>
+          </div>
+          <div class="text portuguese">
+            <p>Melhor sono, mais fácil oxigenação de órgãos e músculos</p>
+          </div>
+        </div>
+
+        <div class="dots" #Pdots role="tablist" aria-label="Slideshow pagination"></div>
+      </div>
+    </div>
+  </div>
+  <ion-alert
+    [isOpen]="showAddWhereAlert"
+    header="{{ isPortuguese ? 'Onde adicionar?' : 'Where to add?' }}"
+    message="{{ isPortuguese ? 'Escolha a sessão' : 'Choose the session' }}"
+    [buttons]="addWhereAlertButtons"
+    (didDismiss)="onAddWhereAlertDismiss()"
+    cssClass="add-where-alert"
+  ></ion-alert>
 </ion-content>

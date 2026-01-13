@@ -168,14 +168,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   }
   async startNB(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsNB.nativeElement.disabled = true;
     this.questionNB.nativeElement.disabled = true;
-    this.minusNB.nativeElement.disabled = true;
-    this.plusNB.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnNB.nativeElement.disabled = true;
       this.inhaleNB = true; 
@@ -203,7 +200,8 @@ export class NBPage implements  AfterViewInit, OnDestroy {
           this.NBballText.nativeElement.textContent = "Inhale";
         }
         await this.audioService.playSound('inhaleLeft');
-        await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue); 
+        this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 2;
+        await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue - 1); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputNB.nativeElement.value), this.NBball);
         this.NBinterval = setInterval(() => this.startTimerNB(), 1000);
         this.NBTimer = setInterval(() => this.DisplayTimerNB(), 1000);
@@ -290,11 +288,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
   async startTimerNB(): Promise<void>{ 
     this.NBcurrentValue--;
     if(this.inhaleNB && this.NBcurrentValue == 1){
-      this.NBcurrentValue = parseInt(this.hold1InputNB.nativeElement.value) + 1;
+      this.NBcurrentValue = parseInt(this.hold1InputNB.nativeElement.value) + 2;
       this.inhaleNB = false;
       this.hold1NB = true;
       await this.audioService.playSound('exhaleRight');
-      await this.audioService.playBreathSound('exhaleBreath', this.NBcurrentValue); 
+      await this.audioService.playBreathSound('exhaleBreath', this.NBcurrentValue - 1); 
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Espire"
       }else{
@@ -303,11 +301,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1, parseInt(this.hold1InputNB.nativeElement.value), this.NBball);
     }
     else if(this.hold1NB && this.NBcurrentValue == 1){
-      this.NBcurrentValue = parseInt(this.exhaleInputNB.nativeElement.value) + 1;
+      this.NBcurrentValue = parseInt(this.exhaleInputNB.nativeElement.value) + 2;
       this.hold1NB = false;
       this.exhaleNB = true;
       await this.audioService.playSound('inhaleRight');
-      await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue); 
+      await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue - 1); 
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Inspire"
       }else{
@@ -316,11 +314,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1.5, parseInt(this.hold2InputNB.nativeElement.value), this.NBball);
     }
     else if(this.exhaleNB && this.NBcurrentValue == 1){
-      this.NBcurrentValue = parseInt(this.hold2InputNB.nativeElement.value) + 1;
+      this.NBcurrentValue = parseInt(this.hold2InputNB.nativeElement.value) + 2;
       this.exhaleNB = false;
       this.hold2NB = true;
       await this.audioService.playSound('exhaleLeft');
-      await this.audioService.playBreathSound('exhaleBreath', this.NBcurrentValue); 
+      await this.audioService.playBreathSound('exhaleBreath', this.NBcurrentValue - 1); 
       if(this.isPortuguese){
         this.NBballText.nativeElement.textContent = "Espire"
       }else{
@@ -332,11 +330,11 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     }
     else if(this.hold2NB && this.NBcurrentValue == 1){
       if(this.NBduration !== 0){
-        this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 1;
+        this.NBcurrentValue = parseInt(this.inhaleInputNB.nativeElement.value) + 2;
         this.hold2NB = false;
         this.inhaleNB = true;
         await this.audioService.playSound('inhaleLeft');
-        await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue); 
+        await this.audioService.playBreathSound('inhaleBreath', this.NBcurrentValue - 1); 
         if(this.isPortuguese){
           this.NBballText.nativeElement.textContent = "Inspire"
         }else{
@@ -394,8 +392,6 @@ export class NBPage implements  AfterViewInit, OnDestroy {
     this.stopBtnNB.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.NBSave.nativeElement.disabled = true;
     this.NBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusNB.nativeElement.disabled = false;
-    this.plusNB.nativeElement.disabled = false;
     this.inhaleNB = true;
     this.hold1NB = false;
     this.exhaleNB = false;

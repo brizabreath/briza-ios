@@ -13,6 +13,7 @@
     </div>
     <div class="placeholderHeader"></div>
   </header>
+
   <div class="manage-account">
     <h1 class="portuguese">Gerenciar Conta</h1>
     <h1 class="english">Manage Account</h1>
@@ -20,43 +21,102 @@
     <form (ngSubmit)="onManageAccount()">
       <!-- Current Email (readonly) -->
       <ion-item>
-        <ion-label position="stacked">Current Email</ion-label>
-        <ion-input class="form-control currentEmail" type="email" [value]="email" readonly></ion-input>
-      </ion-item>
-      <!-- Name -->
-      <ion-item>
-        <ion-label position="stacked">Name</ion-label>
-        <ion-input class="form-control manageForm" type="text" [(ngModel)]="name" name="name"></ion-input>
-      </ion-item>
-      <!-- New Email (optional) -->
-      <ion-item>
-        <ion-label position="stacked">New Email</ion-label>
-        <ion-input class="form-control manageForm" type="email" [(ngModel)]="newEmail" name="newEmail"></ion-input>
+        <ion-label position="stacked">
+          Email
+        </ion-label>
+        <ion-input
+          class="form-control currentEmail"
+          type="email"
+          [value]="email"
+          readonly
+        ></ion-input>
       </ion-item>
 
-  
+      <!-- Name -->
       <ion-item>
-        <ion-label position="stacked">Current Password (required)</ion-label>
-        <ion-input class="form-control manageForm" type="password" [(ngModel)]="password" name="password" required></ion-input>
+        <ion-label position="stacked">
+          {{ isPortuguese ? 'Nome' : 'Name' }}
+        </ion-label>
+        <ion-input
+          class="form-control manageForm"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+        ></ion-input>
       </ion-item>
-  
-      <ion-item>
+
+      <!-- New Email (optional – hidden for Google/Apple users) -->
+      <ion-item style="display:none !important;">
+        <ion-label position="stacked">
+          {{ isPortuguese ? 'Novo e-mail' : 'New Email' }}
+        </ion-label>
+        <ion-input
+          class="form-control manageForm"
+          type="email"
+          [(ngModel)]="newEmail"
+          name="newEmail"
+        ></ion-input>
+      </ion-item>
+
+      <!-- Current Password (only for password accounts; required only if changing email/password) -->
+      <ion-item style="display:none !important;">
+        <ion-label position="stacked">
+          {{
+            isPortuguese
+              ? 'Senha atual (obrigatória se mudar e-mail)'
+              : 'Current Password (required if changing email)'
+          }}
+        </ion-label>
+        <ion-input
+          class="form-control manageForm"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          [required]="mustProvidePassword"
+        ></ion-input>
+      </ion-item>
+
+      <!-- New Password (currently hidden in UI) -->
+      <ion-item style="display:none !important;">
         <ion-label position="stacked">New Password</ion-label>
-        <ion-input class="form-control manageForm" type="password" [(ngModel)]="newPassword" name="newPassword"></ion-input>
+        <ion-input
+          class="form-control manageForm"
+          type="password"
+          [(ngModel)]="newPassword"
+          name="newPassword"
+        ></ion-input>
       </ion-item>
-  
-      <ion-item>
+
+      <ion-item style="display:none !important;">
         <ion-label position="stacked">Confirm New Password</ion-label>
-        <ion-input class="form-control manageForm" type="password" [(ngModel)]="confirmPassword" name="confirmPassword"></ion-input>
+        <ion-input
+          class="form-control manageForm"
+          type="password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+        ></ion-input>
       </ion-item>
-  
+
       <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
       <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
-  
-      <ion-button class="form-button" type="submit" expand="block">Save Changes</ion-button>
+
+      <ion-button class="form-button" type="submit" expand="block">
+        {{ isPortuguese ? 'Salvar alterações' : 'Save Changes' }}
+      </ion-button>
+
+      <p class="textForm" style="display:none !important;">
+        <a routerLink="/forgot-password2">
+          {{ isPortuguese ? 'Esqueceu Senha?' : 'Forgot Password?' }}
+        </a>
+      </p>
     </form>
   </div>
-  <button (click)="confirmAccountDeletion()" class="delete-account">
+
+  <button
+    (click)="confirmAccountDeletion()"
+    class="delete-account"
+    style="margin-bottom: 50px;"
+  >
     {{ isPortuguese ? 'Deletar Conta' : 'Delete Account' }}
-  </button>  
+  </button>
 </ion-content>

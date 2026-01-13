@@ -43,7 +43,10 @@ export class LoginPage implements OnInit {
   isLoggingIn: boolean = false;
   isPortuguese: boolean = localStorage.getItem('isPortuguese') === 'true';
   isIOS = false;
+  isAndroid = false;
   showWebSplash = false;
+  private readonly LANG_KEY = 'isPortuguese';
+  private readonly LANG_CHOSEN_KEY = 'languageChosen';
 
   constructor(
     private platform: Platform,
@@ -57,14 +60,27 @@ export class LoginPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.isIOS = this.platform.is('ios');
+     this.isIOS = this.platform.is('ios');
+    this.isAndroid = this.platform.is('android');
+
+    // IMPORTANT:
+    // - iOS uses its iOS client ID (already working)
+    // - Android uses the WEB client ID
+    const iosClientId = '740921696216-hmlq7oqqjlvdl0abnlb9pg7qmiv7j54b.apps.googleusercontent.com';
+    const androidWebClientId = '1062876241537-mcfda9bkmgmtcm5m2kfjdirht1uigush.apps.googleusercontent.com'; // from Google Cloud (Web client)
+
+    const clientId = this.isIOS
+      ? iosClientId
+      : this.isAndroid
+      ? androidWebClientId
+      : '';
 
     try {
-      await GoogleOneTapAuth.initialize({
-        clientId: this.isIOS
-          ? '740921696216-hmlq7oqqjlvdl0abnlb9pg7qmiv7j54b.apps.googleusercontent.com'
-          : '740921696216-u54m62rnm9793uameptrgu4a502a575h.apps.googleusercontent.com',
-      });
+      if (clientId) {
+        await GoogleOneTapAuth.initialize({ clientId });
+      } else {
+        console.warn('GoogleOneTapAuth: no clientId for this platform (likely web).');
+      }
     } catch (err) {
       console.error('⚠️ Google init failed', err);
     }
@@ -79,44 +95,23 @@ export class LoginPage implements OnInit {
 
     const userDocRef = doc(db, `users/${uid}`);
     const userSnap = await getDoc(userDocRef);
-    const data = userSnap.exists() ? userSnap.data() as Record<string, any> : {};
 
-    // Skip if already active
-    if (data && data['newsletterActive'] === true) {
+    // If doc doesn't exist yet, default to true
+    if (!userSnap.exists()) {
+      await setDoc(userDocRef, { newsletterActive: true }, { merge: true });
       return;
     }
 
-    return new Promise(async (resolve) => {
-      const alert = await this.alertCtrl.create({
-        header: this.isPortuguese ? 'Newsletter' : 'Newsletter',
-        message: this.isPortuguese
-          ? 'Gostaria de receber atualizações e dicas por e-mail?'
-          : 'Would you like to receive updates and tips by email?',
-        buttons: [
-          {
-            text: this.isPortuguese ? 'Não' : 'No',
-            role: 'cancel',
-            handler: async () => {
-              await setDoc(userDocRef, { newsletterActive: false }, { merge: true });
-              resolve(); // ✅ continue after choice
-            },
-          },
-          {
-            text: this.isPortuguese ? 'Sim' : 'Yes',
-            handler: async () => {
-              await setDoc(userDocRef, { newsletterActive: true }, { merge: true });
-              resolve(); // ✅ continue after choice
-            },
-          },
-        ],
-      });
+    const data = userSnap.data() as Record<string, any>;
 
-      await alert.present();
-    });
+    // Do nothing if the field already exists (true or false)
+    if (Object.prototype.hasOwnProperty.call(data, "newsletterActive")) {
+      return;
+    }
+
+    // Field missing -> default to true (one-time)
+    await setDoc(userDocRef, { newsletterActive: true }, { merge: true });
   }
-
-
-
 
   // =============================================
   // Helper: login or create account if first time
@@ -129,46 +124,38 @@ export class LoginPage implements OnInit {
     const auth = getAuth();
     const db: Firestore | null = this.firebaseService.firestore;
 
-    try {
-      const result = await signInWithCredential(auth, credential);
-      const user = result.user;
-      const uid = user.uid;
-
-      if (!db) {
-        console.error('❌ Firestore is not initialized');
-        return;
-      }
-
-      const userDocRef = doc(db, `users/${uid}`);
-      const snap = await getDoc(userDocRef);
-      if (!snap.exists()) {
-        await setDoc(userDocRef, { email, name, results: {} });
-      }
-
-      await this.promptNewsletterConsent(uid);
-    } catch (err: any) {
-      if (err.code === 'auth/account-exists-with-different-credential') {
-        const existing = await fetchSignInMethodsForEmail(auth, email);
-        if (existing.includes('password')) {
-          const alert = await this.alertCtrl.create({
-            header: 'Account Exists',
-            message:
-              'You already registered with this email using a password. Please log in with your email and password first, then you can link Google or Apple in your profile later.',
-            buttons: ['OK'],
-          });
-          await alert.present();
-        } else {
-          console.warn('Existing provider:', existing);
-        }
-      } else {
-        console.error('❌ Login/link error:', err);
-      }
+    if (!db) {
+      console.error('❌ Firestore is not initialized');
+      return;
     }
+
+    // This will:
+    // - sign in existing Google user
+    // - or create a new Firebase user if it's first time
+    // - or throw auth/account-exists-with-different-credential (handled by caller)
+    const result = await signInWithCredential(auth, credential);
+    const user = result.user;
+    const uid = user.uid;
+
+    const userDocRef = doc(db, `users/${uid}`);
+    const snap = await getDoc(userDocRef);
+
+    if (!snap.exists()) {
+      await setDoc(userDocRef, {
+        email,
+        name,
+        results: {},
+        newsletterActive: true,
+      });
+    }
+
+    await this.promptNewsletterConsent(uid);
   }
+
 
   ionViewWillEnter() {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-
+    this.showLanguagePickerIfNeeded();
     if (this.isPortuguese) {
       this.globalService.hideElementsByClass('english');
       this.globalService.showElementsByClass('portuguese');
@@ -186,11 +173,13 @@ export class LoginPage implements OnInit {
 
   toEnglish(): void {
     localStorage.setItem('isPortuguese', 'false');
+    localStorage.setItem('languageChosen', 'true');
     window.location.reload();
   }
 
   toPortuguese(): void {
     localStorage.setItem('isPortuguese', 'true');
+    localStorage.setItem('languageChosen', 'true');
     window.location.reload();
   }
 
@@ -230,9 +219,9 @@ export class LoginPage implements OnInit {
       this.isLoggingIn = false;
     }
   }
-  // =========================
-  // GOOGLE SIGN-IN + LINKING
-  // =========================
+// =========================
+// GOOGLE SIGN-IN + LINKING
+// =========================
   async loginWithGoogle() {
     if (!navigator.onLine) {
       this.authService.showAlert('OFFLINE', {
@@ -242,76 +231,134 @@ export class LoginPage implements OnInit {
       return;
     }
 
-    this.showWebSplash = true; // 🟢 Start splash
+    this.showWebSplash = true;
 
     try {
-      // ✅ Ensure any previous Google session is cleared
+      // Try to sign out previous Google session (best effort)
       try {
         await (GoogleOneTapAuth as any).signOut?.();
       } catch (err) {
-        console.warn('⚠️ Could not sign out previous session:', err);
+        console.warn('⚠️ Could not sign out previous Google session:', err);
       }
 
       let result: any;
 
+      // 1) Try auto / one-tap sign-in first
       try {
         result = await GoogleOneTapAuth.tryAutoOrOneTapSignIn();
-        if (!result?.isSuccess) {
-          result = await GoogleOneTapAuth.signInWithGoogleButtonFlowForNativePlatform();
-        }
       } catch (err) {
-        console.warn('One Tap fallback triggered:', err);
+        console.warn('One Tap auto sign-in failed, will fall back to button flow:', err);
+        result = null;
+      }
+
+      // 2) If that wasn’t successful, force the button flow (android + iOS)
+      if (!result || !result.isSuccess) {
         result = await GoogleOneTapAuth.signInWithGoogleButtonFlowForNativePlatform();
       }
 
-      const idToken =
-        result?.success?.idToken ||
-        result?.credential?.idToken ||
-        result?.idToken ||
-        null;
-
-
-      if (!result?.isSuccess || !idToken) {
-        console.warn('❌ No Google credential received');
+      if (!result?.isSuccess || !result.success) {
+        console.warn('❌ Google Sign-In: no success result');
         this.showWebSplash = false;
         return;
       }
 
-      const credential = GoogleAuthProvider.credential(idToken);
-      const email = idToken?.email ?? 'unknown@user.com';
-      const name = idToken?.displayName ?? email.split('@')[0];
+      const success = result.success;
 
+      // Plugin guarantees idToken as base64 JWT string 
+      const rawIdToken: string | undefined = success.idToken;
+      if (!rawIdToken) {
+        console.error('❌ Google Sign-In: missing idToken');
+        this.showWebSplash = false;
+        return;
+      }
+
+      // Decode JWT payload to extract email / name
+      const payload = this.decodeJwtPayload(rawIdToken);
+      const email = payload?.email || 'unknown@user.com';
+      const name =
+        payload?.name ||
+        payload?.given_name ||
+        (email.includes('@') ? email.split('@')[0] : 'User');
+
+      const credential = GoogleAuthProvider.credential(rawIdToken);
       const auth = getAuth();
+
       try {
+        // Normal path: sign in or create user
         await this.linkOrLoginWithCredential(credential, email, name);
-        this.showWebSplash = false; // 🟢 Hide splash
+
+        localStorage.setItem('wasSignedIn', 'true');
+        this.showWebSplash = false;
         this.navCtrl.navigateRoot('/breathwork');
       } catch (err: any) {
+        // Handle "account exists with different credential" here
         this.showWebSplash = false;
-        if (err.code === 'auth/account-exists-with-different-credential') {
+
+        if (err?.code === 'auth/account-exists-with-different-credential') {
           const methods = await fetchSignInMethodsForEmail(auth, email);
+
           if (methods.includes('password')) {
-            const password = prompt('Enter your password for this account:') || '';
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            // User originally registered with email/password.
+            // Ask for the password ONCE and then link Google so next time is smooth.
+            const pwd = prompt(
+              this.isPortuguese
+                ? 'Você já tem uma conta com esse email usando senha. Digite sua senha para conectar o Google a essa conta:'
+                : 'You already have an account with this email using a password. Enter your password to link Google to this account:'
+            );
+
+            if (!pwd) {
+              return; // user canceled
+            }
+
+            const userCredential = await signInWithEmailAndPassword(auth, email, pwd);
             await linkWithCredential(userCredential.user, credential);
             await this.promptNewsletterConsent(userCredential.user.uid);
+
+            localStorage.setItem('wasSignedIn', 'true');
             this.navCtrl.navigateRoot('/breathwork');
           } else {
-            console.warn('Existing provider:', methods);
+            console.warn('Existing providers for this email:', methods);
+            this.authService.showAlert('Error', {
+              en: 'This email is already used with a different sign-in method.',
+              pt: 'Este email já está sendo usado com outro método de login.',
+            });
           }
         } else {
-          throw err;
+          console.error('❌ Google Sign-In error:', err);
+          this.authService.showAlert('Error', {
+            en: 'Google Sign-In failed. Please try again.',
+            pt: 'Falha no login com Google. Por favor, tente novamente.',
+          });
         }
       }
     } catch (err: any) {
-      this.showWebSplash = false; // 🟢 Hide splash on error
-      console.error('❌ Google Sign-In failed:', err);
+      this.showWebSplash = false;
+      console.error('❌ Google Sign-In failed (outer):', err);
       this.authService.showAlert('Error', {
         en: 'Google Sign-In failed. Please try again.',
         pt: 'Falha no login com Google. Por favor, tente novamente.',
       });
     }
   }
+  // Decode a JWT payload safely
+  private decodeJwtPayload(token: string): any | null {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return null;
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error('Failed to decode JWT payload', e);
+      return null;
+    }
+  }
+
 
 async loginWithApple() {
   if (!navigator.onLine) {
@@ -382,7 +429,7 @@ async loginWithApple() {
 
     if (email) {
       const userData = (await getDoc(userDocRef)).data() || {};
-      if (userData['newsletterActive'] === false) {
+      if (userData['newsletterActive'] === true) {
         await this.promptNewsletterConsent(user.uid);
       }
     }
@@ -432,5 +479,39 @@ async loginWithApple() {
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  private async showLanguagePickerIfNeeded(): Promise<void> {
+    // Only show if user never chose language before
+    const alreadyChosen = localStorage.getItem(this.LANG_CHOSEN_KEY) === 'true';
+    if (alreadyChosen) return;
+
+    // Prevent showing twice (if page lifecycle runs multiple times)
+    // Optional: you can add a class flag if needed.
+    const alert = await this.alertCtrl.create({
+      header: 'Choose your language',
+      message: 'Escolha seu idioma',
+      backdropDismiss: false,
+      cssClass: 'briza-alert briza-alert-confirm',
+      buttons: [
+        {
+          text: 'Português',
+          handler: () => {
+            localStorage.setItem(this.LANG_KEY, 'true');
+            localStorage.setItem(this.LANG_CHOSEN_KEY, 'true');
+            window.location.reload();
+          },
+        },
+        {
+          text: 'English',
+          handler: () => {
+            localStorage.setItem(this.LANG_KEY, 'false');
+            localStorage.setItem(this.LANG_CHOSEN_KEY, 'true');
+            window.location.reload();
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }

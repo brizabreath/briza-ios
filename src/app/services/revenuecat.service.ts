@@ -9,7 +9,17 @@ import {
 @Injectable({ providedIn: 'root' })
 export class RevenuecatService {
   constructor(private firebaseService: FirebaseService) {}
+  private readonly ENTITLEMENT_ID = 'premium_access';
 
+  private readonly MONTHLY_PRODUCT_IDS = new Set([
+    'montly_subscription',
+    'montly_subscription:monthly-payment1',
+  ]);
+
+  private readonly ANNUAL_PRODUCT_IDS = new Set([
+    'annual_subscription',
+    'annual_subscription:annual-payment1',
+  ]);
   // 🔹 Unified snapshot (used by Guard and Profile)
   async getSnapshot(): Promise<any> {
     const isOnline = navigator.onLine;
@@ -26,6 +36,15 @@ export class RevenuecatService {
       trialActive: false,
       trialDaysLeft: 0,
       rcActive: false,
+      membershipType: 'free' as
+        | 'whitelist'
+        | 'deviceTrial'
+        | 'rcTrial'
+        | 'monthlySubscriber'
+        | 'annualSubscriber'
+        | 'free',
+      rcPeriodType: null as string | null,
+      rcProductId: null as string | null,
     };
 
     // ============================================================
@@ -42,6 +61,7 @@ export class RevenuecatService {
         const snap = await getDocs(q);
 
         if (!snap.empty) {
+          result.membershipType = 'whitelist';
           result.status = 'active';
           result.source = 'whitelist';
           result.whitelistActive = true;
@@ -79,6 +99,7 @@ export class RevenuecatService {
             result.trialDaysLeft = diffDays;
             localStorage.setItem('membershipStatus', 'active');
             localStorage.setItem('membershipSource', 'trial');
+            result.membershipType = 'deviceTrial';
             return result;
           }
         }
@@ -116,10 +137,36 @@ export class RevenuecatService {
         result.status = 'active';
         result.source = 'revenuecat';
         result.rcActive = true;
+
+        // ✅ Added classification (non-breaking)
+        const ent = customerInfo.entitlements.active?.[this.ENTITLEMENT_ID];
+
+        // periodType is usually available on the entitlement object
+        const periodType = (ent?.periodType || '').toString().toUpperCase();
+        result.rcPeriodType = periodType || null;
+
+        const activeSubs: string[] = customerInfo.activeSubscriptions || [];
+        const productId = activeSubs[0] || null;
+        result.rcProductId = productId;
+
+        if (periodType === 'TRIAL') {
+          result.membershipType = 'rcTrial';
+        } else if (productId && this.MONTHLY_PRODUCT_IDS.has(productId)) {
+          result.membershipType = 'monthlySubscriber';
+        } else if (productId && this.ANNUAL_PRODUCT_IDS.has(productId)) {
+          result.membershipType = 'annualSubscriber';
+        } else {
+          // Fallback if productId not in your known list
+          // (still active, just unknown paid type)
+          result.membershipType = 'monthlySubscriber';
+          console.warn('[RevenueCat] Unknown productId:', productId);
+        }
+
+        // keep your existing cache keys
         localStorage.setItem('membershipStatus', 'active');
         localStorage.setItem('membershipSource', 'revenuecat');
+
         return result;
-      } else {
       }
     } catch (err) {
       console.error('❌ RevenueCat check failed:', err);
@@ -133,6 +180,7 @@ export class RevenuecatService {
     result.source = 'none';
     localStorage.setItem('membershipStatus', 'inactive');
     localStorage.setItem('membershipSource', 'none');
+    result.membershipType = 'free';
     return result;
   }
 

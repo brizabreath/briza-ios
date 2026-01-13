@@ -1,0 +1,30 @@
+h3 {
+  text-align: left;
+  padding-left: 1.5rem;
+  padding-top: 1rem;
+  font-size: 18px;
+  color: #0661AA;
+}
+.program-bottom-controls {
+  padding: 14px 16px 24px 16px;
+}
+
+.program-dd-row {
+  display: flex;
+  gap: 12px;
+}
+
+.countdownDisplay {
+  border: 1px solid;
+  border-radius: 20px;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 15px;
+  color: #0661AA;
+  background-color: white;
+  width: 10rem;
+  border: none;
+}
+.watched-badge{
+  color:#49B79D;
+}

@@ -4,17 +4,29 @@
     <img src="assets/images/splash.png" width="250" height="120" />
   </div>
   <!-- GOOGLE SIGN-IN (all platforms) -->
-  <ion-button expand="block" color="light" (click)="loginWithGoogle()" class="logbuttons google">
+  <ion-button expand="block" color="light" (click)="loginWithGoogle()" class="logbuttons google english">
     <ion-icon name="logo-google" slot="start"></ion-icon>
     Sign in with Google
   </ion-button>
 
   <!-- APPLE SIGN-IN (iOS only) -->
-  <ion-button *ngIf="isIOS" expand="block" color="dark" (click)="loginWithApple()" class="logbuttons apple">
+  <ion-button *ngIf="isIOS" expand="block" color="dark" (click)="loginWithApple()" class="logbuttons apple english">
     <ion-icon name="logo-apple" slot="start"></ion-icon>
     Sign in with Apple
   </ion-button>
-  <p class="centeredTextlog">___________OR___________</p>
+  <!-- GOOGLE SIGN-IN (all platforms) -->
+  <ion-button expand="block" color="light" (click)="loginWithGoogle()" class="logbuttons google portuguese">
+    <ion-icon name="logo-google" slot="start"></ion-icon>
+    Logar com Google
+  </ion-button>
+
+  <!-- APPLE SIGN-IN (iOS only) -->
+  <ion-button *ngIf="isIOS" expand="block" color="dark" (click)="loginWithApple()" class="logbuttons apple portuguese">
+    <ion-icon name="logo-apple" slot="start"></ion-icon>
+    Logar com Apple
+  </ion-button>
+  <p class="centeredTextlog english">___________OR___________</p>
+  <p class="centeredTextlog portuguese">___________OU___________</p>
   <form (submit)="onLogin()">
     <ion-item>
       <ion-input appAutofill 
@@ -45,13 +57,11 @@
   </form>
   <p class="textForm"><a routerLink="/forgot-password">{{ isPortuguese ? 'Esqueceu Senha?' : 'Forgot Password?' }}</a></p>
   <p class="textForm">{{ isPortuguese ? 'Não tem uma conta?' : 'Don`t have an account?' }}<br><a routerLink="/registration">{{ isPortuguese ? 'Registre aqui' : 'Register here' }}</a></p>
-
-  <div class="profileLogin textForm2" style="display: none;">
-    <h2 class="portuguese">Idioma</h2>
-    <h2 class="english">Language</h2>
+  <hr />
+  <div class="profile textForm2">
     <div class="flags">
-      <a #portuguese><img src="assets/images/br.png" /></a>
-      <a #english><img src="assets/images/en.png" /></a>
+      <a #portuguese class="english langBtn">Trocar para Português</a>
+      <a #english class="portuguese langBtn">Change to English</a>
     </div>
   </div>
   </div>

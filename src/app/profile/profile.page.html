@@ -22,9 +22,9 @@
     <ion-button 
       *ngIf="isAdmin()" 
       expand="block" 
-      color="danger" 
+      class="managButton"      
       (click)="goToAdminComments()">
-      Manage Comments
+      Administrators only
     </ion-button>
     <div class="flexProfile">
       <a
@@ -67,7 +67,15 @@
         </p>
       </div>
     </div>
-
+    <hr />
+    <div class="textForm2 profile">
+      <h2 class="portuguese">Idioma</h2>
+      <h2 class="english">Language</h2>
+      <div class="flags">
+        <a #portuguese class="english langBtn">Trocar para Português</a>
+        <a #english class="portuguese langBtn">Change to English</a>
+      </div>
+    </div>
     <hr />
     <div class="profile">
       <h2 class="portuguese" *ngIf="isPortuguese">Contato</h2>
@@ -96,20 +104,35 @@
       <p class="english profiletext" *ngIf="!newsletterActive && !isPortuguese">You are not subscribed to our newsletter</p>
       <button
         type="button"
-        class="profileBTN english"
-        *ngIf="newsletterActive"
+        class="profileBTN"
+        *ngIf="newsletterActive && isPortuguese"
         (click)="toggleNewsletter(false)"
       >
-        {{ isPortuguese ? 'CANCELAR' : 'UNSUBSCRIBE' }}
+        CANCELAR
       </button>
-
       <button
         type="button"
-        class="profileBTN english"
-        *ngIf="!newsletterActive"
+        class="profileBTN"
+        *ngIf="newsletterActive  && !isPortuguese"
+        (click)="toggleNewsletter(false)"
+      >
+        UNSUBSCRIBE
+      </button>
+      <button
+        type="button"
+        class="profileBTN"
+        *ngIf="!newsletterActive && !isPortuguese"
         (click)="toggleNewsletter(true)"
       >
-        {{ isPortuguese ? 'ISCREVER-SE' : 'SUBSCRIBE' }}
+        SUBSCRIBE
+      </button>
+      <button
+        type="button"
+        class="profileBTN"
+        *ngIf="!newsletterActive && isPortuguese"
+        (click)="toggleNewsletter(true)"
+      >
+        ISCREVER-SE
       </button>
     </div>
   </div>
@@ -120,7 +143,7 @@
         *ngIf="isPortuguese"
         id="TermsBtn"
         class="portuguese"
-        href="https://brizabreath.com/terms-conditions-br/"
+        href="https://brizabreath.com/terms-conditions/"
         target="_blank"
         >Termos e Condições</a
       >
@@ -128,7 +151,7 @@
         *ngIf="isPortuguese"
         id="PrivacyBtn"
         class="portuguese"
-        href="https://brizabreath.com/privacy-policy-br"
+        href="https://brizabreath.com/privacy-policy"
         target="_blank"
         >Política de Privacidade</a
       >

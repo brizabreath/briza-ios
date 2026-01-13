@@ -54,8 +54,8 @@
 }
 @font-face {
   font-family: 'DellaRespira';
-  src: url('assets/fonts/nunito/DellaRespira-Regular.woff2') format('woff2'),
-       url('assets/fonts/nunito/DellaRespira-Regular.woff') format('woff');
+  src: url('/assets/fonts/nunito/DellaRespira-Regular.woff2') format('woff2'),
+       url('/assets/fonts/nunito/DellaRespira-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -146,15 +146,14 @@ ion-input {
 
 .quote-container {
   text-align: center;
-  margin: 20px;
+  margin: 15px;
   opacity: 0;
   animation: fadeInQuote 2s forwards;
   animation-delay: 1s; // start after logo animation
 }
 
 .quote-text {
-  margin: 0.5rem;
-  font-size: 25px !important;
+  font-size: 24px !important;
   color: #0661AA;
   font-family: var(--heading-font) !important;
 }
@@ -162,6 +161,7 @@ ion-input {
 .quote-author {
   font-size: 1rem;
   color: #0660aa95;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 .openScreenBut{
   bottom: 100px;
@@ -237,7 +237,7 @@ ion-input {
   color: #0661AA;
 }
 .homeWeek{
-  margin-top: 20px;
+  margin-top: 20px !important;
 }
 .circle {
   width: 25px;
@@ -305,9 +305,10 @@ ion-input {
   border-radius: 16px;
   padding: 16px 20px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
-  width: 100%;
+  width: 90%;
   text-align: left;
   margin: auto;
+  margin-bottom: 20px;
   text-decoration: none;
   
 }
@@ -333,24 +334,21 @@ ion-input {
 .breath-button2 {
   display: flex;
   align-items: center;
-  background-color: #fdfbf6; /* light cream */
+  background-color: #fdfbf6;
   border: none;
   border-radius: 16px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
-  width: 100%;
   height: 100px;
   text-align: center;
   text-decoration: none;
-  
 }
+
 .yoga{
   margin-left: 15px;
 }
-.iconBW {
-  width: 4rem;
-}
 .textBW{
   margin-left: 10px;
+  text-align: left;
 }
 .textBW .titleBW {
   
@@ -384,6 +382,7 @@ ion-input {
   margin-left: 0.4rem;
   margin-bottom: 1rem;
   font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 .segmented-control {
   display: flex;
@@ -392,8 +391,8 @@ ion-input {
   overflow: hidden;
   width: 90%;
   margin: auto;
-  margin-top: 150px;
-  margin-bottom: 30px;
+  margin-top: 125px;
+  margin-bottom: 10px;
 }
 
 .segment {
@@ -447,6 +446,7 @@ p {
 }
 #breathpagegrid h2 {
   margin-left: 0.4rem;
+  margin-bottom: 0 !important;
 }
 /* ============ Modal shell ============ */
 .modal {
@@ -492,7 +492,6 @@ p {
   width: 100%;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* Active slide shown with fade */
@@ -783,27 +782,31 @@ display: none;
     height: 80px;
     padding-top: 20px;
   }
-  #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR{
+  #homepagegrid, #homepagegridBR{
     margin-top: 6rem;
   }
   .questionClass2{
-    top: 35px;
+    top: 38px;
   }
   .segmented-control{
-    margin-top: 120px;
-  }
-  .results-container {
-    margin-top: 100px;
+    margin-top: 105px;
   }
   .breathingpages {
     margin-top: 100px;
   }
   #breathpagegrid, #breathpagegridBR {
     margin-top: 7rem;
+  } 
+  select{
+  background-image: none;
+  }
+    .results-container {
+    margin-top: 0px;
   }
 }
 .profiletext{
   text-align: center !important;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 @media only screen and (min-width: 600px){
   .homepageimgs{
@@ -811,10 +814,11 @@ display: none;
   }
 }
 ion-alert {
-  --button-color: #0661AA;  /* black text for buttons */
+  --button-color: #0661AA; 
 }
 .centeredText{
   text-align: center !important;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 .locker-container {
   position: relative;
@@ -842,4 +846,130 @@ ion-alert {
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 16px;
+}
+.arialFont{
+    font-family: Arial, Helvetica, sans-serif !important;
+}
+.langBtn{
+  color: #49B79D !important;
+}
+select{
+  background-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 25' fill='%230661AA'>\
+  <path d='M7 10l5 5 5-5z'/>\
+  </svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.1rem center;
+}
+/* =========================
+   TEMPLATE ALERT (ion-alert in HTML)
+   cssClass="add-where-alert"
+   ========================= */
+ion-alert.add-where-alert {
+  --backdrop-opacity: 0.6;
+
+  --background: #ffffff;
+  --color: #0661aa;
+
+  --width: min(92vw, 440px);
+  --max-width: 440px;
+
+  /* Default button text color */
+  --button-color: #0661aa;
+}
+
+/* Header + message */
+ion-alert.add-where-alert .alert-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0661aa;
+}
+
+ion-alert.add-where-alert .alert-message {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #0661aa;
+  opacity: 0.95;
+}
+
+/* Buttons layout */
+ion-alert.add-where-alert .alert-button-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 12px 16px 16px;
+}
+
+/* Button base */
+ion-alert.add-where-alert .alert-button {
+  border-radius: 14px;
+  background: rgba(6, 97, 170, 0.06);
+  font-weight: 700;
+}
+
+/* Make primary-ish buttons green */
+ion-alert.add-where-alert .alert-button:not(.alert-button-role-cancel) {
+  border-color: rgba(73, 183, 157, 0.55);
+  background: rgba(73, 183, 157, 0.10);
+  color: #0661aa;
+}
+
+/* Cancel button slightly different */
+ion-alert.add-where-alert .alert-button-role-cancel {
+  border-color: rgba(6, 97, 170, 0.25);
+  background: rgba(6, 97, 170, 0.04);
+  color: #0661aa;
+}
+/* =========================
+   SERVICE ALERTS (AlertController)
+   cssClass: 'briza-alert' or 'briza-alert briza-alert-confirm'
+   ========================= */
+ion-alert.briza-alert {
+  --backdrop-opacity: 0.6;
+
+  --background: #ffffff;
+  --color: #0661aa;
+
+  --width: min(92vw, 420px);
+  --max-width: 420px;
+
+  --button-color: #0661aa;
+}
+
+ion-alert.briza-alert .alert-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0661aa;
+}
+
+ion-alert.briza-alert .alert-message {
+  font-size: 14px;
+  line-height: 1.35;
+  color: #0661aa;
+  opacity: 0.95;
+}
+
+ion-alert.briza-alert .alert-button-group {
+  padding: 10px 14px 14px;
+  gap: 5px;
+}
+
+/* default buttons */
+ion-alert.briza-alert .alert-button {
+  border-radius: 12px;
+  background: rgba(6, 97, 170, 0.05);
+  font-weight: 700;
+}
+
+/* Confirm variant: make "Yes" feel primary (green) */
+ion-alert.briza-alert-confirm .alert-button:not(.alert-button-role-cancel) {
+  border-color: rgba(73, 183, 157, 0.70);
+  background: rgba(73, 183, 157, 0.14);
+  color: #0661aa;
+}
+
+ion-alert.briza-alert-confirm .alert-button-role-cancel {
+  border-color: rgba(6, 97, 170, 0.25);
+  background: rgba(6, 97, 170, 0.04);
+  color: #0661aa;
 }

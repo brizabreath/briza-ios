@@ -13,7 +13,8 @@ export class GlobalAlertService {
     const alert = await this.alertCtrl.create({
       header,
       message,
-      buttons: [buttonText]
+      buttons: [buttonText],
+      cssClass: 'briza-alert',
     });
     await alert.present();
   }
@@ -24,6 +25,7 @@ export class GlobalAlertService {
       const alert = await this.alertCtrl.create({
         header,
         message,
+        cssClass: 'briza-alert briza-alert-confirm',
         buttons: [
           {
             text: noText,

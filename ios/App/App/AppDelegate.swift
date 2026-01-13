@@ -14,7 +14,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let window = self.window {
             window.backgroundColor = UIColor.white
         }
-
+        // ✅ Allow audio playback even when iPhone is on silent
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            print("✅ AVAudioSession playback category set successfully")
+        } catch {
+            print("⚠️ Failed to set AVAudioSession category: \(error)")
+        }
         // ✅ Keep the audio session active and configured for playback
         configureAudioSession()
         UIApplication.shared.isIdleTimerDisabled = true

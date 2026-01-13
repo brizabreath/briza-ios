@@ -167,13 +167,10 @@ export class DbPage implements  AfterViewInit, OnDestroy {
   }
   async startDB(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsDB.nativeElement.disabled = true;
     this.questionDB.nativeElement.disabled = true;
-    this.minusDB.nativeElement.disabled = true;
-    this.plusDB.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnDB.nativeElement.disabled = true;
       this.inhaleDB = true;
@@ -200,7 +197,8 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         }else{
           this.DBballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inhale');        
+        await this.audioService.playSound('inhale');    
+        this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;    
         await this.audioService.playBreathSound('inhaleBreath', this.DBcurrentValue); 
         this.globalService.changeBall(1.3, parseInt(this.inhaleInputDB.nativeElement.value), this.DBball);
         this.DBinterval = setInterval(() => this.startTimerDB(), 1000);
@@ -382,8 +380,6 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     this.stopBtnDB.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.DBSave.nativeElement.disabled = true;
     this.DBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusDB.nativeElement.disabled = false;
-    this.plusDB.nativeElement.disabled = false;
     this.inhaleDB = true;
     this.hold1DB = false;
     this.exhaleDB = false;

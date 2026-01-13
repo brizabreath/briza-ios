@@ -25,3 +25,23 @@
 #container a {
   text-decoration: none;
 }
+.widthadjust{
+  width: 85%;
+  margin: auto;
+}
+.noDisplay{
+  display: none;
+}
+.chartText{
+  font-size: 0.95em;
+  color: #0661AA;
+  margin-bottom: 10px;
+}
+#noResultsMessage{
+  margin-top: 130px;
+}
+.md{
+  #noResultsMessage{
+    margin-top: 110px;
+  }
+}

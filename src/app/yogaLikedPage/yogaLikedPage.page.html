@@ -1,0 +1,47 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <div class="liked-wrap">
+    <h2 class="liked-title">
+      {{ isPortuguese ? 'Suas aulas curtidas' : 'Your liked classes' }}
+    </h2>
+
+    <div *ngIf="likedVideos.length > 0" class="video-list">
+      <div
+        *ngFor="let video of likedVideos"
+        class="video-card"
+        [class.locked]="!video.isFree && !isMemberActive()"
+        (click)="onVideoClick(video)"
+      >
+        <img [src]="video.thumbnail" class="video-thumb" />
+
+        <div class="video-info">
+          <h3>
+            {{ video.title }}
+            <span *ngIf="video.isFree && !isMemberActive()" class="free-icon"> FREE</span>
+          </h3>
+          <p class="video-subtitle">{{ video.duration }} min</p>
+        </div>
+
+        <div class="play-button">&#9658;</div>
+      </div>
+    </div>
+
+    <div *ngIf="likedVideos.length === 0" class="no-videos">
+      <p class="english" *ngIf="!isPortuguese">No liked classes yet.</p>
+      <p class="portuguese" *ngIf="isPortuguese">Você ainda não curtiu nenhuma aula.</p>
+    </div>
+  </div>
+
+  <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
+</ion-content>

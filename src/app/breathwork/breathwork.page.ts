@@ -42,6 +42,7 @@ export class BreathworkPage {
   isModalOpen = false;
   private static hasInitialized = false;
   selectedQuote: { text: string; author: string } | null = null;
+  lastOpened = localStorage.getItem('lastOpened');
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private _sharing = false;
   showWebSplash = false;
@@ -60,86 +61,112 @@ constructor(
   }
   async ionViewWillEnter() {
     this.showWebSplash = true;
-    // 1️⃣ Check membership snapshot (already does whitelist, trial, RevenueCat)
-    const snapshot = await this.revenuecat.getSnapshot();
 
-    // 2️⃣ Handle device trial logic only if not already active member
-    if (snapshot.status !== 'active') {
-      const trialStatus = await this.authService.checkOrStartDeviceTrial();
+    try {
+      const online = navigator.onLine;
 
-      // 🆕 Newly started trial (first ever time on this device)
-      if (trialStatus.newlyCreated) {
-        this.globalAlert.showalert(
-          this.isPortuguese ? 'Período de Teste' : 'Trial Started',
-          this.isPortuguese
-            ? 'Você tem 7 dias de acesso gratuito a todos os recursos do Briza'
-            : 'You have 7 days of free access to all features of Briza'
-        );
-        localStorage.setItem('membershipStatus', 'active');
-        localStorage.setItem('membershipSource', 'trial');
-      }
+      // Keep language greeting + UI working offline
+      await this.loadRandomQuote();
 
-      // ⏳ Trial expired for the first time → show downgrade message
-      else if (trialStatus.expiredNow) {
-        this.globalAlert.showalert(
-          this.isPortuguese ? 'Período de Teste Encerrado' : 'Trial Ended',
-          this.isPortuguese
-            ? 'Seu período de teste terminou. Você agora está no modo gratuito. Assine para obter acesso total novamente'
-            : 'Your trial period has ended. You are now in free mode. Subscribe to regain full access'
-        );
-        localStorage.setItem('membershipStatus', 'inactive');
-        localStorage.setItem('membershipSource', 'trialExpired');
-      }
-    }
-    await this.loadRandomQuote();
+      // ✅ Only do Firebase/RevenueCat/trial checks when online
+      if (online) {
+        try {
+          await this.authService.ensureUserCreatedAt();
+          await this.authService.ensureUserLanguageSynced();
 
-    if (!BreathworkPage.hasInitialized) {
-      BreathworkPage.hasInitialized = true;
-      this.isModalOpen = true;
-      this.globalService.openModal(this.openScreen);
-    }
-    //modal events set up
-    this.closeModalButtonBREATH2.nativeElement.onclick = () => {
-      this.globalService.closeModal(this.openScreen);
-      this.isModalOpen = true;  // ✅ unhide page
-    };
-    this.questionBREATH.nativeElement.onclick = () => this.globalService.openModal(this.openScreen);
-    localStorage.setItem('isPortuguese', 'false');
-    this.showBRTphrase();
-    this.calculateWeeklyProgress();
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+          const snapshot = await this.revenuecat.getSnapshot();
+          await this.authService.syncMembershipTypeToFirestore(snapshot);
 
-    const fullName = localStorage.getItem('currentUserName') || '';
-    const userName = fullName.split(' ')[0];
-    const currentHour = new Date().getHours();
+          if (snapshot.status !== 'active') {
+            const trialStatus = await this.authService.checkOrStartDeviceTrial();
 
-    let greeting = '';
-    if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-      if (currentHour < 12) {
-        greeting = 'Bom dia';
-      } else if (currentHour < 18) {
-        greeting = 'Boa tarde';
+            if (trialStatus.newlyCreated) {
+              this.globalAlert.showalert(
+                this.isPortuguese ? 'Período de Teste' : 'Trial Started',
+                this.isPortuguese
+                  ? 'Você tem 7 dias de acesso gratuito a todos os recursos do Briza'
+                  : 'You have 7 days of free access to all features of Briza'
+              );
+              localStorage.setItem('membershipStatus', 'active');
+              localStorage.setItem('membershipSource', 'trial');
+            } else if (trialStatus.expiredNow) {
+              this.globalAlert.showalert(
+                this.isPortuguese ? 'Período de Teste Encerrado' : 'Trial Ended',
+                this.isPortuguese
+                  ? 'Seu período de teste terminou. Você agora está no modo gratuito. Assine para obter acesso total novamente'
+                  : 'Your trial period has ended. You are now in free mode. Subscribe to regain full access'
+              );
+              localStorage.setItem('membershipStatus', 'inactive');
+              localStorage.setItem('membershipSource', 'trialExpired');
+            }
+          }
+
+          // Only update remote results when online
+          const currentDate = Date.now();
+          const THREE_DAYS = 72 * 60 * 60 * 1000; // (your variable name was ONE_DAY but it's 3 days)
+          if (this.lastOpened == null || (currentDate - parseInt(this.lastOpened)) >= THREE_DAYS) {
+            this.authService.updateDataResults();
+          }
+        } catch (e) {
+          console.warn('Online sync/trial logic failed (continuing):', e);
+          // ✅ do nothing else; keep last known membershipStatus
+        }
       } else {
-        greeting = 'Boa noite';
+        console.log('Offline: skipping trial + firestore sync. Using last known membershipStatus.');
       }
-      this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-      if (currentHour < 12) {
-        greeting = 'Good morning';
-      } else if (currentHour < 18) {
-        greeting = 'Good afternoon';
+
+      // --- your existing modal setup + UI below here ---
+      if (!BreathworkPage.hasInitialized) {
+        BreathworkPage.hasInitialized = true;
+        this.isModalOpen = true;
+        this.globalService.openModal(this.openScreen);
+      }
+
+      this.closeModalButtonBREATH2.nativeElement.onclick = () => {
+        this.globalService.closeModal(this.openScreen);
+        this.isModalOpen = true;
+      };
+      this.questionBREATH.nativeElement.onclick = () => this.globalService.openModal(this.openScreen);
+
+      this.showBRTphrase();
+      this.calculateWeeklyProgress();
+
+      /// Language greeting logic
+      const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+      const fullName = localStorage.getItem('currentUserName') || '';
+      const userName = fullName.split(' ')[0];
+      const currentHour = new Date().getHours();
+
+      let greeting = '';
+      if (isPortuguese) {
+        this.globalService.hideElementsByClass('english');
+        this.globalService.showElementsByClass('portuguese');
+        if (currentHour < 12) {
+          greeting = 'Bom dia';
+        } else if (currentHour < 18) {
+          greeting = 'Boa tarde';
+        } else {
+          greeting = 'Boa noite';
+        }
+        this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
       } else {
-        greeting = 'Good evening';
+        this.globalService.hideElementsByClass('portuguese');
+        this.globalService.showElementsByClass('english');
+        if (currentHour < 12) {
+          greeting = 'Good morning';
+        } else if (currentHour < 18) {
+          greeting = 'Good afternoon';
+        } else {
+          greeting = 'Good evening';
+        }
+        this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
       }
-      this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
+    } finally {
+      // ✅ Ensure splash always goes away even if something throws
+      setTimeout(() => {
+        this.showWebSplash = false;
+      }, 1000);
     }
-     setTimeout(() => {
-      this.showWebSplash = false;
-    }, 1000);
   }
   timeStringToSeconds(time: string): number {
     const [minutes, seconds] = time.split(':').map(Number);
@@ -173,7 +200,7 @@ constructor(
   }
   calculateWeeklyProgress(): void {
     const exerciseKeys = [
-      'HATResults', 'HATCResults', 'AHATResults',
+      'brtResults','HATResults', 'HATCResults', 'AHATResults',
       'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
       'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
       'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
@@ -183,9 +210,9 @@ constructor(
     const today = new Date();
     const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // --- Define current week range ---
+    // --- Define current week range (Mon–Sun) ---
     const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7)); // get Monday of current week
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7)); // Monday of current week
     monday.setHours(0, 0, 0, 0);
 
     const sunday = new Date(monday);
@@ -211,12 +238,18 @@ constructor(
 
       for (const result of entries) {
         const dateUTC = new Date(result.date);
-        const localDate = new Date(dateUTC.toLocaleString('en-US', { timeZone: localTimezone }));
-        const localDateOnly = new Date(localDate.getFullYear(), localDate.getMonth(), localDate.getDate());
+        const localDate = new Date(
+          dateUTC.toLocaleString('en-US', { timeZone: localTimezone })
+        );
+        const localDateOnly = new Date(
+          localDate.getFullYear(),
+          localDate.getMonth(),
+          localDate.getDate()
+        );
         const dateKey = localDateOnly.toISOString().split('T')[0];
         activeDates.add(dateKey);
 
-        // ✅ Only count for weekly fill if inside this week
+        // ✅ Only count sessions inside this week
         if (localDateOnly >= monday && localDateOnly <= sunday) {
           const weekday = localDateOnly.getDay(); // 0 = Sun, 6 = Sat
           const keyDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][weekday];
@@ -229,40 +262,48 @@ constructor(
     this.numberOfWeekSessions = weeklySessionCount;
     const isPT = this.isPortuguese;
 
-    // --- Streak logic (cross-week, unaffected) ---
-    const sortedDates = Array.from(activeDates).sort();
+    // --- CURRENT streak logic (no more "longest streak ever" bullshit) ---
+    const sortedDates = Array.from(activeDates).sort(); // ['2025-01-01', '2025-01-02', ...]
     let streak = 0;
-    let currentStreak = 0;
 
     if (sortedDates.length) {
+      const oneDayMs = 1000 * 60 * 60 * 24;
+      streak = 1; // at least 1 day if there is any practice
       let prev = new Date(sortedDates[0]);
-      currentStreak = 1;
+
       for (let i = 1; i < sortedDates.length; i++) {
         const curr = new Date(sortedDates[i]);
-        const diff = (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24);
-        if (diff === 1) currentStreak++;
-        else if (diff > 1) {
-          streak = Math.max(streak, currentStreak);
-          currentStreak = 1;
+        const diffDays = Math.round(
+          (curr.getTime() - prev.getTime()) / oneDayMs
+        );
+
+        if (diffDays === 1) {
+          // consecutive day → streak continues
+          streak++;
+        } else if (diffDays > 1) {
+          // gap → streak resets and starts again from this day
+          streak = 1;
         }
+
         prev = curr;
       }
-      streak = Math.max(streak, currentStreak);
-    }
 
-    // --- Validate streak still active (no missed full days)
-    if (streak > 0) {
+      // 🔒 If last practice was more than 1 full day ago, streak is no longer "active"
       const lastDate = new Date(sortedDates[sortedDates.length - 1]);
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
       const diffToToday = Math.floor(
-        (today.setHours(0, 0, 0, 0) - lastDate.getTime()) / (1000 * 60 * 60 * 24)
+        (todayStart.getTime() - lastDate.getTime()) / oneDayMs
       );
-      if (diffToToday > 1) streak = 0; // missed a day → reset
+      if (diffToToday > 1) {
+        streak = 0;
+      }
     }
 
-    // --- Display logic ---
+    // --- Display logic (bulletproof as you requested) ---
     if (streak >= 5) {
       this.numberOfSessions.nativeElement.innerHTML = isPT
-        ? `Parabéns! Você está em uma sequência de ${streak} ${streak === 1 ? 'dia' : 'dias'} seguidos!`
+        ? `Parabéns! ${streak} ${streak === 1 ? 'dia' : 'dias'} de treino seguidos!!`
         : `Well done! ${streak} ${streak === 1 ? 'day' : 'days'} of practice in a row!`;
     } else if (this.numberOfWeekSessions === 0) {
       this.numberOfSessions.nativeElement.innerHTML = isPT
@@ -281,6 +322,7 @@ constructor(
       if (circle) circle.style.backgroundColor = filledColor;
     }
   }
+
 
 
 
@@ -440,7 +482,7 @@ constructor(
     this.isModalOpen = true;  // ✅ unhide page
     setTimeout(() => this.startBreathTourNow(), 0);
   }
-    private langKey(): 'EN' | 'PT' {
+  private langKey(): 'EN' | 'PT' {
     const isPT = localStorage.getItem('isPortuguese') === 'true';
     return isPT ? 'PT' : 'EN';
   }

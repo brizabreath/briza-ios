@@ -167,13 +167,10 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
   }
   async startHUM(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsHUM.nativeElement.disabled = true;
     this.questionHUM.nativeElement.disabled = true;
-    this.minusHUM.nativeElement.disabled = true;
-    this.plusHUM.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnHUM.nativeElement.disabled = true;
       this.inhaleHUM = true;
@@ -200,7 +197,8 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HUMballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inhale');        
+        await this.audioService.playSound('inhale'); 
+        this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;       
         await this.audioService.playBreathSound('inhaleBreath', this.HUMcurrentValue); 
         this.globalService.changeBall(1.5, 5, this.HUMball);
         this.HUMinterval = setInterval(() => this.startTimerHUM(), 1000);
@@ -377,8 +375,6 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     this.stopBtnHUM.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.HUMSave.nativeElement.disabled = true;
     this.HUMSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-     this.minusHUM.nativeElement.disabled = false;
-    this.plusHUM.nativeElement.disabled = false;
     this.inhaleHUM = true;
     this.hold1HUM = false;
     this.exhaleHUM = false;

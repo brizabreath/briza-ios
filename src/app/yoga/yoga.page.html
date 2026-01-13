@@ -7,10 +7,13 @@
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader">
+      <button class="liked-open-btn" (click)="goToLikedClasses()">
+        <img class="timerIMG2" src="assets/images/heartG.png">
+      </button>
       <div class="questionMark questionClass">
         <a routerLink="/timer"><img class="timerIMG" src="assets/images/timer.png"></a>
       </div>
-    </div>
+    </div> 
   </header>
 
   <div id="yogaPage">
@@ -20,8 +23,7 @@
         class="segment"
         [class.active]="selectedSegment === 'move'"
         (click)="selectSegment('move')">
-        <div class="english" *ngIf="!isPortuguese">Move</div>
-        <div class="portuguese" *ngIf="isPortuguese">Mexa-se</div>
+        <div>Flow</div>
       </button>
 
       <button
@@ -29,15 +31,14 @@
         [class.active]="selectedSegment === 'slowdown'"
         (click)="selectSegment('slowdown')">
         <div class="english" *ngIf="!isPortuguese">Gentle</div>
-        <div class="portuguese" *ngIf="isPortuguese">Acalme-se</div>
+        <div class="portuguese" *ngIf="isPortuguese">Suave</div>
       </button>
 
       <button
         class="segment"
         [class.active]="selectedSegment === 'meditate'"
         (click)="selectSegment('meditate')">
-        <div class="english" *ngIf="!isPortuguese">Meditate</div>
-        <div class="portuguese" *ngIf="isPortuguese">Medite</div>
+        <div>Mindfulness</div>
       </button>
     </div>
     <div class="filters">
@@ -63,9 +64,11 @@
       </ion-item>
     </div>
 
-    <!-- Duration Filter -->
+    <!-- Duration Filter --> 
     <div class="duration-filter">
       <select id="durationSelect" [(ngModel)]="selectedFilter" (change)="filterVideos()">
+        <option value="duration" *ngIf="!isPortuguese">Duration</option>
+        <option value="duration" *ngIf="isPortuguese">Duração</option>
         <option *ngFor="let f of filters" [value]="f">{{ f }}</option>
       </select>
     </div>
@@ -76,10 +79,10 @@
         <p class="section-subtitle">
           <!-- Meditate -->
           <span *ngIf="selectedSegment === 'meditate' && !isPortuguese" class="english">
-            Guided meditations to relax and focus
+            Guided sessions to relax and focus
           </span>
           <span *ngIf="selectedSegment === 'meditate' && isPortuguese" class="portuguese">
-            Meditações guiadas para relaxar e focar
+            Aulas guiadas para relaxar e focar
           </span>
 
           <!-- Move -->
@@ -117,6 +120,7 @@
           </div>
 
           <div class="play-button">&#9658;</div>
+          <div class="watched-badge" *ngIf="isWatched(video.id)">✓</div>
         </div>
 
       </div>

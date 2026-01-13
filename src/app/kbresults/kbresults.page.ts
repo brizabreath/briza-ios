@@ -121,16 +121,19 @@ export class KBresultsPage implements AfterViewInit {
     this.KBlongestRound = this.formatTime(longestRoundEntry.round/60);
     this.KBlongestRoundDate = this.formatDate(longestRoundEntry.date, true);
   
-    // Find the latest longest session average
-    const sessionAveragesWithDates = this.KBDataArray.map(entry => ({
-      average: entry.roundsResult.reduce((a, b) => a + b, 0) / entry.rounds,
-      date: entry.date
-    }));
-    const longestSessionAverageEntry = sessionAveragesWithDates.reduce((max, entry) =>
-      entry.average > max.average || (entry.average === max.average && entry.date > max.date) ? entry : max
-    );
-    this.KBlongestSessionAverage = this.formatTime(parseFloat(longestSessionAverageEntry.average.toFixed(0))/60);
-    this.KBlongestSessionAverageDate = this.formatDate(longestSessionAverageEntry.date, true);
+    // Calculate lifetime average (average of all rounds ever recorded)
+      let totalHoldTime = 0;
+      let totalRounds = 0;
+
+      this.KBDataArray.forEach(entry => {
+        totalHoldTime += entry.roundsResult.reduce((a, b) => a + b, 0);
+        totalRounds += entry.roundsResult.length;
+      });
+
+      const lifetimeAverageSeconds = totalRounds > 0 ? totalHoldTime / totalRounds : 0;
+      this.KBlongestSessionAverage = this.formatTime(lifetimeAverageSeconds / 60);
+      this.KBlongestSessionAverageDate = '';
+
   }  
 
   KBinitializeChart(): void {
@@ -315,7 +318,7 @@ export class KBresultsPage implements AfterViewInit {
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
     const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
   
-    return `${formattedMinutes} min & ${formattedSeconds} sec`;
+    return `${formattedMinutes} min : ${formattedSeconds} sec`;
   }
   
 

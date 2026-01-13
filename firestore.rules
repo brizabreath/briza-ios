@@ -1,0 +1,96 @@
+// firestore.rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+		match /users/{userId}/notifications/{notifId} {
+      allow read, write: if request.auth != null;
+    }
+
+    match /devices/{deviceId} {
+      allow read, write: if request.auth != null;  // user must be signed in
+    }
+    
+  	match /freeAccessUsers/{email} {
+      allow read: if request.auth != null;
+    }
+    // Each user can read/write their own user doc
+    match /users/{userId} {
+      allow read, write: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+    }
+
+    // Public video docs
+    match /videos/{videoId} {
+      allow read: if true;
+
+      // 🟢 allow write/update only for admin email
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.email == 'info@brizabreath.com';
+
+      // Per-video comments
+      match /comments/{commentId} {
+        allow read: if true;
+
+        // Create: signed-in user, self-authored, non-empty text
+        allow create: if request.auth != null
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0;
+
+        // Delete: author OR admin (by email)
+        allow delete: if request.auth != null && (
+          request.auth.uid == resource.data.userId ||
+          request.auth.token.email == 'info@brizabreath.com'
+        );
+
+        // No edits
+        allow update: if false;
+      }
+    }
+    // Public quotes; only you can write
+    match /quotes/{quoteId} {
+      allow read: if true;
+
+      function isAdmin() {
+        return request.auth != null
+          && (
+            // option A: by email (you already use this for comment deletes)
+            request.auth.token.email == 'info@brizabreath.com'
+            // option B: or by UID(s) — add yours if you prefer
+            // || request.auth.uid in ['YOUR_UID_HERE']
+          );
+      }
+
+      function isValidQuote(d) {
+        return d.text is string && d.text.size() > 0
+            && d.author is string && d.author.size() > 0
+            && d.language in ['EN','PT'];
+      }
+
+      allow create: if isAdmin() && isValidQuote(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+    // ===== Helpers =====
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /admins/{uid} {
+      // Only admins can see the admin list
+      allow read: if isAdmin();
+
+      // Only admins can manage admins (so one admin can add another)
+      allow create, update, delete: if isAdmin();
+    }
+    // Admin-only stats
+    match /stats/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /admin_monthly/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /email_queue/{docId} {
+      allow read, write: if false;
+    }
+  }
+}

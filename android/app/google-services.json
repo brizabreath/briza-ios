@@ -7,22 +7,30 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1062876241537:android:168de631d8834a64637780",
+        "mobilesdk_app_id": "1:1062876241537:android:ba52fcff35aaaeb4637780",
         "android_client_info": {
           "package_name": "com.brizabreath.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1062876241537-oou064qe5l4v0he7s6gssvulgtmt50kn.apps.googleusercontent.com",
+          "client_id": "1062876241537-bntvhm7o42h3306gh0vd3e8sudtqi15f.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.brizabreath.app",
-            "certificate_hash": "7543646a81730f4f047ecfebaa38eee220991caa"
+            "certificate_hash": "554592d46a1f8577378ecb0fb862db109c828372"
           }
         },
         {
-          "client_id": "1062876241537-jpnhdk0mfrnu2v2gn354l7ov05os5bqk.apps.googleusercontent.com",
+          "client_id": "1062876241537-rtljfueeq8j2s4hlenb97eel2mtojdol.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brizabreath.app",
+            "certificate_hash": "2ea8e1a0a48036b1e2cf84b671e6271dbd6392bd"
+          }
+        },
+        {
+          "client_id": "1062876241537-mcfda9bkmgmtcm5m2kfjdirht1uigush.apps.googleusercontent.com",
           "client_type": 3
         }
       ],

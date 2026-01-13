@@ -26,7 +26,9 @@ export class ForgotPasswordPage {
   isPortuguese: boolean = localStorage.getItem('isPortuguese') === 'true';
 
   constructor(private navCtrl: NavController, private authService: AuthService) {}
-
+  async ionViewWillEnter() {
+    this.email = localStorage.getItem('currentUserEmail') || '';
+  }
   async onSubmit() {
     this.isLoggingIn = true; // Start blinking animation
 

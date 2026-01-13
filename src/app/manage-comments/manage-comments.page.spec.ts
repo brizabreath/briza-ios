@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ManageComments } from './manage-comments.page';
 
-describe('ProfilePage', () => {
+describe('ManageComments', () => {
   let component: ManageComments;
   let fixture: ComponentFixture<ManageComments>;
 

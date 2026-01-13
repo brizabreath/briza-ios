@@ -1,0 +1,202 @@
+<ion-header>
+  <ion-toolbar>
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <ion-title>Administrator</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button expand="block" class="managButton" (click)="goToAdminComments()">
+    Manage Comments
+  </ion-button>
+  <ion-button
+      expand="block"
+      class="managButton"
+      (click)="updateAllVideoMetadata()"
+    >
+      Update yoga classes
+    </ion-button>
+
+    <div *ngIf="updatingVideos" style="margin: 12px 16px; font-size: 14px;">
+      Updating: {{ updateProgressText }}
+    </div>
+  <div class="admin-stats">
+    <h2>Overall</h2>
+
+    <div class="adminstat">
+      <div class="label">Total users</div>
+      <div class="value">
+        <span *ngIf="loadingUsersCount">Loading...</span>
+        <span *ngIf="!loadingUsersCount">{{ usersCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Free lifetime users</div>
+      <div class="value">
+        <span *ngIf="loadingFreeUsersCount">Loading...</span>
+        <span *ngIf="!loadingFreeUsersCount">{{ freeUsersCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Free version users</div>
+      <div class="value">
+        <span *ngIf="loadingFreeNoMembershipCount">Loading...</span>
+        <span *ngIf="!loadingFreeNoMembershipCount">{{ freeNoMembershipCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Devices installed</div>
+      <div class="value">
+        <span *ngIf="loadingDevicesCount">Loading...</span>
+        <span *ngIf="!loadingDevicesCount">{{ devicesCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Curent device trials</div>
+      <div class="value">
+        <span *ngIf="loadingTrialDevicesCount">Loading...</span>
+        <span *ngIf="!loadingTrialDevicesCount">{{ trialDevicesCount ?? '—' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <h2>New users</h2>
+    <div *ngIf="computeMonthlyMsg" style="margin-top: 8px;">
+      {{ computeMonthlyMsg }}
+    </div>
+
+    <div class="adminstat">
+      <div class="label">This month</div>
+      <div class="value">
+        <span *ngIf="loadingMonthlyThisMonth">Loading...</span>
+        <span *ngIf="!loadingMonthlyThisMonth">{{ monthlyNewUsersThisMonth ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">This week</div>
+      <div class="value">
+        <span *ngIf="loadingNewUsersThisWeekCount">Loading...</span>
+        <span *ngIf="!loadingNewUsersThisWeekCount">{{ newUsersThisWeekCount ?? '—' }}</span>
+      </div>
+    </div>
+  </div>
+
+  
+  <div *ngIf="!showCharts" style="margin:20px; ">
+    Not enough saved monthly data yet
+  </div>
+  <div class="admin-stats" *ngIf="showCharts">
+    <h2>Past 6 months</h2>
+
+    <div class="adminstat">
+      <div style="width: 100%;">
+        <span *ngIf="loadingChartData">Loading...</span>
+        <canvas *ngIf="!loadingChartData" #usersCanvas></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="admin-stats" *ngIf="showCharts">
+    <div class="adminstat">
+      <div style="width: 100%;">
+        <span *ngIf="loadingChartData">Loading...</span>
+        <canvas *ngIf="!loadingChartData" #subsCanvas></canvas> 
+      </div> 
+    </div>
+  </div>
+
+
+  <div class="admin-stats">
+    <h2>Subscriptions</h2>
+
+    <div class="adminstat">
+      <div class="label">Total Subscriptions</div>
+      <div class="value">
+        <span *ngIf="loadingMembershipUsersCount">Loading...</span>
+        <span *ngIf="!loadingMembershipUsersCount">{{ membershipUsersCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Subscriptions on trial</div>
+      <div class="value">
+        <span *ngIf="loadingMembershipTrialCount">Loading...</span>
+        <span *ngIf="!loadingMembershipTrialCount">{{ membershipTrialCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Active monthly subscription</div>
+      <div class="value">
+        <span *ngIf="loadingMembershipMonthlyCount">Loading...</span>
+        <span *ngIf="!loadingMembershipMonthlyCount">{{ membershipMonthlyCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Active annual subscriptions</div>
+      <div class="value">
+        <span *ngIf="loadingMembershipAnnualCount">Loading...</span>
+        <span *ngIf="!loadingMembershipAnnualCount">{{ membershipAnnualCount ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">New subscriptions this month</div>
+      <div class="value">
+        <span *ngIf="loadingMonthlyThisMonth">Loading...</span>
+        <span *ngIf="!loadingMonthlyThisMonth">{{ monthlyNewSubsThisMonth ?? '—' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <h2>Exercises ever done</h2>
+
+    <div class="adminstat">
+      <div class="label">Total exercises practiced</div>
+      <div class="value">
+        <span *ngIf="loadingGlobalExerciseStats">Loading...</span>
+        <span *ngIf="!loadingGlobalExerciseStats">{{ globalTotalExercises ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Total Yoga classes done</div>
+      <div class="value">
+        <span *ngIf="loadingGlobalExerciseStats">Loading...</span>
+        <span *ngIf="!loadingGlobalExerciseStats">{{ globalYogaClasses ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Total BRT tests done</div>
+      <div class="value">
+        <span *ngIf="loadingGlobalExerciseStats">Loading...</span>
+        <span *ngIf="!loadingGlobalExerciseStats">{{ globalBrtTests ?? '—' }}</span>
+      </div>
+    </div>
+
+    <div class="adminstat">
+      <div class="label">Top 3 exercises</div>
+      <div class="value">
+        <span *ngIf="loadingGlobalExerciseStats">Loading...</span>
+        <ng-container *ngIf="!loadingGlobalExerciseStats">
+          <div *ngIf="globalTop3?.length; else noTop3">
+            <div *ngFor="let t of globalTop3">
+              {{ getExerciseName(t.key) }}: {{ t.count }}
+            </div>
+          </div>
+          <ng-template #noTop3>—</ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ion-content>

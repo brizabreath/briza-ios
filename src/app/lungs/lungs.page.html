@@ -3,52 +3,87 @@
     <div class="back-buttons">
       <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
+
     <div class="logo-container">
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"></div>
+
+    <div class="placeholderHeader">
+      <button class="liked-open-btn" (click)="goToLikedClasses()">
+        <img class="timerIMG2" src="assets/images/heartG.png">
+      </button>
+    </div>
   </header>
-  <div id="lungsPage">
-    <!-- English Section -->
-    <div class="breathingpages english" *ngIf="!isPortuguese">
-      <h1>Lungs Expansion Training</h1>
-      <div class="vimeo-wrapper" *ngIf="vimeoUrlEN">
-        <iframe
-          #vimeoEN
-          [src]="vimeoUrlEN"
-          (load)="onIframeLoad('EN')"
-          title="Lungs Expansion Training"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-          playsinline
-        ></iframe>
-      </div>
-      <p class="description lungsdescription">
-        Follow this video and learn how to expand your lungs, create more volume capacity,
-        and make full use of your breathing system
-      </p>
+
+  <div id="yogaPage">
+    <div class="segmented-control">
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'lungs'"
+        (click)="selectSegment('lungs')">
+        <div class="english" *ngIf="!isPortuguese">Lungs Expansion</div>
+        <div class="portuguese" *ngIf="isPortuguese">Expansão Pulmonar</div>
+      </button>
+
+      <button
+        class="segment"
+        [class.active]="selectedSegment === 'mobility'"
+        (click)="selectSegment('mobility')">
+        <div class="english" *ngIf="!isPortuguese">Mobility</div>
+        <div class="portuguese" *ngIf="isPortuguese">Mobilidade</div>
+      </button>
     </div>
 
-    <!-- Portuguese Section -->
-    <div class="breathingpages portuguese" *ngIf="isPortuguese">
-      <h1>Treinamento de Expansão Pulmonar</h1>
-      <div class="vimeo-wrapper" *ngIf="vimeoUrlPT">
-        <iframe
-          #vimeoPT
-          [src]="vimeoUrlPT"
-          (load)="onIframeLoad('PT')"
-          title="Treinamento de Expansão Pulmonar"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-          playsinline
-        ></iframe>
+    <!-- Segment Content -->
+    <div class="segment-content">
+      <div *ngIf="filteredVideos.length > 0" class="video-list">
+        <p class="section-subtitle">
+          <span *ngIf="selectedSegment === 'lungs' && !isPortuguese" class="english">
+            Increase your lungs capacity
+          </span>
+          <span *ngIf="selectedSegment === 'lungs' && isPortuguese" class="portuguese">
+            Aumente a capacidade dos seus pulmões
+          </span>
+
+          <span *ngIf="selectedSegment === 'mobility' && !isPortuguese" class="english">
+            Improve mobility with guided movement
+          </span>
+          <span *ngIf="selectedSegment === 'mobility' && isPortuguese" class="portuguese">
+            Melhore a mobilidade com movimento guiado
+          </span>
+        </p>
+
+        <div
+          *ngFor="let video of filteredVideos"
+          class="video-card"
+          [class.locked]="!video.isFree && !isMemberActive()"
+          (click)="onVideoClick(video)"
+        >
+          <div>
+            <img [src]="video.thumbnail" class="video-thumb" />
+          </div>
+
+          <div class="video-info">
+            <h3>
+              {{ video.title }}
+              <span *ngIf="video.isFree && !isMemberActive()" class="free-icon"> FREE</span>
+            </h3>
+            <p class="video-subtitle">{{ video.duration }} min</p>
+          </div>
+
+          <div class="play-button">&#9658;</div>
+          <div class="watched-badge" *ngIf="isWatched(video.id)">✓</div>
+        </div>
       </div>
-      <p class="description lungsdescription">
-        Siga este vídeo e aprenda como expandir seus pulmões, criando maior capacidade
-        de volume e fazendo uso completo do seu sistema respiratório
-      </p>
+
+      <div *ngIf="filteredVideos.length === 0" class="no-videos">
+        <p class="english" *ngIf="!isPortuguese">No videos found for this category</p>
+        <p class="portuguese" *ngIf="isPortuguese">Nenhum vídeo encontrado para esta categoria</p>
+      </div>
     </div>
   </div>
+
+  <!-- Splash screen shown while app loads -->
   <div *ngIf="showWebSplash" class="web-splash-screen">
     <div class="loader"></div>
   </div>

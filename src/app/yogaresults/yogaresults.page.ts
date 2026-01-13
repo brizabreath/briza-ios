@@ -138,7 +138,7 @@ export class YogaresultsPage implements AfterViewInit {
           labels: this.selectedDataDates,
           datasets: [
             {
-              label: this.isPortuguese ? 'Total do Dia' : 'Total per Day',
+              label: this.isPortuguese ? 'Total do Dia' : 'Day total',
               backgroundColor: '#49B79D',
               data: this.chartData,
               barPercentage: 0.6,
@@ -160,7 +160,7 @@ export class YogaresultsPage implements AfterViewInit {
             tooltip: {
               displayColors: false,
               callbacks: {
-                title: () => this.isPortuguese ? 'Total do Dia' : 'Total per Day',
+                title: () => this.isPortuguese ? 'Total do Dia' : 'Day total',
                 label: (tooltipItem: any) => {
                   const totalSeconds = tooltipItem.raw * 60; // Convert minutes back to seconds for formatting
                   return `${this.selectedDataDates[tooltipItem.dataIndex]}: ${this.formatTime(totalSeconds)}`;
@@ -253,7 +253,7 @@ export class YogaresultsPage implements AfterViewInit {
     const remainingSeconds = Math.round(seconds % 60);
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
     const formattedSeconds = remainingSeconds < 10 ? '0' + remainingSeconds : remainingSeconds;
-    return `${formattedMinutes} min & ${formattedSeconds} sec`;
+    return `${formattedMinutes} min : ${formattedSeconds} sec`;
   }
 
   setupScrolling(): void {

@@ -28,3 +28,44 @@
 .hidden {
   display: none;
 }
+.horizontal-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding-bottom: 12px;
+  padding-right: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 2 full cards + ~1/3 of the next card visible */
+.horizontal-scroll .breath-button2 {
+  flex: 0 0 auto;
+
+  /* tweak these two values to taste */
+  --gap: 12px;     /* must match .horizontal-scroll gap */
+  --peek: 70px;    /* how much of 3rd card shows */
+
+  width: calc((100vw - (2 * var(--gap)) - (2 * 12px) - var(--peek)) / 2);
+  height: 100px;
+}
+
+/* Optional: hide scrollbar */
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+.horizontal-scroll { scrollbar-width: none; }
+
+.iconBP2 {
+  width: 1.5rem;
+  margin-left: 10px;
+}
+.textBW2{
+  width: 100%;
+  text-align: center;
+}
+.textBW2 .titleBW2 {
+  font-size: 15px;
+  color: #0661AA;
+}

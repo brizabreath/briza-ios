@@ -53,7 +53,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   private hold3BRE = false;
   private BREinterval: any = null; 
   private BREcountdown: any = null; // Use 'any' or specify the correct type if known
-  private BREcurrentValue = 5;
+  private BREcurrentValue = 6;
   private BREduration = 0; // Initialize duration as a number
   private roundsBRE = 0;
   private BRESeconds = 0;
@@ -160,8 +160,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBRE.nativeElement.disabled = true;
     this.questionBRE.nativeElement.disabled = true;
-    this.minusBRE.nativeElement.disabled = true;
-    this.plusBRE.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBRE.nativeElement.disabled = true;
       this.inhaleBRE = true;
@@ -189,7 +187,7 @@ export class BREPage implements  AfterViewInit, OnDestroy {
           this.BREballText.nativeElement.textContent = "Inhale";
         }
         await this.audioService.playSound('inhale');        
-        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
+        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue - 1); 
         this.globalService.changeBall(1.5, 5, this.BREball);
         this.BREinterval = setInterval(() => this.startTimerBRE(), 1000);
         this.BRETimer = setInterval(() => this.DisplayTimerBRE(), 1000);
@@ -272,11 +270,11 @@ export class BREPage implements  AfterViewInit, OnDestroy {
   async startTimerBRE(): Promise<void>{ 
     this.BREcurrentValue--;
     if(this.inhaleBRE && this.BREcurrentValue == 1){
-      this.BREcurrentValue = parseInt(this.hold1InputBRE.nativeElement.value) + 1;
+      this.BREcurrentValue = parseInt(this.hold1InputBRE.nativeElement.value) + 2;
       this.inhaleBRE = false;
       this.hold1BRE = true;
       await this.audioService.playSound('exhale');
-      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
+      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue - 1); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -285,10 +283,11 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1, 5, this.BREball);
     }
     else if(this.hold1BRE && this.BREcurrentValue == 1){
-      this.BREcurrentValue = parseInt(this.exhaleInputBRE.nativeElement.value) + 1;
+      this.BREcurrentValue = parseInt(this.exhaleInputBRE.nativeElement.value) + 2;
       this.hold1BRE = false;
       this.exhaleBRE = true;
       await this.audioService.playSound('inhale');
+      await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue - 1 ); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Inspire"
       }else{
@@ -297,11 +296,11 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.globalService.changeBall(1.5, 5, this.BREball);
     }
     else if(this.exhaleBRE && this.BREcurrentValue == 1){
-      this.BREcurrentValue = parseInt(this.hold2InputBRE.nativeElement.value) + 1;
+      this.BREcurrentValue = parseInt(this.hold2InputBRE.nativeElement.value) + 2;
       this.exhaleBRE = false;
       this.hold2BRE = true;
       await this.audioService.playSound('exhale');
-      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue); 
+      await this.audioService.playBreathSound('exhaleBreath', this.BREcurrentValue - 1); 
       if(this.isPortuguese){
         this.BREballText.nativeElement.textContent = "Espire"
       }else{
@@ -324,11 +323,11 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     }
     else if(this.hold3BRE && this.BREcurrentValue == 1){
       if(this.BREduration !== 0){  
-        this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 1;
+        this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 2;
         this.hold3BRE = false;
         this.inhaleBRE = true;
         await this.audioService.playSound('inhale');        
-        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue); 
+        await this.audioService.playBreathSound('inhaleBreath', this.BREcurrentValue - 1); 
         if(this.isPortuguese){
           this.BREballText.nativeElement.textContent = "Inspire"
         }else{
@@ -385,8 +384,6 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBRE.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.BRESave.nativeElement.disabled = true;
     this.BRESave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusBRE.nativeElement.disabled = false;
-    this.plusBRE.nativeElement.disabled = false;
     this.inhaleBRE = true;
     this.hold1BRE = false;
     this.exhaleBRE = false;

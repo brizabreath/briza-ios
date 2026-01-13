@@ -89,9 +89,9 @@ export class HomePage {
       },
       {
         id: 'hp-lungs',
-        text: `<h3>${t('Lungs Expansion','Expansão Pulmonar')}</h3>
-               <p>${t('Exercises to increase lungs capacity',
-                      'Exercícios para aumentar a capacidade pulmonar')}</p>`,
+        text: `<h3>${t('Lungs Expansion & Mobility','Expansão Pulmonar e Mobilidade')}</h3>
+               <p>${t('Exercises to increase lungs capacity and move freely',
+                      'Exercícios para aumentar a capacidade pulmonar e mobilidade')}</p>`,
         attachTo: { element: sel('#hp-lungs', '#hp-lungsPT'), on: 'bottom' },
         buttons: [
           { text: t('Back','Voltar'), action: () => this.shepherd.back() },
@@ -112,8 +112,8 @@ export class HomePage {
       {
         id: 'hp-yoga',
         text: `<h3>Yoga</h3>
-               <p>${t('Move, slow down, and meditate with our guided yoga classes',
-                'Mexa-se, acalme-se e medite com nossas aulas de yoga guiadas')}</p>`,
+               <p>${t('Flow, gentle, and mindfulness practices',
+                'Aulas guiadas de yoga e mindfulness')}</p>`,
         attachTo: { element: sel('#hp-yoga', '#hp-yogaPT'), on: 'top' },
         buttons: [
           { text: t('Back','Voltar'), action: () => this.shepherd.back() },

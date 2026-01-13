@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';  // Needed for ngModel
 import { IonicModule } from '@ionic/angular';  // Required for Ionic components
 import { RouterModule } from '@angular/router'; // Import RouterModule
+import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-registration',
@@ -24,51 +25,83 @@ export class RegistrationPage {
   password: string = '';
   confirmPassword: string = '';
   registrationError: string = '';
-  isLoggingIn: boolean = false; // Add this variable to track login status
+  isLoggingIn: boolean = false;
   isPortuguese: boolean = localStorage.getItem('isPortuguese') === 'true';
 
-
-
-  constructor(private navCtrl: NavController, private authService: AuthService) {}
+  constructor(
+    private navCtrl: NavController,
+    private authService: AuthService
+  ) {}
 
   async onRegister() {
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    this.isLoggingIn = true; // Start blinking animation
+    const isPortuguese = this.isPortuguese;
 
+    this.registrationError = '';
+    this.isLoggingIn = true;
+
+    // 1) Passwords must match
     if (this.password !== this.confirmPassword) {
-      // Passwords do not match, show localized error
       this.registrationError = isPortuguese
         ? 'As senhas não correspondem.'
         : 'Passwords do not match.';
-    } else if (!navigator.onLine) {
-      // User is offline, show localized error
+      this.isLoggingIn = false;
+      return;
+    }
+
+    // 2) Must be online
+    if (!navigator.onLine) {
       this.registrationError = isPortuguese
         ? 'Você está offline. Para registrar uma nova conta, você precisa de acesso à internet.'
         : 'You are offline. To register a new account, you must have internet access.';
-    } else {
-      try {
-        // Call register() method from AuthService
-        const success = await this.authService.register(this.email, this.password, this.name);
+      this.isLoggingIn = false;
+      return;
+    }
 
-        if (success) {
-          // Registration successful, redirect to login
-          this.registrationError = '';
-          this.navCtrl.navigateRoot('/breathwork');
-        } else {
-          // Registration failed (e.g., user already exists)
+    try {
+      // 3) Call the cleaned-up AuthService
+      await this.authService.register(this.email, this.password, this.name);
+
+      // Success: clear error and go to app
+      this.registrationError = '';
+      this.navCtrl.navigateRoot('/breathwork');
+    } catch (error: any) {
+      await Keyboard.hide();
+      const code = error?.code || '';
+
+      switch (code) {
+        case 'auth/weak-password':
           this.registrationError = isPortuguese
-            ? 'Falha no registro. O usuário pode já existir.'
-            : 'Registration failed. User may already exist.';
-        }
-      } catch (error) {
-        // Handle any unexpected errors
-        this.registrationError = isPortuguese
-          ? 'Ocorreu um erro durante o registro.'
-          : 'An error occurred during registration.';
-        console.error('Error during registration:', error);
-      }finally {
-        this.isLoggingIn = false; // Stop blinking animation
+            ? 'A senha é muito fraca. Use pelo menos 6 caracteres.'
+            : 'The password is too weak. Use at least 6 characters.';
+          break;
+
+        case 'auth/email-already-in-use':
+          this.registrationError = isPortuguese
+            ? 'Este e-mail já está em uso. Tente fazer login ou usar outro e-mail.'
+            : 'This email is already in use. Try logging in or use a different email.';
+          break;
+
+        case 'auth/invalid-email':
+          this.registrationError = isPortuguese
+            ? 'E-mail inválido. Verifique o endereço digitado.'
+            : 'Invalid email. Please check the address you entered.';
+          break;
+
+        case 'auth/network-request-failed':
+          this.registrationError = isPortuguese
+            ? 'Falha de rede. Verifique sua conexão com a internet.'
+            : 'Network error. Please check your internet connection.';
+          break;
+
+        default:
+          console.error('Unexpected registration error:', error);
+          this.registrationError = isPortuguese
+            ? 'Ocorreu um erro durante o registro. Tente novamente.'
+            : 'An error occurred during registration. Please try again.';
+          break;
       }
+    } finally {
+      this.isLoggingIn = false;
     }
   }
 }

@@ -58,7 +58,6 @@ body {
 }
 .textForm2{ 
     margin-top: 20px;
-    color: #0661AA;
 }
 #forgotGrid, #registerGrid{
     position: fixed;
@@ -94,7 +93,7 @@ body {
     margin-top: 12%;
     margin-left: 0.4rem;
     margin-bottom: 4%;
-    font-size: 20px;
+    font-size: 18px;
 }
 #homegrid, #breathgrid{
     position: fixed;
@@ -117,14 +116,14 @@ body {
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 100%;
-    background-color: rgba(238, 238, 218, 0.39);
+    background-color: #0660aa1c;
 }
 .homepageimgs2 {
     width: 97%;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 6rem;
-    background-color: rgba(238, 238, 218, 0.39);
+    background-color: #0660aa1c;
 }
 .homepageimgs3 {
     width: 99%;
@@ -423,9 +422,7 @@ body {
 .pmenor {
     font-size: 15px !important;
 }
-.timer-additional-info.BRE {
-    font-size: 10px !important;
-}
+
 /*BRT Page*/
 .timerDisplayBRT {
     font-size: 30px;
@@ -606,7 +603,7 @@ input#timerDisplayLungs {
     background-repeat: no-repeat;
     outline: none;
     color: #49B79D;
-    width: 70px;
+    width: 45px;
 }
 
 .audioButtons img {
@@ -615,7 +612,7 @@ input#timerDisplayLungs {
 }
 
 .settingButtons img {
-    height: 50px;
+    height: 33px;
 }
 /*
 * Timer status
@@ -655,16 +652,6 @@ input#timerDisplayLungs {
 }
 
 
-.timer-additional-info {
-    font-size: 15px;
-    padding-bottom: 5px;
-    margin-top: 3rem;
-    text-align: center;
-}
-
-.timer-additional-info.BRE {
-    font-size: 10px !important;
-}
 
 .buttonplus {
     font-size: 50px;
@@ -920,1468 +907,13 @@ input#intervalsDoneHAT {
     max-width: 600px;
     max-height: 400px;
     min-height: 200px;
-    background-color: #e4e3d40f;
+    background-color: rgb(245, 255, 251);
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     margin: auto;
     border-radius: 10px;
 }
 
-.BRTInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.BRTInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-.BRTinfoOverview {
-    display: inline-flex;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    justify-content: space-between;
-}
-.BRTinfoOverview input {
-    border: none;
-    text-align: right;
-    color: #0661AA;
-    background-color: transparent;
-}
-#BRTinfoOverview {
-    padding: 10px;
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-#BRTresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-#BRTresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-form.BRTdelete-form {
-    display: inline-flex;
-    margin-bottom: 30px; 
-    line-height: 40px;
-    height: 40px;
-}
-
-.YBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.YBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-.YBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-.YBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-#YBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-#YBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-#YBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-form.YBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.BREInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.BREInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-.BREinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-.BREinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-#BREinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-#BREresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-#BREresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-form.BREdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.BRWInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.BRWInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-.BRWinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-.BRWinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-#BRWinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-#BRWresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-#BRWresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-form.BRWdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.HUMInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.HUMInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HUMinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HUMinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#HUMinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#HUMresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#HUMresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.HUMdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.BBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.BBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.BBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.BBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#BBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#BBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#BBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.BBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.APInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.APInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.APinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.APinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#APinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#APresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#APresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.APdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.CTInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.CTInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CTinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CTinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#CTinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#CTresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#CTresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.CTdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.LUNGSInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.LUNGSInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.LUNGSinfoOverview {
-    display: inline-flex;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    justify-content: space-between;
-}
-
-.LUNGSinfoOverview input {
-    border: none;
-    text-align: right;
-    color: #0661AA;
-    background-color: transparent;
-    width: 250px;
-}
-
-#LUNGSinfoOverview {
-    padding: 10px;
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#LUNGSresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#LUNGSresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.LUNGSdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.BOXInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.BOXInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.BOXinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.BOXinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#BOXinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#BOXresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#BOXresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.BOXdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.UBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.UBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.UBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.UBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#UBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#UBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#UBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.UBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.NBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.NBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.NBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.NBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#NBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#NBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#NBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.NBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.SBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.SBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.SBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.SBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#SBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#SBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#SBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.SBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.RBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.RBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.RBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.RBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#RBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#RBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#RBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.RBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.CBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.CBInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CBinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#CBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#CBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#CBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.CBdelete-form {
-    display: inline-flex;
-    margin-bottom: 70px;
-    line-height: 40px;
-    height: 40px;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-
-.WHInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.WHInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.WHinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.WHinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#WHinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#WHresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#WHresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.WHdelete-form {
-    display: grid;
-}
-.WHresultInput {
-    border: none;
-    text-align: left;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.WHdelete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.KBInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-    .KBInfo h4 {
-        font-size: 20px;
-        color: #0661AA;
-        text-align: center;
-    }
-
-.KBinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-    .KBinfoOverview input {
-        border: none;
-        text-align: center;
-        color: #0661AA;
-        background-color: transparent;
-        margin-bottom: 10px;
-    }
-
-#KBinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#KBresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#KBresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.KBdelete-form {
-    display: grid;
-}
-
-.KBresultInput {
-    border: none;
-    text-align: left;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-
-input.btn.btn-danger.KBdelete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.HATInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.HATInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HATinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HATinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#HATinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#HATresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#HATresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.HATdelete-form {
-    display: grid;
-}
-.HATresultInput {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.HATdelete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.HATCInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.HATCInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HATCinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.HATCinfoOverview input {
-   border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#HATCinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#HATCresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#HATCresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.HATCdelete-form {
-    display: grid;
-}
-.HATCresultInput {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.HATCdelete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.AHATInfo {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.AHATInfo h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.AHATinfoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.AHATinfoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#AHATinfoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#AHATresultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#AHATresultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.AHATdelete-form {
-    display: grid;
-}
-.AHATresultInput {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.AHATdelete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.O2Info {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.O2Info h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.O2infoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.O2infoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#O2infoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#O2resultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#O2resultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.O2delete-form {
-    display: grid;
-}
-.O2resultInput {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.O2delete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-
-
-.CO2Info {
-    width: 100%;
-    max-width: 600px;
-    background-color: #e4e3d40f;
-    padding: 10px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    margin: auto;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.CO2Info h4 {
-    font-size: 20px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CO2infoOverview {
-    display: grid;
-    width: 100%;
-    font-size: 15px;
-    color: #0661AA;
-    text-align: center;
-}
-
-.CO2infoOverview input {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-bottom: 10px;
-}
-
-#CO2infoOverview {
-    color: #0661AA;
-    text-align: center;
-    font-size: 15px;
-}
-
-#CO2resultDateHeader {
-    color: #0661AA;
-    text-align: center;
-    font-size: 25px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-#CO2resultSessions {
-    color: #0661AA;
-    text-align: center;
-    font-size: 18px;
-    display: grid;
-    justify-content: center;
-}
-
-form.CO2delete-form {
-    display: grid;
-}
-.CO2resultInput {
-    border: none;
-    text-align: center;
-    color: #0661AA;
-    background-color: transparent;
-    margin-left: 10px;
-}
-input.btn.btn-danger.CO2delete-button {
-    width: 150px;
-    margin: auto;
-    margin-top: 20px;
-    margin-bottom: 40px;
-}
-.co2o2 img {
-    width: 100%;
-    margin-top:40px;
-}
 #WHmodal h4.volumeSettings {
     margin-bottom: 30px;
 }
@@ -2464,7 +996,8 @@ li::marker {
 }
 
 .questionIMG {
-    height: 35px;
+    height: 25px;
+    margin-right: 10px;
 }
 
 
@@ -2580,7 +1113,7 @@ input[type="radio"]:checked {
 }
 .questionClass2 {
     position: absolute;
-    top: 55px;
+    top: 58px;
     right: 10px;
     font-size: 30px;
     z-index: 1;
@@ -2673,50 +1206,61 @@ input#intervalDurationInputCB {
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
-    padding: 20px;
-    
     text-align: center;
-    margin-top: 120px;
     margin-bottom: 150px;
+    position: fixed;
 }
+
 #noBrtResults {
     width: 90%;
     margin: auto;
 }
+#resultsList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 90%;
+    margin: auto;
+}
 .results-link {
-    display: block;
-    padding: 20px 0;
-    font-size: 18px;
-    color: #49B79D;
-    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    padding: 10px;
+    font-size: 16px;
+    color: rgb(73, 183, 157);
+    box-shadow: rgba(0, 0, 0, 0.22) 1px 1px 4px 0px;
     border-radius: 10px;
-    margin-bottom: 10px;
     text-decoration: none;
+    margin: auto;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 .calendar {
-    width: 95%;
+    width: 100%;
     max-width: 400px;
     margin: 0 auto;
     text-align: center;
-    margin-bottom: 40px;
   }
   
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.2em;
+    font-size: 16px;
     padding: 5px;
     color: #0661AA;
+    width: 85%;
+    margin: auto;
 }
   
 .calendar-weekdays,
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    margin-top: 5px;
     color: #49B79D;
+    width: 85%;
+    margin: auto;
 }
   
 .calendar-day {
@@ -2778,7 +1322,7 @@ ion-modal>.ion-page {
 .modal-header h2 {
     margin: 0;
     color: #49B79D;
-    
+    font-size: 18px;
 }
 
 .close-button {
@@ -2794,19 +1338,22 @@ ion-modal>.ion-page {
     text-align: center;
     margin-top: 40px;
     color: #0661AA;
+    h3{
+        font-size: 20px;
+    }
 }
 
 .delete-button {
-    background-color: #cd0211;
+    background-color: white;
     border: none;
-    color: white;
+    color: #8ba39d;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
     margin-top: 5px;
 }
 .delete-account{
-    color: #cd0211;
+    color: #8ba39d;
     font-size: 15px;
     border: none;
     width: 100%;
@@ -2822,18 +1369,20 @@ canvas {
 }
 .calendarText {
     color: #49B79D;
-    margin-top: 20px;
+    margin-top: 10px;
     font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif !important;
+    margin-bottom: 10px;
 }
 .overview-box {
     width: 90%;
     max-width: 600px;
-    background-color: #e4e3d40f;
+    background-color: rgb(245, 255, 251);
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     margin: auto;
     border-radius: 10px;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 80px;
     text-align: center;
 
@@ -2846,7 +1395,8 @@ h2{
 .overview-item {
     font-size: 0.95em;
     color: #0661AA;
-    margin-top: 10px;
+    margin-top: 5px;
+    display: grid;
 }
 
 .feedback {
@@ -2855,6 +1405,9 @@ h2{
     font-size: 0.9em;
     line-height: 1.4em;
 }   
+}
+.allexercises{
+    margin-bottom: 20px !important;
 }
 .manage-account {
     margin-top: 130px;

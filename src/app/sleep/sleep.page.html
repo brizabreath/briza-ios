@@ -1,0 +1,76 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+    </div>
+    <div class="placeholderHeader"></div>
+  </header>
+  <div id="breathgrid2">
+    <div id="breathpagegrid">
+      <h2 class="english">Managing your sleep quality</h2>
+      <h2 class="portuguese">Melhorando a qualidade do seu sono</h2>
+      <h3 class="english">Classes</h3>
+      <h3 class="portuguese">Aulas</h3>
+
+      <div class="horizontal-scroll" *ngIf="sleepYoga.length > 0">
+        <div
+          class="breath-button2 anx-card"
+          *ngFor="let v of sleepYoga"
+          [class.locked]="!v.isFree && !isMemberActive()"
+          (click)="onVideoClick(v)"
+        >
+          <img [src]="v.thumbnail" class="homepageimgs5 anx-thumb" />
+
+          <div class="anx-overlay"></div>
+
+          <div class="anx-title">
+            {{ v.title }}
+          </div>
+
+          <div *ngIf="v.isFree && !isMemberActive()" class="anx-free-badge">FREE</div>
+        </div>
+      </div>
+
+      <div *ngIf="sleepYoga.length === 0" class="no-videos">
+        <p class="english" *ngIf="!isPortuguese">No yoga classes found with “sleep”.</p>
+        <p class="portuguese" *ngIf="isPortuguese">Nenhuma aula encontrada com “sleep”.</p>
+      </div>
+      <h3>Breathwork</h3>
+      <div class="horizontal-scroll">
+        <div class="breath-button2 locker-container">
+          <a routerLink="/rb">
+            <img class="homepageimgs5"
+                  [src]="isPortuguese ? 'assets/images/rbPT.svg' : 'assets/images/rb.svg'" />
+            <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
+          </a>
+        </div>
+        <div class="breath-button2 locker-container">
+          <a routerLink="/cb">
+            <img class="homepageimgs5"
+                  [src]="isPortuguese ? 'assets/images/cbPT.svg' : 'assets/images/cb.svg'" />
+            <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
+          </a>
+        </div>
+        <div class="breath-button2">
+          <a routerLink="/yogic">
+            <img class="homepageimgs5"
+                  [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
+          </a>
+        </div>
+        <div class="breath-button2">
+          <a routerLink="/bb">
+            <img class="homepageimgs5"
+                  [src]="isPortuguese ? 'assets/images/bbPT.svg' : 'assets/images/bb.svg'" />
+          </a>
+        </div>
+        <div class="breath-button2">
+          <a routerLink="/nb">
+            <img class="homepageimgs5"
+                  [src]="isPortuguese ? 'assets/images/nbPT.svg' : 'assets/images/nb.svg'" />
+          </a>
+        </div>
+      </div>
+  </div>

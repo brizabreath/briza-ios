@@ -8,7 +8,8 @@
 }
 .video-subtitle {
   color: #0661AA;
-  font-size: 14px;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 .filters{
   display: flex;
@@ -108,5 +109,34 @@
   color: #49b79d; // your green
 }
 .timerIMG{
-  height: 45px;
+  height: 40px;
+}
+.timerIMG2{
+  height: 30px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+
+.watched-badge{
+  position:absolute;
+  top:40px;
+  right:10px;
+  color:#49B79D;
+}
+.liked-heart{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:2px solid #49B79D;
+  color:#49B79D;
+  text-decoration:none;
+  font-size:18px;
+  font-weight:900;
+  margin-left:10px;
+}
+.liked-open-btn{
+  background-color: transparent;
 }

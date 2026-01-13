@@ -167,13 +167,10 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
   }
   async startBOX(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsBOX.nativeElement.disabled = true;
     this.questionBOX.nativeElement.disabled = true;
-    this.minusBOX.nativeElement.disabled = true;
-    this.plusBOX.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnBOX.nativeElement.disabled = true;
       this.inhaleBOX = true;
@@ -200,7 +197,8 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         }else{
           this.BOXballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inhale');        
+        await this.audioService.playSound('inhale');      
+        this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;  
         await this.audioService.playBreathSound('inhaleBreath', this.BOXcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputBOX.nativeElement.value), this.BOXball);
         this.BOXinterval = setInterval(() => this.startTimerBOX(), 1000);
@@ -386,8 +384,6 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBOX.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.BOXSave.nativeElement.disabled = true;
     this.BOXSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusBOX.nativeElement.disabled = false;
-    this.plusBOX.nativeElement.disabled = false;
     this.inhaleBOX = true;
     this.hold1BOX = false;
     this.exhaleBOX = false;

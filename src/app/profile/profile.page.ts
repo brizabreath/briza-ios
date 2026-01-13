@@ -13,14 +13,15 @@ import { RevenuecatService } from '../services/revenuecat.service';
 
 @Component({
   selector: 'app-profile',
-  templateUrl: './profile.page.html',
+  templateUrl: './profile.page.html', 
   styleUrls: ['./profile.page.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, RouterModule],
 })
 export class ProfilePage implements OnInit, AfterViewInit {
   @ViewChild('userEmail') userEmail!: ElementRef<HTMLDivElement>;
-
+  @ViewChild('portuguese') portuguese!: ElementRef<HTMLButtonElement>;
+  @ViewChild('english') english!: ElementRef<HTMLButtonElement>;
   membershipStatus: string = 'inactive';
   isPortuguese = false;
   isOnline = navigator.onLine;
@@ -78,40 +79,88 @@ export class ProfilePage implements OnInit, AfterViewInit {
 
   // Newsletter
   async toggleNewsletter(subscribe: boolean) {
-    if (!this.firebaseService.firestore) return;
-    const user = this.authService.getCurrentUser();
-    if (!user) return;
-    const userDocRef = doc(this.firebaseService.firestore, `users/${user.uid}`);
-    await setDoc(userDocRef, { newsletterActive: subscribe }, { merge: true });
-    this.newsletterActive = subscribe;
+    const online = navigator.onLine;
+    if(online){
+      if (!this.firebaseService.firestore) return;
+      const user = this.authService.getCurrentUser();
+      if (!user) return;
+      const userDocRef = doc(this.firebaseService.firestore, `users/${user.uid}`);
+      await setDoc(userDocRef, { newsletterActive: subscribe }, { merge: true });
+      this.newsletterActive = subscribe;
 
-    this.globalAlert.showalert(
-      'Newsletter',
-      subscribe
-        ? this.t({
-            en: 'You have successfully subscribed to the newsletter!',
-            pt: 'Você foi inscrito na newsletter com sucesso!',
-          })
-        : this.t({
-            en: 'You have unsubscribed from the newsletter.',
-            pt: 'Você cancelou sua inscrição na newsletter.',
-          })
-    );
+      this.globalAlert.showalert(
+        'Newsletter',
+        subscribe
+          ? this.t({
+              en: 'You have successfully subscribed to the newsletter!',
+              pt: 'Você foi inscrito na newsletter com sucesso!',
+            })
+          : this.t({
+              en: 'You have unsubscribed from the newsletter.',
+              pt: 'Você cancelou sua inscrição na newsletter.',
+            })
+      );
+    }else{
+      const msg = this.isPortuguese
+        ? '🌐 Você está offline.\n\nConecte-se à internet para assinar'
+        : '🌐 You are offline.\n\nConnect to the internet to subscribe';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
+    }
   }
 
   isAdmin() {
     const user = this.firebaseService.auth?.currentUser;
-    return user?.email === 'info@brizabreath.com';
+    return this.firebaseService.isAdminEmail(user?.email);
   }
 
   goToAdminComments() {
-    this.navCtrl.navigateForward('/manage-comments');
+    this.navCtrl.navigateForward('/admin');
   }
 
   ionViewWillEnter() {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+
+    if (this.isPortuguese) {
+      this.globalService.hideElementsByClass('english');
+      this.globalService.showElementsByClass('portuguese');
+      this.english.nativeElement.onclick = () => this.toEnglish();
+    } else {
+      this.globalService.hideElementsByClass('portuguese');
+      this.globalService.showElementsByClass('english');
+      this.portuguese.nativeElement.onclick = () => this.toPortuguese();
+    }
   }
 
+  async toEnglish(): Promise<void> {
+    const online = navigator.onLine;
+    if(online){
+      localStorage.setItem('isPortuguese', 'false');
+      await this.authService.ensureUserLanguageSynced();
+      window.location.reload();
+    }else{
+      const msg = this.isPortuguese
+        ? '🌐 You are offline.\n\nConnect to the internet to change language'
+        : '🌐 Você está offline.\n\nConecte-se à internet para trocar idioma';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
+    }
+  }
+
+  async toPortuguese(): Promise<void> {
+    const online = navigator.onLine;
+    if(online){
+      localStorage.setItem('isPortuguese', 'true');
+      await this.authService.ensureUserLanguageSynced();
+      window.location.reload();
+    }else{
+      const msg = this.isPortuguese
+        ? '🌐 You are offline.\n\nConnect to the internet to change language'
+        : '🌐 Você está offline.\n\nConecte-se à internet para trocar idioma';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
+    }
+  }
   // =========================================
   // MANAGE SUBSCRIPTION (FINAL CLEAN LOGIC)
   // =========================================
@@ -181,13 +230,6 @@ export class ProfilePage implements OnInit, AfterViewInit {
        // ============================================================
       // MEMBERSHIP REQUIRED (no sub, inactive, expired, or logged out)
       // ============================================================
-      this.globalAlert.showalert(
-        t('Subscription Required', 'Assinatura Necessária'),
-        t(
-          `Choose a subscription to have full access of the app`,
-          `Escolha uma assinatura para ter acesso total do app`
-        )
-      );
       this.globalService.openModal2Safe();
     }
   }
@@ -197,9 +239,18 @@ export class ProfilePage implements OnInit, AfterViewInit {
   // LOGOUT
   // =========================================
   onLogout() {
-    if (this.isLoggingOut) return;
-    this.isLoggingOut = true;
-    this.authService.logout().finally(() => (this.isLoggingOut = false));
+    const online = navigator.onLine;
+    if(online){
+      if (this.isLoggingOut) return;
+      this.isLoggingOut = true;
+      this.authService.logout().finally(() => (this.isLoggingOut = false));
+    }else{
+      const msg = this.isPortuguese
+        ? '🌐 Você está offline.\n\nConecte-se à internet para logout'
+        : '🌐 You are offline.\n\nConnect to the internet to logout';
+      this.globalAlert.showalert('OFFLINE', msg);
+      return;
+    }
   }
 
   // =========================================

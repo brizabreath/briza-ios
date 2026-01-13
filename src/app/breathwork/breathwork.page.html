@@ -16,55 +16,78 @@
     <div id="breathpagegrid">
       <div class="welcomeDisplay"><h2 #name></h2></div>
       <div #noBRTresult style="display: none;">
-        <h2 class="english homeH2">Check your retention test daily</h2>
-        <h2 class="portuguese homeH2">Voce ja fez seu teste de retencao hoje?</h2>
+        <h3 class="english homeWeek">Check your retention test daily</h3>
+        <h3 class="portuguese homeWeek">Verifique seu teste de retenção diariamente</h3>
         <a class="breath-button" routerLink="/brt">
             <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
             <div class="textBP">
                 <div class="titleBP english">Briza<br>Retention Test</div>
                 <div class="subtitleBP english">Measure your fitness level</div>
                 <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                <div class="subtitleBP portuguese">Medindo seu nível de condicionamento físico</div>
+                <div class="subtitleBP portuguese">Medindo seu condicionamento</div>
             </div>
         </a>
       </div>
       <div #BRTresult style="display: none;">
-          <h2 class="english homeH2">Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds</h2> 
-          <h2 class="portuguese homeH2">Seu resultado no teste de rentencao e de <b>{{ latestBRTResultInSeconds }}</b> segundos</h2>
+          <h3 class="english homeWeek">Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds</h3> 
+          <h3 class="portuguese homeWeek">Melhore sua pontuação de <b>{{ latestBRTResultInSeconds }}</b> segundos</h3>
           <a class="breath-button" routerLink="/program">
             <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
             <div class="textBP">
                 <div class="titleBP english">Briza Program</div>
-                <div class="subtitleBP english">Boost your breathing efficiency</div>
+                <div class="subtitleBP english">Boost your breathing <br>efficiency</div>
                 <div class="titleBP portuguese">Programa Briza</div>
                 <div class="subtitleBP portuguese">Melhore sua eficiência respiratória</div>
             </div>
           </a>      
         </div>
       <!-- Briza Program Weekly Practice Header -->
-      <h3 class="english">Explore the app</h3>
-      <h3 class="portuguese">Explore o app</h3>
-      <div class="row g-2">
-          <div class="col">
-            <a class="breath-button2" routerLink="/home">
-              <img src="assets/images/brizabreathing.png" alt="icon" class="iconBP" />
-              <div class="textBW">
-                  <div class="titleBW">Breathwork</div>
-              </div>
-            </a>      
+      <h3 class="english">How Briza can help</h3>
+      <h3 class="portuguese">Como Briza pode te ajudar</h3>
+
+      <div class="horizontal-scroll">
+        <a class="breath-button2" routerLink="/anxiety">
+          <img src="assets/images/anxiety.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2" *ngIf="!isPortuguese">Stress & Anxiety</div>
+            <div class="titleBW2" *ngIf="isPortuguese">Estresse e Ansiedade</div>
           </div>
-          <div class="col">
-            <a class="breath-button2" routerLink="/yoga">
-              <img src="assets/images/yogicbreathing.png" alt="icon" class="iconBP yoga" />
-              <div class="textBW">
-                  <div class="titleBW">Yoga</div>
-              </div>
-            </a>   
+        </a>
+
+        <a class="breath-button2" routerLink="/sleep">
+          <img src="assets/images/sleepbetter.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2" *ngIf="!isPortuguese">Better sleep</div>
+            <div class="titleBW2" *ngIf="isPortuguese">Durma melhor</div>
           </div>
+        </a>
+
+        <a class="breath-button2" routerLink="/perform">
+          <img src="assets/images/performanceIcon.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2">Performance</div>
+          </div>
+        </a>
+
+        <a class="breath-button2" routerLink="/vitality">
+          <img src="assets/images/vitality.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2" *ngIf="!isPortuguese">Vitality</div>
+            <div class="titleBW2" *ngIf="isPortuguese">Vitalidade</div>
+          </div>
+        </a>
+
+        <a class="breath-button2" routerLink="/pain">
+          <img src="assets/images/pain.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2" *ngIf="!isPortuguese">Pain relief</div>
+            <div class="titleBW2" *ngIf="isPortuguese">Alívio de dores</div>
+          </div>
+        </a>
       </div>
-      <h3 class="english homeWeek">Your progress</h3>
-      <h3 class="portuguese homeWeek">Seu progresso</h3>
-      <p #numberOfSessions></p>
+      <h3 class="english">Your progress</h3>
+      <h3 class="portuguese">Seu progresso</h3>
+      <p #numberOfSessions class="arialFont"></p>
      
 
       <!-- Weekly Progress Circles -->
@@ -132,7 +155,7 @@
       <span class="close" id="closeModalBREATH2" #closeModalBREATH2>&times;</span>
       <div class="slideshow-container">
           <div class="mySlides fadeModal slides active">
-            <img src="assets/images/splash.png" class="logo-img" />
+            <img src="assets/images/splash2.png" class="logo-img" />
 
             <div class="quote-container english" *ngIf="!isPortuguese">
               <p class="quote-text">{{ selectedQuote?.text }}</p>
@@ -148,8 +171,7 @@
               {{ isPortuguese ? 'Compartilhar' : 'Share' }}
             </button>
           </div>
-          <a class="openScreenBut english" (click)="startAppGuide()">App Guide</a>
-          <a class="openScreenBut portuguese" (click)="startAppGuide()">Guia do app</a>
+          <a class="openScreenBut" (click)="startAppGuide()"> {{ isPortuguese ? 'Guia do app' : 'App Guide' }}</a>
       </div>
     </div>
   </div>

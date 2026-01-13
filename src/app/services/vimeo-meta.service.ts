@@ -16,7 +16,7 @@ type Cached<T> = { data: T; ts: number };
 export class VimeoMetaService {
   private cache = new Map<string, Cached<VimeoMeta>>();
   /** How long we trust a cached oEmbed (ms). Adjust as needed. */
-  private TTL = 24 * 60 * 60 * 1000; // 1 minute for testing
+  private TTL = 72 * 60 * 60 * 1000; 
 
   constructor(private http: HttpClient) {}
 

@@ -12,11 +12,9 @@ import {
   orderBy,
   type CollectionReference,
   doc,
-  getDoc,
   deleteDoc,
   addDoc,
   serverTimestamp,
-  setDoc,
 } from 'firebase/firestore';
 import { ToastController } from '@ionic/angular';
 import { FirebaseService } from '../services/firebase.service';
@@ -100,7 +98,7 @@ export class ManageComments {
    // + helper: is admin?
   private isAdmin(): boolean {
     const email = (this.firebase.auth?.currentUser?.email || '').toLowerCase();
-    return email === 'info@brizabreath.com';
+    return this.firebase.isAdminEmail(email);
   }
 
   // + helper: online guard
@@ -170,37 +168,8 @@ export class ManageComments {
     const t = await this.toastCtrl.create({ message: 'Reply posted.', duration: 1200 });
     await t.present();
 
-    // ==============================
-    // 📨 Notify the original commenter
-    // ==============================
-    try {
-      const parentSnap = await getDoc(doc(db, `videos/${parent.videoId}/comments/${parent.id}`));
-      if (!parentSnap.exists()) {
-        console.warn('⚠️ Parent comment not found');
-        return;
-      }
-
-      const parentData = parentSnap.data() as any;
-      const parentUserId = parentData.userId;
-
-      if (!parentUserId) {
-        console.warn('⚠️ Parent comment missing userId');
-        return;
-      }
-
-      const replyId = replyDoc.id; // use actual reply ID
-      await setDoc(doc(db, `users/${parentUserId}/notifications/${replyId}`), {
-        type: 'commentReply',
-        videoId: parent.videoId,
-        replierName: name,
-        createdAt: serverTimestamp(),
-        seen: false,
-      });
-
-      console.log(`💾 Saved notification for user ${parentUserId} about reply ${replyId}`);
-    } catch (err) {
-      console.error('❌ Failed to save Firestore notification:', err);
-    }
+    console.log('✅ Admin reply saved:', { replyId: replyDoc.id, parentId: parent.id, videoId: parent.videoId });
+    // Cloud Function will notify the parent comment owner.
   }
 
     // Method to navigate back

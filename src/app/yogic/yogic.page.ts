@@ -168,14 +168,11 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
   }
   async startYB(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsYB.nativeElement.disabled = true;
     this.questionYB.nativeElement.disabled = true;
-    this.minusYB.nativeElement.disabled = true;
-    this.plusYB.nativeElement.disabled = true;
     if(firstClick == "true" && breathingON == "false"){
       this.startBtnYB.nativeElement.disabled = true;
       this.inhaleYB = true;
@@ -202,7 +199,8 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         }else{
           this.YBballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inbelly');        
+        await this.audioService.playSound('inbelly');      
+        this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;  
         await this.audioService.playBreathSound('inhaleBreath', this.YBcurrentValue); 
         this.globalService.changeBall(1.3, parseInt(this.inhaleInputYB.nativeElement.value), this.YBball);
         this.YBinterval = setInterval(() => this.startTimerYB(), 1000);
@@ -385,8 +383,6 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.stopBtnYB.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.YBSave.nativeElement.disabled = true;
     this.YBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
-    this.minusYB.nativeElement.disabled = false;
-    this.plusYB.nativeElement.disabled = false;
     this.inhaleYB = true;
     this.hold1YB = false;
     this.exhaleYB = false;

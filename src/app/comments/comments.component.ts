@@ -4,12 +4,11 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import {
   collection, addDoc, serverTimestamp, query, orderBy,
-  onSnapshot, doc, deleteDoc, type CollectionReference, setDoc
+  onSnapshot, doc, deleteDoc, type CollectionReference
 } from 'firebase/firestore';
 import { FirebaseService } from '../services/firebase.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { LocalReminderService } from '../services/local-reminder.service';
-import { getDoc } from 'firebase/firestore';
 
 interface VideoComment {
   id?: string;
@@ -52,7 +51,7 @@ interface VideoComment {
             <b>{{ c.userName || 'User' }}</b>
             <span>{{ timeAgo(c.createdAt?.toDate?.() || null) }}</span>
             <ion-button fill="clear" size="small" (click)="toggleReplyBox(c.id!)">{{ L.reply }}</ion-button>
-            <ion-button *ngIf="canDelete(c)" fill="clear" size="small" color="danger" (click)="deleteComment(c)">{{ L.delete }}</ion-button>
+            <ion-button *ngIf="canDelete(c)" fill="clear" size="small" class="delete-button" (click)="deleteComment(c)">{{ L.delete }}</ion-button>
           </div>
 
           <div class="textCom">{{ c.text }}</div>
@@ -77,7 +76,7 @@ interface VideoComment {
               <div class="meta">
                 <b>{{ r.userName || 'User' }}</b>
                 <span>{{ timeAgo(r.createdAt?.toDate?.() || null) }}</span>
-                <ion-button *ngIf="canDelete(r)" fill="clear" size="small" color="danger" (click)="deleteComment(r)">{{ L.delete }}</ion-button>
+                <ion-button *ngIf="canDelete(r)" fill="clear" size="small" class="delete-button" (click)="deleteComment(r)">{{ L.delete }}</ion-button>
               </div>
               <div class="textCom">{{ r.text }}</div>
             </div>
@@ -223,65 +222,11 @@ export class CommentsComponent {
       parentId: parentId || null,  // 👈 ensure explicit null for top-level
       createdAt: serverTimestamp(),
     });
-
+    console.log('✅ Reply saved:', { replyId: replyDoc.id, parentId, videoId: this.videoId });
+    // Cloud Function will notify the parent comment owner.
     this.replyText = '';
     this.replyBoxOpenId.set(null);
-    console.log('🟢 Reply attempt detected:', { parentId, videoId: this.videoId });
-
-try {
-  const parentSnap = await getDoc(doc(db, `videos/${this.videoId}/comments/${parentId}`));
-  if (!parentSnap.exists()) {
-    console.warn('⚠️ Parent comment not found');
-    return;
-  }
-
-  const parentData = parentSnap.data() as VideoComment;
-  const parentUserId = parentData.userId;
-  console.log('👤 Parent comment belongs to:', parentUserId);
-
-  const user = this.firebaseService.auth!.currentUser!;
-  console.log('🧑 Replier is:', user.uid);
-
-  if (parentUserId === user.uid) {
-    console.log('🟡 Same user replied to own comment — skip remote notify');
-    // comment this out if you want to test same user notifications
-    // return;
-  }
-  try {
-    const replyId = doc(collection(db, `videos/${this.videoId}/comments`)).id;
-    await setDoc(doc(db, `users/${parentUserId}/notifications/${replyId}`), {
-      type: 'commentReply',
-      videoId: this.videoId,
-      replierName: name,
-      createdAt: serverTimestamp(),
-      seen: false
-    });
-    console.log(`💾 Saved notification for user ${parentUserId} about reply ${replyId}`);
-  } catch (err) {
-    console.error('❌ Failed to save Firestore notification:', err);
-  }
-
-
-
-  const userDoc = await getDoc(doc(db, `users/${parentUserId}`));
-  const userData = userDoc.data();
-  console.log('📄 Parent user data loaded:', userData);
-
-  if (!userData) {
-    console.warn('⚠️ No userData for parent user');
-    return;
-  }
-
-  // Local notification for active member
-  if (localStorage.getItem('membershipStatus') === 'active') {
-    console.log('🔔 Member is active, scheduling local notification...');
-  await this.localReminders.notifyCommentReply(name, this.videoId);
-  } else {
-    console.log('🚫 Member not active — skipping notification');
-  }
-} catch (err) {
-  console.error('❌ Failed to send notification:', err);
-}
+    
   }
 
   async deleteComment(c: VideoComment) {
@@ -305,7 +250,7 @@ try {
     const uid = user.uid;
     const email = (user.email || '').toLowerCase();
 
-    const isAdmin = email === 'info@brizabreath.com';
+    const isAdmin = this.firebaseService.isAdminEmail(email);
     const isOwner = c.userId === uid;
 
     return isAdmin || isOwner;

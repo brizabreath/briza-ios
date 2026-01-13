@@ -138,7 +138,6 @@ export class RBPage implements  AfterViewInit, OnDestroy {
    
   async startRB(): Promise<void>{
     this.audioService.resetaudio(); 
-    this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
     //initialize sounds
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -170,7 +169,8 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         }else{
           this.RBballText.nativeElement.textContent = "Inhale";
         }
-        await this.audioService.playSound('inhale');        
+        await this.audioService.playSound('inhale');     
+        this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;   
         await this.audioService.playBreathSound('inhaleBreath', this.RBcurrentValue); 
         this.globalService.changeBall(1.5, parseInt(this.inhaleInputRB.nativeElement.value), this.RBball);
         this.RBinterval = setInterval(() => this.startTimerRB(), 1000);

@@ -66,6 +66,8 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+    // ✅ Ensure tap listener registered once
+    this.registerNotificationListener();
     try {
       // ✅ Preload and initialize audio
       await this.audioService.preloadAll();
@@ -97,9 +99,6 @@ export class AppComponent implements OnInit {
         await this.reminders.chainNext();
       });
 
-      // ✅ Ensure tap listener registered once
-      this.registerNotificationListener();
-
       // ✅ Load user language
       const isPortugueseValue = localStorage.getItem('isPortuguese');
       this.isPortuguese = isPortugueseValue === 'true';
@@ -127,10 +126,20 @@ export class AppComponent implements OnInit {
         if (!data) return;
 
         if (data.type === 'yogaNew') {
-          const firstId = data.ids?.[0];
-          if (firstId)
+          const firstItem = data.items?.[0];
+          const firstId = firstItem?.id || data.ids?.[0];
+          const cat = firstItem?.category;
+
+          if (!firstId) return;
+
+          // Route by category
+          if (cat === 'lungs' || cat === 'mobility') {
+            this.router.navigate(['/lungs'], { queryParams: { open: firstId } });
+          } else {
+            // move / slowdown / meditate (yoga)
             this.router.navigate(['/yoga'], { queryParams: { open: firstId } });
-        } else if (data.type === 'commentReply') {
+          }
+        }else if (data.type === 'commentReply') {
           await this.commentNotifications.handleNotificationTap(data);
         } else {
           this.router.navigateByUrl('/breathwork');

@@ -48,13 +48,6 @@ export class MembershipGuard implements CanActivate {
     // ============================================================
     // MEMBERSHIP REQUIRED (no sub, inactive, expired, or logged out)
     // ============================================================
-    this.globalAlert.showalert(
-      t('Subscription Required', 'Assinatura Necessária'),
-      t(
-        `Choose a subscription to have full access of the app`,
-        `Escolha uma assinatura para ter acesso total do app`
-      )
-    );
     this.globalService.openModal2Safe();
     return false;
   }
