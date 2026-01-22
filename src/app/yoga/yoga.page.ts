@@ -148,19 +148,42 @@ export class YogaPage implements OnInit {
       // FORCE server so you actually see new docs/changes
       const snapshot = await getDocsFromServer(colRef);
 
-      const serverIds = snapshot.docs.map((d) => d.id).sort();
-      const localIds = (cachedVideos || []).map((v) => v.id).sort();
+      const serverMeta = snapshot.docs
+      .map((d) => {
+        const data = d.data() as any;
+        const ts =
+          typeof data?.updatedAt?.toMillis === 'function'
+            ? data.updatedAt.toMillis()
+            : (typeof data?.updatedAt === 'number' ? data.updatedAt : 0);
 
-      const idsChanged =
-        serverIds.length !== localIds.length ||
-        serverIds.some((id, i) => id !== localIds[i]);
+        return { id: d.id, updatedAt: ts };
+      })
+      .sort((a, b) => a.id.localeCompare(b.id));
 
-      // Refresh if cache expired OR IDs changed
-      if (cacheAge > 72 * 60 * 60 * 1000 || idsChanged) {
-        console.log('🔄 Refreshing yoga videos (cache expired or IDs changed)');
+      const localMeta = (cachedVideos || [])
+        .map((v: any) => {
+          const ts =
+            typeof v?.updatedAt?.toMillis === 'function'
+              ? v.updatedAt.toMillis()
+              : (typeof v?.updatedAt === 'number' ? v.updatedAt : 0);
+
+          return { id: v.id, updatedAt: ts };
+        })
+        .sort((a, b) => a.id.localeCompare(b.id));
+
+      const metaChanged =
+        serverMeta.length !== localMeta.length ||
+        serverMeta.some((s, i) => {
+          const l = localMeta[i];
+          return !l || s.id !== l.id || (s.updatedAt || 0) !== (l.updatedAt || 0);
+        });
+
+      // Refresh if cache expired OR content changed (updatedAt)
+      if (cacheAge > 72 * 60 * 60 * 1000 || metaChanged) {
+        console.log('🔄 Refreshing yoga videos (cache expired or updatedAt changed)');
         await this.fetchVideosFromFirebase();
       } else {
-        console.log('✅ Cache fresh and IDs unchanged');
+        console.log('✅ Cache fresh and unchanged');
       }
     } catch (err) {
       console.error('❌ Failed to init videos:', err);
@@ -257,6 +280,7 @@ export class YogaPage implements OnInit {
             rawUrl, // keep raw url for admin enrich-on-open
             addedOn: v.addedOn || (isAdmin ? computedAddedOn : v.addedOn), // non-admin won't invent dates
             isFree: !!v.isFree,
+            updatedAt: (v as any).updatedAt ?? null,
           };
         })
       );

@@ -11,7 +11,7 @@ import { collection } from 'firebase/firestore';
 import { VimeoMetaService } from '../services/vimeo-meta.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { getDocsFromServer } from 'firebase/firestore';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, Timestamp } from 'firebase/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -33,6 +33,7 @@ export class LungsPage implements OnInit {
 
   private watchedKey = 'watchedYogaIds';
   private likedKey = 'likedYogaIds';
+  private openingVideo = false;
 
   constructor(
     private navCtrl: NavController,
@@ -112,19 +113,25 @@ export class LungsPage implements OnInit {
     this.showWebSplash = true;
 
     try {
-      const cachedRaw = localStorage.getItem('cachedYogaVideos');
+      const cacheKey = 'cachedYogaVideos';
+      const cachedRaw = localStorage.getItem(cacheKey);
+
       let cachedVideos: any[] = [];
+      let cacheAge = Infinity;
 
       if (cachedRaw) {
         try {
           const cachedObj = JSON.parse(cachedRaw);
+          cacheAge = Date.now() - (cachedObj.ts || 0);
           cachedVideos = cachedObj.videos ?? [];
 
           // ✅ show cache instantly
-          this.allVideos = cachedVideos.map((v: any) => ({
-            ...v,
-            url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
-          }));
+          this.allVideos = cachedVideos
+            .filter((v: any) => v?.category === 'lungs' || v?.category === 'mobility')
+            .map((v: any) => ({
+              ...v,
+              url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
+            }));
         } catch (err) {
           console.warn('Failed to parse cached lungs videos', err);
         }
@@ -135,7 +142,51 @@ export class LungsPage implements OnInit {
         return;
       }
 
-      await this.fetchVideosFromFirebase();
+      // ✅ only fetch if cache expired or server updatedAt changed
+      const colRef = collection(this.firebaseService.firestore!, 'videos');
+      const snapshot = await getDocsFromServer(colRef);
+
+      const serverMeta = snapshot.docs
+        .map((d) => {
+          const data = d.data() as any;
+          const cat = data?.category;
+          if (cat !== 'lungs' && cat !== 'mobility') return null;
+
+          const ts =
+            typeof data?.updatedAt?.toMillis === 'function'
+              ? data.updatedAt.toMillis()
+              : (typeof data?.updatedAt === 'number' ? data.updatedAt : 0);
+
+          return { id: d.id, updatedAt: ts };
+        })
+        .filter(Boolean as any)
+        .sort((a: any, b: any) => a.id.localeCompare(b.id));
+
+      const localMeta = (cachedVideos || [])
+        .filter((v: any) => v?.category === 'lungs' || v?.category === 'mobility')
+        .map((v: any) => {
+          const ts =
+            typeof v?.updatedAt?.toMillis === 'function'
+              ? v.updatedAt.toMillis()
+              : (typeof v?.updatedAt === 'number' ? v.updatedAt : 0);
+
+          return { id: v.id, updatedAt: ts };
+        })
+        .sort((a: any, b: any) => a.id.localeCompare(b.id));
+
+      const metaChanged =
+        serverMeta.length !== localMeta.length ||
+        serverMeta.some((s: any, i: number) => {
+          const l = localMeta[i];
+          return !l || s.id !== l.id || (s.updatedAt || 0) !== (l.updatedAt || 0);
+        });
+
+      const TTL = 72 * 60 * 60 * 1000;
+
+      if (cacheAge > TTL || metaChanged) {
+        await this.fetchVideosFromFirebase();
+      }
+
     } catch (err) {
       console.error('❌ Failed to init lungs videos:', err);
     } finally {
@@ -170,6 +221,7 @@ export class LungsPage implements OnInit {
           rawUrl,
           addedOn: v.addedOn || '',
           isFree: !!v.isFree, // set below
+          updatedAt: (v as any).updatedAt ?? null,
         };
       });
 
@@ -223,25 +275,30 @@ export class LungsPage implements OnInit {
   }
 
   async onVideoClick(video: any) {
-    if (!navigator.onLine) {
-      const msg = this.isPortuguese
-        ? '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo'
-        : '🌐 You are offline.\n\nConnect to the internet to watch this video';
-      this.globalAlert.showalert('OFFLINE', msg);
-      return;
-    }
+    if (this.openingVideo) return;
+    this.openingVideo = true;
 
-    if (video.isFree) {
+    try {
+      if (!navigator.onLine) {
+        const msg = this.isPortuguese
+          ? '🌐 Você está offline.\n\nConecte-se à internet para assistir a este vídeo'
+          : '🌐 You are offline.\n\nConnect to the internet to watch this video';
+        this.globalAlert.showalert('OFFLINE', msg);
+        return;
+      }
+
+      if (!video.isFree && !this.isMemberActive()) {
+        this.globalService.openModal2Safe();
+        return;
+      }
+
       await this.playVideo(video);
-      return;
+    } finally {
+      // small delay prevents instant double-tap after dismiss on some devices
+      setTimeout(() => (this.openingVideo = false), 250);
     }
-
-    if (!this.isMemberActive()) {
-      this.globalService.openModal2Safe();
-      return;
-    }
-    await this.playVideo(video);
   }
+
 
   async playVideo(video: any) {
     await this.enrichVideoOnOpen(video);
@@ -290,18 +347,19 @@ export class LungsPage implements OnInit {
       const durationMinutes =
         typeof meta.duration === 'number' ? Math.round(meta.duration / 60) : video.duration ?? null;
 
-      // Update Firestore (best-effort)
       const patch: any = {
-        title,
-        description,
-        thumbnail,
-        duration: durationMinutes,
-        videoUrl: playerUrl,
-        url: rawUrl, // keep original too if you want
-      };
+      title,
+      description,
+      thumbnail,
+      duration: durationMinutes,
+      videoUrl: playerUrl,
+      url: rawUrl,
+      updatedAt: Timestamp.now(), // ✅ ADD THIS
+    };
 
-      const ref = doc(this.firebaseService.firestore!, 'videos', video.id);
-      await updateDoc(ref, patch);
+    const ref = doc(this.firebaseService.firestore!, 'videos', video.id);
+    await updateDoc(ref, patch);
+
 
       // Return enriched object for immediate UI/modal
       return { ...video, ...patch };
