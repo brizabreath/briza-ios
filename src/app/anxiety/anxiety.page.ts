@@ -26,8 +26,6 @@ export class AnxietyPage {
   isMember = false;
 
   anxietyYoga: any[] = [];
-  showWebSplash = false;
-
 
   constructor(
     private globalService: GlobalService,
@@ -60,16 +58,15 @@ export class AnxietyPage {
   async ionViewWillEnter() {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
     }
   }
 
   private async loadAnxietyYoga() {
-    this.showWebSplash = true;
     try {
       // 1) try cache first (fast, also supports offline display)
       const cachedRaw = localStorage.getItem('cachedYogaVideos');
@@ -113,7 +110,6 @@ export class AnxietyPage {
 
       this.anxietyYoga = this.filterAnxietyYoga(serverVideos);
     } finally {
-      this.showWebSplash = false;
     }
   }
 

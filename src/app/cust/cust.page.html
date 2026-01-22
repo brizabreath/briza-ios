@@ -18,8 +18,8 @@
   <div id="custPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Tap numbers to choose ratio</h1>
-            <h1 class="volumeSettings portuguese">Clique nos números para escolher proporção</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Tap numbers to choose ratio</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Clique nos números para escolher proporção</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -45,8 +45,8 @@
               <div class="CUSTtimer-container">
                   <select #CUSTtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #CUSTcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -60,18 +60,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnCUST" #stopBtnCUST><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="CUSTSave" #CUSTSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnCUST" #stopBtnCUST><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="CUSTSave" #CUSTSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="CUSTForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneCUST>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayCUST>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCUST>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #CUSTResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #CUSTResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalCUST" class="modal" #myModalCUST>
@@ -85,21 +85,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>Personalize your training by choosing the breathing ratio that works best for you. Just click on the numbers and choose your preferred ratio</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Adapte seu treino escolhendo a proporção de respiração ideal para você. Basta clicar nos numeros e escolher a proporção de sua preferencia</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -107,12 +107,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Choose a ratio by clicking on the numbers input. You can also choose how long you want to do it for
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Selecione uma proporção clicando nos números inseridos. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p> 
@@ -120,12 +120,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again. In the end, save your results to track your improvement over time
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente.
                   </p>
@@ -133,12 +133,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you are finding it too hard, stop doing it and choose a lower ratio
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazer e escolha uma proporção menor
                   </p>

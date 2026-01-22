@@ -18,8 +18,8 @@
   <div id="hatcPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Altitude Training - Running</h1>
-            <h1 class="volumeSettings portuguese">Treino de Altitude - Correndo</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Altitude Training - Running</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Treino de Altitude - Correndo</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -50,19 +50,19 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="HATCReset" #HATCReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="HATCSave" #HATCSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="HATCReset" #HATCReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="HATCSave" #HATCSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="HATCForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneHATC>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayHATC>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayHATC>00 : 00</div>
                       </div>
                   </form>
                   <div #HATCResults></div>
               </div>
           </div>
       </div>
-      <div #HATCResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #HATCResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
 <div id="myModalHATC" class="modal" #myModalHATC>
@@ -76,21 +76,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mountain.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>Bring your altitude training to another level</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Eleve seu treinamento de alta altitude para outro nível</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/walk.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   Breathe normally for about 1 minute while running or cycling
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   Respire normalmente por cerca de 1 minuto enquanto corre ou anda de bicicleta
                 </p>
@@ -98,12 +98,12 @@
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/start.jpg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   Whenever you're ready, press "Start"
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   Quando estiver pronto, pressione "Iniciar"
                 </p>
@@ -111,12 +111,12 @@
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/hold.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   Exhale, pinch your nose, hold your breath and keep on running                   
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   Espire, aperte o nariz, segure a respiração e continue correndo                   
                 </p>
@@ -124,12 +124,12 @@
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/next.jpg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   The timer will count how long you can hold your breath while running. Once you feel a strong air hunger and no longer can hold your breath, press the circle again                    
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   O cronômetro contará quanto tempo você consegue segurar a respiração enquanto corre. Uma vez que você sentir uma forte necessidade de ar e não conseguir mais segurar a respiração, pressione "Próximo"                    
                 </p>
@@ -137,12 +137,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/nor.png">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Keep running, and breathe normally for 60 seconds, after this a new round will start
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Continue correndo e respire normalmente por 60 segundos, após isso uma nova rodada começará
                   </p>
@@ -150,12 +150,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/pause.jpg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     You can click on the circle if you need to pause the exercise
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se precisar pausar, basta clicar no círculo novamente
                   </p>
@@ -163,11 +163,11 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     When holding your breath, aim to hold it for as long as you can. However, avoid pushing yourself to the point of feeling dizzy or struggling to recover your breath gently</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Quando prender a respiração, tente segurá-la o máximo que conseguir. No entanto, evite forçar a ponto de sentir tontura ou dificuldade em recuperar a respiração de forma suave</p>
                 </div>

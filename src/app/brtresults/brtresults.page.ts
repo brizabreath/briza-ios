@@ -46,15 +46,6 @@ export class BrtresultsPage implements AfterViewInit {
     this.calculateOverviewData();
   }
 
-  ionViewWillEnter() {
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-  }
 
   loadDataFromLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('brtResults') || '[]');

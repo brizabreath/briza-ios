@@ -157,12 +157,12 @@ export class LoginPage implements OnInit {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     this.showLanguagePickerIfNeeded();
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
       this.english.nativeElement.onclick = () => this.toEnglish();
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
       this.portuguese.nativeElement.onclick = () => this.toPortuguese();
     }
     const lastEmail = localStorage.getItem('currentUserEmail');

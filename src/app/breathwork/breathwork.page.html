@@ -1,64 +1,81 @@
-<ion-content [class.hidden]="!isModalOpen">
+<ion-content>
   <header class="mainHeader">
     <div class="back-buttons">
-      <button class="goback"></button> <!-- Custom back button -->
+      <button class="goback"></button>
     </div>
+
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
-    <div class="placeholderHeader"> <!-- Placeholder to balance the flexbox layout -->
+
+    <div class="placeholderHeader">
       <div class="questionMark questionClass2">
-        <button #questionBREATH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionBREATH type="button" (click)="openOpenScreen()">
+          <img class="questionIMG" src="assets/images/question.png">
+        </button>
       </div>
     </div>
-  </header>  
+  </header>
+
   <div id="breathgrid">
     <div id="breathpagegrid">
-      <div class="welcomeDisplay"><h2 #name></h2></div>
-      <div #noBRTresult style="display: none;">
-        <h3 class="english homeWeek">Check your retention test daily</h3>
-        <h3 class="portuguese homeWeek">Verifique seu teste de retenção diariamente</h3>
+      <div class="welcomeDisplay">
+        <h2>{{ greetingText }}</h2>
+      </div>
+
+      <!-- No BRT today -->
+      <div *ngIf="!hasBrtToday">
+        <h3  *ngIf="!isPortuguese" class="homeWeek">Check your retention test daily</h3>
+        <h3  *ngIf="isPortuguese" class="homeWeek">Verifique seu teste de retenção diariamente</h3>
+
         <a class="breath-button" routerLink="/brt">
-            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-            <div class="textBP">
-                <div class="titleBP english">Briza<br>Retention Test</div>
-                <div class="subtitleBP english">Measure your fitness level</div>
-                <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-                <div class="subtitleBP portuguese">Medindo seu condicionamento</div>
-            </div>
+          <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
+          <div class="textBP">
+            <div class="titleBP"  *ngIf="!isPortuguese">Briza<br>Retention Test</div>
+            <div class="subtitleBP"  *ngIf="!isPortuguese">Measure your fitness level</div>
+            <div class="titleBP"  *ngIf="isPortuguese">Teste<br>de Retenção Briza</div>
+            <div class="subtitleBP"  *ngIf="isPortuguese">Medindo seu condicionamento</div>
+          </div>
         </a>
       </div>
-      <div #BRTresult style="display: none;">
-          <h3 class="english homeWeek">Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds</h3> 
-          <h3 class="portuguese homeWeek">Melhore sua pontuação de <b>{{ latestBRTResultInSeconds }}</b> segundos</h3>
-          <a class="breath-button" routerLink="/program">
-            <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-            <div class="textBP">
-                <div class="titleBP english">Briza Program</div>
-                <div class="subtitleBP english">Boost your breathing <br>efficiency</div>
-                <div class="titleBP portuguese">Programa Briza</div>
-                <div class="subtitleBP portuguese">Melhore sua eficiência respiratória</div>
-            </div>
-          </a>      
-        </div>
-      <!-- Briza Program Weekly Practice Header -->
-      <h3 class="english">How Briza can help</h3>
-      <h3 class="portuguese">Como Briza pode te ajudar</h3>
+
+      <!-- Has BRT today -->
+      <div *ngIf="hasBrtToday">
+        <h3 class="homeWeek"  *ngIf="!isPortuguese">
+          Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds
+        </h3>
+        <h3   *ngIf="isPortuguese" class="homeWeek">
+          Melhore sua pontuação de <b>{{ latestBRTResultInSeconds }}</b> segundos
+        </h3>
+
+        <a class="breath-button" routerLink="/program">
+          <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
+          <div class="textBP">
+            <div class="titleBP"  *ngIf="!isPortuguese">Briza Program</div>
+            <div class="subtitleBP"  *ngIf="!isPortuguese">Boost your breathing <br>efficiency</div>
+            <div class="titleBP"  *ngIf="isPortuguese">Programa Briza</div>
+            <div class="subtitleBP"  *ngIf="isPortuguese">Melhore sua eficiência respiratória</div>
+          </div>
+        </a>
+      </div>
+
+      <h3  *ngIf="!isPortuguese">How Briza can help</h3>
+      <h3  *ngIf="isPortuguese">Como Briza pode te ajudar</h3>
 
       <div class="horizontal-scroll">
         <a class="breath-button2" routerLink="/anxiety">
           <img src="assets/images/anxiety.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2" *ngIf="!isPortuguese">Stress & Anxiety</div>
-            <div class="titleBW2" *ngIf="isPortuguese">Estresse e Ansiedade</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Stress & <br>Anxiety</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Estresse e <br>Ansiedade</div>
           </div>
         </a>
 
         <a class="breath-button2" routerLink="/sleep">
           <img src="assets/images/sleepbetter.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2" *ngIf="!isPortuguese">Better sleep</div>
-            <div class="titleBW2" *ngIf="isPortuguese">Durma melhor</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Better <br>sleep</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Durma <br>melhor</div>
           </div>
         </a>
 
@@ -72,30 +89,30 @@
         <a class="breath-button2" routerLink="/vitality">
           <img src="assets/images/vitality.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2" *ngIf="!isPortuguese">Vitality</div>
-            <div class="titleBW2" *ngIf="isPortuguese">Vitalidade</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Vitality</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Vitalidade</div>
           </div>
         </a>
 
         <a class="breath-button2" routerLink="/pain">
           <img src="assets/images/pain.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2" *ngIf="!isPortuguese">Pain relief</div>
-            <div class="titleBW2" *ngIf="isPortuguese">Alívio de dores</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Pain <br>relief</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Alívio de <br>dores</div>
           </div>
         </a>
       </div>
-      <h3 class="english">Your progress</h3>
-      <h3 class="portuguese">Seu progresso</h3>
-      <p #numberOfSessions class="arialFont"></p>
-     
 
-      <!-- Weekly Progress Circles -->
+      <h3  *ngIf="!isPortuguese">Your progress</h3>
+      <h3  *ngIf="isPortuguese">Seu progresso</h3>
+
+      <p class="arialFont">{{ progressText }}</p>
+
       <div class="weekday-row">
         <div class="day">
           <div id="circle-mon" class="circle"></div>
-          <div class="label english">M</div>
-          <div class="label portuguese">S</div>
+          <div class="label"  *ngIf="!isPortuguese">M</div>
+          <div class="label"  *ngIf="isPortuguese">S</div>
         </div>
         <div class="day">
           <div id="circle-tue" class="circle"></div>
@@ -103,18 +120,18 @@
         </div>
         <div class="day">
           <div id="circle-wed" class="circle"></div>
-          <div class="label english">W</div>
-          <div class="label portuguese">Q</div>
+          <div class="label"  *ngIf="!isPortuguese">W</div>
+          <div class="label"  *ngIf="isPortuguese">Q</div>
         </div>
         <div class="day">
           <div id="circle-thu" class="circle"></div>
-          <div class="label english">T</div>
-          <div class="label portuguese">Q</div>
+          <div class="label"  *ngIf="!isPortuguese">T</div>
+          <div class="label"  *ngIf="isPortuguese">Q</div>
         </div>
         <div class="day">
           <div id="circle-fri" class="circle"></div>
-          <div class="label english">F</div>
-          <div class="label portuguese">S</div>
+          <div class="label"  *ngIf="!isPortuguese">F</div>
+          <div class="label"  *ngIf="isPortuguese">S</div>
         </div>
         <div class="day">
           <div id="circle-sat" class="circle"></div>
@@ -122,12 +139,13 @@
         </div>
         <div class="day">
           <div id="circle-sun" class="circle"></div>
-          <div class="label english">S</div>
-          <div class="label portuguese">D</div>
+          <div class="label"  *ngIf="!isPortuguese">S</div>
+          <div class="label"  *ngIf="isPortuguese">D</div>
         </div>
       </div>
     </div>
-    <footer id="breathFooter" class="english"> 
+
+    <footer id="breathFooter"  *ngIf="!isPortuguese">
       <div class="navbar">
         <a class="active"><i class="fa fa-home active"></i>Home</a>
         <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -137,7 +155,8 @@
       </div>
     </footer>
   </div>
-  <footer id="breathFooterBR" class="portuguese">
+
+  <footer id="breathFooterBR"  *ngIf="isPortuguese">
     <div class="navbar">
       <a class="active"><i class="fa fa-home active"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -146,32 +165,35 @@
       <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
-  <div *ngIf="showWebSplash" class="web-splash-screen">
-    <div class="loader"></div>
-  </div>
-</ion-content>
-<div id="openScreen" class="modal" #openScreen>
+
+  <!-- Modal stays in ion-content so it doesn't desync -->
+  <div id="openScreen" class="modal" #openScreen>
     <div class="modal-content">
-      <span class="close" id="closeModalBREATH2" #closeModalBREATH2>&times;</span>
+      <span class="close" id="closeModalBREATH2" (click)="closeOpenScreen()">&times;</span>
+
       <div class="slideshow-container">
-          <div class="mySlides fadeModal slides active">
-            <img src="assets/images/splash2.png" class="logo-img" />
+        <div class="mySlides fadeModal slides active">
+          <img src="assets/images/splash2.png" class="logo-img" />
 
-            <div class="quote-container english" *ngIf="!isPortuguese">
-              <p class="quote-text">{{ selectedQuote?.text }}</p>
-              <p class="quote-author">- {{ selectedQuote?.author }}</p>
-            </div>
-
-            <div class="quote-container portuguese" *ngIf="isPortuguese">
-              <p class="quote-text">{{ selectedQuote?.text }}</p>
-              <p class="quote-author">- {{ selectedQuote?.author }}</p>
-            </div>
-
-            <button (click)="shareOpenScreen()" class="share-button"  #shareButton>
-              {{ isPortuguese ? 'Compartilhar' : 'Share' }}
-            </button>
+          <div class="quote-container"  *ngIf="!isPortuguese">
+            <p class="quote-text">{{ selectedQuote?.text }}</p>
+            <p class="quote-author">- {{ selectedQuote?.author }}</p>
           </div>
-          <a class="openScreenBut" (click)="startAppGuide()"> {{ isPortuguese ? 'Guia do app' : 'App Guide' }}</a>
+
+          <div class="quote-container"  *ngIf="isPortuguese">
+            <p class="quote-text">{{ selectedQuote?.text }}</p>
+            <p class="quote-author">- {{ selectedQuote?.author }}</p>
+          </div>
+
+          <button (click)="shareOpenScreen()" class="share-button">
+            {{ isPortuguese ? 'Compartilhar' : 'Share' }}
+          </button>
+        </div>
+
+        <a class="openScreenBut" (click)="startAppGuide()">
+          {{ isPortuguese ? 'Guia do app' : 'App Guide' }}
+        </a>
       </div>
     </div>
   </div>
+</ion-content>

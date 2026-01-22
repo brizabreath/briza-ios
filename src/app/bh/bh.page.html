@@ -22,16 +22,16 @@
         class="segment"
         [class.active]="selectedSegment === 'endurance'"
         (click)="selectSegment('endurance')">
-        <div class="english" *ngIf="!isPortuguese">Endurance</div>
-        <div class="portuguese" *ngIf="isPortuguese">Resistência</div>
+        <div    *ngIf="!isPortuguese" >Endurance</div>
+        <div   *ngIf="isPortuguese" >Resistência</div>
       </button>
 
       <button
         class="segment"
         [class.active]="selectedSegment === 'hold'"
         (click)="selectSegment('hold')">
-        <div class="english" *ngIf="!isPortuguese">Max Hold</div>
-        <div class="portuguese" *ngIf="isPortuguese">Retenção Máxima</div>
+        <div    *ngIf="!isPortuguese" >Max Hold</div>
+        <div   *ngIf="isPortuguese" >Retenção Máxima</div>
       </button>
     </div>
 
@@ -103,9 +103,9 @@
 
     <!-- Safety notice -->
     <div class="breathingpages set">
-      <p class="atention portuguese" *ngIf="isPortuguese">
+      <p class="atention"   *ngIf="isPortuguese" >
       Esteja ciente dos seus limites. Se você tiver algum problema de saúde grave, para garantir que esses exercícios respiratórios sejam seguros para você, consulte um médico antes de praticar qualquer exercício deste aplicativo      </p>
-      <p class="atention english" *ngIf="!isPortuguese">
+      <p class="atention"   *ngIf="!isPortuguese" >
        Be aware of your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of this app`s exercises
       </p>
     </div>
@@ -124,12 +124,12 @@
         <!-- Slide 1 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/coherentlines.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Breath-holding exercises offer a range of benefits that can significantly enhance performance, particularly for athletes, swimmers, free divers and individuals seeking to improve their overall health and well-being.
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Exercícios de retenção de respiração oferecem uma série de benefícios que podem melhorar significativamente o desempenho, particularmente para atletas, nadadores, mergulhadores e indivíduos que buscam melhorar sua saúde geral e bem-estar
             </p>
@@ -139,12 +139,12 @@
         <!-- Slide 2 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Increase lungs capacity and improve the efficiency of oxygen usage by the body. This means more oxygen can be delivered to muscles during intense activity, enhancing endurance and performance
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Aumentar a capacidade pulmonar e melhorar a eficiência do uso de oxigênio pelo corpo. Isso significa que mais oxigênio pode ser entregue aos músculos durante atividades intensas, melhorando a resistência e o desempenho
             </p>
@@ -154,12 +154,12 @@
         <!-- Slide 3 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Improve the body's tolerance to carbon dioxide. Higher CO2 tolerance can delay the onset of fatigue, allowing for longer periods of intense exercise or activity
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Melhorar a tolerância do corpo ao dióxido de carbono. Maior tolerância ao CO2 pode atrasar o início da fadiga, permitindo períodos mais longos de exercício intenso ou atividade
             </p>
@@ -169,12 +169,12 @@
         <!-- Slide 4 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Improve diaphragm strength. These exercises strengthen the diaphragm, which plays a crucial role in breathing. A stronger diaphragm can enhance breathing efficiency, leading to better performance in physical activities
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Melhorar a força do diafragma. Estes exercícios fortalecem o diafragma, que desempenha um papel crucial na respiração. Um diafragma mais forte pode melhorar a eficiência da respiração, levando a um melhor desempenho em atividades físicas
             </p>
@@ -184,12 +184,12 @@
         <!-- Slide 5 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Increase anaerobic capacity allowing your body to perform better in situations where oxygen is scarce. This can be particularly beneficial in high-intensity sports or activities that require short bursts of effort
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Aumentar a capacidade anaeróbica permitindo que seu corpo tenha um desempenho melhor em situações onde o oxigênio é escasso. Isso pode ser particularmente benéfico em esportes de alta intensidade ou atividades que requerem explosões curtas de esforço
             </p>
@@ -199,12 +199,12 @@
         <!-- Slide 6 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Improve cardiovascular health. These exercises contribute to cardiovascular health by enhancing circulatory efficiency and lowering heart rate, which is beneficial for long-term heart health and performance
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Melhorar a saúde cardiovascular. Estes exercícios contribuem para a saúde cardiovascular, melhorando a eficiência circulatória e reduzindo a frequência cardíaca, o que é benéfico para a saúde do coração a longo prazo e desempenho
             </p>
@@ -214,12 +214,12 @@
         <!-- Slide 7 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg" />
-          <div class="text english" *ngIf="!isPortuguese">
+          <div class="text"   *ngIf="!isPortuguese" >
             <p>
               Enhance mental toughness. The practice of holding one's breath teaches discipline, patience, and mental fortitude. These mental benefits can translate into improved performance in both physical and cognitive tasks
             </p>
           </div>
-          <div class="text portuguese" *ngIf="isPortuguese">
+          <div class="text"   *ngIf="isPortuguese" >
             <p>
               Fortalecer a resistência mental. A prática de segurar a respiração ensina disciplina, paciência e fortaleza mental. Estes benefícios mentais podem se traduzir em melhor desempenho tanto em tarefas físicas quanto cognitivas
             </p>

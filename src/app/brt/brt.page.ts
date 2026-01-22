@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
 import { ShepherdService } from 'angular-shepherd';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 
@@ -42,8 +43,8 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   private brtMinutes = 0;
   private brtInt: any = null;
   private brtResult = ''; // Variable to store the BRT result as a string
-  private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-  
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+  private appStateHandle?: PluginListenerHandle;
   
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService, private shepherd: ShepherdService, private router: Router) {}
   ionViewDidEnter() {
@@ -174,17 +175,22 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.questionBRT.nativeElement.onclick = () => this.globalService.openModal(this.modalBRT, this.BRTdots, 'slides');
     
   }
-
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
   async ionViewWillEnter() {
-    // Listen for app state changes
-    App.addListener('appStateChange', (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startTimerBRT();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
-        }else{
+          await this.startTimerBRT(); // toggles to pause in your logic
+        }else {
           this.globalService.clearAllTimeouts();
           this.stopTimerBRT();
         }
@@ -192,12 +198,8 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
       this.BRTballText.nativeElement.textContent = "Iniciar"
-    }else{
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+    }else{ 
       this.BRTballText.nativeElement.textContent = "Start"
     }
     this.brtResultSaved.nativeElement.style.display = 'none';
@@ -209,7 +211,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   
   // Method to start the timer
   async startTimerBRT(): Promise<void> {
-    this.audioService.resetaudio();
+    await this.audioService.resetForPlayOrResume();
     try{
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
@@ -331,7 +333,6 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.BRTballText.nativeElement.textContent = "Iniciar"
     }else{
       this.BRTballText.nativeElement.textContent = "Start"
-
     }
     this.audioService.pauseSelectedSong();
   }
@@ -353,13 +354,10 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.navCtrl.back(); // Goes back to the previous page in the history stack
   }
   ngOnDestroy(): void {
-    
-    
     clearInterval(this.brtInt);
     this.audioService.pauseSelectedSong();
     // Hide the "Result Successfully Saved" message when navigating away
     this.brtResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
   private lockUIForTour = () => {
     document.documentElement.classList.add('tour-active');

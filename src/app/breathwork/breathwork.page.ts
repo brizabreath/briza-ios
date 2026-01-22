@@ -1,9 +1,9 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { CoreModule } from '../core.module'; 
-import { Router, RouterModule } from '@angular/router'; // Import RouterModule
+import { CoreModule } from '../core.module';
+import { Router, RouterModule } from '@angular/router';
 import { GlobalService } from '../services/global.service';
 import { Share } from '@capacitor/share';
 import { Filesystem, Directory } from '@capacitor/filesystem';
@@ -13,63 +13,78 @@ import { RevenuecatService } from '../services/revenuecat.service';
 import { AuthService } from '../services/auth.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 
-
 @Component({
   selector: 'app-breathwork',
   templateUrl: './breathwork.page.html',
   styleUrls: ['./breathwork.page.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    CoreModule,
-    RouterModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, CoreModule, RouterModule],
 })
 export class BreathworkPage {
   @ViewChild('openScreen') openScreen!: ElementRef<HTMLDivElement>;
-  @ViewChild('closeModalBREATH2') closeModalButtonBREATH2!: ElementRef<HTMLSpanElement>;
-  @ViewChild('questionBREATH') questionBREATH!: ElementRef<HTMLButtonElement>;  
-  @ViewChild('BREATHdots') BREATHdots!: ElementRef<HTMLDivElement>;
-  @ViewChild('noBRTresult') noBRTresult!: ElementRef<HTMLDivElement>;
-  @ViewChild('BRTresult') BRTresult!: ElementRef<HTMLDivElement>;
-  @ViewChild('name') username!: ElementRef<HTMLDivElement>;
-  @ViewChild('numberOfSessions') numberOfSessions!: ElementRef<HTMLDivElement>;
 
   latestBRTResultInSeconds = 0;
   numberOfWeekSessions = 0;
-  isModalOpen = false;
-  private static hasInitialized = false;
+  hasBrtToday = false;
+
   selectedQuote: { text: string; author: string } | null = null;
-  lastOpened = localStorage.getItem('lastOpened');
-  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private _sharing = false;
-  showWebSplash = false;
 
-constructor(
-  private globalService: GlobalService, 
-  private router: Router, 
-  private firebaseService: FirebaseService, 
-  private revenuecat: RevenuecatService,
-  private authService: AuthService,
-  private globalAlert: GlobalAlertService
-) {}
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+  greetingText = '';
+  progressText = '';
+
+  private static hasInitialized = false;
+
+  private _pendingActiveDays: Set<string> | null = null;
+
+  private readonly EXERCISE_KEYS = [
+    'brtResults', 'HATResults', 'HATCResults', 'AHATResults',
+    'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
+    'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
+    'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
+    'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
+  ];
+
+  constructor(
+    private globalService: GlobalService,
+    private router: Router,
+    private firebaseService: FirebaseService,
+    private revenuecat: RevenuecatService,
+    private authService: AuthService,
+    private globalAlert: GlobalAlertService
+  ) {}
+
   private startBreathTourNow() {
-    localStorage.setItem('startHomeTour','true');
-    this.router.navigateByUrl('/home');  
+    localStorage.setItem('startHomeTour', 'true');
+    this.router.navigateByUrl('/home');
   }
-  async ionViewWillEnter() {
-    this.showWebSplash = true;
 
+  openOpenScreen() {
     try {
-      const online = navigator.onLine;
+      this.globalService.openModal(this.openScreen);
+    } catch (e) {
+      console.warn('openOpenScreen failed:', e);
+    }
+  }
 
-      // Keep language greeting + UI working offline
+  closeOpenScreen() {
+    try {
+      this.globalService.closeModal(this.openScreen);
+    } catch (e) {
+      console.warn('closeOpenScreen failed:', e);
+    }
+  }
+
+  async ionViewWillEnter() {
+    try {
+      this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+
+      // Always load quote (online->db, else cache)
       await this.loadRandomQuote();
 
-      // ✅ Only do Firebase/RevenueCat/trial checks when online
-      if (online) {
+      // Online-only sync logic
+      if (navigator.onLine) {
         try {
           await this.authService.ensureUserCreatedAt();
           await this.authService.ensureUserLanguageSynced();
@@ -101,157 +116,176 @@ constructor(
             }
           }
 
-          // Only update remote results when online
-          const currentDate = Date.now();
-          const THREE_DAYS = 72 * 60 * 60 * 1000; // (your variable name was ONE_DAY but it's 3 days)
-          if (this.lastOpened == null || (currentDate - parseInt(this.lastOpened)) >= THREE_DAYS) {
-            this.authService.updateDataResults();
+          // Update remote results at most once every 3 days
+          const lastOpened = localStorage.getItem('lastOpened');
+          const now = Date.now();
+          const THREE_DAYS = 72 * 60 * 60 * 1000;
+
+          if (lastOpened == null || (now - parseInt(lastOpened, 10)) >= THREE_DAYS) {
+            try {
+              await this.authService.updateDataResults();
+            } catch (e) {
+              console.warn('updateDataResults failed:', e);
+            }
+            localStorage.setItem('lastOpened', String(now));
           }
         } catch (e) {
           console.warn('Online sync/trial logic failed (continuing):', e);
-          // ✅ do nothing else; keep last known membershipStatus
         }
-      } else {
-        console.log('Offline: skipping trial + firestore sync. Using last known membershipStatus.');
       }
 
-      // --- your existing modal setup + UI below here ---
+      // First-time modal open (once per app session)
       if (!BreathworkPage.hasInitialized) {
         BreathworkPage.hasInitialized = true;
-        this.isModalOpen = true;
-        this.globalService.openModal(this.openScreen);
+        this.openOpenScreen();
       }
 
-      this.closeModalButtonBREATH2.nativeElement.onclick = () => {
-        this.globalService.closeModal(this.openScreen);
-        this.isModalOpen = true;
-      };
-      this.questionBREATH.nativeElement.onclick = () => this.globalService.openModal(this.openScreen);
+      // Fast UI updates
+      this.computeGreeting();
+      this.computeBrtToday();
+      this.computeWeeklyProgressCached(); // prepares _pendingActiveDays, paints in ionViewDidEnter
+    } catch {}
+  }
 
-      this.showBRTphrase();
-      this.calculateWeeklyProgress();
-
-      /// Language greeting logic
-      const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-      const fullName = localStorage.getItem('currentUserName') || '';
-      const userName = fullName.split(' ')[0];
-      const currentHour = new Date().getHours();
-
-      let greeting = '';
-      if (isPortuguese) {
-        this.globalService.hideElementsByClass('english');
-        this.globalService.showElementsByClass('portuguese');
-        if (currentHour < 12) {
-          greeting = 'Bom dia';
-        } else if (currentHour < 18) {
-          greeting = 'Boa tarde';
-        } else {
-          greeting = 'Boa noite';
-        }
-        this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
-      } else {
-        this.globalService.hideElementsByClass('portuguese');
-        this.globalService.showElementsByClass('english');
-        if (currentHour < 12) {
-          greeting = 'Good morning';
-        } else if (currentHour < 18) {
-          greeting = 'Good afternoon';
-        } else {
-          greeting = 'Good evening';
-        }
-        this.username.nativeElement.innerHTML = `${greeting}, ${userName}`;
-      }
-    } finally {
-      // ✅ Ensure splash always goes away even if something throws
-      setTimeout(() => {
-        this.showWebSplash = false;
-      }, 1000);
+  ionViewDidEnter() {
+    // Paint circles only after DOM is actually in place
+    if (this._pendingActiveDays) {
+      this.paintWeekCircles(this._pendingActiveDays);
+      this._pendingActiveDays = null;
     }
   }
-  timeStringToSeconds(time: string): number {
-    const [minutes, seconds] = time.split(':').map(Number);
+
+  private computeGreeting() {
+    const fullName = localStorage.getItem('currentUserName') || '';
+    const userName = (fullName.split(' ')[0] || '').trim();
+    const currentHour = new Date().getHours();
+
+    if (this.isPortuguese) {
+      const g = currentHour < 12 ? 'Bom dia' : currentHour < 18 ? 'Boa tarde' : 'Boa noite';
+      this.greetingText = `${g}, ${userName}`;
+    } else {
+      const g = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+      this.greetingText = `${g}, ${userName}`;
+    }
+  }
+
+  private timeStringToSeconds(time: string): number {
+    const parts = (time || '').split(':').map(Number);
+    const minutes = parts[0] || 0;
+    const seconds = parts[1] || 0;
     return minutes * 60 + seconds;
   }
- showBRTphrase() {
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    const storedResults = localStorage.getItem('brtResults');
-    const brtResults = storedResults ? JSON.parse(storedResults) : [];
 
-    // ✅ Use local date in consistent format (YYYY-MM-DD)
-    const today = new Date();
-    const todayLocalDate = today.toLocaleDateString('en-CA'); // 'YYYY-MM-DD'
+  private computeBrtToday() {
+    const raw = localStorage.getItem('brtResults');
+    let brtResults: any[] = [];
 
-    const todayResults = brtResults.filter((result: any) => {
-      const resultDate = new Date(result.date);
-      const resultLocalDate = resultDate.toLocaleDateString('en-CA'); // also 'YYYY-MM-DD'
-      return resultLocalDate === todayLocalDate;
-    });
-
-    if (todayResults.length === 0) {
-      this.noBRTresult.nativeElement.style.display = 'block';
-      this.BRTresult.nativeElement.style.display = 'none';
-    } else {
-      const latest = todayResults[todayResults.length - 1];
-      const result = this.timeStringToSeconds(latest.result); 
-      this.latestBRTResultInSeconds = result;
-      this.BRTresult.nativeElement.style.display = 'block';
-      this.noBRTresult.nativeElement.style.display = 'none';
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        brtResults = Array.isArray(parsed) ? parsed : [];
+      } catch {
+        brtResults = [];
+      }
     }
+
+    const todayKey = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD local
+
+    let latestSeconds = 0;
+    let has = false;
+
+    for (const r of brtResults) {
+      if (!r?.date) continue;
+      const d = new Date(r.date);
+      const key = d.toLocaleDateString('en-CA');
+      if (key !== todayKey) continue;
+      has = true;
+      latestSeconds = this.timeStringToSeconds(r.result);
+    }
+
+    this.hasBrtToday = has;
+    this.latestBRTResultInSeconds = latestSeconds;
   }
-  calculateWeeklyProgress(): void {
-    const exerciseKeys = [
-      'brtResults','HATResults', 'HATCResults', 'AHATResults',
-      'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
-      'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
-      'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
-      'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
-    ];
 
+  private storageSignature(): string {
+    // Fast signature: raw string length per key (no JSON.parse)
+    const parts: string[] = [];
+    for (const key of this.EXERCISE_KEYS) {
+      const raw = localStorage.getItem(key) || '';
+      parts.push(`${key}:${raw.length}`);
+    }
+    return parts.join('|');
+  }
+
+  private computeWeeklyProgressCached() {
+    const sig = this.storageSignature();
+    const cacheKey = `home_weekly_cache_v3_${this.isPortuguese ? 'PT' : 'EN'}`;
+
+    const cachedRaw = localStorage.getItem(cacheKey);
+    if (cachedRaw) {
+      try {
+        const cached = JSON.parse(cachedRaw) as any;
+        if (cached && cached.sig === sig) {
+          this.numberOfWeekSessions = cached.weekSessions || 0;
+          this.progressText = cached.progressText || '';
+          this._pendingActiveDays = new Set<string>(cached.activeDays || []);
+          return;
+        }
+      } catch {}
+    }
+
+    const { weekSessions, progressText, activeDays } = this.computeWeeklyProgressFresh();
+    this.numberOfWeekSessions = weekSessions;
+    this.progressText = progressText;
+    this._pendingActiveDays = activeDays;
+
+    localStorage.setItem(cacheKey, JSON.stringify({
+      sig,
+      ts: Date.now(),
+      weekSessions,
+      progressText,
+      activeDays: Array.from(activeDays),
+    }));
+  }
+
+  private computeWeeklyProgressFresh(): {
+    weekSessions: number;
+    progressText: string;
+    activeDays: Set<string>;
+  } {
     const today = new Date();
-    const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // --- Define current week range (Mon–Sun) ---
+    // Monday start (local)
     const monday = new Date(today);
-    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7)); // Monday of current week
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
     monday.setHours(0, 0, 0, 0);
 
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
     sunday.setHours(23, 59, 59, 999);
 
-    // --- Reset weekly circles ---
-    const allDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-    for (const day of allDays) {
-      const circle = document.getElementById(`circle-${day}`);
-      if (circle) circle.style.backgroundColor = 'white';
-    }
-
     const activeDays = new Set<string>();
     const activeDates = new Set<string>();
     let weeklySessionCount = 0;
 
-    // --- Gather all exercise data ---
-    for (const key of exerciseKeys) {
+    for (const key of this.EXERCISE_KEYS) {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
-      const entries = JSON.parse(raw);
+
+      let entries: any[] = [];
+      try { entries = JSON.parse(raw); } catch { entries = []; }
+      if (!Array.isArray(entries) || !entries.length) continue;
 
       for (const result of entries) {
-        const dateUTC = new Date(result.date);
-        const localDate = new Date(
-          dateUTC.toLocaleString('en-US', { timeZone: localTimezone })
-        );
-        const localDateOnly = new Date(
-          localDate.getFullYear(),
-          localDate.getMonth(),
-          localDate.getDate()
-        );
-        const dateKey = localDateOnly.toISOString().split('T')[0];
+        if (!result?.date) continue;
+
+        const d = new Date(result.date);
+        const dayOnly = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        const dateKey = dayOnly.toLocaleDateString('en-CA');
         activeDates.add(dateKey);
 
-        // ✅ Only count sessions inside this week
-        if (localDateOnly >= monday && localDateOnly <= sunday) {
-          const weekday = localDateOnly.getDay(); // 0 = Sun, 6 = Sat
+        if (dayOnly >= monday && dayOnly <= sunday) {
+          const weekday = dayOnly.getDay(); // 0=Sun..6=Sat
           const keyDay = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][weekday];
           activeDays.add(keyDay);
           weeklySessionCount++;
@@ -259,63 +293,64 @@ constructor(
       }
     }
 
-    this.numberOfWeekSessions = weeklySessionCount;
-    const isPT = this.isPortuguese;
+    const streak = this.computeActiveStreakFromDates(activeDates);
+    let text = '';
 
-    // --- CURRENT streak logic (no more "longest streak ever" bullshit) ---
-    const sortedDates = Array.from(activeDates).sort(); // ['2025-01-01', '2025-01-02', ...]
-    let streak = 0;
-
-    if (sortedDates.length) {
-      const oneDayMs = 1000 * 60 * 60 * 24;
-      streak = 1; // at least 1 day if there is any practice
-      let prev = new Date(sortedDates[0]);
-
-      for (let i = 1; i < sortedDates.length; i++) {
-        const curr = new Date(sortedDates[i]);
-        const diffDays = Math.round(
-          (curr.getTime() - prev.getTime()) / oneDayMs
-        );
-
-        if (diffDays === 1) {
-          // consecutive day → streak continues
-          streak++;
-        } else if (diffDays > 1) {
-          // gap → streak resets and starts again from this day
-          streak = 1;
-        }
-
-        prev = curr;
-      }
-
-      // 🔒 If last practice was more than 1 full day ago, streak is no longer "active"
-      const lastDate = new Date(sortedDates[sortedDates.length - 1]);
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const diffToToday = Math.floor(
-        (todayStart.getTime() - lastDate.getTime()) / oneDayMs
-      );
-      if (diffToToday > 1) {
-        streak = 0;
-      }
-    }
-
-    // --- Display logic (bulletproof as you requested) ---
     if (streak >= 5) {
-      this.numberOfSessions.nativeElement.innerHTML = isPT
-        ? `Parabéns! ${streak} ${streak === 1 ? 'dia' : 'dias'} de treino seguidos!!`
+      text = this.isPortuguese
+        ? `Parabéns! ${streak} ${streak === 1 ? 'dia' : 'dias'} de treino seguidos!`
         : `Well done! ${streak} ${streak === 1 ? 'day' : 'days'} of practice in a row!`;
-    } else if (this.numberOfWeekSessions === 0) {
-      this.numberOfSessions.nativeElement.innerHTML = isPT
+    } else if (weeklySessionCount === 0) {
+      text = this.isPortuguese
         ? 'Você ainda não praticou essa semana'
         : 'You have not practiced this week yet';
     } else {
-      this.numberOfSessions.nativeElement.innerHTML = isPT
-        ? `Você já praticou ${this.numberOfWeekSessions}x essa semana`
-        : `You have practiced ${this.numberOfWeekSessions}x this week`;
+      text = this.isPortuguese
+        ? `Você já praticou ${weeklySessionCount}x essa semana`
+        : `You have practiced ${weeklySessionCount}x this week`;
     }
 
-    // --- Fill current week circles ---
+    return { weekSessions: weeklySessionCount, progressText: text, activeDays };
+  }
+
+  private computeActiveStreakFromDates(activeDates: Set<string>): number {
+    const sorted = Array.from(activeDates).sort(); // YYYY-MM-DD (lex sort works)
+    if (!sorted.length) return 0;
+
+    const oneDayMs = 86400000;
+
+    let streak = 1;
+    let prev = new Date(sorted[0] + 'T00:00:00');
+
+    for (let i = 1; i < sorted.length; i++) {
+      const curr = new Date(sorted[i] + 'T00:00:00');
+      const diffDays = Math.round((curr.getTime() - prev.getTime()) / oneDayMs);
+
+      if (diffDays === 1) streak++;
+      else if (diffDays > 1) streak = 1;
+
+      prev = curr;
+    }
+
+    // Active only if last practice is today or yesterday
+    const last = new Date(sorted[sorted.length - 1] + 'T00:00:00');
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
+    const diffToToday = Math.floor((todayStart.getTime() - last.getTime()) / oneDayMs);
+    if (diffToToday > 1) return 0;
+
+    return streak;
+  }
+
+  private paintWeekCircles(activeDays: Set<string>) {
+    const allDays = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+    for (const day of allDays) {
+      const circle = document.getElementById(`circle-${day}`);
+      if (circle) circle.style.backgroundColor = 'white';
+    }
+
     const filledColor = '#49B79D';
     for (const day of activeDays) {
       const circle = document.getElementById(`circle-${day}`);
@@ -323,8 +358,61 @@ constructor(
     }
   }
 
+  startAppGuide() {
+    this.closeOpenScreen();
+    setTimeout(() => this.startBreathTourNow(), 0);
+  }
 
+  private langKey(): 'EN' | 'PT' {
+    return this.isPortuguese ? 'PT' : 'EN';
+  }
 
+  private pickRandom<T>(arr: T[]): T | null {
+    if (!arr || !arr.length) return null;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  async loadRandomQuote(): Promise<void> {
+    const db = this.firebaseService.firestore;
+    const lang = this.langKey();
+    const cacheKey = `home_weekly_cache_v3_${this.isPortuguese ? 'PT' : 'EN'}`;
+
+    // 1) Online -> Firestore
+    if (navigator.onLine && db) {
+      try {
+        const colRef = collection(db, 'quotes');
+        const qRef = query(colRef, where('language', '==', lang));
+        const snap = await getDocs(qRef);
+
+        const docs = snap.docs.map(d => d.data() as { text: string; author: string; language: string });
+
+        if (docs.length) {
+          localStorage.setItem(cacheKey, JSON.stringify(docs));
+          const pick = this.pickRandom(docs)!;
+          this.selectedQuote = { text: pick.text, author: pick.author };
+          return;
+        }
+      } catch (e) {
+        console.warn('Quotes fetch failed, will try cache:', e);
+      }
+    }
+
+    // 2) Cache fallback
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const arr = JSON.parse(cached) as { text: string; author: string }[];
+        const pick = this.pickRandom(arr);
+        if (pick) {
+          this.selectedQuote = { text: pick.text, author: pick.author };
+          return;
+        }
+      } catch {}
+    }
+
+    // 3) Final fallback
+    this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
+  }
 
   async shareOpenScreen() {
     if (this._sharing || !this.selectedQuote) return;
@@ -332,52 +420,47 @@ constructor(
 
     try {
       const canvas = document.createElement('canvas');
-      const width = 1080; // Instagram Story format
+      const width = 1080;
       const height = 1920;
       canvas.width = width;
       canvas.height = height;
+
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
 
-      // --- BACKGROUND GRADIENT ---
       const gradient = ctx.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, "#E8F7F6"); // soft turquoise top
-      gradient.addColorStop(1, "#FFFFFF"); // white bottom
+      gradient.addColorStop(0, "#E8F7F6");
+      gradient.addColorStop(1, "#FFFFFF");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
       const quote = this.selectedQuote.text;
       const author = this.selectedQuote.author;
 
-      
-
-      // Load custom font (if available)
       try { await (document as any).fonts?.load?.('70px DellaRespira'); } catch {}
 
-      // --- DRAW QUOTE BLOCK ---
-      function drawQuoteBlock(
-        ctx: CanvasRenderingContext2D,
+      const drawQuoteBlock = (
+        ctx2: CanvasRenderingContext2D,
         text: string,
         x: number,
         canvasWidth: number,
         canvasHeight: number,
         baseFont: string = "70px DellaRespira",
         lineHeight: number = 85
-      ) {
-        const maxWidth = canvasWidth * 0.8; // balanced side margins
+      ) => {
+        const maxWidth = canvasWidth * 0.8;
 
-        ctx.font = baseFont;
+        ctx2.font = baseFont;
         const fontFamily = baseFont.split(" ").slice(1).join(" ");
-        let fontSize = parseInt(baseFont);
+        let fontSize = parseInt(baseFont, 10);
 
         const words = text.split(" ");
         const lines: string[] = [];
         let currentLine = "";
 
-        // Word wrap
         for (const word of words) {
           const testLine = currentLine + word + " ";
-          if (ctx.measureText(testLine).width > maxWidth) {
+          if (ctx2.measureText(testLine).width > maxWidth) {
             lines.push(currentLine.trim());
             currentLine = word + " ";
           } else {
@@ -386,51 +469,45 @@ constructor(
         }
         lines.push(currentLine.trim());
 
-        // Shrink font if needed
         let widest = 0;
-        for (const line of lines) widest = Math.max(widest, ctx.measureText(line).width);
+        for (const line of lines) widest = Math.max(widest, ctx2.measureText(line).width);
         while (widest > maxWidth && fontSize > 28) {
           fontSize -= 2;
-          ctx.font = `${fontSize}px ${fontFamily}`;
+          ctx2.font = `${fontSize}px ${fontFamily}`;
           widest = 0;
-          for (const line of lines) widest = Math.max(widest, ctx.measureText(line).width);
+          for (const line of lines) widest = Math.max(widest, ctx2.measureText(line).width);
         }
 
         const blockHeight = lines.length * lineHeight;
         const startY = (canvasHeight - blockHeight) / 2;
 
-        // Draw each line normally (no letter spacing)
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#0661AA";
+        ctx2.textAlign = "center";
+        ctx2.fillStyle = "#0661AA";
         for (let i = 0; i < lines.length; i++) {
-          ctx.fillText(lines[i], x, startY + i * lineHeight);
+          ctx2.fillText(lines[i], x, startY + i * lineHeight);
         }
 
         return { blockHeight, startY };
-      }
+      };
 
       const { blockHeight, startY } = drawQuoteBlock(ctx, quote, width / 2, width, height);
-      
-      // --- LOGO ---
+
       const logo = new Image();
       logo.src = 'assets/images/splash.png';
       await new Promise<void>((resolve, reject) => {
         logo.onload = () => {
           const logoSize = 400;
-          ctx.drawImage(logo, (width - logoSize) / 2, 350, logoSize, logoSize/2);
+          ctx.drawImage(logo, (width - logoSize) / 2, 350, logoSize, logoSize / 2);
           resolve();
         };
         logo.onerror = reject;
       });
 
-      // --- AUTHOR ---
       ctx.font = "42px Arial";
       ctx.fillStyle = "#0660aa9f";
       const authorY = startY + blockHeight + 70;
       ctx.fillText(`- ${author}`, width / 2, authorY);
 
-
-      // --- SAVE TO FILE ---
       const base64 = canvas.toDataURL('image/jpeg', 0.95);
       const base64Data = base64.split(',')[1];
       const fileName = `briza_${Date.now()}.jpeg`;
@@ -446,14 +523,12 @@ constructor(
         path: fileName
       });
 
-      // --- SHARE ---
       await Share.share({
         title: this.isPortuguese ? 'Compartilhar citação' : 'Share quote',
         text: 'brizabreath.com',
         files: [uri]
       });
 
-      // --- CLEANUP OLD FILES ---
       try {
         const dir = await Filesystem.readdir({ directory: Directory.Cache, path: '' });
         const brizaFiles = dir.files
@@ -466,6 +541,10 @@ constructor(
         }
       } catch (cleanupErr) {
         console.warn('Cleanup skipped:', cleanupErr);
+      } finally {
+        // reduce memory pressure
+        canvas.width = 0;
+        canvas.height = 0;
       }
 
     } catch (err) {
@@ -473,61 +552,5 @@ constructor(
     } finally {
       this._sharing = false;
     }
-  }
-
-
-
-  startAppGuide() {
-    this.globalService.closeModal(this.openScreen);
-    this.isModalOpen = true;  // ✅ unhide page
-    setTimeout(() => this.startBreathTourNow(), 0);
-  }
-  private langKey(): 'EN' | 'PT' {
-    const isPT = localStorage.getItem('isPortuguese') === 'true';
-    return isPT ? 'PT' : 'EN';
-  }
-
-  private pickRandom<T>(arr: T[]): T | null {
-    if (!arr || !arr.length) return null;
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
-  async loadRandomQuote(): Promise<void> {
-    const db = this.firebaseService.firestore;
-    const lang = this.langKey();
-    const cacheKey = `cachedQuotes_${lang}`;
-
-    // 1) Online → read Firestore
-    if (navigator.onLine && db) {
-      try {
-        const colRef = collection(db, 'quotes');
-        const qRef = query(colRef, where('language', '==', lang));
-        const snap = await getDocs(qRef);
-        const docs = snap.docs.map(d => d.data() as { text: string; author: string; language: string });
-
-        if (docs.length) {
-          localStorage.setItem(cacheKey, JSON.stringify(docs));
-          const pick = this.pickRandom(docs)!;
-          this.selectedQuote = { text: pick.text, author: pick.author };
-          return;
-        }
-      } catch (e) {
-        console.warn('Quotes fetch failed, will try cache:', e);
-      }
-    }
-
-    // 2) Fallback → cache (offline or query failed)
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const arr = JSON.parse(cached) as { text: string; author: string }[];
-      const pick = this.pickRandom(arr);
-      if (pick) {
-        this.selectedQuote = { text: pick.text, author: pick.author };
-        return;
-      }
-    }
-
-    // 3) Final fallback
-    this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
   }
 }

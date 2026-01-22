@@ -18,7 +18,7 @@
   <div id="bbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Bhramari</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Bhramari</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -49,8 +49,8 @@
               <div class="HUMtimer-container">
                   <select #HUMtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #HUMcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -64,18 +64,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnHUM" #stopBtnHUM><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="HUMSave" #HUMSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnHUM" #stopBtnHUM><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="HUMSave" #HUMSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="HUMForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneHUM>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayHUM>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayHUM>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #HUMResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #HUMResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalHUM" class="modal" #myModalHUM>
@@ -89,39 +89,39 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p> Bhramari is a simple breathing exercise that offers several health benefits. One of its key advantages is the potential to increase the production of nitric oxide in the body </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> O zumbido é um exercício respiratório simples que oferece vários benefícios à saúde. Um dos principais é a capacidade de aumentar a produção de óxido nítrico no corpo</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p> Nitric oxide is a molecule that plays a crucial role in physiological processes, including vasodilation, which can enhance blood flow and lower blood pressure</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> O óxido nítrico é uma molécula que desempenha um papel crucial em processos fisiológicos, incluindo a vasodilatação (ampliação dos vasos sanguíneos), o que pode melhorar o fluxo sanguíneo e reduzir a pressão arterial</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p> Moreover, nitric oxide has demonstrated anti-inflammatory and antimicrobial properties, contributing to additional health benefits</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> Além disso, o óxido nítrico demonstra possuir propriedades anti-inflamatórias e antimicrobianas, contribuindo para benefícios adicionais à saúde</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -129,12 +129,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/hum.png">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     What makes this technique unique is that, during the exhalation, you gently seal your lips and create a humming sound                  
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     O que torna essa técnica única é que, durante a exalação, você deve selar suavemente os lábios e produzir um som de zumbido                  
                   </p>
@@ -142,12 +142,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                   The ratio of this exercise is fixed. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the circle again
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     A proporção deste exercício é fixa. Escolha a duração da sessão e pressione "Iniciar" quando estiver pronto. Se precisar pausar, basta clicar no círculo novamente
                   </p> 

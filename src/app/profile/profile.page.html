@@ -14,8 +14,8 @@
     <div class="placeholderHeader"></div>
   </header>
   <div class="breathingpages">
-    <h2 class="portuguese" *ngIf="isPortuguese">Conta</h2>
-    <h2 class="english" *ngIf="!isPortuguese">Account</h2>
+    <h2  *ngIf="isPortuguese" >Conta</h2>
+    <h2    *ngIf="!isPortuguese" >Account</h2>
     <div class="flexProfile">
       <div #userEmail></div>
     </div>
@@ -28,15 +28,13 @@
     </ion-button>
     <div class="flexProfile">
       <a
-        *ngIf="isPortuguese"
-        class="portuguese profileBTN2"
+          *ngIf="isPortuguese" class="profileBTN2"
         [class.disabled]="!isOnline"
         (click)="navigateToPage('/manageAccount', $event)"
         >GERENCIAR CONTA</a
       >
       <a
-        *ngIf="!isPortuguese"
-        class="english profileBTN2"
+          *ngIf="!isPortuguese" class="profileBTN2"
         [class.disabled]="!isOnline"
         (click)="navigateToPage('/manageAccount', $event)"
         >MANAGE ACCOUNT</a
@@ -48,8 +46,8 @@
     <hr />
     <!-- Subscription (always one button now) -->
     <div class="profile">
-      <h2 class="portuguese" *ngIf="isPortuguese">Assinatura</h2>
-      <h2 class="english" *ngIf="!isPortuguese">Subscription</h2>
+      <h2  *ngIf="isPortuguese" >Assinatura</h2>
+      <h2    *ngIf="!isPortuguese" >Subscription</h2>
 
       <div class="manageMembership profile">
         <button
@@ -59,27 +57,27 @@
           (click)="onManageSubscriptionClick($event)">
           {{ isPortuguese ? 'GERENCIAR ASSINATURA' : 'MANAGE SUBSCRIPTION' }}
         </button>
-        <p class="portuguese profiletext" *ngIf="isPortuguese">
+        <p   *ngIf="isPortuguese" class="profiletext" >
           Gerencie sua assinatura, atualize os detalhes de pagamento ou cancele a qualquer momento
         </p>
-        <p class="english profiletext" *ngIf="!isPortuguese">
+        <p   *ngIf="!isPortuguese" class="profiletext">
           Manage your subscription, update payment details, or cancel anytime
         </p>
       </div>
     </div>
     <hr />
     <div class="textForm2 profile">
-      <h2 class="portuguese">Idioma</h2>
-      <h2 class="english">Language</h2>
+      <h2 *ngIf="isPortuguese">Idioma</h2>
+      <h2   *ngIf="!isPortuguese">Language</h2>
       <div class="flags">
-        <a #portuguese class="english langBtn">Trocar para Português</a>
-        <a #english class="portuguese langBtn">Change to English</a>
+        <a #portuguese   *ngIf="!isPortuguese" class="langBtn">Trocar para Português</a>
+        <a #english   *ngIf="isPortuguese" class="langBtn">Change to English</a>
       </div>
     </div>
     <hr />
     <div class="profile">
-      <h2 class="portuguese" *ngIf="isPortuguese">Contato</h2>
-      <h2 class="english" *ngIf="!isPortuguese">Contact</h2>
+      <h2  *ngIf="isPortuguese" >Contato</h2>
+      <h2    *ngIf="!isPortuguese" >Contact</h2>
       <div class="contactProfile">
         <p>Email</p>
         <a href="mailto:info@brizabreath.com">info&#64;brizabreath.com</a>
@@ -97,11 +95,11 @@
   <div class="profile">
     <h2>Newsletter</h2>
     <div class="newsletterSection">
-      <p class="portuguese profiletext" *ngIf="newsletterActive && isPortuguese">Você está inscrito na nossa newsletter</p>
-      <p class="english profiletext" *ngIf="newsletterActive && !isPortuguese">You are subscribed to our newsletter</p>
+      <p class="profiletext" *ngIf="newsletterActive && isPortuguese">Você está inscrito na nossa newsletter</p>
+      <p class="profiletext" *ngIf="newsletterActive && !isPortuguese">You are subscribed to our newsletter</p>
 
-      <p class="portuguese profiletext" *ngIf="!newsletterActive && isPortuguese">Você não está inscrito na nossa newsletter</p>
-      <p class="english profiletext" *ngIf="!newsletterActive && !isPortuguese">You are not subscribed to our newsletter</p>
+      <p class="profiletext" *ngIf="!newsletterActive && isPortuguese">Você não está inscrito na nossa newsletter</p>
+      <p class="profiletext" *ngIf="!newsletterActive && !isPortuguese">You are not subscribed to our newsletter</p>
       <button
         type="button"
         class="profileBTN"
@@ -140,33 +138,29 @@
     <hr />
     <div class="profile termsPrivacyBtn profileMargin">
       <a
-        *ngIf="isPortuguese"
         id="TermsBtn"
-        class="portuguese"
+        *ngIf="isPortuguese"
         href="https://brizabreath.com/terms-conditions/"
         target="_blank"
         >Termos e Condições</a
       >
       <a
-        *ngIf="isPortuguese"
         id="PrivacyBtn"
-        class="portuguese"
+        *ngIf="isPortuguese"
         href="https://brizabreath.com/privacy-policy"
         target="_blank"
         >Política de Privacidade</a
       >
       <a
-        *ngIf="!isPortuguese"
         id="TermsBtn"
-        class="english"
+          *ngIf="!isPortuguese"
         href="https://brizabreath.com/terms-conditions/"
         target="_blank"
         >Terms & Conditions</a
       >
       <a
-        *ngIf="!isPortuguese"
         id="PrivacyBtn"
-        class="english"
+          *ngIf="!isPortuguese"
         href="https://brizabreath.com/privacy-policy"
         target="_blank"
         >Privacy Policy</a
@@ -178,7 +172,7 @@
       >
     </div>
   </div>
-  <footer id="profileFooter" class="portuguese" *ngIf="isPortuguese">
+  <footer id="profileFooter"  *ngIf="isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -187,7 +181,7 @@
       <a class="active"><i class="fa fa-user active"></i>Perfil</a>
     </div>
   </footer>
-  <footer id="profileFooter" class="english" *ngIf="!isPortuguese">
+  <footer id="profileFooter"    *ngIf="!isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>

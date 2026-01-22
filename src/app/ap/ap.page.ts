@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 @Component({
@@ -43,7 +44,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
   @ViewChild('minusAP') minusAP!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusAP') plusAP!: ElementRef<HTMLButtonElement>;
 
-  private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleAP = true;
   private hold1AP = false;
   private exhaleAP = false;
@@ -56,7 +57,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
   private APMinutes = 0;
   private APTimer: any = null;
   private APResult = ''; // Variable to store the BRT result as a string
-  
+  private appStateHandle?: PluginListenerHandle;
+
 
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
@@ -105,18 +107,25 @@ export class APPage implements  AfterViewInit, OnDestroy {
         this.APduration = parseInt(selectedValue);
       }
   }
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
 
   async ionViewWillEnter() {
-    // Listen for app state changes
-    App.addListener('appStateChange', (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startAP();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
-        }else if(firstClick == "false" && breathingON == "false"){
-        }else{
+          await this.startAP(); // toggles to pause in your logic
+        } else if (firstClick === "false" && breathingON === "false") {
+          // do nothing (same as your code)
+        } else {
           this.globalService.clearAllTimeouts();
           this.stopAP();
         }
@@ -124,12 +133,8 @@ export class APPage implements  AfterViewInit, OnDestroy {
     });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
       this.APballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
       this.APballText.nativeElement.textContent = "Start"
     }
     this.setAPduration();
@@ -161,7 +166,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startAP(): Promise<void>{
-    this.audioService.resetaudio();
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAP.nativeElement.disabled = true;
@@ -412,10 +417,7 @@ export class APPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    
-    
     this.stopAP(); 
     this.APResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
 }

@@ -18,8 +18,8 @@
   <div id="dbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Reset Breathing</h1>
-            <h1 class="volumeSettings portuguese">Respiração Reset</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Reset Breathing</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Respiração Reset</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -50,8 +50,8 @@
               <div class="DBtimer-container">
                   <select #DBtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #DBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -65,18 +65,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnDB" #stopBtnDB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="DBSave" #DBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnDB" #stopBtnDB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="DBSave" #DBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="DBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneDB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayDB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayDB>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #DBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #DBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalDB" class="modal" #myModalDB>
@@ -92,10 +92,10 @@
         <!-- Intro -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/yogiclines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>The Reset Breathing technique is designed to calm the nervous system by combining two inhales before a long exhale.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>A técnica de Respiração Reset foi criada para acalmar o sistema nervoso combinando duas inspirações antes de uma longa expiração.</p>
           </div>
         </div>
@@ -103,10 +103,10 @@
         <!-- Step 1 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/sit.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Find a comfortable seat or lie down. Relax your shoulders, face muscles and jaw. Place your tongue gently on the roof of your mouth.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque suavemente a língua no céu da boca.</p>
           </div>
         </div>
@@ -114,10 +114,10 @@
         <!-- Step 2 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/in.png">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Inhale slowly through your nose, filling your belly and ribs with air.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Inspire lentamente pelo nariz, enchendo o abdômen e as costelas de ar.</p>
           </div>
         </div>
@@ -125,10 +125,10 @@
         <!-- Step 3 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/pause.png">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Hold your breath gently for a moment. Keep your body relaxed.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Segure a respiração por um momento de forma suave. Mantenha o corpo relaxado.</p>
           </div>
         </div>
@@ -136,10 +136,10 @@
         <!-- Step 4 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/in.png">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Take a second short inhale through your nose, topping up your lungs fully.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Faça uma segunda inspiração curta pelo nariz, enchendo os pulmões completamente.</p>
           </div>
         </div>
@@ -147,10 +147,10 @@
         <!-- Step 5 -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/out.png">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Exhale fully and slowly through your nose or mouth, releasing all the air and tension.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Expire completamente e lentamente pelo nariz ou boca, liberando todo o ar e tensão.</p>
           </div>
         </div>
@@ -158,10 +158,10 @@
         <!-- Instructions -->
         <div class="mySlides fadeModal slides">
           <img src="assets/images/mindful.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Press 'Start' to begin the guided exercise. If needed, click the circle again to pause. At the end, save your results to track your progress.</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Pressione 'Iniciar' para começar o exercício guiado. Se necessário, clique novamente no círculo para pausar. No final, salve seus resultados para acompanhar seu progresso.</p>
           </div>
         </div>

@@ -18,8 +18,8 @@
   <div id="brePage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Breath Recovery - Seated</h1>
-            <h1 class="volumeSettings portuguese">Recuperando o Fôlego - Sentado</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Breath Recovery - Seated</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Recuperando o Fôlego - Sentado</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -54,8 +54,8 @@
               <div class="BREtimer-container">
                   <select #BREtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #BREcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -69,18 +69,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBRE" #stopBtnBRE><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BRESave" #BRESave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnBRE" #stopBtnBRE><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BRESave" #BRESave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="BREForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneBRE>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBRE>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBRE>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #BREResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #BREResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBRE" class="modal" #myModalBRE>
@@ -94,21 +94,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/calm.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>Simple exercise that can be used to recover your breath after a physical activity</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Exercício simples que pode ser usado para recuperar sua respiração após uma atividade física</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -116,12 +116,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Choose the appropriated breath hold time from 2 to 10 seconds and Press 'Start' when you are ready. If you need to pause, just click on the circle again.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Escolha o tempo de pausa respiratória apropriado de 2 a 10 segundos e pressione "Iniciar" quando estiver pronto. Se precisar pausar, basta clicar no círculo novamente.
                   </p> 
@@ -129,12 +129,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Breathe light on the inhalation and exhalation
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Respire suavemente na inalação e exalação
                   </p>
@@ -142,12 +142,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If you feel that the breath hold time chosen is too hard, stop doing it and choose a lower breath hold time
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se você achar que o tempo de pausa respiratória escolhido é muito difícil, pare de fazer e escolha um tempo de pausa menor
                   </p>

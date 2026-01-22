@@ -10,10 +10,10 @@
   </header>
   <div id="breathgrid2">
     <div id="breathpagegrid">
-      <h2 class="english"> Managing stress and anxiety</h2>
-      <h3 class="portuguese">Lidando melhor com o estresse e a ansiedade</h3>
-      <h3 class="english">Classes</h3>
-      <h3 class="portuguese">Aulas</h3>
+      <h2   *ngIf="!isPortuguese"> Managing stress and anxiety</h2>
+      <h3 *ngIf="isPortuguese">Lidando melhor com o estresse e a ansiedade</h3>
+      <h3   *ngIf="!isPortuguese">Classes</h3>
+      <h3 *ngIf="isPortuguese">Aulas</h3>
 
       <div class="horizontal-scroll" *ngIf="anxietyYoga.length > 0">
         <div
@@ -35,8 +35,8 @@
       </div>
 
       <div *ngIf="anxietyYoga.length === 0" class="no-videos">
-        <p class="english" *ngIf="!isPortuguese">No yoga classes found with “anxiety”.</p>
-        <p class="portuguese" *ngIf="isPortuguese">Nenhuma aula encontrada com “anxiety”.</p>
+        <p    *ngIf="!isPortuguese" >No yoga classes found with “anxiety”.</p>
+        <p  *ngIf="isPortuguese" >Nenhuma aula encontrada com “anxiety”.</p>
       </div>
       <h3>Breathwork</h3>
       <div class="horizontal-scroll">

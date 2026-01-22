@@ -22,21 +22,13 @@ import { getDocsFromServer } from 'firebase/firestore';
   imports: [CommonModule, FormsModule, IonicModule, RouterModule, VideoModalComponent],
 })
 export class YogaLikedPagePage implements OnInit {
-  isPortuguese = false;
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
   likedVideos: any[] = [];
   showWebSplash = false;
 
   private likedKey = 'likedYogaIds';
 
-  private readonly FREE_CLASSES = [
-    'RiTUaMmSRhd1IdK9TynI',
-    'CyJy2Uf4dC6qoRsMphlc',
-    'nDqZCNnlqYj9EmylcVPx',
-    'qI4bFPybnAcj7MVaTp0T',
-    'YK5xX0NTnByLhGPedCan',
-    'E3y6htyEr2AczT24qQQx',
-  ];
 
   constructor(
     private navCtrl: NavController,
@@ -92,7 +84,6 @@ export class YogaLikedPagePage implements OnInit {
       .filter(v => likedSet.has(v.id))
       .map(v => ({
         ...this.normalizeVideo(v),
-        isFree: this.FREE_CLASSES.includes(v.id),
       }));
 
     // Keep the order of likedIds (most people expect “most recent liked” last,

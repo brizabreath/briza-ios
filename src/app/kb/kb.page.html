@@ -44,10 +44,10 @@
                   <input #KBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
                <div *ngIf="showFixedRoundButton" class="fixed-round-button">
-                <button *ngIf="!isPortuguese" class="english" type="button" (click)="openFixedRoundsModal()">
+                <button  *ngIf="!isPortuguese" type="button" (click)="openFixedRoundsModal()">
                   Set holding times
                 </button>
-                <button *ngIf="isPortuguese" class="portuguese" type="button" (click)="openFixedRoundsModal()">
+                <button   *ngIf="isPortuguese" type="button" (click)="openFixedRoundsModal()">
                   Definir tempos de retenção
                 </button>
               </div>
@@ -61,33 +61,33 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="KBReset" #KBReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="KBSave" #KBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="KBReset" #KBReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="KBSave" #KBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="KBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneKB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayKB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayKB>00 : 00</div>
                       </div>
                   </form>
                   <div #KBResults></div>
               </div>
           </div>
       </div>
-      <div #KBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #KBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <!-- Modal for fixed round durations -->
   <div id="fixedRoundsModalKB" class="modal" #fixedRoundsModalKB>
     <div class="modal-content fixedRoundsModal">
       <span class="close" (click)="closeFixedRoundsModal()">&times;</span>
-      <h3 class="english" *ngIf="!isPortuguese">Set time of holds</h3>
-      <p class="english" *ngIf="!isPortuguese">Leave 0 if you don't want to set time</p>
-      <h3 class="portuguese" *ngIf="isPortuguese">Definir tempo de retencoes</h3>
-      <p class="portuguese" *ngIf="isPortuguese">Deixe 0 se não quiser definir os tempos</p>
+      <h3    *ngIf="!isPortuguese" >Set time of holds</h3>
+      <p    *ngIf="!isPortuguese" >Leave 0 if you don't want to set time</p>
+      <h3  *ngIf="isPortuguese" >Definir tempo de retencoes</h3>
+      <p  *ngIf="isPortuguese" >Deixe 0 se não quiser definir os tempos</p>
 
       <div *ngFor="let round of fixedRoundDurations; let i = index" class="round-input">
-        <label class="round-label english" *ngIf="!isPortuguese">Hold {{ i + 1 }}</label>
-        <label class="round-label portuguese" *ngIf="isPortuguese">Retenção {{ i + 1 }}</label>
+        <label class="round-label"   *ngIf="!isPortuguese" >Hold {{ i + 1 }}</label>
+        <label class="round-label"   *ngIf="isPortuguese" >Retenção {{ i + 1 }}</label>
         <div class="time-inputs">
           <input type="number" inputmode="numeric"
                 min="0"
@@ -99,8 +99,8 @@
                 max="59"
                 [(ngModel)]="fixedRoundDurations[i].seconds"
                 placeholder="sec" onblur="this.value = Math.max(0, Math.min(59, this.value))"/>
-          <span class="english" *ngIf="!isPortuguese">sec</span>
-          <span class="portuguese" *ngIf="isPortuguese">seg</span>
+          <span    *ngIf="!isPortuguese" >sec</span>
+          <span  *ngIf="isPortuguese" >seg</span>
         </div>
       </div>
     </div>
@@ -116,39 +116,39 @@
         <div class="slideshow-container">
           <div class="mySlides fadeModal slides">
               <img src="assets/images/yogiclines.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>Kapalabhati is a yogic breathing technique that involves rapid and forceful exhalations followed by passive inhalations</p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>Kapalabhati é uma técnica de Respiração Yogi que envolve exalações rápidas e vigorosas seguidas por inalações passivas</p>
               </div>
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/yogiclines.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>It's important to note that kapalabhati should be practiced on an empty stomach and should be avoided by those with high blood pressure, heart disease, or any other medical conditions</p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>É importante notar que o kapalabhati deve ser praticado com o estômago vazio e deve ser evitado por aqueles com pressão alta, doenças cardíacas ou quaisquer outras condições médicas</p>
               </div>
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/yogiclines.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>The rapid and forceful exhalations in Kapalabhati help to stimulate the sympathetic nervous system, which can increase energy and vitality</p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>As exalações rápidas e vigorosas no Kapalabhati ajudam a estimular o sistema nervoso simpático, o que pode aumentar a energia e vitalidade</p>
               </div>
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/breaths.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   In settings, choose the number of breaths to prepare for the breath hold
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   Em conifigurações, escolha o número de respirações para preparar a retenção de respiração
                 </p>
@@ -156,12 +156,12 @@
             </div>
             <div class="mySlides fadeModal slides">
               <img src="assets/images/nor.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>
                   In settings, choose the speed of breaths to prepare for the breath hold
                 </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>
                   Em conifigurações, escolha a velocidade de respirações para preparar a retenção de respiração
                 </p>
@@ -169,12 +169,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Take a deep breath in through your nose, exhale forcefully through your nose while simultaneously contracting your abdominal muscles to push the air out in short bursts
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Inspire profundamente pelo nariz, espire vigorosamente pelo nariz enquanto contrai simultaneamente os músculos abdominais para empurrar o ar para fora em rajadas curtas
                   </p>
@@ -182,12 +182,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Relax your abdominal muscles and passively inhale through your nose. Repeat it for several rounds, gradually increasing the force of your exhalations                  
                  </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Relaxe os músculos abdominais e inale passivamente pelo nariz. Repita isso por várias rodadas, aumentando gradualmente a força de suas exalações
                   </p>
@@ -195,12 +195,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/hold.png">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     After many breaths, take a deep breath in and hold your breath for as long as you can
                  </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Após várias respirações, inspire profundamente e segure a respiração pelo maior tempo que puder
                   </p>
@@ -208,12 +208,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/nor.png">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Once you cannot hold it any longer, press the circle and get back to your normal breathing for 30 seconds in the recovery round.Do as many rounds as you like 
                  </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Uma vez que não puder mais segurar, pressione o circulo novamente e volte à respiração normal por 30 segundos na rodada de recuperação. Faça tantas rodadas quanto desejar
                   </p>
@@ -221,13 +221,13 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     During the breath hold, try to stay calm and focus on your heart beat.                       
                     Do not do this technique inside the water or any place that may be dangerous if you lose your consciousness
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Durante a retenção de respiração, tente permanecer calmo e focado no seu batimento cardíaco.                       
                     Não faça esta técnica dentro da água ou em qualquer lugar que possa ser perigoso se você perder a consciência

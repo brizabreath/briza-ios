@@ -30,8 +30,8 @@
         class="segment"
         [class.active]="selectedSegment === 'slowdown'"
         (click)="selectSegment('slowdown')">
-        <div class="english" *ngIf="!isPortuguese">Gentle</div>
-        <div class="portuguese" *ngIf="isPortuguese">Suave</div>
+        <div    *ngIf="!isPortuguese" >Gentle</div>
+        <div   *ngIf="isPortuguese" >Suave</div>
       </button>
 
       <button
@@ -67,8 +67,8 @@
     <!-- Duration Filter --> 
     <div class="duration-filter">
       <select id="durationSelect" [(ngModel)]="selectedFilter" (change)="filterVideos()">
-        <option value="duration" *ngIf="!isPortuguese">Duration</option>
-        <option value="duration" *ngIf="isPortuguese">Duração</option>
+        <option value="duration"  *ngIf="!isPortuguese">Duration</option>
+        <option value="duration"  *ngIf="isPortuguese">Duração</option>
         <option *ngFor="let f of filters" [value]="f">{{ f }}</option>
       </select>
     </div>
@@ -78,26 +78,26 @@
       <div *ngIf="filteredVideos.length > 0" class="video-list">
         <p class="section-subtitle">
           <!-- Meditate -->
-          <span *ngIf="selectedSegment === 'meditate' && !isPortuguese" class="english">
+          <span *ngIf="selectedSegment === 'meditate' && !isPortuguese">
             Guided sessions to relax and focus
           </span>
-          <span *ngIf="selectedSegment === 'meditate' && isPortuguese" class="portuguese">
+          <span *ngIf="selectedSegment === 'meditate' && isPortuguese">
             Aulas guiadas para relaxar e focar
           </span>
 
           <!-- Move -->
-          <span *ngIf="selectedSegment === 'move' && !isPortuguese" class="english">
+          <span *ngIf="selectedSegment === 'move' && !isPortuguese">
             Move your body to energize your day
           </span>
-          <span *ngIf="selectedSegment === 'move' && isPortuguese" class="portuguese">
+          <span *ngIf="selectedSegment === 'move' && isPortuguese">
             Mexa seu corpo para energizar o dia
           </span>
 
           <!-- Slow Down -->
-          <span *ngIf="selectedSegment === 'slowdown' && !isPortuguese" class="english">
+          <span *ngIf="selectedSegment === 'slowdown' && !isPortuguese">
             Slow down with gentle movements
           </span>
-          <span *ngIf="selectedSegment === 'slowdown' && isPortuguese" class="portuguese">
+          <span *ngIf="selectedSegment === 'slowdown' && isPortuguese">
             Acalme-se com movimentos suaves
           </span>
         </p>
@@ -126,14 +126,14 @@
       </div>
 
       <div *ngIf="filteredVideos.length === 0" class="no-videos">
-        <p class="english" *ngIf="!isPortuguese">No videos found for this category</p>
-        <p class="portuguese" *ngIf="isPortuguese">Nenhum vídeo encontrado para esta categoria</p>
+        <p    *ngIf="!isPortuguese" >No videos found for this category</p>
+        <p  *ngIf="isPortuguese" >Nenhum vídeo encontrado para esta categoria</p>
       </div>
     </div>
   </div>
 
   <!-- Footer (language-aware) -->
-  <footer id="yogaFooter" class="english" *ngIf="!isPortuguese">
+  <footer id="yogaFooter"    *ngIf="!isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -143,7 +143,7 @@
     </div>
   </footer>
 
-  <footer id="yogaFooterBR" class="portuguese" *ngIf="isPortuguese">
+  <footer id="yogaFooterBR"  *ngIf="isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Respiração</a>

@@ -10,8 +10,8 @@
   </header>
 
   <div class="breathingpages" *ngIf="WHhasData">
-    <h1 class="english">Oxygen Boost</h1>
-    <h1 class="portuguese">Hiperventilação Guiada</h1>
+    <h1   *ngIf="!isPortuguese">Oxygen Boost</h1>
+    <h1 *ngIf="isPortuguese">Hiperventilação Guiada</h1>
   </div>
 
   <div class="chart-container" #WHchartContainer>
@@ -19,23 +19,23 @@
   </div>
 
   <div class="overview-box" *ngIf="WHhasData">
-    <h2 class="english">Overview</h2>
-    <h2 class="portuguese">Visão Geral</h2>
+    <h2   *ngIf="!isPortuguese">Overview</h2>
+    <h2 *ngIf="isPortuguese">Visão Geral</h2>
     <div class="overview-item">
-      <strong class="english">Longest Round</strong>
-      <strong class="portuguese">Rodada Mais Longa</strong>
-      <span class="english">{{ WHlongestRound }} on {{ WHlongestRoundDate }}</span>
-      <span class="portuguese">{{ WHlongestRound }} no dia {{ WHlongestRoundDate }}</span>
+      <strong   *ngIf="!isPortuguese">Longest Round</strong>
+      <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
+      <span   *ngIf="!isPortuguese">{{ WHlongestRound }} on {{ WHlongestRoundDate }}</span>
+      <span *ngIf="isPortuguese">{{ WHlongestRound }} no dia {{ WHlongestRoundDate }}</span>
     </div>
     <div class="overview-item">
-      <strong class="english">Lifetime Average</strong>
-      <strong class="portuguese">Média de todas sessões</strong>
-      <span class="english">{{ WHlongestSessionAverage }}</span>
-      <span class="portuguese">{{ WHlongestSessionAverage }}</span>
+      <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
+      <strong *ngIf="isPortuguese">Média de todas sessões</strong>
+      <span   *ngIf="!isPortuguese">{{ WHlongestSessionAverage }}</span>
+      <span *ngIf="isPortuguese">{{ WHlongestSessionAverage }}</span>
     </div>
     <div class="overview-item">
-      <strong class="english">Total Sessions</strong>
-      <strong class="portuguese">Total de Sessões</strong>
+      <strong   *ngIf="!isPortuguese">Total Sessions</strong>
+      <strong *ngIf="isPortuguese">Total de Sessões</strong>
       <span>{{ WHtotalSessions }}</span>
     </div>
   </div>  

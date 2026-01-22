@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, Platform } from '@ionic/angular';
@@ -12,7 +12,7 @@ import { LocalReminderService } from './services/local-reminder.service';
 import { YogaUpdateService } from './services/yoga-update.service';
 import { AudioService } from './services/audio.service';
 import { CommentNotificationService } from './services/comment-notification.service';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, PluginListenerHandle } from '@capacitor/core';
 
 @Component({
   selector: 'app-root',
@@ -27,12 +27,21 @@ import { Capacitor } from '@capacitor/core';
     RouterModule
   ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   isModalOpen: boolean = false;
   isPortuguese: boolean = false;
   private inactivityTimer: any;
   showWebSplash = true;
+
   private listenersRegistered = false;
+
+  // Capacitor listener handles (so we don't stack)
+  private appStateHandle?: PluginListenerHandle;
+  private resumeHandle?: PluginListenerHandle;
+  private localReceivedHandle?: PluginListenerHandle;
+
+  // Global gesture unlock handlers
+  private gestureHandler?: (e: Event) => void;
 
   constructor(
     private globalService: GlobalService,
@@ -50,7 +59,6 @@ export class AppComponent implements OnInit {
   private async initializeApp() {
     await this.platform.ready();
 
-    // Only apply resize mode on iOS (Android throws "not implemented")
     if (Capacitor.getPlatform() === 'ios') {
       try {
         await Keyboard.setResizeMode({ mode: KeyboardResize.None });
@@ -59,93 +67,124 @@ export class AppComponent implements OnInit {
       }
     }
 
-    // Hide splash after short delay
     setTimeout(() => {
       this.showWebSplash = false;
     }, 2000);
+
+    // Install global gesture unlock (works for first launch and after background)
+    this.installGlobalAudioGestureUnlock();
   }
 
   async ngOnInit() {
-    // ✅ Ensure tap listener registered once
     this.registerNotificationListener();
+
     try {
-      // ✅ Preload and initialize audio
-      await this.audioService.preloadAll();
+      // Initialize song element (safe to set up early; playback still needs gesture on iOS)
       await this.audioService.initializeSong();
 
-      // ✅ Start reminders and yoga updates
+      // Start reminders and update checks
       await this.reminders.startRollingReminders();
       await this.reminders.tick();
       await this.yogaUpdates.checkOnAppStart();
       await this.commentNotifications.checkOnAppStart();
 
-      // ✅ Listen for app state changes (background/foreground)
-      App.addListener('appStateChange', async (state) => {
+      // App state: foreground/background
+      await this.appStateHandle?.remove();
+      this.appStateHandle = await App.addListener('appStateChange', async (state) => {
         if (state.isActive) {
-          await this.audioService.resetaudio();
+          // Try to recover context (may still need gesture)
+          await this.audioService.onAppBecameActive();
+          await this.reminders.tick();
+          await this.yogaUpdates.checkOnAppStart();
+          await this.commentNotifications.checkOnAppStart();
+        } else {
+          // Mark that iOS will likely suspend WebAudio; next tap will re-unlock
+          this.audioService.markNeedsUnlock();
         }
       });
 
-      // ✅ Resume listener for Android lifecycle
-      App.addListener('resume', async () => {
-        await this.audioService.resetaudio();
+      // Resume: keep it, but don't rely on it for iOS
+      await this.resumeHandle?.remove();
+      this.resumeHandle = await App.addListener('resume', async () => {
+        await this.audioService.onAppBecameActive();
         await this.reminders.tick();
         await this.yogaUpdates.checkOnAppStart();
         this.registerNotificationListener();
       });
 
-      // ✅ Local notification received while app is in foreground
-      LocalNotifications.addListener('localNotificationReceived', async () => {
+      // Foreground local notification received
+      await this.localReceivedHandle?.remove();
+      this.localReceivedHandle = await LocalNotifications.addListener('localNotificationReceived', async () => {
         await this.reminders.chainNext();
       });
 
-      // ✅ Load user language
+      // Load user language
       const isPortugueseValue = localStorage.getItem('isPortuguese');
       this.isPortuguese = isPortugueseValue === 'true';
 
-      // ✅ Subscribe to modal visibility changes
+      // Modal visibility
       this.globalService.isModalOpen$.subscribe({
         next: (isOpen) => (this.isModalOpen = isOpen),
-        error: (err) =>
-          console.error('Error in modal state subscription:', err),
+        error: (err) => console.error('Error in modal state subscription:', err),
       });
+
     } catch (err) {
       console.error('Initialization error:', err);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.appStateHandle?.remove();
+    this.resumeHandle?.remove();
+    this.localReceivedHandle?.remove();
+
+    if (this.gestureHandler) {
+      window.removeEventListener('touchend', this.gestureHandler, true);
+      window.removeEventListener('click', this.gestureHandler, true);
+    }
+  }
+
+  private installGlobalAudioGestureUnlock() {
+    if (this.gestureHandler) return;
+
+    this.gestureHandler = async () => {
+      // Unlock WebAudio if needed (works only from user gesture on iOS)
+      await this.audioService.unlockFromGestureIfNeeded();
+    };
+
+    // capture=true so it fires early
+    window.addEventListener('touchend', this.gestureHandler, true);
+    window.addEventListener('click', this.gestureHandler, true);
   }
 
   private registerNotificationListener() {
     if (this.listenersRegistered) return;
     this.listenersRegistered = true;
 
-    LocalNotifications.addListener(
-      'localNotificationActionPerformed',
-      async (event) => {
-        await this.reminders.chainNext();
-        const data = (event?.notification as any)?.extra;
-        if (!data) return;
+    LocalNotifications.addListener('localNotificationActionPerformed', async (event) => {
+      await this.reminders.chainNext();
 
-        if (data.type === 'yogaNew') {
-          const firstItem = data.items?.[0];
-          const firstId = firstItem?.id || data.ids?.[0];
-          const cat = firstItem?.category;
+      const data = (event?.notification as any)?.extra;
+      if (!data) return;
 
-          if (!firstId) return;
+      if (data.type === 'yogaNew') {
+        const firstItem = data.items?.[0];
+        const firstId = firstItem?.id || data.ids?.[0];
+        const cat = firstItem?.category;
 
-          // Route by category
-          if (cat === 'lungs' || cat === 'mobility') {
-            this.router.navigate(['/lungs'], { queryParams: { open: firstId } });
-          } else {
-            // move / slowdown / meditate (yoga)
-            this.router.navigate(['/yoga'], { queryParams: { open: firstId } });
-          }
-        }else if (data.type === 'commentReply') {
-          await this.commentNotifications.handleNotificationTap(data);
+        if (!firstId) return;
+
+        if (cat === 'lungs' || cat === 'mobility') {
+          this.router.navigate(['/lungs'], { queryParams: { open: firstId } });
         } else {
-          this.router.navigateByUrl('/breathwork');
+          this.router.navigate(['/yoga'], { queryParams: { open: firstId } });
         }
+      } else if (data.type === 'commentReply') {
+        await this.commentNotifications.handleNotificationTap(data);
+      } else {
+        this.router.navigateByUrl('/breathwork');
       }
-    );
+    });
   }
 
   onModalClose(): void {
@@ -167,6 +206,6 @@ export class AppComponent implements OnInit {
 
     this.inactivityTimer = setTimeout(() => {
       if (overlay) overlay.style.opacity = '0.6';
-    }, 60000); // 1 min
+    }, 60000);
   }
 }

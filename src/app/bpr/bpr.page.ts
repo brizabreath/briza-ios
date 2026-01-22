@@ -28,8 +28,6 @@ export class BPRPage implements OnInit, AfterViewInit {
   ];
 
   @ViewChild('resultsList', { static: false }) resultsList?: ElementRef<HTMLDivElement>;
-  @ViewChild('noResultsMessage', { static: true }) noResultsMessage!: ElementRef<HTMLDivElement>;
-  @ViewChild('resultsTrue', { static: true }) resultsTrue!: ElementRef<HTMLDivElement>;
   @ViewChild('allChartCanvas', { static: false }) allChartCanvas!: ElementRef<HTMLCanvasElement>;
   private chartDateKeys: string[] = []; // "YYYY-MM-DD" per bar index
   allChart: any;
@@ -68,6 +66,7 @@ export class BPRPage implements OnInit, AfterViewInit {
   selectedDateResults: any[] = [];
 
   selectedSegment: 'calendar' | 'chart' = 'calendar';
+  resultsTrue = false;
 
   constructor(
     private navCtrl: NavController,
@@ -94,14 +93,6 @@ export class BPRPage implements OnInit, AfterViewInit {
 
   ionViewWillEnter() {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
 
     this.loadResults();
     this.generateDaysInMonth();
@@ -323,15 +314,11 @@ export class BPRPage implements OnInit, AfterViewInit {
     return this.isPortuguese ? monthNamesPT[monthIndex] : monthNamesEN[monthIndex];
   }
   showcontent(resultsfound: boolean):void{
-    setTimeout(() => {
-      if(resultsfound){
-        this.noResultsMessage.nativeElement.style.display = "none";
-        this.resultsTrue.nativeElement.style.display = "block";
-      }else{
-        this.noResultsMessage.nativeElement.style.display = "block";
-        this.resultsTrue.nativeElement.style.display = "none";
-      }
-    }, 100);
+   if(resultsfound){
+      this.resultsTrue = true;
+    }else{
+      this.resultsTrue = false;
+    }
   }
 
   populateResults(): void {

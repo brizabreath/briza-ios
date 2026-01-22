@@ -9,7 +9,7 @@
     <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
   <div id="homegrid">
-  <div id="homepagegrid" class="english">
+  <div id="homepagegrid"   *ngIf="!isPortuguese">
     <a routerLink="/program"><img id="hp-program" class="homepageimgs3" src="assets/images/bp.svg" loading="eager" decoding="sync" fetchpriority="high" /></a>
     <div class="row g-2">
         <div class="col"><a routerLink="/prana"><img id="hp-prana" class="homepageimgs" src="assets/images/prana.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
@@ -19,7 +19,7 @@
         <div class="col"><a routerLink="/cust"><img id="hp-cust" class="homepageimgs" src="assets/images/cust.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
     </div>
   </div>
-  <footer id="homeFooter" class="english">
+  <footer id="homeFooter"   *ngIf="!isPortuguese">
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="active"><i class="fa fa-fire active"></i>Breathwork</a>
@@ -28,7 +28,7 @@
       <a class="navIcons" routerLink="/profile" id="hp-profile"><i class="fa fa-user"></i>Profile</a>
     </div>
   </footer>
-  <div id="homepagegridBR" class="portuguese" style="display: none;">
+  <div id="homepagegridBR" *ngIf="isPortuguese">
     <a routerLink="/program"><img id="hp-programPT" class="homepageimgs3" src="assets/images/bpPT.svg" loading="eager" decoding="sync" fetchpriority="high" loading="eager" decoding="sync" fetchpriority="high"/></a>
     <div class="row g-2">
         <div class="col"><a routerLink="/prana"><img id="hp-pranaPT" class="homepageimgs" src="assets/images/pranaPT.svg" loading="eager" decoding="sync" fetchpriority="high" /></a></div>
@@ -39,7 +39,7 @@
     </div>
   </div>
   </div>
-  <footer id="homeFooterBR" class="portuguese">
+  <footer id="homeFooterBR" *ngIf="isPortuguese">
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="active"><i class="fa fa-fire active"></i>Breathwork</a>

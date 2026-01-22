@@ -15,8 +15,8 @@
   </header>
 
   <div class="manage-account">
-    <h1 class="portuguese">Gerenciar Conta</h1>
-    <h1 class="english">Manage Account</h1>
+    <h1 *ngIf="isPortuguese">Gerenciar Conta</h1>
+    <h1   *ngIf="!isPortuguese">Manage Account</h1>
 
     <form (ngSubmit)="onManageAccount()">
       <!-- Current Email (readonly) -->

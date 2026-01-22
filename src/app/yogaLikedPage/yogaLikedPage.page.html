@@ -36,8 +36,8 @@
     </div>
 
     <div *ngIf="likedVideos.length === 0" class="no-videos">
-      <p class="english" *ngIf="!isPortuguese">No liked classes yet.</p>
-      <p class="portuguese" *ngIf="isPortuguese">Você ainda não curtiu nenhuma aula.</p>
+      <p    *ngIf="!isPortuguese" >No liked classes yet.</p>
+      <p  *ngIf="isPortuguese" >Você ainda não curtiu nenhuma aula.</p>
     </div>
   </div>
 

@@ -39,8 +39,8 @@
               <div class="RBtimer-container">
                   <select #RBtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #RBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -54,18 +54,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnRB" #stopBtnRB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="RBSave" #RBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnRB" #stopBtnRB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="RBSave" #RBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="RBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneRB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayRB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayRB>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #RBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #RBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalRB" class="modal" #myModalRB>
@@ -80,12 +80,12 @@
             <div class="mySlides fadeModal slides">
 
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     The 4-7-8 breathing technique is based on the principles of deep breathing and diaphragmatic breathing, which have been shown to reduce stress and anxiety by activating the body's relaxation response
                   </p> 
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     A técnica de respiração 4-7-8 é baseada nos princípios da respiração profunda e da respiração diafragmática, que demonstraram reduzir o estresse e a ansiedade ativando a resposta de relaxamento do corpo.
                   </p>
@@ -94,12 +94,12 @@
             <div class="mySlides fadeModal slides">
 
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     By slowing down the breath and focusing on the pattern of inhalation and exhalation, the mind is able to become more calm and centered.
                   </p> 
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Ao desacelerar a respiração e focar no padrão de inalação e exalação, a mente é capaz de se tornar mais calma e centrada
                   </p>
@@ -107,12 +107,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -120,12 +120,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente
                   </p>

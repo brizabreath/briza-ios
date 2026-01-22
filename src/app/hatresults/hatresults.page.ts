@@ -98,17 +98,7 @@ export class HatresultsPage implements AfterViewInit {
       this.AHATcalculateOverviewData();
     }
   }
-  
 
-  ionViewWillEnter() {
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-  }
 
   HATloadDataFromLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('HATResults') || '[]');

@@ -18,8 +18,8 @@
   <div id="cbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Coherent Breathing</h1>
-            <h1 class="volumeSettings portuguese">Respiração Coerente</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Coherent Breathing</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Respiração Coerente</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -36,8 +36,8 @@
               <div class="CBtimer-container">
                   <select #CBtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #CBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -51,18 +51,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnCB" #stopBtnCB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="CBSave" #CBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnCB" #stopBtnCB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="CBSave" #CBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="CBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneCB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayCB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCB>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #CBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #CBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalCB" class="modal" #myModalCB>
@@ -76,21 +76,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>Coherent breathing is a breathing technique that involves inhaling and exhaling for a count of 5.5 seconds each, resulting in a breathing rate of around 5.5 breaths per minute</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>A respiração coerente é uma técnica de respiração que envolve inalar e exalar por uma contagem de 5,5 segundos cada, resultando em uma taxa de respiração de cerca de 5,5 respirações por minuto</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -98,12 +98,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' and follow the guided technique. Save your results at the end. You can also choose how long you want to do it for
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p>

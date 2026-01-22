@@ -26,7 +26,6 @@ export class VitalityPage {
   isMember = false;
 
   vitalityYoga: any[] = [];
-  showWebSplash = false;
 
 
   constructor(
@@ -60,16 +59,15 @@ export class VitalityPage {
   async ionViewWillEnter() {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
     }
   }
 
   private async loadVitalityYoga() {
-    this.showWebSplash = true;
     try {
       // 1) try cache first (fast, also supports offline display)
       const cachedRaw = localStorage.getItem('cachedYogaVideos');
@@ -113,7 +111,6 @@ export class VitalityPage {
 
       this.vitalityYoga = this.filterVitalityYoga(serverVideos);
     } finally {
-      this.showWebSplash = false;
     }
   }
 

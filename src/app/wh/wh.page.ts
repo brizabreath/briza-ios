@@ -118,12 +118,12 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   async ionViewWillEnter() {
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
       this.WHballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
       this.WHballText.nativeElement.textContent = "Start"
     }
     this.setWHduration();
@@ -154,8 +154,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
   }
    
   async startWH(): Promise<void>{
-    this.audioService.resetaudio(); 
-     //initialize sounds
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsWH.nativeElement.disabled = true;

@@ -21,16 +21,16 @@
         class="segment"
         [class.active]="selectedSegment === 'lungs'"
         (click)="selectSegment('lungs')">
-        <div class="english" *ngIf="!isPortuguese">Lungs Expansion</div>
-        <div class="portuguese" *ngIf="isPortuguese">Expansão Pulmonar</div>
+        <div    *ngIf="!isPortuguese" >Lungs Expansion</div>
+        <div   *ngIf="isPortuguese" >Expansão Pulmonar</div>
       </button>
 
       <button
         class="segment"
         [class.active]="selectedSegment === 'mobility'"
         (click)="selectSegment('mobility')">
-        <div class="english" *ngIf="!isPortuguese">Mobility</div>
-        <div class="portuguese" *ngIf="isPortuguese">Mobilidade</div>
+        <div    *ngIf="!isPortuguese" >Mobility</div>
+        <div   *ngIf="isPortuguese" >Mobilidade</div>
       </button>
     </div>
 
@@ -38,17 +38,17 @@
     <div class="segment-content">
       <div *ngIf="filteredVideos.length > 0" class="video-list">
         <p class="section-subtitle">
-          <span *ngIf="selectedSegment === 'lungs' && !isPortuguese" class="english">
+          <span *ngIf="selectedSegment === 'lungs' && !isPortuguese" >
             Increase your lungs capacity
           </span>
-          <span *ngIf="selectedSegment === 'lungs' && isPortuguese" class="portuguese">
+          <span *ngIf="selectedSegment === 'lungs' && isPortuguese">
             Aumente a capacidade dos seus pulmões
           </span>
 
-          <span *ngIf="selectedSegment === 'mobility' && !isPortuguese" class="english">
+          <span *ngIf="selectedSegment === 'mobility' && !isPortuguese">
             Improve mobility with guided movement
           </span>
-          <span *ngIf="selectedSegment === 'mobility' && isPortuguese" class="portuguese">
+          <span *ngIf="selectedSegment === 'mobility' && isPortuguese">
             Melhore a mobilidade com movimento guiado
           </span>
         </p>
@@ -77,8 +77,8 @@
       </div>
 
       <div *ngIf="filteredVideos.length === 0" class="no-videos">
-        <p class="english" *ngIf="!isPortuguese">No videos found for this category</p>
-        <p class="portuguese" *ngIf="isPortuguese">Nenhum vídeo encontrado para esta categoria</p>
+        <p    *ngIf="!isPortuguese" >No videos found for this category</p>
+        <p  *ngIf="isPortuguese" >Nenhum vídeo encontrado para esta categoria</p>
       </div>
     </div>
   </div>

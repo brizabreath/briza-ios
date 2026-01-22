@@ -21,7 +21,7 @@ export class BHPage implements OnInit, AfterViewInit {
   @ViewChild('questionBH') questionBH!: ElementRef<HTMLAnchorElement>;
 
   selectedSegment: string = 'endurance';
-  isPortuguese = false;
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   isMember = false;
   
   

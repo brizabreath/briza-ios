@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 @Component({
@@ -56,7 +57,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   private CTTimer: any = null;
   private CTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-  
+  private appStateHandle?: PluginListenerHandle;
   
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
@@ -104,31 +105,33 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTduration = parseInt(selectedValue);
       }
   }
-
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
   async ionViewWillEnter() {
-    // Listen for app state changes
-    App.addListener('appStateChange', (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startCT();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
-        }else if(firstClick == "false" && breathingON == "false"){
-        }else{
+          await this.startCT(); // toggles to pause in your logic
+        } else if (firstClick === "false" && breathingON === "false") {
+          // do nothing
+        } else {
           this.globalService.clearAllTimeouts();
           this.stopCT();
         }
       }
     });
     // Refresh the content every time the page becomes active
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+    if (this.isPortuguese) {       
       this.CTballText.nativeElement.textContent = "Iniciar"
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+    } else {  
       this.CTballText.nativeElement.textContent = "Start"
     }
     this.setCTduration();
@@ -140,7 +143,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
    
   async startCT(): Promise<void>{
-    this.audioService.resetaudio(); 
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsCT.nativeElement.disabled = true;
@@ -418,10 +421,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    
-    
     this.stopCT(); 
     this.CTResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
 }

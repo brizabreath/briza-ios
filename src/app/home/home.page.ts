@@ -20,16 +20,9 @@ export class HomePage {
     private shepherd: ShepherdService,
     private router: Router
   ) {}
-
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   ionViewWillEnter() {
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
+    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   }
 
   ionViewDidEnter() {

@@ -20,28 +20,28 @@
 
       <div id="noBrtResults" #noBrtResults style="display: none;">
         <div class="programpageStyle">
-          <h2 class="english justifyContent">Find out what your retention test score is to get started with the Briza Program</h2>
-          <h2 class="portuguese justifyContent">Descubra qual é a sua pontuação no teste de renteção para começar com o Programa Briza</h2>
+          <h2 class="justifyContent"  *ngIf="!isPortuguese">Find out what your retention test score is to get started with the Briza Program</h2>
+          <h2 class="justifyContent"  *ngIf="isPortuguese">Descubra qual é a sua pontuação no teste de renteção para começar com o Programa Briza</h2>
           <a class="breath-button brt-link" routerLink="/brt" data-tour="brt">
             <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
             <div class="textBP">
-              <div class="titleBP english">Briza<br>Retention Test</div>
-              <div class="subtitleBP english">Measure your fitness level</div>
-              <div class="titleBP portuguese">Teste<br>de Retenção Briza</div>
-              <div class="subtitleBP portuguese">Medindo seu condicionamento</div>
+              <div class="titleBP"  *ngIf="!isPortuguese">Briza<br>Retention Test</div>
+              <div class="subtitleBP"  *ngIf="!isPortuguese">Measure your fitness level</div>
+              <div class="titleBP"  *ngIf="isPortuguese">Teste<br>de Retenção Briza</div>
+              <div class="subtitleBP"  *ngIf="isPortuguese">Medindo seu condicionamento</div>
             </div>
           </a>
         </div>
       </div>
 
       <ng-container *ngIf="todayProgram.length > 0">
-        <h3 class="english">Today's suggested breathing sessions, personalized for you</h3>
-        <h3 class="portuguese">Sugestões de sessões de respiração para hoje, personalizadas para você</h3>
+        <h3  *ngIf="!isPortuguese">Today's suggested sessions</h3>
+        <h3  *ngIf="isPortuguese">Sugestões de sessões para hoje</h3>
       </ng-container>
 
       <ng-container *ngFor="let section of todayProgram">
-        <h3 class="english">{{ section.heading.en }}</h3>
-        <h3 class="portuguese">{{ section.heading.pt }}</h3>
+        <h3  *ngIf="!isPortuguese">{{ section.heading.en }}</h3>
+        <h3  *ngIf="isPortuguese">{{ section.heading.pt }}</h3>
 
         <ng-container *ngFor="let card of section.cards">
           <a
@@ -53,8 +53,8 @@
             <img [src]="card.def.icon" alt="icon" class="iconBP" />
             <div class="textBP">
               <div class="titleBP">{{ isPortuguese ? card.def.title.pt : card.def.title.en }}</div>
-              <div class="subtitleBP english">{{ card.def.duration.en }}</div>
-              <div class="subtitleBP portuguese">{{ card.def.duration.pt }}</div>
+              <div class="subtitleBP"  *ngIf="!isPortuguese">{{ card.def.duration.en }}</div>
+              <div class="subtitleBP"  *ngIf="isPortuguese">{{ card.def.duration.pt }}</div>
             </div>
 
             <div
@@ -100,9 +100,6 @@
       </div>
     </div>
   </div>
-  <div *ngIf="showWebSplash" class="web-splash-screen">
-    <div class="loader"></div>
-  </div>
   <div id="myModalP" class="modal" #myModalP>
     <div class="modal-content">
       <span class="close" id="closeModalP" #closeModalP>&times;</span>
@@ -111,13 +108,13 @@
       <div class="slideshow-container">
         <div class="mySlides fadeModal slides">
           <img src="assets/images/coherentlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               The Briza Program is a collection of breathing and breath-holding exercises tailored to
               improve your breathing efficiency, especially during intense workouts
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>O Programa Briza consiste em uma série de exercícios de respiração e retenção de respiração
               projetados para melhorar a eficiência da sua respiração durante treinos intensos</p>
           </div>
@@ -125,12 +122,12 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/coherentlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               For optimal results, it's essential to consistently breathe through your nose and use your diaphragm
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>
               Para maximizar os benefícios deste programa, é crucial respirar consistentemente pelo nariz e
               envolver o diafragma.</p>
@@ -139,13 +136,13 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/coherentlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               Your progress in the program will be tracked using the Briza Retention Test. With regular
               practice, it's possible to extend your score beyond 40 seconds in just a few months
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>O Teste de Retenção Briza será a medida do seu progresso neste programa. Em alguns meses, sua
               pontuação pode ultrapassar 40 segundos se os exercícios forem feitos consistentemente</p>
           </div>
@@ -153,13 +150,13 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               Ensure to breathe through your nose at all times.
               Nasal breathing comes with many benefits, including:
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Garanta a respiração nasal em todos os momentos. Aqui estão alguns dos benefícios da
               respiração nasal:</p>
           </div>
@@ -167,34 +164,34 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Filtering, warming, and humidifying the air, increasing oxygen uptake, enhancing lung function, engaging the diaphragm</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Filtra, aquece e umidifica o ar, aumenta a captação de oxigênio, melhora a função pulmonar, reduz o estresse e a ansiedade</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/breathlight.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Decreasing stress and anxiety, improving sleep quality, boosting nitric oxide production</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Melhora o sono, aumenta a produção de óxido nítrico, ativa o diafragma</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/diaphragmlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               The diaphragm is a big, dome-shaped muscle found at the bottom of the lungs. It's very
               important for breathing because it contracts and relaxes to let air move in and out of the
               lungs.
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>O diafragma é um músculo grande em forma de cúpula localizado na base dos pulmões que
               desempenha um papel crucial na respiração, contraindo e relaxando para permitir a entrada e
               saída de ar nos pulmões.</p>
@@ -203,43 +200,43 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/diaphragmlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Here's how to correctly use your diaphragm for breathing:</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Aprenda a usar seu diafragma:</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/diaphragmlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Put one hand on your belly and press gently, when you breathe in, your belly should push against your hand, as you breathe out, you'll feel your belly lower</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Coloque uma mão em sua barriga e pressione suavemente, ao inspirar, sinta sua barriga empurrando sua mão, ao expirar, sinta sua barriga descendo</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/diaphragmlines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Make sure your shoulders stay still when you breathe in, try to breathe in a way that makes your belly and rib cage expand</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Seu ombro não deve se mover enquanto você inspira, foque na respiração para expandir sua barriga e caixa torácica</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/noseblock.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               If your nose is blocked for any reason and you can't use it, try this technique before
               starting your breathing exercises:
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Caso você não consiga usar seu nariz porque está bloqueado, faça a seguinte técnica antes de
               fazer seus exercícios de respiração:</p>
           </div>
@@ -247,42 +244,42 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/noseblock.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Fully exhale and pinch your nose, nod your head quickly while holding your breath</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Espire completamente e feche o nariz, balance a cabeça em um ritmo rápido enquanto segura a respiração</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/noseblock.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>When you start to feel the need to breathe, inhale, and catch your breath, do this 4 to 6 times until your nose feels clear</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Quando sentir vontade de respirar, inspire e recupere sua respiração, repita de 4 a 6 vezes para desbloquear completamente o nariz</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/tape.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>
               Consider taping your mouth during sleep
             </p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Coloque uma fita na boca enquanto dorme</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/tape.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Use micropore tape or something similar, stick it in the middle of your lips and leave a gap on the sides in case you need to breathe through your mouth</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Use fita micropore ou algo similar, cole no meio ddo seus labios e deixe uma lacuna nos lados caso precise respirar pela boca
             </p>
           </div>
@@ -290,10 +287,10 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/tape.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Do this every night. You may feel discomfort the first few nights, but once you get used to it, you'll have a deep, restful sleep, ensuring you're breathing through your nose all night</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Faça isso todas as noites. Você pode sentir desconforto nas primeiras noites, mas quando se
               acostumar, terá um sono profundo e tranquilo garantindo de que você está respirando pelo nariz a noite toda</p>
           </div>
@@ -301,30 +298,30 @@
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/yogiclines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>BENEFITS OF THIS PROGRAM. Enhanced breathing: breathe more easily and efficiently. Improved cardiovascular Health: boost your heart health and stamina</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>BENEFÍCIOS DESTE PROGRAMA. Respiração mais fácil, melhor cardio</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/yogiclines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Increased energy: feel more energetic throughout the day. Heightened awareness: sharpen your focus and mindfulness. Accelerated healing: speed up your body's natural recovery processes</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Mais energia, melhor consciência, cura rápida</p>
           </div>
         </div>
 
         <div class="mySlides fadeModal slides">
           <img src="assets/images/yogiclines.svg">
-          <div class="text english">
+          <div class="text"  *ngIf="!isPortuguese">
             <p>Improved sleep quality: enjoy a deeper, more restful sleep. Optimized oxygenation: ensure better oxygen supply to your organs and muscles</p>
           </div>
-          <div class="text portuguese">
+          <div class="text"  *ngIf="isPortuguese">
             <p>Melhor sono, mais fácil oxigenação de órgãos e músculos</p>
           </div>
         </div>

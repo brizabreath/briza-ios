@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 
@@ -53,7 +54,8 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   private AHATTimer: any = null;
   private AHATroundsResults: any[] = [];
   isModalOpen = false;
-  
+  private appStateHandle?: PluginListenerHandle;
+
   
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
@@ -98,25 +100,23 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
 
   async ionViewWillEnter() {
-    // Listen for app state changes
-    App.addListener('appStateChange', (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startAHAT();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
+          await this.startAHAT(); // toggles to pause in your logic
         }
       }
     });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
       this.AHATballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
       this.AHATballText.nativeElement.textContent = "Start"
     }
     this.setAHATduration();
@@ -126,8 +126,13 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     await this.audioService.preloadAll();       // 🔄 reload
     await this.audioService.initializeSong(); 
   }
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
+
   async startAHAT(): Promise<void>{
-    this.audioService.resetaudio();
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsAHAT.nativeElement.disabled = true;
@@ -397,10 +402,7 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    
-    
     this.stopAHAT(); 
     this.AHATResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
 }

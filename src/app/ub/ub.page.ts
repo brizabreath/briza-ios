@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 @Component({
@@ -42,7 +43,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   @ViewChild('minusUB') minusUB!: ElementRef<HTMLButtonElement>;
   @ViewChild('plusUB') plusUB!: ElementRef<HTMLButtonElement>;
 
-  private isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   private inhaleUB = true;
   private exhaleUB = false;
   private UBinterval: any = null; 
@@ -54,7 +55,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   private UBMinutes = 0;
   private UBTimer: any = null;
   private UBResult = ''; // Variable to store the BRT result as a string
-  
+  private appStateHandle?: PluginListenerHandle;
   
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
@@ -101,18 +102,24 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.UBduration = parseInt(selectedValue);
       }
   }
-
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
   async ionViewWillEnter() {
-     // Listen for app state changes
-     App.addListener('appStateChange', async (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startUB();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
-        }else if(firstClick == "false" && breathingON == "false"){
-        }else{
+          await this.startUB(); // toggles to pause in your logic
+        } else if (firstClick === "false" && breathingON === "false") {
+          // do nothing
+        } else {
           this.globalService.clearAllTimeouts();
           this.stopUB();
         }
@@ -120,12 +127,12 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
       this.UBballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
       this.UBballText.nativeElement.textContent = "Start"
     }
     this.setUBduration();
@@ -153,8 +160,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     }
   }
   async startUB(): Promise<void>{
-    this.audioService.resetaudio(); 
-    //initialize sounds
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsUB.nativeElement.disabled = true;
@@ -385,10 +391,7 @@ export class UBPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    
-    
     this.stopUB(); 
     this.UBResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
 }

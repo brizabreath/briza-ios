@@ -49,8 +49,8 @@
               <div class="YBtimer-container">
                   <select #YBtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #YBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -64,18 +64,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnYB" #stopBtnYB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="YBSave" #YBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnYB" #stopBtnYB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="YBSave" #YBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="YBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneYB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayYB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayYB>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #YBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #YBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalYB" class="modal" #myModalYB>
@@ -89,12 +89,12 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Dirga is a mindful practice that involves breathing in three parts: first filling the belly, then the ribs, and finally the chest
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Dirga envolve o controle consciente da respiração, por meio de padrões específicos de 3 partes: enchendo a barriga, costelas e peito, e exalando do peito, costelas e por último a barriga
                   </p>
@@ -102,12 +102,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                   When exhaling, you reverse the order, starting from the chest, moving to the ribs, and finishing with the belly. This technique helps in controlling breath and improving oxygen flow
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Ao expirar, inverta a ordem, começando pelo peito, passando para as costelas e terminando na barriga. Essa técnica ajuda a controlar a respiração e a melhorar o fluxo de oxigênio                 
                   </p>
@@ -115,12 +115,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lie down. Relax your shoulders, facial muscles, and jaw. Place your tongue on the roof of your mouth, with its tip gently touching your upper front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -128,12 +128,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Select a breathing count that feels manageable yet gently extends your limits. Also, choose your session's duration
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p> 
@@ -141,13 +141,13 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again
                     In the end, save your results to track your improvement over time
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente
                   </p>
@@ -155,12 +155,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If you notice your heartbeat speeding up or the practice becomes too difficult with your chosen breath count, pause and select a more suitable option for you                    
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazê-lo e escolha uma proporção menor
                   </p>

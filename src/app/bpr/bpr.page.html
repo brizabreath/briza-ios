@@ -10,23 +10,23 @@
     <div class="placeholderHeader"></div>
   </header>
 
-  <div class="results-container" #resultsTrue>
+  <div class="results-container" *ngIf="resultsTrue">
     <!-- Segmented Control -->
     <div class="segmented-control">
       <button
         class="segment"
         [class.active]="selectedSegment === 'chart'"
         (click)="selectSegment('chart')">
-        <div class="english" *ngIf="!isPortuguese">Bar Charts</div>
-        <div class="portuguese" *ngIf="isPortuguese">Gráfico de barras</div>
+        <div    *ngIf="!isPortuguese" >Bar Charts</div>
+        <div   *ngIf="isPortuguese" >Gráfico de barras</div>
       </button>
 
       <button
         class="segment"
         [class.active]="selectedSegment === 'calendar'"
         (click)="selectSegment('calendar')">
-        <div class="english" *ngIf="!isPortuguese">Calendar</div>
-        <div class="portuguese" *ngIf="isPortuguese">Calendário</div>
+        <div    *ngIf="!isPortuguese" >Calendar</div>
+        <div   *ngIf="isPortuguese" >Calendário</div>
       </button>
     </div>
 
@@ -38,14 +38,14 @@
             <canvas #allChartCanvas></canvas>
           </div>
         </div>
-        <div class="calendarText english" *ngIf="!isPortuguese">
+        <div class="calendarText"   *ngIf="!isPortuguese" >
           * Click on the bar to see results of that day
         </div>
-        <div class="calendarText portuguese" *ngIf="isPortuguese">
+        <div class="calendarText"   *ngIf="isPortuguese" >
           * Clique na barra para ver resultados do dia
         </div>
-        <h4 *ngIf="!isPortuguese" class="chartText">Other charts</h4>
-        <h4 *ngIf="isPortuguese" class="chartText">Outros gráficos</h4>
+        <h4  *ngIf="!isPortuguese" class="chartText">Other charts</h4>
+        <h4  *ngIf="isPortuguese" class="chartText">Outros gráficos</h4>
         <div id="resultsList" #resultsList></div>
       </div>
       <div *ngIf="selectedSegment === 'calendar'">
@@ -72,62 +72,62 @@
           </div>
         </div>
 
-        <div class="calendarText english" *ngIf="!isPortuguese">
+        <div class="calendarText"   *ngIf="!isPortuguese" >
           * Click on the days with dot to see results of that day
         </div>
-        <div class="calendarText portuguese" *ngIf="isPortuguese">
+        <div class="calendarText"   *ngIf="isPortuguese" >
           * Clique nos dias com um ponto para ver resultados do dia
         </div>
         <!-- Overview -->
         <div class="overview-box allexercises">
           <div class="overview-item">
-            <strong class="english" *ngIf="!isPortuguese">Longest day of practice</strong>
-            <strong class="portuguese" *ngIf="isPortuguese">Maior tempo de prática em um dia</strong>
-            <span class="english" *ngIf="!isPortuguese">{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
-            <span class="portuguese" *ngIf="isPortuguese">{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
+            <strong    *ngIf="!isPortuguese" >Longest day of practice</strong>
+            <strong  *ngIf="isPortuguese" >Maior tempo de prática em um dia</strong>
+            <span    *ngIf="!isPortuguese" >{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
+            <span  *ngIf="isPortuguese" >{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
           </div>
           <div class="overview-item">
-            <strong class="english" *ngIf="!isPortuguese">Total time practiced</strong>
-            <strong class="portuguese" *ngIf="isPortuguese">Tempo total praticado</strong>
+            <strong    *ngIf="!isPortuguese" >Total time practiced</strong>
+            <strong  *ngIf="isPortuguese" >Tempo total praticado</strong>
             <span>{{ totalPracticeFormatted }}</span>
           </div>
           <div class="overview-item">
-            <strong class="english" *ngIf="!isPortuguese">Sessions</strong>
-            <strong class="portuguese" *ngIf="isPortuguese">Sessões</strong>
+            <strong    *ngIf="!isPortuguese" >Sessions</strong>
+            <strong  *ngIf="isPortuguese" >Sessões</strong>
             <span>{{ totalSessions }}</span>
           </div>
 
           <!-- ✅ Longest streak ever (excluding BRT) -->
           <div class="overview-item">
-            <strong class="english" *ngIf="!isPortuguese">Longest streak</strong>
-            <strong class="portuguese" *ngIf="isPortuguese">Maior sequência</strong>
-            <span class="english" *ngIf="!isPortuguese">{{ longestStreakEver }} days</span>
-            <span class="portuguese" *ngIf="isPortuguese">{{ longestStreakEver }} dias</span>
+            <strong    *ngIf="!isPortuguese" >Longest streak</strong>
+            <strong  *ngIf="isPortuguese" >Maior sequência</strong>
+            <span    *ngIf="!isPortuguese" >{{ longestStreakEver }} days</span>
+            <span  *ngIf="isPortuguese" >{{ longestStreakEver }} dias</span>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="results-container" #noResultsMessage>
+  <div class="results-container" *ngIf="!resultsTrue">
     <div id="noResultsMessage">
       <div class="programpageStyle">
-        <h2 class="english justifyContent widthadjust" *ngIf="!isPortuguese">Find out what your retention test score is to get started</h2>
-        <h2 class="portuguese justifyContent widthadjust" *ngIf="isPortuguese">Descubra qual é a sua pontuação no teste de retenção para começar</h2>
+        <h2 class="justifyContent widthadjust"  *ngIf="!isPortuguese">Find out what your retention test score is to get started</h2>
+        <h2 class="justifyContent widthadjust"  *ngIf="isPortuguese">Descubra qual é a sua pontuação no teste de retenção para começar</h2>
 
         <a class="breath-button widthadjust" routerLink="/brt">
           <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
           <div class="textBP">
-            <div class="titleBP english" *ngIf="!isPortuguese">Briza<br />Retention Test</div>
-            <div class="subtitleBP english" *ngIf="!isPortuguese">Measure your fitness level</div>
+            <div class="titleBP"   *ngIf="!isPortuguese">Briza<br />Retention Test</div>
+            <div class="subtitleBP"   *ngIf="!isPortuguese" >Measure your fitness level</div>
 
-            <div class="titleBP portuguese" *ngIf="isPortuguese">Teste<br />de Retenção Briza</div>
-            <div class="subtitleBP portuguese" *ngIf="isPortuguese">Medindo seu condicionamento</div>
+            <div class="titleBP"   *ngIf="isPortuguese" >Teste<br />de Retenção Briza</div>
+            <div class="subtitleBP"   *ngIf="isPortuguese" >Medindo seu condicionamento</div>
           </div>
         </a>
       </div>
     </div>
   </div>
-  <footer id="resultsFooter" class="english" *ngIf="!isPortuguese">
+  <footer id="resultsFooter"    *ngIf="!isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -137,7 +137,7 @@
     </div>
   </footer>
 
-  <footer id="resultsFooterBR" class="portuguese" *ngIf="isPortuguese">
+  <footer id="resultsFooterBR"  *ngIf="isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
@@ -175,8 +175,8 @@
       </div>
 
       <ng-template #noResults>
-        <p *ngIf="!isPortuguese">No results available for this date.</p>
-        <p *ngIf="isPortuguese">Nenhum resultado disponível para esta data.</p>
+        <p  *ngIf="!isPortuguese">No results available for this date.</p>
+        <p  *ngIf="isPortuguese">Nenhum resultado disponível para esta data.</p>
       </ng-template>
     </div>
   </ion-modal>

@@ -18,8 +18,8 @@
   <div id="ctPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">CO2 Tolerance</h1>
-            <h1 class="volumeSettings portuguese">Tolerância ao CO2</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">CO2 Tolerance</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Tolerância ao CO2</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -40,8 +40,8 @@
               <div class="CTtimer-container">
                   <select #CTtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #CTcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -55,19 +55,19 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT><div class="english">Restart</div><div class="portuguese">Reiniciar</div></button>
-                  <button type="button" class="stopBtn" id="CTReset" #CTReset><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT><div   *ngIf="!isPortuguese">Restart</div><div  *ngIf="isPortuguese">Reiniciar</div></button>
+                  <button type="button" class="stopBtn" id="CTReset" #CTReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
                   <form method="post" id="CTForm">
-                      <button type="button" class="saveBtn" id="CTSave" #CTSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                      <button type="button" class="saveBtn" id="CTSave" #CTSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneCT>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #CTResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #CTResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalCT" class="modal" #myModalCT>
@@ -81,21 +81,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>The CO2 Tolerance Training is based on the principles of allowing your body to get used to low levels of oxygen and high levels of carbon dioxide</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>O Treinamento de Tolerância ao CO2 é baseado nos princípios de permitir que seu corpo se acostume com baixos níveis de oxigênio e altos níveis de dióxido de carbono</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -103,12 +103,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' and follow the guided technique. If you need to pause, just click on the circle again
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Se precisar pausar, basta clicar no círculo novamente
                   </p>
@@ -116,12 +116,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press "Restart" when you can no longer cope with the technique, this will take you back to the begining
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione "Reiniciar" quando você não puder mais lidar com a técnica, isso o levará de volta ao início
                   </p>
@@ -129,12 +129,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     When the time of the exahaltion becomes too great and you can no longer follow it, press 'Restart' and you will have 3 seconds to recover your breath and start again. Save your results at the end
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Quando o tempo da exalação se tornar muito grande e você não puder mais segui-lo, pressione 'Reiniciar' e você terá 3 segundos para recuperar sua respiração e começar novamente. Salve seus resultados ao final
                   </p>

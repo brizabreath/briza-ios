@@ -84,13 +84,20 @@ import { CommentsComponent } from '../comments/comments.component';
 export class VideoModalComponent implements AfterViewInit, OnDestroy {
   @Input() url!: SafeResourceUrl;
   @Input() title!: string;
-  @Input() description!: string;
   @Input() videoId!: string;
   @Input() addedOn?: string;
   @Input() category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility';
   @Input() duration?: number;
+  @Input()
+  set description(value: string) {
+    this._description = this.removeHashtags(value);
+  }
 
+  get description(): string {
+    return this._description;
+  }
   @ViewChild('vimeoIframe') vimeoIframeRef!: ElementRef<HTMLIFrameElement>;
+  private _description = '';
 
   private player?: Player;
   private savedForThisOpen = false;
@@ -208,5 +215,12 @@ export class VideoModalComponent implements AfterViewInit, OnDestroy {
     } catch {
       return [];
     }
+  }
+  private removeHashtags(text: string): string {
+    if (!text) return '';
+    return text
+      .replace(/#[\p{L}\p{N}_]+/gu, '') // removes #word (unicode-safe)
+      .replace(/\s{2,}/g, ' ')         // collapses extra spaces
+      .trim();
   }
 }

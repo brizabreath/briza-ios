@@ -18,8 +18,8 @@
   <div id="apPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Apnea Training</h1>
-            <h1 class="volumeSettings portuguese">Treino de Apneia</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Apnea Training</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Treino de Apneia</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -48,8 +48,8 @@
               <div class="APtimer-container">
                   <select #APtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #APcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -63,18 +63,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnAP" #stopBtnAP><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="APSave" #APSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnAP" #stopBtnAP><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="APSave" #APSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="APForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneAP>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayAP>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayAP>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #APResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #APResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalAP" class="modal" #myModalAP>
@@ -88,21 +88,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>This apnea breathing technique is based on the principles of deep breathing and diaphragmatic breathing, allowing you to use the full capacity of your lungs and create more tolerance to breath-holding exercises</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Esta técnica de respiração apneica é baseada nos princípios da respiração profunda e respiração diafragmática, permitindo que você use a capacidade total dos seus pulmões e crie mais tolerância aos exercícios de retenção de respiração</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -110,12 +110,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                   </p>
@@ -123,12 +123,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' and follow the guided technique always breathing through the nose. Save your results at the end
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada, sempre respirando pelo nariz. Salve seus resultados ao final
                   </p>
@@ -136,12 +136,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you are finding it too hard, stop doing it and choose a lower ratio 
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazer e escolha uma proporção menor
                   </p>

@@ -26,8 +26,6 @@ export class PerformPage {
   isMember = false;
 
   performYoga: any[] = [];
-  showWebSplash = false;
-
 
   constructor(
     private globalService: GlobalService,
@@ -60,16 +58,15 @@ export class PerformPage {
   async ionViewWillEnter() {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
     }
   }
 
   private async loadPerformYoga() {
-    this.showWebSplash = true;
     try {
       // 1) try cache first (fast, also supports offline display)
       const cachedRaw = localStorage.getItem('cachedYogaVideos');
@@ -113,7 +110,6 @@ export class PerformPage {
 
       this.performYoga = this.filterPerformYoga(serverVideos);
     } finally {
-      this.showWebSplash = false;
     }
   }
 

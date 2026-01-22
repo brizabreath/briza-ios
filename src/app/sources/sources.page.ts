@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router'; // Import RouterModule
 
 export class SourcesPage{
   constructor(private navCtrl: NavController) {}
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     // Method to navigate back
   goBack(): void {
     this.navCtrl.back();

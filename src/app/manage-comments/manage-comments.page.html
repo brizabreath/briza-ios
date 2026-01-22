@@ -14,7 +14,11 @@
     <ion-item lines="full" *ngFor="let c of filtered()">
         <ion-label>
         <div class="title">
-            <b>{{ c.userName }}</b> on <b>{{ c.videoTitle || ('Video ' + c.videoId) }}</b><b> on </b>
+            <b>{{ c.userName }}</b> on
+            <button class="class-link" type="button" (click)="openClassFromTitle(c, $event)">
+              {{ c.videoTitle || ('Video ' + c.videoId) }}
+            </button>
+            <b> on </b>
             <span class="time" *ngIf="c.createdAt">{{ c.createdAt | date:'short' }}</span>
         </div>
         <div class="textCom">{{ c.text }}</div>

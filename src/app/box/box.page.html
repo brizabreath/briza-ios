@@ -52,8 +52,8 @@
               <div class="BOXtimer-container">
                   <select #BOXtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #BOXcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -67,18 +67,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBOX" #stopBtnBOX><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BOXSave" #BOXSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnBOX" #stopBtnBOX><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BOXSave" #BOXSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="BOXForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneBOX>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBOX>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBOX>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #BOXResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #BOXResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBOX" class="modal" #myModalBOX>
@@ -92,21 +92,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>The Box Breathing technique is based on the principles of deep breathing and diaphragmatic breathing</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>A técnica de Respiração da Caixa é baseada nos princípios da respiração profunda e da respiração diafragmática</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -114,24 +114,24 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again.  In the end, save your results to track your improvement over time
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Pressione 'Iniciar' e siga a técnica guiada. Se precisar pausar, basta clicar no círculo novamente. Salve seus resultados ao final
                   </p>
@@ -139,12 +139,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If the ratio chosen is making your heart beat acelerate and you are finding it too hard, stop doing it and choose a lower ratio
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazer e escolha uma proporção menor
                   </p>

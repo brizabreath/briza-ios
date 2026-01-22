@@ -49,16 +49,6 @@ export class ALLresultsPage implements AfterViewInit {
     }
   }
 
-  ionViewWillEnter() {
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-  }
-
   loadDataFromLocalStorage(): void {
     const exerciseKeys = ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults', 'WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};

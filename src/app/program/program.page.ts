@@ -126,7 +126,6 @@ export class ProgramPage implements AfterViewInit {
   private readonly ROUTINE_LS_KEY = 'brizaWeeklyRoutineV1';
   private readonly ROUTINE_HISTORY_LS_KEY = 'brizaWeeklyRoutineHistoryV1'; // for "carry-over" prioritization
   private readonly ROUTINE_VERSION = 1;
-  showWebSplash = false;
   // Dropdown state
   removeSelection: '' | ExerciseKey = '';
   addSelection: '' | ExerciseKey = '';
@@ -147,21 +146,8 @@ export class ProgramPage implements AfterViewInit {
     this.addSelection = '';
   }
   ionViewWillEnter() {
-    this.showWebSplash = true;
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-
     this.populateProgramContent();
-    // ✅ Ensure splash always goes away even if something throws
-    setTimeout(() => {
-      this.showWebSplash = false;
-    }, 1000);
   }
 
   ionViewDidEnter() {
@@ -170,15 +156,7 @@ export class ProgramPage implements AfterViewInit {
       localStorage.removeItem('startProgTour');
       this.startBreathTourNow();
     }
-
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
   }
 
   ngAfterViewInit() {
@@ -290,18 +268,19 @@ export class ProgramPage implements AfterViewInit {
     briza: 'assets/images/brizabreathing.png',
     recovery: 'assets/images/breathrecovery.png',
     co2: 'assets/images/ctt.png',
+    apnea: 'assets/images/apnea.png',
     altitude: 'assets/images/highaltitude.png',
     hum: 'assets/images/bee.png',
     hyper: 'assets/images/hyperventilation.png',
-    wh: 'assets/images/anxiety.png',
+    wh: 'assets/images/oxboost.png',
     lungs: 'assets/images/lungexpansion.png',
     performance: 'assets/images/performanceIcon.png',
     yogic: 'assets/images/yogicbreathing.png',
     nadi: 'assets/images/nb.png',
     coherent: 'assets/images/vitality.png',
-    double: 'assets/images/db.png',
+    double: 'assets/images/reset.png',
     box: 'assets/images/box.png',
-    reset: 'assets/images/reset.png',
+    reset: 'assets/images/db.png',
     ub: 'assets/images/ub.png',
   };
   
@@ -404,7 +383,7 @@ export class ProgramPage implements AfterViewInit {
         pt: '/lungs?open=OlV7sIjOrmOsKhm7d83W'
       },
       title: { en: 'Lungs Expansion', pt: 'Expansão Pulmonar' },
-      duration: { en: 'Duration: ~ 30 min', pt: 'Duração: ~ 30 min' },
+      duration: { en: 'Duration: ~ 20 min', pt: 'Duração: ~ 20 min' },
       icon: this.ICON.lungs,
       checkboxClass: 'Lungs',
     },
@@ -461,7 +440,7 @@ export class ProgramPage implements AfterViewInit {
       route: '/ap',
       title: { en: 'Apnea Training', pt: 'Treinamento de Apneia' },
       duration: { en: 'Duration: 5 - 10 min', pt: 'Duração: 5 - 10 min' },
-      icon: this.ICON.co2,
+      icon: this.ICON.apnea,
       checkboxClass: 'AP',
     },
     KBResults: {
@@ -623,14 +602,6 @@ export class ProgramPage implements AfterViewInit {
     }
     this.removeSelection = '';
     this.addSelection = '';
-    // keep your language visibility behavior
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
   }
 
   private computeAvgSeconds(brtResults: any[]): number {

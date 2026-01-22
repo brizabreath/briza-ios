@@ -18,8 +18,8 @@
     <div id="brtPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Briza Retention Test</h1>
-            <h1 class="volumeSettings portuguese">Teste de Retenção Briza</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Briza Retention Test</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Teste de Retenção Briza</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -37,8 +37,8 @@
                       <input value="∞" readonly>
                   </div>
               </div>
-              <p class="centeredText english">Hold after exhalation and pause at <br> your first natural urge to breathe</p>
-              <p class="centeredText portuguese">Segure a respiração após a expiração e pause <br> ao sentir o primeiro impulso natural de respirar</p>
+              <p class="centeredText"  *ngIf="!isPortuguese">Hold after exhalation and pause at <br> your first natural urge to breathe</p>
+              <p class="centeredText"  *ngIf="isPortuguese">Segure a respiração após a expiração e pause <br> ao sentir o primeiro impulso natural de respirar</p>
               <div class="center-container">
                 <button #brtStart class="ballButton" >
                   <div #BRTball class="ball">
@@ -49,8 +49,8 @@
               </div> 
               <div class="timer-controls" id="hp-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="brtStop" #brtStop><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtnBRT" id="brtSave" #brtSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="brtStop" #brtStop><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtnBRT" id="brtSave" #brtSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="brtForm">
                     <div class="timerDisplayBRT hiddenElements">
                       <input id="timerDisplayBRT" #timerDisplayBRT readonly value="00 : 00" />
@@ -59,7 +59,7 @@
               </div>
           </div>
       </div>
-    <div id="brtResultSaved" #brtResultSaved class="resultSaved"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+    <div id="brtResultSaved" #brtResultSaved class="resultSaved"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBRT" class="modal" #myModalBRT>
@@ -73,21 +73,21 @@
       <div class="slideshow-container">
           <div class="mySlides fadeModal slides">
               <img src="assets/images/sandTimer.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                 <p>The Briza Retention Test measures the breath-holding time with empty lungs, offering insights into your breathing efficiency</p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>O Teste de Retenção Briza mede o tempo de retenção da respiração com os pulmões vazios, oferecendo informações sobre sua eficiência respiratória</p>              
               </div>
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/start.jpg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                      Find a comfortable seat and press 'Start'
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Sente-se confortávelmente e clique em 'Iniciar'
                   </p>
@@ -95,12 +95,12 @@
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/in.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                    Gently inhale for 3 seconds
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Gentilmente inspire por 3 segundos
                   </p>
@@ -108,12 +108,12 @@
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/out.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                    Gently exhale for 3 seconds
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Gentilmente espire por 3 segundos
                   </p>
@@ -121,12 +121,12 @@
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/nosepinch.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Pinch your nose
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>
                    Pince o nariz
                   </p>
@@ -134,12 +134,12 @@
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/hold.png">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Hold your breath until you feel the first urge to breathe
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>
                    Prenda a respiração até sentir a primeira vontade de respirar
                   </p>
@@ -147,32 +147,32 @@
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/pause.jpg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Click on circle to pause, then return to your normal breathing pattern, which should be calm and controlled
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p> Clique no círculo para pausar e depois retorne ao seu padrão respiratório normal, que deve ser calmo e controlado</p>
               </div>
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/save.jpeg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>Remember to save your score to monitor your progress</p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                 <p>Salve sua pontuação para acompanhar seu progresso.</p>
               </div>
           </div>
           <div class="mySlides fadeModal slides">
               <img src="assets/images/mindful.svg">
-              <div class="text english">
+              <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Keep in mind, this isn't a competition. Stop the timer the moment you feel the slightest urge to breathe, to guarantee precise results
                   </p>
               </div>
-              <div class="text portuguese">
+              <div class="text"  *ngIf="isPortuguese">
                   <p>Lembre-se, isso não é uma competição. Pause o cronômetro assim que sentir uma leve vontade de respirar para garantir resultados precisos</p>
               </div>
           </div>

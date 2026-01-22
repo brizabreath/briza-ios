@@ -54,14 +54,6 @@ export class ManageAccountPage {
 
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-
     // Detect auth provider (google.com, apple.com, password, etc.)
     try {
       const providerId = await this.authService.getCurrentUserProviderId();

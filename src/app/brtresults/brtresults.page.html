@@ -9,35 +9,35 @@
       <div class="placeholderHeader"></div> <!-- Placeholder to balance the flexbox layout -->
   </header>  
   <div class="breathingpages BHbreathing">
-    <h1 class="english">Briza Retention Test</h1>
-    <h1 class="portuguese">Teste de Retenção Briza</h1>
+    <h1   *ngIf="!isPortuguese">Briza Retention Test</h1>
+    <h1 *ngIf="isPortuguese">Teste de Retenção Briza</h1>
   </div>
   <div class="chart-container">
     <canvas #chartCanvas></canvas>
   </div>
   <div class="overview-box">
-    <h2 class="english">Overview</h2>
-    <h2 class="portuguese">Visão Geral</h2>
+    <h2   *ngIf="!isPortuguese">Overview</h2>
+    <h2 *ngIf="isPortuguese">Visão Geral</h2>
     <div class="overview-item">
-      <strong class="english">Latest</strong>
-      <strong class="portuguese">Último</strong>
-      <span class="english">{{ latestTest.result }} seconds on {{ latestTest.date}}</span>
-      <span class="portuguese">{{ latestTest.result }} segundos no {{ latestTest.date}}</span>
+      <strong   *ngIf="!isPortuguese">Latest</strong>
+      <strong *ngIf="isPortuguese">Último</strong>
+      <span   *ngIf="!isPortuguese">{{ latestTest.result }} seconds on {{ latestTest.date}}</span>
+      <span *ngIf="isPortuguese">{{ latestTest.result }} segundos no {{ latestTest.date}}</span>
     </div>
     <div class="overview-item">
-      <strong class="english">Longest</strong>
-      <strong class="portuguese">Mais Longo</strong>
-      <span class="english">{{ longestTest.result }} seconds on {{ longestTest.date}}</span>
-      <span class="portuguese">{{ longestTest.result }} segundos no {{ longestTest.date}}</span>
+      <strong   *ngIf="!isPortuguese">Longest</strong>
+      <strong *ngIf="isPortuguese">Mais Longo</strong>
+      <span   *ngIf="!isPortuguese">{{ longestTest.result }} seconds on {{ longestTest.date}}</span>
+      <span *ngIf="isPortuguese">{{ longestTest.result }} segundos no {{ longestTest.date}}</span>
     </div>
     <div class="overview-item">
       <strong>Total</strong>
-      <span class="english">{{ totalTests }} {{ totalTests === 1 ? 'Test' : 'Tests' }}</span>
-      <span class="portuguese">{{ totalTests }} {{ totalTests === 1 ? 'Teste' : 'Testes' }}</span>
+      <span   *ngIf="!isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Test' : 'Tests' }}</span>
+      <span *ngIf="isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Teste' : 'Testes' }}</span>
     </div>
   
     <div class="feedback" [innerHTML]="getFeedbackText()"></div>
-    <a routerLink="/program" class="english goProgram">Go to Briza Program</a>
-    <a routerLink="/program" class="portuguese goProgram">Ir para o Programa Briza</a>
+    <a routerLink="/program"   *ngIf="!isPortuguese" class="goProgram">Go to Briza Program</a>
+    <a routerLink="/program"   *ngIf="isPortuguese" class="goProgram">Ir para o Programa Briza</a>
   </div>  
 </ion-content>

@@ -51,17 +51,6 @@ export class WHresultsPage implements AfterViewInit {
       this.WHcalculateOverviewData();
     }
   }
-  
-
-  ionViewWillEnter() {
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-  }
 
   WHloadDataFromLocalStorage(): void {
     const data = JSON.parse(localStorage.getItem('WHResults') || '[]');

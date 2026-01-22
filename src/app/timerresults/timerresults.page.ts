@@ -49,16 +49,6 @@ export class TIMERresultsPage implements AfterViewInit {
     }
   }
 
-  ionViewWillEnter() {
-    if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
-  }
-
   loadDataFromLocalStorage(): void {
     const exerciseKeys = ['TIMERResults'];
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};

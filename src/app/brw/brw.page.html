@@ -18,8 +18,8 @@
   <div id="brwPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Breath Recovery - Walking</h1>
-            <h1 class="volumeSettings portuguese">Recuperando o Fôlego - Andando</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Breath Recovery - Walking</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Recuperando o Fôlego - Andando</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -54,8 +54,8 @@
               <div class="BRWtimer-container">
                   <select #BRWtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #BRWcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -69,18 +69,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBRW" #stopBtnBRW><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BRWSave" #BRWSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnBRW" #stopBtnBRW><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BRWSave" #BRWSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="BRWForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneBRW>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBRW>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBRW>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #BRWResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #BRWResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBRW" class="modal" #myModalBRW>
@@ -94,21 +94,21 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/calm.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>Simple exercise that can be used to recover your breath after a physical activity</p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Exercício simples que pode ser usado para recuperar sua respiração após uma atividade física</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Choose a suitable duration for your breath hold. If this is your first attempt, we recommend starting with a 2-second hold. As you become more comfortable with this recovery exercise, you may increase the hold duration to up to 10 seconds                    
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Escolha uma duração adequada para a sua retenção de ar. Se esta for sua primeira tentativa, recomendamos começar com uma retenção de 2 segundos. À medida que você se sentir mais confortável com este exercício de recuperação, poderá aumentar a duração da retenção para até 10 segundos
                   </p> 
@@ -116,12 +116,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/start.jpg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Press 'start' when you are ready to follow the exercise. If you need to pause, just click on the circle again.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Aperte 'Iniciar' quando estiver pronto para começar o exercício. Se precisar pausar, basta clicar no círculo novamente.
                   </p>
@@ -130,12 +130,12 @@
             <div class="mySlides fadeModal slides">
 
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Allow your breathing to dictate the pace of your walk, ensuring that your breathing remains light as you move with ease
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Respire suavemente na inalação e exalação. Segure a respiração após a exalação e continue caminhando
                   </p>
@@ -143,12 +143,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If you feel that the breath hold time chosen is too hard, stop doing it and choose a lower breath hold time
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se você sentir que o tempo de pausa respiratória escolhido é muito difícil, pare de fazê-lo e escolha um tempo de pausa menor
                   </p>

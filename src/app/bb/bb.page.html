@@ -18,8 +18,8 @@
   <div id="bbPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Briza Breathing</h1>
-            <h1 class="volumeSettings portuguese">Respiração Briza</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Briza Breathing</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Respiração Briza</h1>
         </div>
         <div class="main-container">
           <div class="timer-status">
@@ -44,13 +44,13 @@
               <div class="BBtimer-container">
                   <select #BBtimeInput class="countdownDisplay">
                       <option value="infinity"> ∞ </option>
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #BBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
-              <p class="centeredText english">Breathe as lightly as possible.<br>Sustain a gentle air hunger during the session</p>
-              <p class="centeredText portuguese">Respire o mais suavemente possível.<br>Mantenha uma leve sensação de falta de ar durante a sessão</p>
+              <p class="centeredText"  *ngIf="!isPortuguese">Breathe as lightly as possible.<br>Sustain a gentle air hunger during the session</p>
+              <p class="centeredText"  *ngIf="isPortuguese">Respire o mais suavemente possível.<br>Mantenha uma leve sensação de falta de ar durante a sessão</p>
               <div class="center-container">
                 <button #startBtnBB class="ballButton">
                   <div #BBball class="ball">
@@ -61,18 +61,18 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBB" #stopBtnBB><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BBSave" #BBSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnBB" #stopBtnBB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="BBSave" #BBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="BBForm">
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneBB>0</div>
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayBB>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBB>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #BBResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #BBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBB" class="modal" #myModalBB>
@@ -86,23 +86,23 @@
         <div class="slideshow-container">
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/breathlight.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Learn how to breathe so gently and lightly that a feather placed beneath your nose would remain still                    
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>Aprenda a respirar tão suavemente que se houvesse uma pena sob seu nariz ela não se moveria</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sit.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
                   </p>
@@ -110,12 +110,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/sandTimer.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                   The ratio of this exercise is fixed. What makes it harder or easier is how much air you breathe in and how fast you are breathing. Choose the length of the session and Press 'Start' when you are ready. If you need to pause, just click on the circle again.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     A proporção deste exercício é fixa. O que o torna mais difícil ou mais fácil é a quantidade de ar que você inspira e a velocidade com que está respirando. Escolha a duração da sessão e pressione "Iniciar" quando estiver pronto. Se precisar pausar, basta clicar no círculo novamente. 
                   </p> 
@@ -123,12 +123,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/lit.png">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p> 
                   Breathe light on the inhalation and exhalation reducing the volume of air that you are breathing so light that you can barely feel or hear your breath. Sustain an air hunger for the whole session.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p> 
                     Respire levemente na inalação e exalação, reduzindo o volume de ar que você está respirando, tão suavemente que mal consiga sentir ou ouvir sua respiração. Mantenha uma leve sensação de fome de ar durante toda a sessão. 
                   </p>
@@ -136,12 +136,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/airhunger.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     If the sensation of needing more air gets too strong, stick to the instructions, but allow yourself to breathe naturally. Once you feel comfortable, try reducing your breath's volume again.
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Se a "fome" por ar for intensa demais, continue seguindo a orientação, mas respire normalmente até que você possa reduzir o volume de ar novamente                    
                   </p>
@@ -149,12 +149,12 @@
             </div>
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/mindful.svg">
-                <div class="text english">
+                <div class="text"  *ngIf="!isPortuguese">
                   <p>
                     For this technique to work effectively, maintaining a slight air hunger throughout the session is key
                   </p>
                 </div>
-                <div class="text portuguese">
+                <div class="text"  *ngIf="isPortuguese">
                   <p>
                     Para que esta técnica seja eficaz, é importante que você mantenha uma sensação de fome de ar durante toda a sessão 
                   </p>

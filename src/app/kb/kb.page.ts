@@ -116,12 +116,12 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   async ionViewWillEnter() {
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
       this.KBballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
       this.KBballText.nativeElement.textContent = "Start"
     }
     this.setKBduration();
@@ -152,8 +152,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
   }
    
   async startKB(): Promise<void>{
-    this.audioService.resetaudio(); 
-    //initialize sounds
+    await this.audioService.resetForPlayOrResume();
     let breathingON = localStorage.getItem('breathingON');
     let firstClick = localStorage.getItem('firstClick');
     this.settingsKB.nativeElement.disabled = true;

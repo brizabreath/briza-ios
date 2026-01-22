@@ -10,11 +10,11 @@
   </header>  
   <div id="kbsetSettingsPage" class="hidden">
     <div class="breathingpages">
-        <h1 class="english">Settings</h1>
-        <h1 class="portuguese">Configurações</h1>
+        <h1   *ngIf="!isPortuguese">Settings</h1>
+        <h1 *ngIf="isPortuguese">Configurações</h1>
         <div class="settingBreaths">
-        <h4 class="volumeSettings english settingH4">Number of breaths</h4>
-        <h4 class="volumeSettings portuguese settingH4">Número de respirações</h4>
+        <h4 class="volumeSettings settingH4" *ngIf="!isPortuguese">Number of breaths</h4>
+        <h4 class="volumeSettings settingH4" *ngIf="isPortuguese">Número de respirações</h4>
         <div class="settings-form settings-formWHKB">
           <div class="form-line kbSETForm">
               <button class="buttonminus" type="button" id="minusKB" #minusKB>-</button>
@@ -27,8 +27,8 @@
               <button class="buttonplus" type="button" id="plusKB" #plusKB>+</button>
           </div>
       </div>
-      <h4 class="volumeSettings english settingH4">Speed of breaths</h4>
-      <h4 class="volumeSettings portuguese settingH4">Velocidade das respirações</h4>
+      <h4 class="volumeSettings settingH4" *ngIf="!isPortuguese">Speed of breaths</h4>
+      <h4 class="volumeSettings settingH4" *ngIf="isPortuguese">Velocidade das respirações</h4>
       <div class="settings-form settings-formWHKB">
           <div class="form-line kbSETForm">
               <button class="buttonminus" type="button" id="SminusKB" #SminusKB>-</button>
@@ -43,8 +43,8 @@
       </div>
       </div>
         <div class="volume-bar">
-          <h4 class="volumeSettings english">Voice</h4>
-          <h4 class="volumeSettings portuguese">Voz</h4>
+          <h4 class="volumeSettings"  *ngIf="!isPortuguese">Voice</h4>
+          <h4 class="volumeSettings"  *ngIf="isPortuguese">Voz</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
                 <div #setVaudio class="audio"><img src="assets/images/speaker.jpg"></div>
@@ -55,8 +55,8 @@
       </div>
       <hr />
       <div class="volume-bar">
-        <h4 class="volumeSettings english">Voice type</h4>
-        <h4 class="volumeSettings portuguese">Tipo de voz</h4>
+        <h4 class="volumeSettings"  *ngIf="!isPortuguese">Voice type</h4>
+        <h4 class="volumeSettings"  *ngIf="isPortuguese">Tipo de voz</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
             <div #setFemale class="audio"><img src="assets/images/female.jpeg"></div>
@@ -67,8 +67,8 @@
     </div>
     <hr />
       <div class="volume-bar">
-        <h4 class="volumeSettings english">Breath sound</h4>
-        <h4 class="volumeSettings portuguese">Som das respirações</h4>
+        <h4 class="volumeSettings"  *ngIf="!isPortuguese">Breath sound</h4>
+        <h4 class="volumeSettings"  *ngIf="isPortuguese">Som das respirações</h4>
         <div class="settingsVolBut">
           <div class="audioButtons">
               <div #setBraudio class="audio"><img src="assets/images/wave.jpg"></div>
@@ -79,8 +79,8 @@
     </div>
     <hr />
     <div class="volume-bar">
-      <h4 class="volumeSettings english">Vibrate on holding</h4>
-      <h4 class="volumeSettings portuguese">Vibrar nas retenções</h4>
+      <h4 class="volumeSettings"  *ngIf="!isPortuguese">Vibrate on holding</h4>
+      <h4 class="volumeSettings"  *ngIf="isPortuguese">Vibrar nas retenções</h4>
       <div class="settingsVolBut">
         <div class="audioButtons">
             <div #setVraudioKB class="audio"><img src="assets/images/vibrate.jpeg"></div>
@@ -91,8 +91,8 @@
     </div>
     <hr />
     <div class="volume-bar">
-      <h4 class="volumeSettings english">Bell</h4>
-      <h4 class="volumeSettings portuguese">Sino</h4>
+      <h4 class="volumeSettings"  *ngIf="!isPortuguese">Bell</h4>
+      <h4 class="volumeSettings"  *ngIf="isPortuguese">Sino</h4>
       <div class="settingsVolBut">
         <div class="audioButtons">
             <div #setBaudio class="audio"><img src="assets/images/bell.jpg"></div>
@@ -103,8 +103,8 @@
     </div>
     <hr />
       <div class="volume-bar">
-          <h4 class="volumeSettings english">Song</h4>
-          <h4 class="volumeSettings portuguese">Música</h4>
+          <h4 class="volumeSettings"  *ngIf="!isPortuguese">Song</h4>
+          <h4 class="volumeSettings"  *ngIf="isPortuguese">Música</h4>
           <div class="settingsVolBut">
             <div class="audioButtons">
                 <div #setaudio class="audio"><img src="assets/images/song.jpg"></div>
@@ -116,8 +116,8 @@
       <hr />
     </div>
 <div class="breathingpages set">
-  <h4 class="volumeSettings english">Choose a song</h4>
-  <h4 class="volumeSettings portuguese">Escolha música</h4>
+  <h4 class="volumeSettings"  *ngIf="!isPortuguese">Choose a song</h4>
+  <h4 class="volumeSettings"  *ngIf="isPortuguese">Escolha música</h4>
   <div class="song-container">
     <select id="song-selectSETKB" #songSelectSETKB class="song-select" (change)="onSongChange($event)">
      <option value="assets/audio/healingFrequency.mp3" selected>Peaceful Garden</option>

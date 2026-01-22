@@ -23,7 +23,7 @@ export class ProfilePage implements OnInit, AfterViewInit {
   @ViewChild('portuguese') portuguese!: ElementRef<HTMLButtonElement>;
   @ViewChild('english') english!: ElementRef<HTMLButtonElement>;
   membershipStatus: string = 'inactive';
-  isPortuguese = false;
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   isOnline = navigator.onLine;
   isLoggingOut = false;
   newsletterActive = false;
@@ -122,12 +122,12 @@ export class ProfilePage implements OnInit, AfterViewInit {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
+       
+       
       this.english.nativeElement.onclick = () => this.toEnglish();
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
+       
+       
       this.portuguese.nativeElement.onclick = () => this.toPortuguese();
     }
   }

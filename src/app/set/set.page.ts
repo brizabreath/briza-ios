@@ -51,7 +51,7 @@ export class SetPage implements AfterViewInit, OnDestroy {
   private isFemale = localStorage.getItem('isFemale') === 'true';
   private breathMute = localStorage.getItem('breathMute') === 'true';
   private vibrMute = localStorage.getItem('vibrMute') === 'true';
-
+  isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
 
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
@@ -74,12 +74,9 @@ export class SetPage implements AfterViewInit, OnDestroy {
     this.currentAudio.muted = false;
     this.currentAudio.load();
     this.currentAudio.play();
-    if(this.audioService.currentAudio){
-      this.audioService.currentAudio.src = '';
-      this.audioService.currentAudio.load();
-      this.audioService.currentAudio = null;
-      await this.audioService.initializeSong();
-    }
+    await this.audioService.resetForPlayOrResume(); 
+    await this.audioService.initializeSong();
+
 
     // Set a timeout to pause the audio after 15 seconds
     this.timeoutIdSet = setTimeout(() => {
@@ -119,15 +116,7 @@ export class SetPage implements AfterViewInit, OnDestroy {
 
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
-    const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-
-    if (isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
-    }else{
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
-    }
+    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     if(this.audioPlayerMute){
       this.volumeBarSet.nativeElement.value = '0';
       this.setaudio.nativeElement.style.display = 'none';
@@ -192,22 +181,14 @@ export class SetPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('audioPlayerMute', 'true');
       this.setaudio.nativeElement.style.display = 'none';
       this.setmute.nativeElement.style.display = 'block';
-      if(this.audioService.currentAudio){
-        this.audioService.currentAudio.src = '';
-        this.audioService.currentAudio.load();
-        this.audioService.currentAudio = null;
-        await this.audioService.initializeSong();
-      }
+      await this.audioService.resetForPlayOrResume(); 
+      await this.audioService.initializeSong();
     } else {
       localStorage.setItem('audioPlayerMute', 'false');
       this.setmute.nativeElement.style.display = 'none';
       this.setaudio.nativeElement.style.display = 'block';
-      if(this.audioService.currentAudio){
-        this.audioService.currentAudio.src = '';
-        this.audioService.currentAudio.load();
-        this.audioService.currentAudio = null;
-        await this.audioService.initializeSong();
-      }
+      await this.audioService.resetForPlayOrResume(); 
+      await this.audioService.initializeSong();
     }
   }
   // Method to handle the volume change

@@ -8,6 +8,7 @@ import { NavController } from '@ionic/angular';
 import {
   collection,
   getDocs,
+  getDoc,
   query,
   orderBy,
   type CollectionReference,
@@ -170,6 +171,21 @@ export class ManageComments {
 
     console.log('✅ Admin reply saved:', { replyId: replyDoc.id, parentId: parent.id, videoId: parent.videoId });
     // Cloud Function will notify the parent comment owner.
+  }
+  async openClassFromTitle(c: CommentRow, ev: Event) {
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    const db = this.firebase.firestore!;
+    const snap = await getDoc(doc(db, 'videos', c.videoId));
+    if (!snap.exists()) return;
+
+    const category = (snap.data() as any)?.category || '';
+    const isLungs = category === 'lungs' || category === 'mobility';
+
+    this.navCtrl.navigateForward(isLungs ? '/lungs' : '/yoga', {
+      queryParams: { open: c.videoId },
+    });
   }
 
     // Method to navigate back

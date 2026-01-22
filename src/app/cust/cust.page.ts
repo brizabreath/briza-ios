@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router'; // Import RouterModule
 import { App } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 
 
 @Component({
@@ -61,7 +62,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   private CUSTTimer: any = null;
   private CUSTResult = ''; // Variable to store the BRT result as a string
   isModalOpen = false;
-  
+  private appStateHandle?: PluginListenerHandle;
   
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
@@ -106,18 +107,24 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         this.CUSTduration = parseInt(selectedValue);
       }
   }
-
+  async ionViewWillLeave() {
+    await this.appStateHandle?.remove();
+    this.appStateHandle = undefined;
+  }
   async ionViewWillEnter() {
-    // Listen for app state changes
-    App.addListener('appStateChange', (state) => {
+    await this.appStateHandle?.remove();
+
+    this.appStateHandle = await App.addListener('appStateChange', async (state) => {
       if (!state.isActive) {
-        let breathingON = localStorage.getItem('breathingON');
-        let firstClick = localStorage.getItem('firstClick');
-        if(firstClick == "false" && breathingON == "true"){
-          this.startCUST();
+        const breathingON = localStorage.getItem('breathingON');
+        const firstClick = localStorage.getItem('firstClick');
+
+        if (firstClick === "false" && breathingON === "true") {
           this.globalService.clearAllTimeouts();
-        }else if(firstClick == "false" && breathingON == "false"){
-        }else{
+          await this.startCUST(); // toggles to pause in your logic
+        } else if (firstClick === "false" && breathingON === "false") {
+          // do nothing
+        } else {
           this.globalService.clearAllTimeouts();
           this.stopCUST();
         }
@@ -125,12 +132,8 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     });
     // Refresh the content every time the page becomes active
     if (this.isPortuguese) {
-      this.globalService.hideElementsByClass('english');
-      this.globalService.showElementsByClass('portuguese');
       this.CUSTballText.nativeElement.textContent = "Iniciar"
     } else {
-      this.globalService.hideElementsByClass('portuguese');
-      this.globalService.showElementsByClass('english');
       this.CUSTballText.nativeElement.textContent = "Start"
     }
     this.setCUSTduration();
@@ -151,7 +154,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   }
    
   async startCUST(): Promise<void>{
-    this.audioService.resetaudio(); 
+    await this.audioService.resetForPlayOrResume();
     this.customizableIn = this.inhaleInputCUST.nativeElement.value;
     this.customizableH1 = this.hold1InputCUST.nativeElement.value;
     this.customizableOut = this.exhaleInputCUST.nativeElement.value;
@@ -458,10 +461,7 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    
-    
     this.stopCUST(); 
     this.CUSTResultSaved.nativeElement.style.display = 'none';
-    App.removeAllListeners();
   }
 }

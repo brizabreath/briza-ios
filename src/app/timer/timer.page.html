@@ -15,17 +15,17 @@
   <div id="yogicPage">
     <div class="breathingpages">
         <div class="breathingpages">
-            <h1 class="volumeSettings english">Meditation Timer</h1>
-            <h1 class="volumeSettings portuguese">Cronômetro de meditação</h1>
+            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Meditation Timer</h1>
+            <h1 class="volumeSettings"  *ngIf="isPortuguese">Cronômetro de meditação</h1>
         </div>
-        <p class="centeredText english">Choose time, press start and begin your meditation</p>
-        <p class="centeredText portuguese">Escolha o tempo, pressione iniciar e comece sua meditação</p>
+        <p class="centeredText"  *ngIf="!isPortuguese">Choose time, press start and begin your meditation</p>
+        <p class="centeredText"  *ngIf="isPortuguese">Escolha o tempo, pressione iniciar e comece sua meditação</p>
         <div class="main-container">
           <div class="timer-status">
               <div class="TIMERtimer-container">
                   <select #TIMERtimeInput class="countdownDisplay">
-                      <option value="60" class="english">1 minute</option>
-                      <option value="60" class="portuguese">1 minuto</option>
+                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
+                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #TIMERcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -39,17 +39,17 @@
               </div>   
               <div class="timer-controls">
                   <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnTIMER" #stopBtnTIMER><div class="english">Reset</div><div class="portuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="TIMERSave" #TIMERSave><div class="english">Save</div><div class="portuguese">Salvar</div></button>
+                  <button type="button" class="stopBtn" id="stopBtnTIMER" #stopBtnTIMER><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="TIMERSave" #TIMERSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="TIMERForm">
                       <div class="roundbox" style="display:none !important">
-                          <div class="english">Total time:</div><div class="portuguese">Tempo Total:</div><div #timerDisplayTIMER>00 : 00</div>
+                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayTIMER>00 : 00</div>
                       </div>
                   </form>
               </div>
           </div>
       </div>
-      <div #TIMERResultSaved class="resultSaved hiddenElements"><div class="english">Result Succesfully Saved</div><div class="portuguese">Resultado salvo com sucesso</div></div>
+      <div #TIMERResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
 </ion-content>
