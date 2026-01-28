@@ -266,7 +266,7 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         await this.audioService.playSound('exhale');
         setTimeout(async () => {
           await this.audioService.playSound('pinchRun');
-        }, 1000);
+        }, 2000);
       } 
       else{
         this.clearIntervalsHATC();

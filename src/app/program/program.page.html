@@ -35,8 +35,8 @@
       </div>
 
       <ng-container *ngIf="todayProgram.length > 0">
-        <h3  *ngIf="!isPortuguese">Today's suggested sessions</h3>
-        <h3  *ngIf="isPortuguese">Sugestões de sessões para hoje</h3>
+        <h3  *ngIf="!isPortuguese" class="centerText">Today's suggested sessions</h3>
+        <h3  *ngIf="isPortuguese" class="centerText">Sugestões de sessões para hoje</h3>
       </ng-container>
 
       <ng-container *ngFor="let section of todayProgram">

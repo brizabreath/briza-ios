@@ -277,8 +277,11 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         }else{
           this.HATballText.nativeElement.textContent = "Hold"
         }
-        await this.audioService.playSound('pinchWalk');
-      } 
+        await this.audioService.playSound('exhale');
+        setTimeout(async () => {
+            await this.audioService.playSound('pinchWalk');
+          }, 2000);
+        } 
       else{
         this.clearIntervalsHAT();
         localStorage.setItem('breathingON', "false"); 

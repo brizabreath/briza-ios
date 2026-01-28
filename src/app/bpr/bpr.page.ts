@@ -48,7 +48,7 @@ export class BPRPage implements OnInit, AfterViewInit {
   totalPracticeFormatted: string = '';
   // ✅ Longest streak ever (excluding BRT)
   longestStreakEver: number = 0;
-
+  days = '';
   hasData: boolean = false;
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
 
@@ -89,6 +89,11 @@ export class BPRPage implements OnInit, AfterViewInit {
       this.calculateOverviewData();
     }
     this.longestStreakEver = this.computeLongestStreakFromAggregated();
+    if(this.longestStreakEver == 1){
+      this.days = this.isPortuguese ? 'dia' : 'day';
+    }else{
+        this.days = this.isPortuguese ? 'dias' : 'days';
+    }
   }
 
   ionViewWillEnter() {
@@ -109,6 +114,11 @@ export class BPRPage implements OnInit, AfterViewInit {
     }
     this.populateResults();
     this.longestStreakEver = this.computeLongestStreakFromAggregated();
+    if(this.longestStreakEver == 1){
+      this.days = this.isPortuguese ? 'dia' : 'day';
+    }else{
+        this.days = this.isPortuguese ? 'dias' : 'days';
+    }
   }
 
   private chartScrollBound = false;
@@ -184,6 +194,11 @@ export class BPRPage implements OnInit, AfterViewInit {
       // Reload dots + overview
       this.loadResults();
       this.longestStreakEver = this.computeLongestStreakFromAggregated();
+      if(this.longestStreakEver == 1){
+        this.days = this.isPortuguese ? 'dia' : 'day';
+      }else{
+          this.days = this.isPortuguese ? 'dias' : 'days';
+      }
       this.loadDataFromLocalStorage();
       this.calculateOverviewData();
     }
@@ -302,6 +317,11 @@ export class BPRPage implements OnInit, AfterViewInit {
         this.populateResults();
         this.loadResults();
         this.longestStreakEver = this.computeLongestStreakFromAggregated();
+        if(this.longestStreakEver == 1){
+          this.days = this.isPortuguese ? 'dia' : 'day';
+        }else{
+            this.days = this.isPortuguese ? 'dias' : 'days';
+        }
       } catch (e) {
         console.warn('closeModal post-work skipped due to error:', e);
       }

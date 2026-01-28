@@ -83,26 +83,25 @@
           <div class="overview-item">
             <strong    *ngIf="!isPortuguese" >Longest day of practice</strong>
             <strong  *ngIf="isPortuguese" >Maior tempo de prática em um dia</strong>
-            <span    *ngIf="!isPortuguese" >{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
-            <span  *ngIf="isPortuguese" >{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
+            <span    *ngIf="!isPortuguese" class="greenColor">{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
+            <span  *ngIf="isPortuguese" class="greenColor">{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
           </div>
           <div class="overview-item">
             <strong    *ngIf="!isPortuguese" >Total time practiced</strong>
             <strong  *ngIf="isPortuguese" >Tempo total praticado</strong>
-            <span>{{ totalPracticeFormatted }}</span>
+            <span class="greenColor">{{ totalPracticeFormatted }}</span>
           </div>
           <div class="overview-item">
             <strong    *ngIf="!isPortuguese" >Sessions</strong>
             <strong  *ngIf="isPortuguese" >Sessões</strong>
-            <span>{{ totalSessions }}</span>
+            <span class="greenColor">{{ totalSessions }}</span>
           </div>
 
           <!-- ✅ Longest streak ever (excluding BRT) -->
           <div class="overview-item">
-            <strong    *ngIf="!isPortuguese" >Longest streak</strong>
-            <strong  *ngIf="isPortuguese" >Maior sequência</strong>
-            <span    *ngIf="!isPortuguese" >{{ longestStreakEver }} days</span>
-            <span  *ngIf="isPortuguese" >{{ longestStreakEver }} dias</span>
+            <strong *ngIf="!isPortuguese" >Longest streak</strong>
+            <strong *ngIf="isPortuguese" >Maior sequência</strong>
+            <span class="greenColor">{{ longestStreakEver }} {{days}}</span>
           </div>
         </div>
       </div>

@@ -82,7 +82,11 @@ export class BreathworkPage {
 
       // Always load quote (online->db, else cache)
       await this.loadRandomQuote();
-
+      // First-time modal open (once per app session)
+      if (!BreathworkPage.hasInitialized) {
+        BreathworkPage.hasInitialized = true;
+        this.openOpenScreen();
+      }
       // Online-only sync logic
       if (navigator.onLine) {
         try {
@@ -134,16 +138,13 @@ export class BreathworkPage {
         }
       }
 
-      // First-time modal open (once per app session)
-      if (!BreathworkPage.hasInitialized) {
-        BreathworkPage.hasInitialized = true;
-        this.openOpenScreen();
-      }
-
       // Fast UI updates
       this.computeGreeting();
       this.computeBrtToday();
       this.computeWeeklyProgressCached(); // prepares _pendingActiveDays, paints in ionViewDidEnter
+      if (localStorage.getItem('isFemale') === null) {
+        localStorage.setItem('isFemale', 'true');
+      }
     } catch {}
   }
 
