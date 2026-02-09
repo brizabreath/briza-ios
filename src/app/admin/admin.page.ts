@@ -81,6 +81,10 @@ export class Admin {
   monthlyNewUsersThisMonth: number | null = null; // from DB
   monthlyNewSubsThisMonth: number | null = null;  // from DB
 
+  promoCodeUsersCount: number | null = null;
+  loadingPromoCodeUsersCount = false;
+
+
   // Chart data (last 6 months)
   loadingChartData = false;
   showCharts = false;
@@ -138,6 +142,7 @@ export class Admin {
       this.loadMembershipAnnualCount(),
       this.loadNewUsersThisMonthCount(), // optional live
       this.loadNewUsersThisWeekCount(),
+      this.loadPromoCodeUsersCount(),
 
       // exercise all-time from DB
       this.loadGlobalExerciseStatsFromDb(),
@@ -702,7 +707,14 @@ export class Admin {
     this.loadingNewUsersThisMonthCount = true;
     try {
       const start = Timestamp.fromDate(this.startOfMonth(new Date()));
-      const qUsers = query(collection(db, 'users'), where('userCreatedAt', '>=', start));
+      const end = Timestamp.fromDate(this.startOfNextMonth(new Date()));
+
+      const qUsers = query(
+        collection(db, 'users'),
+        where('userCreatedAt', '>=', start),
+        where('userCreatedAt', '<', end),
+      );
+
       this.newUsersThisMonthCount = await this.countQuery(qUsers);
     } catch (e) {
       console.error('Failed to count new users this month:', e);
@@ -711,6 +723,7 @@ export class Admin {
       this.loadingNewUsersThisMonthCount = false;
     }
   }
+
 
   async loadNewUsersThisWeekCount() {
     const db = this.firebase.firestore;
@@ -810,4 +823,30 @@ export class Admin {
       this.updatingVideos = false;
     }
   }
+
+  async loadPromoCodeUsersCount() {
+    const db = this.firebase.firestore;
+    if (!db) { this.promoCodeUsersCount = null; return; }
+
+    this.loadingPromoCodeUsersCount = true;
+    try {
+      const now = Timestamp.now();
+
+      const qUsers = query(
+        collection(db, 'users'),
+        where('membership.source', '==', 'code'),
+        where('membership.status', '==', 'active'),
+        where('membership.codeEndsAt', '>', now),
+      );
+
+      this.promoCodeUsersCount = await this.countQuery(qUsers);
+    } catch (e) {
+      console.error('Failed to count promo code users:', e);
+      this.promoCodeUsersCount = null;
+    } finally {
+      this.loadingPromoCodeUsersCount = false;
+    }
+  }
+
+
 }

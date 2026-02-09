@@ -90,7 +90,6 @@ export class ProgramPage implements AfterViewInit {
   @ViewChild('closeModalP') closeModalButtonP!: ElementRef<HTMLSpanElement>;
   @ViewChild('Pdots') Pdots!: ElementRef<HTMLDivElement>;
   @ViewChild('questionP') questionP!: ElementRef<HTMLAnchorElement>;
-  @ViewChild('noBrtResults') noBrtResults!: ElementRef<HTMLDivElement>;
   pendingAddKey: ExerciseKey | null = null;
   showAddWhereAlert = false;
 
@@ -119,7 +118,6 @@ export class ProgramPage implements AfterViewInit {
     ];
   }
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-  latestBRTResultInSeconds = 0;
   resultsByDate: { [date: string]: any[] } = {};
   todayProgram: SectionVM[] = [];
 
@@ -201,14 +199,50 @@ export class ProgramPage implements AfterViewInit {
 
     this.shepherd.addSteps([
       {
-        id: 'brt-step',
-        text: `<h3>${t('Briza Retention Test','Teste de Retenção Briza')}</h3>
-              <p>${t('Do this test daily to track your breathing and fitness',
-                      'Faça este teste diariamente para acompanhar sua respiração e condicionamento')}</p>`,
-        attachTo: { element: anchorEl, on: 'bottom' },
+          id: 'brt-finish4',
+          text: `
+            <div class="briza-tour-finish">
+            <h2>${t('Morning start','Ao acordar')}</h2>
+            <p>${t(
+              'Every day you will find the same morning start routine, Briza retention test and Briza breathing. They are the foundation of the program',
+              'Todos os dias você encontrará a mesma rotina matinal, o teste de retenção de Briza e a respiração Briza. Eles são a base do programa'
+            )}</p>
+          </div>
+        `,
         buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+        },{
+          id: 'brt-finish4',
+          text: `
+            <div class="briza-tour-finish">
+            <h2>${t('Routine','Rotina')}</h2>
+            <p>${t(
+              'The rest of your routine will change daily and become more complex as your retention test results improve',
+              'O restante da sua rotina mudará diariamente e se tornará mais complexa à medida que os resultados do seu teste de retenção melhorarem'
+            )}</p>
+          </div>
+        `,
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+        },{
+          id: 'brt-finish5',
+          text: `
+            <div class="briza-tour-finish">
+            <h2>${t('Briza retention test','Teste de retenção Briza')}</h2>
+            <p>${t(
+              'Would you like to measure your retention now?',
+              'Você gostaria de medir sua retenção agora?'
+            )}</p>
+          </div>
+        `,
+        buttons: [
+          { text: t('No','Não'), action: () => this.shepherd.complete() },
           {
-            text: t('Continue','Continuar'),
+            text: t('Yes','Sim'),
             action: () => {
               this.shepherd.complete();
               localStorage.setItem('startBRTTour','true');
@@ -216,7 +250,7 @@ export class ProgramPage implements AfterViewInit {
             }
           }
         ]
-      }
+        }
     ]);
 
     const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
@@ -560,13 +594,8 @@ export class ProgramPage implements AfterViewInit {
   // =========================
   populateProgramContent(): void {
     this.loadResults();
-
+    let avgSeconds = 0;
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-
-    // reset view state
-    if (this.noBrtResults?.nativeElement) {
-      this.noBrtResults.nativeElement.style.display = 'none';
-    }
     this.todayProgram = [];
 
     const storedResults = localStorage.getItem('brtResults');
@@ -574,12 +603,11 @@ export class ProgramPage implements AfterViewInit {
     const BRTnumberOfTests = brtResults.length;
 
     if (BRTnumberOfTests === 0) {
-      this.noBrtResults.nativeElement.style.display = 'block';
-      return;
+      avgSeconds = 15;
     }
-
-    const avgSeconds = this.computeAvgSeconds(brtResults);
-    this.latestBRTResultInSeconds = avgSeconds;
+    else{
+      avgSeconds = this.computeAvgSeconds(brtResults);
+    }
 
     const band = this.getRangeBand(avgSeconds);
 

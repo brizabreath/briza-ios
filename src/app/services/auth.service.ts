@@ -73,27 +73,41 @@ export class AuthService {
     return user.providerData[0]?.providerId || null; // 'password', 'google.com', 'apple.com'
   }
 
-
-  async syncMembershipTypeToFirestore(snap : any): Promise<void> {
+  async syncMembershipTypeToFirestore(snap: any): Promise<void> {
     const auth = this.firebaseService.auth;
     if (!auth || !auth.currentUser) return;
 
     const uid = auth.currentUser.uid;
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+
+    // Read current membership to preserve code access
+    const currentSnap = await getDoc(userDocRef);
+    const currentData: any = currentSnap.exists() ? currentSnap.data() : null;
+    const currentMembership = currentData?.membership;
+
+    // If user currently has valid code access, do NOT overwrite with inactive
+    if (currentMembership?.source === 'code' && currentMembership?.status === 'active') {
+      const endMs = currentMembership?.codeEndsAt?.toMillis?.();
+      if (typeof endMs === 'number' && endMs > Date.now()) {
+        // If RevenueCat is active, paid should override promo. Otherwise preserve promo.
+        if (snap?.source !== 'revenuecat' || snap?.status !== 'active') {
+          return;
+        }
+      }
+    }
+
     const newType = snap.membershipType || 'free';
     const cachedType = localStorage.getItem('membershipType');
 
-    // Only write if changed
     if (cachedType === newType) return;
-
     localStorage.setItem('membershipType', newType);
 
-    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
     await setDoc(
       userDocRef,
       {
         membership: {
           type: newType,
-          status: snap.status, // active/inactive
+          status: snap.status,
           source: snap.source,
           rcProductId: snap.rcProductId || null,
           rcPeriodType: snap.rcPeriodType || null,
@@ -676,6 +690,40 @@ export class AuthService {
     // If missing or different -> update Firestore to match local preference
     if (current !== desired) {
       await setDoc(userDocRef, { language: desired }, { merge: true });
+    }
+  }
+  async expireCodeIfNeeded(): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return;
+
+    const uid = auth.currentUser.uid;
+    const userRef = doc(this.getFirestore(), `users/${uid}`);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) return;
+
+    const data: any = snap.data();
+    const m = data?.membership;
+
+    if (m?.source !== 'code' || m?.status !== 'active') return;
+
+    const endMs = m?.codeEndsAt?.toMillis?.();
+    if (typeof endMs !== 'number') return;
+
+    if (Date.now() >= endMs) {
+      await setDoc(userRef, {
+        membership: {
+          status: 'inactive',
+          source: 'none',
+          type: 'free',
+          updatedAt: serverTimestamp(),
+          code: null,
+          codeStartedAt: null,
+          codeEndsAt: null,
+        },
+      }, { merge: true });
+
+      localStorage.setItem('membershipStatus', 'inactive');
+      localStorage.setItem('membershipSource', 'codeExpired');
     }
   }
 }

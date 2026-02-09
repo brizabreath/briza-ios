@@ -18,15 +18,25 @@ import { CommentsComponent } from '../comments/comments.component';
 
     <ion-content>
       <div class="video-wrapper">
-        <iframe
-          #vimeoIframe
-          [src]="url"
-          class="video-player-iframe"
-          frameborder="0"
-          allow="autoplay; fullscreen; picture-in-picture"
-          allowfullscreen
-          webkit-playsinline
-        ></iframe>
+        <div class="video-wrapper">
+          <iframe
+            #vimeoIframe
+            [src]="url"
+            class="video-player-iframe"
+            frameborder="0"
+            allow="autoplay; fullscreen; picture-in-picture"
+            allowfullscreen
+            webkit-playsinline
+          ></iframe>
+
+          <button class="video-icon-btn share-btn" (click)="openFullscreen($event)">
+            <img
+              src="assets/images/expand.png"
+              alt="Share"
+              class="icon-img"
+            />
+          </button>
+        </div>
       </div>
 
       <div class="video-date-row">
@@ -77,6 +87,29 @@ import { CommentsComponent } from '../comments/comments.component';
       height: 28px;
       object-fit: contain;
     }
+    .video-icon-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 36px;
+      height: 36px;
+
+      border: 0;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.55);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
   `],
   standalone: true,
   imports: [IonicModule, CommentsComponent]
@@ -222,5 +255,11 @@ export class VideoModalComponent implements AfterViewInit, OnDestroy {
       .replace(/#[\p{L}\p{N}_]+/gu, '') // removes #word (unicode-safe)
       .replace(/\s{2,}/g, ' ')         // collapses extra spaces
       .trim();
+  }
+  async openFullscreen(ev: Event) {
+    ev.stopPropagation(); // don’t trigger iframe clicks
+    try {
+      await this.player?.requestFullscreen();
+    } catch {}
   }
 }

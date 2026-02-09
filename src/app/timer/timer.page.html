@@ -13,11 +13,7 @@
     </div>
   </header>  
   <div id="yogicPage">
-    <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Meditation Timer</h1>
-            <h1 class="volumeSettings"  *ngIf="isPortuguese">Cronômetro de meditação</h1>
-        </div>
+    <div class="breathingpages2">
         <p class="centeredText"  *ngIf="!isPortuguese">Choose time, press start and begin your meditation</p>
         <p class="centeredText"  *ngIf="isPortuguese">Escolha o tempo, pressione iniciar e comece sua meditação</p>
         <div class="main-container">
@@ -49,7 +45,7 @@
               </div>
           </div>
       </div>
-      <div #TIMERResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #TIMERResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
 </ion-content>

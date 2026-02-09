@@ -256,8 +256,8 @@ export class KBresultsPage implements AfterViewInit {
   KBgetChartTitle(): string {
     const year = this.KBendDate.getFullYear();
     return this.isPortuguese
-      ? `Seus resultados de Hiperventilação Guiada (${year})`
-      : `Your Oxygen Boost results (${year})`;
+      ? `Seus resultados em minutos (${year})`
+      : `Your results in minutes (${year})`;
   }
 
   KBsetupScrolling(): void {

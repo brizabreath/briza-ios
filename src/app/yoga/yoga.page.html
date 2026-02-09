@@ -1,16 +1,16 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons">
-      <button class="goback" (click)="goBack()">&#8249;</button>
+      <button class="goback"></button>
     </div>
     <div class="logo-container">
       <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader">
-      <button class="liked-open-btn" (click)="goToLikedClasses()">
+      <button class="liked-open-btn" (click)="goToLikedClasses()" id="hp-heart">
         <img class="timerIMG2" src="assets/images/heartG.png">
       </button>
-      <div class="questionMark questionClass">
+      <div class="questionMark questionClass" id="hp-med">
         <a routerLink="/timer"><img class="timerIMG" src="assets/images/timer.png"></a>
       </div>
     </div> 
@@ -18,7 +18,7 @@
 
   <div id="yogaPage">
     <!-- Segmented Control -->
-    <div class="segmented-control">
+    <div class="segmented-control" id="hp-segment">
       <button
         class="segment"
         [class.active]="selectedSegment === 'move'"
@@ -41,7 +41,7 @@
         <div>Mindfulness</div>
       </button>
     </div>
-    <div class="filters">
+    <div class="filters" id="hp-filters">
     <!-- Keyword Filter (single word) -->
     <div class="keyword-filter">
       <ion-item lines="none">
@@ -76,32 +76,6 @@
     <!-- Segment Content -->
     <div class="segment-content">
       <div *ngIf="filteredVideos.length > 0" class="video-list">
-        <p class="section-subtitle">
-          <!-- Meditate -->
-          <span *ngIf="selectedSegment === 'meditate' && !isPortuguese">
-            Guided sessions to relax and focus
-          </span>
-          <span *ngIf="selectedSegment === 'meditate' && isPortuguese">
-            Aulas guiadas para relaxar e focar
-          </span>
-
-          <!-- Move -->
-          <span *ngIf="selectedSegment === 'move' && !isPortuguese">
-            Move your body to energize your day
-          </span>
-          <span *ngIf="selectedSegment === 'move' && isPortuguese">
-            Mexa seu corpo para energizar o dia
-          </span>
-
-          <!-- Slow Down -->
-          <span *ngIf="selectedSegment === 'slowdown' && !isPortuguese">
-            Slow down with gentle movements
-          </span>
-          <span *ngIf="selectedSegment === 'slowdown' && isPortuguese">
-            Acalme-se com movimentos suaves
-          </span>
-        </p>
-
         <div
           *ngFor="let video of filteredVideos"
           class="video-card"
@@ -137,7 +111,7 @@
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-      <a class="navIcons"><i class="fa fa-sun-o active"></i>Yoga</a>
+      <a class="active"><i class="fa fa-sun-o active"></i>Yoga</a>
       <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
       <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
     </div>
@@ -147,7 +121,7 @@
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
       <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Respiração</a>
-      <a class="navIcons"><i class="fa fa-sun-o active"></i>Yoga</a>
+      <a class="active"><i class="fa fa-sun-o active"></i>Yoga</a>
       <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
       <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
     </div>

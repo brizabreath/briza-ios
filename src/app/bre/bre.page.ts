@@ -88,9 +88,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBRE.nativeElement.onclick = () => this.stopBRE();
     this.BRESave.nativeElement.onclick = () => this.saveBRE();
     this.stopBtnBRE.nativeElement.disabled = true;
-    this.stopBtnBRE.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBRE.nativeElement.style.display = 'none';
     this.BRESave.nativeElement.disabled = true;
-    this.BRESave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BRESave.nativeElement.style.display = 'none';
     this.BREtimeInput.nativeElement.onchange = () => this.setBREduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -204,10 +204,10 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsBRE();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnBRE.nativeElement.disabled = false;
-      this.stopBtnBRE.nativeElement.style.color = '#990000';
+      this.stopBtnBRE.nativeElement.style.display = 'inline-flex';
       if(this.roundsBRE > 0){
         this.BRESave.nativeElement.disabled = false;
-        this.BRESave.nativeElement.style.color = '#49B79D';
+        this.BRESave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsBRE.nativeElement.disabled = false;
       this.questionBRE.nativeElement.disabled = false;
@@ -239,9 +239,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBRE.nativeElement.disabled = true;
-      this.stopBtnBRE.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnBRE.nativeElement.style.display = 'none';
       this.BRESave.nativeElement.disabled = true;
-      this.BRESave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.BRESave.nativeElement.style.display = 'none';
       this.BREinterval = setInterval(() => this.startTimerBRE(), 1000);
       this.BRETimer = setInterval(() => this.DisplayTimerBRE(), 1000);
       this.startCountdownBRE();
@@ -345,9 +345,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
         this.settingsBRE.nativeElement.disabled = false;
         this.questionBRE.nativeElement.disabled = false;
         this.stopBtnBRE.nativeElement.disabled = false;
-        this.stopBtnBRE.nativeElement.style.color = '#990000';
+        this.stopBtnBRE.nativeElement.style.display = 'inline-flex';
         this.BRESave.nativeElement.disabled = false;
-        this.BRESave.nativeElement.style.color = '#49B79D';
+        this.BRESave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.BREball);
         this.BREcountdownInput.nativeElement.style.display = "none";
         this.BREtimeInput.nativeElement.style.display = "inline"; 
@@ -384,9 +384,9 @@ export class BREPage implements  AfterViewInit, OnDestroy {
     this.BREcurrentValue = parseInt(this.inhaleInputBRE.nativeElement.value) + 1;
     this.startBtnBRE.nativeElement.disabled = false;
     this.stopBtnBRE.nativeElement.disabled = true;
-    this.stopBtnBRE.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBRE.nativeElement.style.display = 'none';
     this.BRESave.nativeElement.disabled = true;
-    this.BRESave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BRESave.nativeElement.style.display = 'none';
     this.inhaleBRE = true;
     this.hold1BRE = false;
     this.exhaleBRE = false;

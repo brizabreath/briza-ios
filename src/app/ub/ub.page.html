@@ -17,9 +17,6 @@
   </header>  
   <div id="ubPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings">Ujjayi</h1>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form UB">
@@ -40,7 +37,8 @@
               </div>
               <div class="UBtimer-container">
                   <select #UBtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
@@ -67,7 +65,7 @@
               </div>
           </div>
       </div>
-      <div #UBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #UBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalUB" class="modal" #myModalUB>

@@ -16,11 +16,9 @@
     </div>
   </header>  
   <div id="bbPage">
-    <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Briza Breathing</h1>
-            <h1 class="volumeSettings"  *ngIf="isPortuguese">Respiração Briza</h1>
-        </div>
+    <div class="breathingpages2">
+       <p class="centeredText"  *ngIf="!isPortuguese">Breathe as lightly as possible and try to<br>sustain a gentle air hunger during the session</p>
+        <p class="centeredText"  *ngIf="isPortuguese">Respire o mais suavemente possível e tente<br>manter uma leve sensação de falta de ar durante a sessão</p>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form BB">
@@ -43,14 +41,13 @@
               </div>
               <div class="BBtimer-container">
                   <select #BBtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity" *ngIf="!isPortuguese"> ∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese"> ∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
                   <input #BBcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
-              <p class="centeredText"  *ngIf="!isPortuguese">Breathe as lightly as possible.<br>Sustain a gentle air hunger during the session</p>
-              <p class="centeredText"  *ngIf="isPortuguese">Respire o mais suavemente possível.<br>Mantenha uma leve sensação de falta de ar durante a sessão</p>
               <div class="center-container">
                 <button #startBtnBB class="ballButton">
                   <div #BBball class="ball">
@@ -72,7 +69,7 @@
               </div>
           </div>
       </div>
-      <div #BBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #BBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBB" class="modal" #myModalBB>
@@ -88,11 +85,11 @@
                 <img src="assets/images/breathlight.svg">
                 <div class="text"  *ngIf="!isPortuguese">
                   <p>
-                    Learn how to breathe so gently and lightly that a feather placed beneath your nose would remain still                    
+                    With the Briza breathing you will Learn how to breathe so gently and lightly that a feather placed beneath your nose would remain still                    
                   </p>
                 </div>
                 <div class="text"  *ngIf="isPortuguese">
-                  <p>Aprenda a respirar tão suavemente que se houvesse uma pena sob seu nariz ela não se moveria</p>
+                  <p>Com a respiração Briza vou vai aprender a respirar tão suavemente que se houvesse uma pena sob seu nariz ela não se moveria</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">

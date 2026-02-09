@@ -17,10 +17,6 @@
   </header>  
   <div id="dbPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Reset Breathing</h1>
-            <h1 class="volumeSettings"  *ngIf="isPortuguese">Respiração Reset</h1>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form DB">
@@ -37,11 +33,11 @@
                   </div>
                   <div class="form-line">
                       <img src="assets/images/in.png">
-                      <input type="number" value="3" #exhaleInputDB min="1" readonly>
+                      <input type="number" value="2" #exhaleInputDB min="1" readonly>
                   </div>
                   <div class="form-line">
                       <img src="assets/images/out.png">
-                    <input type="number" value="6" #hold2InputDB min="1" readonly>
+                    <input type="number" value="4" #hold2InputDB min="1" readonly>
                 </div>
                 <div class="form-line">
                   <button class="buttonplus" type="button" #plusDB>+</button>
@@ -49,7 +45,8 @@
               </div>
               <div class="DBtimer-container">
                   <select #DBtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
@@ -76,7 +73,7 @@
               </div>
           </div>
       </div>
-      <div #DBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #DBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalDB" class="modal" #myModalDB>

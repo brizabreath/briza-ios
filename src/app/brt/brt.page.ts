@@ -113,14 +113,12 @@ export class BRTPage implements AfterViewInit, OnDestroy {
             { text: t('Back','Voltar'), action: () => this.shepherd.back() },
             { text: t('Next','Próximo'), action: () => this.shepherd.next() }
           ]
-        },
-        {
-          id: 'hp-controls',
+        }
+        ,{
+          id: 'brt-finish2',
           text: `<h3>${t('Save your result','Salvar resultado')}</h3>
                 <p>${t('After pausing the exercise, tap Save to track your progress',
-                        'Clique em Salvar ao terminar para acompanhar seu progresso')}</p>`,
-          // attach tightly to the Save button instead of the whole bar
-          attachTo: { element: '#brtSave', on: 'top' },
+                'Clique em Salvar ao terminar para acompanhar seu progresso')}</p>`,
           buttons: [
             { text: t('Back','Voltar'), action: () => this.shepherd.back() },
             { text: t('Get Started','Comece Agora'),
@@ -130,8 +128,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
               }
             },
           ]
-        },
-         
+        }
       ]);
       const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
       if (tour?.on) {
@@ -161,9 +158,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     // Initialize button states
     this.brtStart.nativeElement.disabled = false;
     this.brtStop.nativeElement.disabled = true;
-    this.brtStop.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.brtStop.nativeElement.style.display = 'none';
     this.brtSave.nativeElement.disabled = true;
-    this.brtSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.brtSave.nativeElement.style.display = 'none';
     this.brtResultSaved.nativeElement.style.display = 'none'; // Ensure the saved message is hidden initially
     this.globalService.changeBall(1.2,1,this.BRTball);
     //set up booleans
@@ -219,9 +216,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.BRTSettings.nativeElement.disabled = true;
       this.questionBRT.nativeElement.disabled = true;
       this.brtStop.nativeElement.disabled = true;
-      this.brtStop.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.brtStop.nativeElement.style.display = 'none';
       this.brtSave.nativeElement.disabled = true;
-      this.brtSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.brtSave.nativeElement.style.display = 'none';
       this.brtStart.nativeElement.disabled = true;
       if(this.isPortuguese){
         this.BRTballText.nativeElement.textContent = "Inspire";
@@ -292,9 +289,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
       this.BRTSettings.nativeElement.disabled = false;
       this.questionBRT.nativeElement.disabled = false;
       this.brtStop.nativeElement.disabled = false;
-      this.brtStop.nativeElement.style.color = '#990000';
+      this.brtStop.nativeElement.style.display = 'inline-flex';
       this.brtSave.nativeElement.disabled = false;
-      this.brtSave.nativeElement.style.color = '#49B79D';
+      this.brtSave.nativeElement.style.display = 'inline-flex';
       this.brtStart.nativeElement.disabled = true;
 
       // Capture the BRT result when paused
@@ -326,9 +323,9 @@ export class BRTPage implements AfterViewInit, OnDestroy {
     this.timerDisplayBRT.nativeElement.value = '00 : 00';
     this.brtStart.nativeElement.disabled = false;
     this.brtStop.nativeElement.disabled = true;
-    this.brtStop.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.brtStop.nativeElement.style.display = 'none';
     this.brtSave.nativeElement.disabled = true;
-    this.brtSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.brtSave.nativeElement.style.display = 'none';
     if (this.isPortuguese) {
       this.BRTballText.nativeElement.textContent = "Iniciar"
     }else{
@@ -356,7 +353,7 @@ export class BRTPage implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     clearInterval(this.brtInt);
     this.audioService.pauseSelectedSong();
-    // Hide the "Result Successfully Saved" message when navigating away
+    // Hide the "Result successfully saved" message when navigating away
     this.brtResultSaved.nativeElement.style.display = 'none';
   }
   private lockUIForTour = () => {

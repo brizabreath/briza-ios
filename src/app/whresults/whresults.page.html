@@ -11,7 +11,7 @@
 
   <div class="breathingpages" *ngIf="WHhasData">
     <h1   *ngIf="!isPortuguese">Oxygen Boost</h1>
-    <h1 *ngIf="isPortuguese">Hiperventilação Guiada</h1>
+    <h1 *ngIf="isPortuguese">Boost de Oxigênio</h1>
   </div>
 
   <div class="chart-container" #WHchartContainer>
@@ -24,19 +24,19 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest Round</strong>
       <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
-      <span   *ngIf="!isPortuguese">{{ WHlongestRound }} on {{ WHlongestRoundDate }}</span>
-      <span *ngIf="isPortuguese">{{ WHlongestRound }} no dia {{ WHlongestRoundDate }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ WHlongestRound }} on {{ WHlongestRoundDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ WHlongestRound }} no dia {{ WHlongestRoundDate }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
       <strong *ngIf="isPortuguese">Média de todas sessões</strong>
-      <span   *ngIf="!isPortuguese">{{ WHlongestSessionAverage }}</span>
-      <span *ngIf="isPortuguese">{{ WHlongestSessionAverage }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ WHlongestSessionAverage }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ WHlongestSessionAverage }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ WHtotalSessions }}</span>
+      <span class="greenColor">{{ WHtotalSessions }}</span>
     </div>
   </div>  
 </ion-content>

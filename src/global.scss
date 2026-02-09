@@ -151,17 +151,39 @@ ion-input {
   animation: fadeInQuote 2s forwards;
   animation-delay: 1s; // start after logo animation
 }
-
+.quote-container2 {
+  margin-top: 1.5rem;
+  width: 100%;
+}
 .quote-text {
   font-size: 24px !important;
-  color: #0661AA;
+  color: #0661AA !important;
   font-family: var(--heading-font) !important;
 }
-
+.quote-text2 {
+  font-size: 20px !important;
+  color: #0661AA;
+  font-family: var(--heading-font) !important;
+  text-align: justify; 
+  margin-right: 0.4rem;
+  font-style: italic;
+}
 .quote-author {
   font-size: 1rem;
   color: #0660aa95;
   font-family: Arial, Helvetica, sans-serif !important;
+  margin-top: 20px;
+}
+.quote-author2 {
+  font-size: 14px;
+  color: rgba(6, 96, 170, 0.5843137255);
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-flex;
+  justify-content: space-between;
+  width: 90%;
+  margin-left: 0.4rem;
+  margin-top: 10px;
+  margin-bottom: 120px;
 }
 .openScreenBut{
   bottom: 100px;
@@ -176,18 +198,16 @@ ion-input {
   animation-delay: 2s; // start after logo animation
 }
 .share-button {
-  background-color: #49b79d1c;
-  color: #0661AA;
+  background-color: transparent;
   padding: 12px 24px;
-  font-size: 16px;
   border: none;
   border-radius: 12px;
   margin-top: 16px;
-  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
   opacity: 0;
   animation: fadeInShareButton 3s forwards;
   animation-delay: 2s; // start after logo animation
 }
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
@@ -248,7 +268,7 @@ ion-input {
 }
 .welcomeDisplay{
   display: flex;
-  
+  margin-bottom: 1.5rem;
 }
 
 .lungsVideoContainer {
@@ -392,7 +412,7 @@ ion-input {
   width: 90%;
   margin: auto;
   margin-top: 125px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .segment {
@@ -439,6 +459,7 @@ ion-input {
 }
 p {
   font-weight: 500;
+  margin-bottom: 0px !important;
 }
 #breathpagegrid p {
   font-weight: 500;
@@ -446,7 +467,6 @@ p {
 }
 #breathpagegrid h2 {
   margin-left: 0.4rem;
-  margin-bottom: 0 !important;
 }
 /* ============ Modal shell ============ */
 .modal {
@@ -741,7 +761,10 @@ display: none;
 }
 /* Only adjust the Yoga step arrow */
 .shepherd-element[data-shepherd-step-id="hp-yoga"] .shepherd-arrow {
-  transform: translateX(-20px); /* nudge left */
+  transform: translateX(-25px); /* nudge left */
+}/* Only adjust the Yoga step arrow */
+.shepherd-element[data-shepherd-step-id="hp-program"] .shepherd-arrow {
+  transform: translateX(-50px); /* nudge left */
 }
 .goProgram{
   margin-top: 10px;
@@ -792,6 +815,9 @@ display: none;
     margin-top: 105px;
   }
   .breathingpages {
+    margin-top: 125px;
+  }
+   .breathingpages2 {
     margin-top: 100px;
   }
   #breathpagegrid, #breathpagegridBR {
@@ -819,6 +845,7 @@ ion-alert {
 .centeredText{
   text-align: center !important;
   font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 14px;
 }
 .locker-container {
   position: relative;
@@ -860,6 +887,7 @@ select{
   </svg>");
   background-repeat: no-repeat;
   background-position: right 0.1rem center;
+  background-size: 22px 22px;
 }
 /* =========================
    TEMPLATE ALERT (ion-alert in HTML)
@@ -972,4 +1000,7 @@ ion-alert.briza-alert-confirm .alert-button-role-cancel {
   border-color: rgba(6, 97, 170, 0.25);
   background: rgba(6, 97, 170, 0.04);
   color: #0661aa;
+}
+#breathgrid2{
+  position: fixed;
 }

@@ -45,6 +45,8 @@ export class RevenuecatService {
         | 'free',
       rcPeriodType: null as string | null,
       rcProductId: null as string | null,
+      codeActive: false,
+      codeDaysLeft: 0,
     };
 
     // ============================================================
@@ -73,8 +75,48 @@ export class RevenuecatService {
     } catch (err) {
       console.error('⚠️ Whitelist check failed:', err);
     }
+    // ============================================================
+    // 2️⃣B CODE ACCESS (from user doc)
+    // ============================================================
+    try {
+      const user = this.firebaseService.auth?.currentUser;
+      const db = this.firebaseService.firestore;
 
+      if (db && user) {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const userRef = doc(db, `users/${user.uid}`);
+        const snap = await getDoc(userRef);
 
+        if (snap.exists()) {
+          const data: any = snap.data();
+          const m = data?.membership;
+
+          if (m?.source === 'code' && m?.status === 'active') {
+            const endMs = m?.codeEndsAt?.toMillis?.();
+            if (typeof endMs === 'number') {
+              const now = Date.now();
+              const diffDays = Math.ceil((endMs - now) / 86400000);
+
+              if (diffDays > 0) {
+                result.status = 'active';
+                result.source = 'code';
+                result.codeActive = true;
+                result.codeDaysLeft = diffDays;
+
+                // optional: classify type
+                result.membershipType = 'whitelist'; // or create 'codeAccess' in union
+
+                localStorage.setItem('membershipStatus', 'active');
+                localStorage.setItem('membershipSource', 'code');
+                return result;
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('⚠️ Code access check failed:', err);
+    }
     // ============================================================
     // 2️⃣ TRIAL
     // ============================================================

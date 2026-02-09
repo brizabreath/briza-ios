@@ -295,8 +295,8 @@ export class HatresultsPage implements AfterViewInit {
   HATgetChartTitle(): string {
     const year = this.HATendDate.getFullYear();
     return this.isPortuguese
-      ? `Seus resultados de TAA em segundos (${year})`
-      : `Your HAT results in seconds (${year})`;
+      ? `Seus resultados em segundos (${year})`
+      : `Your results in seconds (${year})`;
   }
 
   HATsetupScrolling(): void {
@@ -527,8 +527,8 @@ export class HatresultsPage implements AfterViewInit {
   HATCgetChartTitle(): string {
     const year = this.HATCendDate.getFullYear();
     return this.isPortuguese
-      ? `Seus resultados de TAAC em segundos (${year})`
-      : `Your HATR results in seconds (${year})`;
+      ? `Seus resultados em segundos (${year})`
+      : `Your results in seconds (${year})`;
   }
 
   HATCsetupScrolling(): void {
@@ -759,8 +759,8 @@ export class HatresultsPage implements AfterViewInit {
   AHATgetChartTitle(): string {
     const year = this.AHATendDate.getFullYear();
     return this.isPortuguese
-      ? `Seus resultados de TAAA em segundos (${year})`
-      : `Your AHAT results in seconds (${year})`;
+      ? `Seus resultados em segundos (${year})`
+      : `Your results in seconds (${year})`;
   }
 
   AHATsetupScrolling(): void {

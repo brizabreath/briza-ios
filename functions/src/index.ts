@@ -87,6 +87,19 @@ function desiredLangFromUserDoc(data: any): "EN" | "PT" {
 function listIdForLang(lang: "EN" | "PT"): number {
   return lang === "PT" ? BREVO_PT_NEWSLETTER_LIST_ID : BREVO_NEWSLETTER_LIST_ID;
 }
+function buildBrevoAttributes(data: any, lang: "EN" | "PT") {
+  const firstName = String(data?.name || "").trim();
+
+  const attrs: any = {
+    LANG: lang,
+  };
+
+  if (firstName) {
+    attrs.FIRSTNAME = firstName;
+  }
+
+  return attrs;
+}
 
 async function brevoRequest(
   apiKey: string,
@@ -149,7 +162,7 @@ export const addNewUserToNewsletterBrevo = onDocumentCreated(
 
     await brevoRequest(apiKey, "POST", "/contacts", {
       email,
-      attributes: {LANG: lang},
+      attributes: buildBrevoAttributes(data, lang),
       updateEnabled: true,
     });
 
@@ -205,7 +218,7 @@ export const syncNewsletterListsToBrevo = onDocumentUpdated(
     // Upsert contact with latest LANG
     await brevoRequest(apiKey, "POST", "/contacts", {
       email,
-      attributes: {LANG: afterLang},
+      attributes: buildBrevoAttributes(after, afterLang),
       updateEnabled: true,
     });
 
@@ -303,7 +316,7 @@ export const syncNewsletterToBrevo = onDocumentUpdated(
     // Upsert contact with LANG attribute
     await brevoRequest(apiKey, "POST", "/contacts", {
       email,
-      attributes: {LANG: lang},
+      attributes: buildBrevoAttributes(after, lang),
       updateEnabled: true,
     });
 
@@ -356,4 +369,5 @@ export const syncNewsletterToBrevo = onDocumentUpdated(
       });
     }
   }
+
 );

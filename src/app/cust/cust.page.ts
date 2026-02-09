@@ -86,9 +86,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.stopBtnCUST.nativeElement.onclick = () => this.stopCUST();
     this.CUSTSave.nativeElement.onclick = () => this.saveCUST();
     this.stopBtnCUST.nativeElement.disabled = true;
-    this.stopBtnCUST.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnCUST.nativeElement.style.display = 'none';
     this.CUSTSave.nativeElement.disabled = true;
-    this.CUSTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CUSTSave.nativeElement.style.display = 'none';
     this.CUSTtimeInput.nativeElement.onchange = () => this.setCUSTduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -213,10 +213,10 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsCUST();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnCUST.nativeElement.disabled = false;
-      this.stopBtnCUST.nativeElement.style.color = '#990000';
+      this.stopBtnCUST.nativeElement.style.display = 'inline-flex';
       if(this.roundsCUST > 0){
         this.CUSTSave.nativeElement.disabled = false;
-        this.CUSTSave.nativeElement.style.color = '#49B79D';
+        this.CUSTSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsCUST.nativeElement.disabled = false;
       this.questionCUST.nativeElement.disabled = false;
@@ -248,9 +248,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnCUST.nativeElement.disabled = true;
-      this.stopBtnCUST.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnCUST.nativeElement.style.display = 'none';
       this.CUSTSave.nativeElement.disabled = true;
-      this.CUSTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.CUSTSave.nativeElement.style.display = 'none';
       this.CUSTinterval = setInterval(() => this.startTimerCUST(), 1000);
       this.CUSTTimer = setInterval(() => this.DisplayTimerCUST(), 1000);
       this.startCountdownCUST();
@@ -358,9 +358,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
         this.settingsCUST.nativeElement.disabled = false;
         this.questionCUST.nativeElement.disabled = false;
         this.stopBtnCUST.nativeElement.disabled = false;
-        this.stopBtnCUST.nativeElement.style.color = '#990000';
+        this.stopBtnCUST.nativeElement.style.display = 'inline-flex';
         this.CUSTSave.nativeElement.disabled = false;
-        this.CUSTSave.nativeElement.style.color = '#49B79D';
+        this.CUSTSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.CUSTball);
         this.CUSTcountdownInput.nativeElement.style.display = "none";
         this.CUSTtimeInput.nativeElement.style.display = "inline"; 
@@ -409,9 +409,9 @@ export class CUSTPage implements  AfterViewInit, OnDestroy {
     this.CUSTcurrentValue = parseInt(this.inhaleInputCUST.nativeElement.value) + 1;
     this.startBtnCUST.nativeElement.disabled = false;
     this.stopBtnCUST.nativeElement.disabled = true;
-    this.stopBtnCUST.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnCUST.nativeElement.style.display = 'none';
     this.CUSTSave.nativeElement.disabled = true;
-    this.CUSTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CUSTSave.nativeElement.style.display = 'none';
     this.inhaleCUST = true;
     this.hold1CUST = false;
     this.exhaleCUST = false;

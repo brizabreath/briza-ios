@@ -49,7 +49,7 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
   constructor(private navCtrl: NavController, private audioService: AudioService, public globalService: GlobalService) {}
   ngAfterViewInit(): void {
     //populate input
-    for (let TIMERi = 2; TIMERi <= 60; TIMERi++) { // assuming 1 to 60 minutes
+    for (let TIMERi = 2; TIMERi <= 120; TIMERi++) { // assuming 1 to 60 minutes
       let TIMERoption = document.createElement('option');
       TIMERoption.value = (TIMERi * 60).toString(); // Convert the number to a string
       if (this.isPortuguese) {
@@ -66,9 +66,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     this.TIMERSave.nativeElement.onclick = () => this.saveTIMER();
     this.settingsMED.nativeElement.disabled = false;
     this.stopBtnTIMER.nativeElement.disabled = true;
-    this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnTIMER.nativeElement.style.display = 'none';
     this.TIMERSave.nativeElement.disabled = true;
-    this.TIMERSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.TIMERSave.nativeElement.style.display = 'none';
     this.TIMERtimeInput.nativeElement.onchange = () => this.setTIMERduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -150,10 +150,10 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsTIMER();
       localStorage.setItem('breathingON', "false"); 
       this.TIMERSave.nativeElement.disabled = false;
-      this.TIMERSave.nativeElement.style.color = '#49B79D';
+      this.TIMERSave.nativeElement.style.display = 'inline-flex';
       this.settingsMED.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.disabled = false;
-      this.stopBtnTIMER.nativeElement.style.color = '#990000';
+      this.stopBtnTIMER.nativeElement.style.display = 'inline-flex';
       if(this.isPortuguese){
         this.TIMERballText.nativeElement.textContent = "Continuar"
       }else{
@@ -166,9 +166,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
       localStorage.setItem('breathingON', "true"); 
       this.settingsMED.nativeElement.disabled = true;
       this.stopBtnTIMER.nativeElement.disabled = true;
-      this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnTIMER.nativeElement.style.display = 'none';
       this.TIMERSave.nativeElement.disabled = true;
-      this.TIMERSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.TIMERSave.nativeElement.style.display = 'none';
       this.TIMERinterval = setInterval(() => this.startTimerTIMER(), 1000);
       this.TIMERTimer = setInterval(() => this.DisplayTimerTIMER(), 1000);
       this.startCountdownTIMER();
@@ -214,9 +214,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
       this.startBtnTIMER.nativeElement.disabled = true;
       this.settingsMED.nativeElement.disabled = false;
       this.stopBtnTIMER.nativeElement.disabled = false;
-      this.stopBtnTIMER.nativeElement.style.color = '#990000';
+      this.stopBtnTIMER.nativeElement.style.display = 'inline-flex';
       this.TIMERSave.nativeElement.disabled = false;
-      this.TIMERSave.nativeElement.style.color = '#49B79D';
+      this.TIMERSave.nativeElement.style.display = 'inline-flex';
       this.globalService.changeBall(1.3, 1, this.TIMERball);
       this.audioService.pauseSelectedSong();
       await this.audioService.playBell("bell");
@@ -242,9 +242,9 @@ export class TIMERPage implements  AfterViewInit, OnDestroy {
     this.startBtnTIMER.nativeElement.disabled = false;
     this.settingsMED.nativeElement.disabled = false;
     this.stopBtnTIMER.nativeElement.disabled = true;
-    this.stopBtnTIMER.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnTIMER.nativeElement.style.display = 'none';
     this.TIMERSave.nativeElement.disabled = true;
-    this.TIMERSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.TIMERSave.nativeElement.style.display = 'none';
     this.globalService.changeBall(1.3, 1, this.TIMERball);
     if(this.isPortuguese){
       this.TIMERballText.nativeElement.textContent = "Iniciar"

@@ -12,6 +12,7 @@ import { FirebaseService } from '../services/firebase.service';
 import { RevenuecatService } from '../services/revenuecat.service';
 import { AuthService } from '../services/auth.service';
 import { GlobalAlertService } from '../services/global-alert.service';
+import { ShepherdService } from 'angular-shepherd';
 
 @Component({
   selector: 'app-breathwork',
@@ -22,8 +23,8 @@ import { GlobalAlertService } from '../services/global-alert.service';
 })
 export class BreathworkPage {
   @ViewChild('openScreen') openScreen!: ElementRef<HTMLDivElement>;
+  @ViewChild('brworkPage') brworkPage!: ElementRef<HTMLDivElement>;
 
-  latestBRTResultInSeconds = 0;
   numberOfWeekSessions = 0;
   hasBrtToday = false;
 
@@ -52,13 +53,9 @@ export class BreathworkPage {
     private firebaseService: FirebaseService,
     private revenuecat: RevenuecatService,
     private authService: AuthService,
-    private globalAlert: GlobalAlertService
+    private globalAlert: GlobalAlertService,
+    private shepherd: ShepherdService
   ) {}
-
-  private startBreathTourNow() {
-    localStorage.setItem('startHomeTour', 'true');
-    this.router.navigateByUrl('/home');
-  }
 
   openOpenScreen() {
     try {
@@ -75,7 +72,31 @@ export class BreathworkPage {
       console.warn('closeOpenScreen failed:', e);
     }
   }
+  private firstVisible(selector: string): HTMLElement | null {
+    return Array.from(document.querySelectorAll<HTMLElement>(selector)).find(el => this.isVisible(el)) || null;
+  }
+  private isVisible(el: HTMLElement): boolean {
+    if (!el) return false;
+    const style = getComputedStyle(el);
+    return (
+      el.offsetParent !== null &&
+      style.visibility !== 'hidden' &&
+      style.display !== 'none' &&
+      el.getClientRects().length > 0
+    );
+  }
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
 
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
   async ionViewWillEnter() {
     try {
       this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -92,7 +113,7 @@ export class BreathworkPage {
         try {
           await this.authService.ensureUserCreatedAt();
           await this.authService.ensureUserLanguageSynced();
-
+          await this.authService.expireCodeIfNeeded();
           const snapshot = await this.revenuecat.getSnapshot();
           await this.authService.syncMembershipTypeToFirestore(snapshot);
 
@@ -141,19 +162,16 @@ export class BreathworkPage {
       // Fast UI updates
       this.computeGreeting();
       this.computeBrtToday();
-      this.computeWeeklyProgressCached(); // prepares _pendingActiveDays, paints in ionViewDidEnter
+      this.computeWeeklyProgressCached(); 
+      if (this._pendingActiveDays) {
+        this.paintWeekCircles(this._pendingActiveDays);
+        this._pendingActiveDays = null;
+      }
       if (localStorage.getItem('isFemale') === null) {
         localStorage.setItem('isFemale', 'true');
       }
     } catch {}
-  }
-
-  ionViewDidEnter() {
-    // Paint circles only after DOM is actually in place
-    if (this._pendingActiveDays) {
-      this.paintWeekCircles(this._pendingActiveDays);
-      this._pendingActiveDays = null;
-    }
+    this.brworkPage.nativeElement.style.display = "block";
   }
 
   private computeGreeting() {
@@ -205,7 +223,6 @@ export class BreathworkPage {
     }
 
     this.hasBrtToday = has;
-    this.latestBRTResultInSeconds = latestSeconds;
   }
 
   private storageSignature(): string {
@@ -360,60 +377,225 @@ export class BreathworkPage {
   }
 
   startAppGuide() {
-    this.closeOpenScreen();
-    setTimeout(() => this.startBreathTourNow(), 0);
+  this.closeOpenScreen();
+  const isPT = localStorage.getItem('isPortuguese') === 'true';
+  const t = (en: string, pt: string) => (isPT ? pt : en);
+  const sel = (enSel: string, ptSel: string) => (isPT ? ptSel : enSel);
+
+  this.shepherd.defaultStepOptions = {
+    cancelIcon: { enabled: true },
+    scrollTo: true,
+    canClickTarget: false,
+    modalOverlayOpeningPadding: 4,
+    modalOverlayOpeningRadius: 10,
+    classes: 'briza-tour',
+  };
+  this.shepherd.modal = true;
+
+  setTimeout(() => {
+    const steps: any[] = [];
+
+      // Step: Program
+      if (document.querySelector('#hp-progHome')) {
+        steps.push({
+          id: 'hp-progHome',
+          text: `<h3>${t('Briza Program','Programa Briza')}</h3>
+                <p>${t(
+                  'Daily exercises to improve breathing efficiency',
+                  'Exercícios diários para melhorar a eficiência respiratória'
+                )}</p>`,
+          attachTo: { element: '#hp-progHome', on: 'bottom' },
+           buttons: [
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+        });
+      }
+
+      // Step: BRT (only if visible)
+      if (document.querySelector('#hp-brtHome')) {
+        steps.push({
+          id: 'hp-brtHome',
+          text: `<h3>${t('Briza Retention Test','Teste de Retenção Briza')}</h3>
+                <p>${t(
+                  'Daily test to track your breathing',
+                  'Teste diário para acompanhar sua respiração'
+                )}</p>`,
+          attachTo: { element: '#hp-brtHome', on: 'bottom' },
+           buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+        });
+      }
+      steps.push({
+        id: 'hp-moodScroll',
+        text: `<h3>${t('How Briza can help','Como Briza pode te ajudar')}</h3>
+              <p>${t(
+                'Multiple classes and breathwork options for specific purposes',
+                'Diversas aulas e opções de exercícios respiratórios para fins específicos'
+              )}</p>`,
+        attachTo: { element: '#hp-moodScroll', on: 'bottom' },
+         buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      steps.push({
+        id: 'hp-progress',
+        text: `<h3>${t('Your progress','Seu progresso')}</h3>
+              <p>${t(
+                'Follow your progress weekly',
+                'Acompanhe seu progresso semanalmente'
+              )}</p>`,
+        attachTo: { element: '#hp-progress', on: 'top' },
+         buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      steps.push({
+        id: 'hp-program',
+        text: `<h3>${t('Breathwork','Breathwork')}</h3>
+              <p>${t(
+                'Multiple breathwork sessions, lungs expansion and mobility training',
+                'Múltiplas sessões de exercícios respiratórios, expansão pulmonar e treinamento de mobilidade'
+              )}</p>`,
+        attachTo: { element: sel('#hp-program', '#hp-programPT'), on: 'top' },
+         buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      steps.push({
+        id: 'hp-yoga',
+        text: `<h3>Yoga</h3>
+               <p>${t('Flow, gentle, and mindfulness practices',
+                'Aulas guiadas de yoga e mindfulness')}</p>`,
+        attachTo: { element: sel('#hp-yoga', '#hp-yogaPT'), on: 'top' },
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      steps.push({
+        id: 'hp-bpr',
+        text: `<h3>${t('Results','Resultados')}</h3>
+               <p>${t('Check your overall progress',
+                      'Veja seu progresso geral')}</p>`,
+        attachTo: { element: sel('#hp-bpr', '#hp-bprPT'), on: 'top' },
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      steps.push({
+        id: 'hp-profile',
+        text: `<h3>${t('Profile','Perfil')}</h3>
+               <p>${t('Manage your account, subscription and more',
+                      'Gerencie sua conta, assinatura e mais')}</p>`,
+        attachTo: { element: sel('#hp-profile', '#hp-profilePT'), on: 'top' },
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      });
+      // Final step (always)
+      steps.push({
+        id: 'brt-finish',
+        text: `<h3>${t('Continue tour?','Continuar tour?')}</h3>`,
+        buttons: [
+          { text: t('End','Fechar'), action: () => this.shepherd.complete() },
+          {
+            text: t('Next','Próximo'),
+            action: () => {
+              this.shepherd.complete();
+              localStorage.setItem('startYogaTour','true');
+              this.router.navigateByUrl('/yoga');
+            },
+          },
+        ],
+      });
+
+      this.shepherd.addSteps(steps);
+
+      const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+      if (tour?.on) {
+        tour.off?.('start', this.lockUIForTour);
+        tour.off?.('complete', this.unlockUIForTour);
+        tour.off?.('cancel', this.unlockUIForTour);
+        tour.off?.('inactive', this.unlockUIForTour);
+
+        tour.on('start', this.lockUIForTour);
+        tour.on('complete', this.unlockUIForTour);
+        tour.on('cancel', this.unlockUIForTour);
+        tour.on('inactive', this.unlockUIForTour);
+      }
+
+      this.shepherd.start();  
+    }, 0);
   }
 
   private langKey(): 'EN' | 'PT' {
     return this.isPortuguese ? 'PT' : 'EN';
   }
 
-  private pickRandom<T>(arr: T[]): T | null {
-    if (!arr || !arr.length) return null;
-    return arr[Math.floor(Math.random() * arr.length)];
-  }
-
   async loadRandomQuote(): Promise<void> {
-    const db = this.firebaseService.firestore;
-    const lang = this.langKey();
-    const cacheKey = `home_weekly_cache_v3_${this.isPortuguese ? 'PT' : 'EN'}`;
+    const lang = this.langKey(); // 'EN' | 'PT'
+    const today = this.localDayKey();
 
-    // 1) Online -> Firestore
-    if (navigator.onLine && db) {
+    // 1) Reuse today’s quote if already set
+    const stateKey = this.quoteStateKey(lang);
+    const savedState = localStorage.getItem(stateKey);
+    if (savedState) {
       try {
-        const colRef = collection(db, 'quotes');
-        const qRef = query(colRef, where('language', '==', lang));
-        const snap = await getDocs(qRef);
-
-        const docs = snap.docs.map(d => d.data() as { text: string; author: string; language: string });
-
-        if (docs.length) {
-          localStorage.setItem(cacheKey, JSON.stringify(docs));
-          const pick = this.pickRandom(docs)!;
-          this.selectedQuote = { text: pick.text, author: pick.author };
-          return;
-        }
-      } catch (e) {
-        console.warn('Quotes fetch failed, will try cache:', e);
-      }
-    }
-
-    // 2) Cache fallback
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      try {
-        const arr = JSON.parse(cached) as { text: string; author: string }[];
-        const pick = this.pickRandom(arr);
-        if (pick) {
-          this.selectedQuote = { text: pick.text, author: pick.author };
+        const state = JSON.parse(savedState) as { day: string; quote: { text: string; author: string } };
+        if (state?.day === today && state?.quote?.text) {
+          this.selectedQuote = state.quote;
           return;
         }
       } catch {}
     }
 
-    // 3) Final fallback
-    this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
+    // 2) Get pool
+    const pool = await this.getQuotePool(lang);
+    if (!pool.length) {
+      const fallback = { text: 'Breathe in. Breathe out.', author: '—' };
+      this.selectedQuote = fallback;
+      localStorage.setItem(stateKey, JSON.stringify({ day: today, quote: fallback }));
+      return;
+    }
+
+    // 3) Load remaining queue (array of indices)
+    const remainingKey = this.quoteRemainingKey(lang);
+    let remaining: number[] = [];
+    const rawRemaining = localStorage.getItem(remainingKey);
+
+    if (rawRemaining) {
+      try {
+        const arr = JSON.parse(rawRemaining);
+        if (Array.isArray(arr)) remaining = arr.filter((n: any) => Number.isInteger(n));
+      } catch {}
+    }
+
+    // If pool size changed, reset remaining (prevents out-of-range)
+    if (remaining.some(i => i < 0 || i >= pool.length)) remaining = [];
+
+    // 4) If empty -> reshuffle full pool and start new cycle
+    if (!remaining.length) {
+      remaining = this.shuffle(Array.from({ length: pool.length }, (_, i) => i));
+    }
+
+    // 5) Pop next quote for today
+    const nextIndex = remaining.shift()!;
+    localStorage.setItem(remainingKey, JSON.stringify(remaining));
+
+    const pick = pool[nextIndex] || pool[0];
+    this.selectedQuote = pick;
+
+    // Save today’s quote so it doesn’t change on reopen
+    localStorage.setItem(stateKey, JSON.stringify({ day: today, quote: pick }));
   }
+
 
   async shareOpenScreen() {
     if (this._sharing || !this.selectedQuote) return;
@@ -554,4 +736,56 @@ export class BreathworkPage {
       this._sharing = false;
     }
   }
+  private quotePoolKey(lang: 'EN'|'PT') { return `quote_pool_${lang}`; }
+  private quoteRemainingKey(lang: 'EN'|'PT') { return `quote_remaining_${lang}`; }
+  private quoteStateKey(lang: 'EN'|'PT') { return `quote_state_${lang}`; }
+
+  private localDayKey(): string {
+    return new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD (local)
+  }
+  private shuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  private async getQuotePool(lang: 'EN'|'PT'): Promise<{ text: string; author: string }[]> {
+    const poolKey = this.quotePoolKey(lang);
+    let pool: { text: string; author: string }[] = [];
+
+    const cached = localStorage.getItem(poolKey);
+    if (cached) {
+      try {
+        const arr = JSON.parse(cached);
+        if (Array.isArray(arr)) pool = arr;
+      } catch {}
+    }
+
+    // Refresh pool if online (keeps app updated)
+    if (navigator.onLine && this.firebaseService.firestore) {
+      try {
+        const db = this.firebaseService.firestore;
+        const colRef = collection(db, 'quotes');
+        const qRef = query(colRef, where('language', '==', lang));
+        const snap = await getDocs(qRef);
+
+        const docs = snap.docs
+          .map(d => d.data() as any)
+          .filter(x => typeof x?.text === 'string' && x.text.trim().length)
+          .map(x => ({ text: String(x.text).trim(), author: (x.author || '—').trim() }));
+
+        if (docs.length) {
+          pool = docs;
+          localStorage.setItem(poolKey, JSON.stringify(pool));
+        }
+      } catch (e) {
+        console.warn('Quotes fetch failed, using cached pool:', e);
+      }
+    }
+
+    return pool;
+  }
+
 }

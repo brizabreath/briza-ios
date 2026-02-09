@@ -11,7 +11,7 @@
 
   <div class="breathingpages" *ngIf="HAThasData">
     <h1   *ngIf="!isPortuguese">Altitude Training</h1>
-    <h1 *ngIf="isPortuguese">Treinamento de Alta Altitude</h1>
+    <h1 *ngIf="isPortuguese">Treino em Altitude</h1>
   </div>
 
   <div class="chart-container" #HATchartContainer>
@@ -24,24 +24,24 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest Round</strong>
       <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
-      <span   *ngIf="!isPortuguese">{{ HATlongestRound }} seconds on {{ HATlongestRoundDate }}</span>
-      <span *ngIf="isPortuguese">{{ HATlongestRound }} segundos no dia {{ HATlongestRoundDate }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ HATlongestRound }} seconds on {{ HATlongestRoundDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ HATlongestRound }} segundos no dia {{ HATlongestRoundDate }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
       <strong *ngIf="isPortuguese">Média de todas sessões</strong>
-      <span   *ngIf="!isPortuguese">{{ HATlongestSessionAverage }} seconds</span>
-      <span *ngIf="isPortuguese">{{ HATlongestSessionAverage }} segundos</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ HATlongestSessionAverage }} seconds</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ HATlongestSessionAverage }} segundos</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ HATtotalSessions }}</span>
+      <span class="greenColor">{{ HATtotalSessions }}</span>
     </div>
   </div>  
   <div class="breathingpages" *ngIf="HATChasData">
     <h1   *ngIf="!isPortuguese">Altitude Training Running</h1>
-    <h1 *ngIf="isPortuguese">Treinamento de Alta Altitude Correndo</h1>
+    <h1 *ngIf="isPortuguese">Treino em Altitude Correndo</h1>
   </div>
 
   <div class="chart-container" #HATCchartContainer>
@@ -54,24 +54,24 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest Round</strong>
       <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
-      <span   *ngIf="!isPortuguese">{{ HATClongestRound }} seconds on {{ HATClongestRoundDate }}</span>
-      <span *ngIf="isPortuguese">{{ HATClongestRound }} segundos</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ HATClongestRound }} seconds on {{ HATClongestRoundDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ HATClongestRound }} segundos</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
       <strong *ngIf="isPortuguese">Média de todas sessões</strong>
-      <span   *ngIf="!isPortuguese">{{ HATClongestSessionAverage }} seconds</span>
-      <span *ngIf="isPortuguese">{{ HATClongestSessionAverage }} segundos</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ HATClongestSessionAverage }} seconds</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ HATClongestSessionAverage }} segundos</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ HATCtotalSessions }}</span>
+      <span class="greenColor">{{ HATCtotalSessions }}</span>
     </div>
   </div>  
   <div class="breathingpages" *ngIf="AHAThasData">
     <h1   *ngIf="!isPortuguese">Altitude Training PRO</h1>
-    <h1 *ngIf="isPortuguese">Treinamento Avançado de Alta Altitude</h1>
+    <h1 *ngIf="isPortuguese">Treino em Altitude PRO</h1>
   </div>
 
   <div class="chart-container" #AHATchartContainer>
@@ -84,19 +84,19 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest Round</strong>
       <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
-      <span   *ngIf="!isPortuguese">{{ AHATlongestRound }} seconds on {{ AHATlongestRoundDate }}</span>
-      <span *ngIf="isPortuguese">{{ AHATlongestRound }} segundos no dia {{ AHATlongestRoundDate }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ AHATlongestRound }} seconds on {{ AHATlongestRoundDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ AHATlongestRound }} segundos no dia {{ AHATlongestRoundDate }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
       <strong *ngIf="isPortuguese">Média de todas sessões</strong>
-      <span   *ngIf="!isPortuguese">{{ AHATlongestSessionAverage }} seconds</span>
-      <span *ngIf="isPortuguese">{{ AHATlongestSessionAverage }} segundos</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ AHATlongestSessionAverage }} seconds</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ AHATlongestSessionAverage }} segundos</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ AHATtotalSessions }}</span>
+      <span class="greenColor">{{ AHATtotalSessions }}</span>
     </div>
   </div>  
 </ion-content>

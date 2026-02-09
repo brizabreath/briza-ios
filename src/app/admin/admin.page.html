@@ -64,6 +64,13 @@
         <span *ngIf="!loadingTrialDevicesCount">{{ trialDevicesCount ?? '—' }}</span>
       </div>
     </div>
+    <div class="adminstat">
+      <div class="label">Using promo code</div>
+      <div class="value">
+        <span *ngIf="loadingPromoCodeUsersCount">Loading...</span>
+        <span *ngIf="!loadingPromoCodeUsersCount">{{ promoCodeUsersCount ?? '—' }}</span>
+      </div>
+    </div>
   </div>
 
   <div class="admin-stats">
@@ -75,8 +82,8 @@
     <div class="adminstat">
       <div class="label">This month</div>
       <div class="value">
-        <span *ngIf="loadingMonthlyThisMonth">Loading...</span>
-        <span *ngIf="!loadingMonthlyThisMonth">{{ monthlyNewUsersThisMonth ?? '—' }}</span>
+        <span *ngIf="loadingNewUsersThisMonthCount">Loading...</span>
+        <span *ngIf="!loadingNewUsersThisMonthCount">{{ newUsersThisMonthCount ?? '—' }}</span>
       </div>
     </div>
 

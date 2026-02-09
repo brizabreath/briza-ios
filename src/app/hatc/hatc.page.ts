@@ -72,9 +72,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.HATCReset.nativeElement.onclick = () => this.stopHATC();
     this.HATCSave.nativeElement.onclick = () => this.saveHATC();
     this.HATCReset.nativeElement.disabled = true;
-    this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATCReset.nativeElement.style.display = 'none';
     this.HATCSave.nativeElement.disabled = true;
-    this.HATCSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATCSave.nativeElement.style.display = 'none';
     this.HATCtimeInput.nativeElement.onchange = () => this.setHATCduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -186,10 +186,10 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.clearIntervalsHATC();
         localStorage.setItem('breathingON', "false"); 
         this.HATCReset.nativeElement.disabled = false;
-        this.HATCReset.nativeElement.style.color = '#990000';
+        this.HATCReset.nativeElement.style.display = 'inline-flex';
         if(this.roundsHATC > 0){
           this.HATCSave.nativeElement.disabled = false;
-          this.HATCSave.nativeElement.style.color = '#49B79D';
+          this.HATCSave.nativeElement.style.display = 'inline-flex';
         }
         this.settingsHATC.nativeElement.disabled = false;
         this.questionHATC.nativeElement.disabled = false;
@@ -216,9 +216,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.HATCReset.nativeElement.disabled = true;
-      this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.HATCReset.nativeElement.style.display = 'none';
       this.HATCSave.nativeElement.disabled = true;
-      this.HATCSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.HATCSave.nativeElement.style.display = 'none';
       this.HATCinterval = setInterval(() => this.startTimerHATC(), 1000);
       this.HATCTimer = setInterval(() => this.DisplayTimerHATC(), 1000);
     }
@@ -275,9 +275,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
         this.settingsHATC.nativeElement.disabled = false;
         this.questionHATC.nativeElement.disabled = false;
         this.HATCReset.nativeElement.disabled = false;
-        this.HATCReset.nativeElement.style.color = '#990000';
+        this.HATCReset.nativeElement.style.display = 'inline-flex';
         this.HATCSave.nativeElement.disabled = false;
-        this.HATCSave.nativeElement.style.color = '#49B79D';
+        this.HATCSave.nativeElement.style.display = 'inline-flex';
         this.HATCcountdownInput.nativeElement.style.display = "none";
         this.HATCtimeInput.nativeElement.style.display = "inline"; 
         if(this.isPortuguese){
@@ -310,9 +310,9 @@ export class HATCPage implements  AfterViewInit, OnDestroy {
     this.HATCcurrentValue = 0;
     this.startBtnHATC.nativeElement.disabled = false;
     this.HATCReset.nativeElement.disabled = true;
-    this.HATCReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATCReset.nativeElement.style.display = 'none';
     this.HATCSave.nativeElement.disabled = true;
-    this.HATCSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATCSave.nativeElement.style.display = 'none';
     this.holdHATC = true;
     this.normalHATC = false;
     if(this.isPortuguese){

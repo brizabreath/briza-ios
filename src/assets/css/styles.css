@@ -28,7 +28,7 @@ body {
     margin-bottom: 20px;
 }
 ::-webkit-input-placeholder {
-    color: #49B79D !important;
+    color: #0660aacb !important;
 }
 
 #header{
@@ -90,9 +90,8 @@ body {
     color: #0661AA;
 }
 #breathpagegrid h3, #breathpagegridBR h3{
-    margin-top: 12%;
+    margin-top: 2rem;
     margin-left: 0.4rem;
-    margin-bottom: 4%;
     font-size: 18px;
 }
 #homegrid, #breathgrid{
@@ -201,12 +200,14 @@ body {
     color: #0661AA;
 }
 
-.a .active {
-    color: #0661AA !important;
+.navbar a .active {
+    color: #49B79D;
 }
-
-.active {
-    color: #49B79D !important;
+.navbar .active {
+    color: #49B79D;
+}
+.greenColor{
+  color: #49B79D !important;
 }
 
 #homeFooter, #homeFooterBR, #resultsFooter, #resultsFooterBR, #profileFooter, #profileFooterBR, #breathFooter, #breathFooterBR, #yogaFooter, #yogaFooterBR     {
@@ -325,6 +326,8 @@ body {
 /* Logo container settings */
 .logo-container {
     justify-content: center; /* Center the logo horizontally */
+    color: #0661AA;
+    font-size: 20px;
 }
 
 /* Placeholder styling to avoid interaction issues */
@@ -352,13 +355,14 @@ body {
     width: 100%;
     color: #0661AA;
     text-align: center;
-    margin-top: 130px;
+    margin-top: 160px;
 }
+
 .breathingpages2 {
     width: 100%;
     color: #0661AA;
     text-align: center;
-    margin-bottom: 40px;    
+    margin-top: 130px;
 }
 .breathingpages.BHbreathing{
    margin-bottom: 10px !important;
@@ -481,7 +485,7 @@ input#timerDisplayLungs {
 }
 
 .stopBtnBRT {
-    color: rgb(177, 177, 177);
+    color: #0661aa;
     width: 8rem;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -491,10 +495,13 @@ input#timerDisplayLungs {
     background-repeat: no-repeat;
     outline: none;
     margin-right: 1rem;
+    margin-left: 1rem;
+    display: inline-flex;
+    justify-content: center;
 }
 
 .saveBtnBRT {
-    color: #0661AA;
+    color: #49B79D;
     width: 8rem;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -506,11 +513,14 @@ input#timerDisplayLungs {
     outline: none;
     text-align: center;
     margin-bottom: 30px;
+    margin-right: 1rem;
     margin-left: 1rem;
+    display: inline-flex;
+    justify-content: center;
 }
 
 .saveBtn {
-    color: #0661AA;
+    color: #49B79D;
     width: 8rem;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -522,16 +532,15 @@ input#timerDisplayLungs {
     outline: none;
     text-align: center;
     margin-bottom: 30px;
+    margin-right: 1rem;
     margin-left: 1rem;
-}
-#CTSave{
-    margin-top: 20px;
-    width: 18rem;
-    margin-left: 0;
+    display: inline-flex;
+    justify-content: center;
+    
 }
 
 .stopBtn {
-    color: rgb(177, 177, 177);
+    color: #0661aa;
     width: 8rem;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -542,10 +551,14 @@ input#timerDisplayLungs {
     background-repeat: no-repeat;
     outline: none;
     margin-right: 1rem;
+    margin-left: 1rem;
+    display: inline-flex;
+    justify-content: center;
+    margin-bottom: 30px;
 }
 
 .resetBtn {
-    color: #990000;
+    color: #0661aa;
     width: 8rem;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
@@ -556,7 +569,10 @@ input#timerDisplayLungs {
     background-repeat: no-repeat;
     outline: none;
     display: none;
+    margin-right: 1rem;
     margin-left: 1rem;
+    display: inline-flex;
+    justify-content: center;
 }
 
 #CTReset{
@@ -668,10 +684,9 @@ input#timerDisplayLungs {
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
-    color: #49B79D;
     margin-top: -1.5rem;
     font-weight: bold;
-    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.49);
+    color: rgba(73, 184, 158, 0.69);
 }
 
 .buttonminus {
@@ -681,10 +696,9 @@ input#timerDisplayLungs {
     background-color: transparent;
     background-repeat: no-repeat;
     outline: none;
-    color: #49B79D;
     margin-top: -1.3rem;
     font-weight: bold;
-    text-shadow: 1px 2px 3px rgba(0, 0, 0, 0.49);
+    color: rgba(73, 184, 158, 0.69);
 }
 #minusKB, #plusKB, #SminusKB, #SplusKB, #minusWH, #plusWH, #SminusWH, #SplusWH{
     margin-top: 0;
@@ -718,6 +732,7 @@ input#timerDisplayLungs {
 }
 .SETWH{
     width: 6rem !important;
+    background-color: rgb(245, 255, 251) !important;
 }
 /*TIMER*/
 .main-container {
@@ -755,11 +770,13 @@ input#timerDisplayLungs {
 }
 .volume-bar {
     display: flex;
-    margin: 1rem 2rem 1rem;
+    margin: 1.5rem;
+    margin-left: 2.5rem;
+    margin-right: 2.5rem;
     justify-content: space-between;
 }
 .volume-bar  h4{
-    font-size: 18px !important;
+    font-size: 14px !important;
 }
 .set h4{
     font-size: 18px !important;
@@ -772,9 +789,14 @@ input#timerDisplayLungs {
     
 }
 
-.settingBreaths{
-    width: 80%;
+.settingBreaths {
+    width: 85%;
     margin: auto;
+    background-color: rgb(245, 255, 251);
+    border-radius: 20px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 .volume-bar input[type="range"] {
   -webkit-appearance: none;
@@ -831,13 +853,10 @@ input#timerDisplayLungs {
 }
 
 .song-select {
-    width: 300px;
-    padding: 10px;
+    width: 150px;
     border: none;
-    height: 50px;
-    color: #49B79D !important;
-    font-size: 18px;
-    border-color: #e4e3d442;
+    font-size: 14px;
+    padding: 0;
 }
 
 .NOfSteps {
@@ -935,14 +954,15 @@ input#intervalsDoneHAT {
     margin-top: 20px !important;
 }
 .countdownDisplay {
-    border: 1px solid;
+    border: transparent;
     border-radius: 20px;
     margin-top: 2rem;
     text-align: center;
     font-size: 20px;
-    color: #0661AA;
+    color: rgba(6, 97, 170, 0.86);
     background-color: white;
-    width: 10rem;
+    width: 150px;
+    margin-bottom: 20px;
 }
 .BBtimer-container{
     text-align: center;
@@ -952,7 +972,7 @@ input#intervalsDoneHAT {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 3rem;
+    margin-bottom: 5rem;
     margin-top: 3rem;
 }
 .ball {
@@ -1160,10 +1180,6 @@ input[type="radio"]:checked {
     border-radius: 10px;
     margin: 40px 0px 0px 0px;
 }
-p {
-    margin-top: 0;
-    margin-bottom: 0;
-}
 #resultsPage h1 {
     text-align: center;
     margin-top: 15px;
@@ -1225,9 +1241,10 @@ input#intervalDurationInputCB {
 #resultsList {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.5rem;
     width: 90%;
     margin: auto;
+    justify-content: center;
 }
 .results-link {
     padding: 10px;

@@ -86,9 +86,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     this.stopBtnHUM.nativeElement.onclick = () => this.stopHUM();
     this.HUMSave.nativeElement.onclick = () => this.saveHUM();
     this.stopBtnHUM.nativeElement.disabled = true;
-    this.stopBtnHUM.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnHUM.nativeElement.style.display = 'none';
     this.HUMSave.nativeElement.disabled = true;
-    this.HUMSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HUMSave.nativeElement.style.display = 'none';
     this.HUMtimeInput.nativeElement.onchange = () => this.setHUMduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -220,10 +220,10 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsHUM();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnHUM.nativeElement.disabled = false;
-      this.stopBtnHUM.nativeElement.style.color = '#990000';
+      this.stopBtnHUM.nativeElement.style.display = 'inline-flex';
       if(this.roundsHUM > 0){
         this.HUMSave.nativeElement.disabled = false;
-        this.HUMSave.nativeElement.style.color = '#49B79D';
+        this.HUMSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsHUM.nativeElement.disabled = false;
       this.questionHUM.nativeElement.disabled = false;
@@ -255,9 +255,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnHUM.nativeElement.disabled = true;
-      this.stopBtnHUM.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnHUM.nativeElement.style.display = 'none';
       this.HUMSave.nativeElement.disabled = true;
-      this.HUMSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.HUMSave.nativeElement.style.display = 'none';
       this.HUMinterval = setInterval(() => this.startTimerHUM(), 1000);
       this.HUMTimer = setInterval(() => this.DisplayTimerHUM(), 1000);
       this.startCountdownHUM();
@@ -340,9 +340,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
         this.settingsHUM.nativeElement.disabled = false;
         this.questionHUM.nativeElement.disabled = false;
         this.stopBtnHUM.nativeElement.disabled = false;
-        this.stopBtnHUM.nativeElement.style.color = '#990000';
+        this.stopBtnHUM.nativeElement.style.display = 'inline-flex';
         this.HUMSave.nativeElement.disabled = false;
-        this.HUMSave.nativeElement.style.color = '#49B79D';
+        this.HUMSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.HUMball);
         this.HUMcountdownInput.nativeElement.style.display = "none";
         this.HUMtimeInput.nativeElement.style.display = "inline"; 
@@ -379,9 +379,9 @@ export class HUMPage implements  AfterViewInit, OnDestroy {
     this.HUMcurrentValue = parseInt(this.inhaleInputHUM.nativeElement.value) + 1;
     this.startBtnHUM.nativeElement.disabled = false;
     this.stopBtnHUM.nativeElement.disabled = true;
-    this.stopBtnHUM.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnHUM.nativeElement.style.display = 'none';
     this.HUMSave.nativeElement.disabled = true;
-    this.HUMSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HUMSave.nativeElement.style.display = 'none';
     this.inhaleHUM = true;
     this.hold1HUM = false;
     this.exhaleHUM = false;

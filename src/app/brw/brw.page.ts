@@ -88,9 +88,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBRW.nativeElement.onclick = () => this.stopBRW();
     this.BRWSave.nativeElement.onclick = () => this.saveBRW();
     this.stopBtnBRW.nativeElement.disabled = true;
-    this.stopBtnBRW.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBRW.nativeElement.style.display = 'none';
     this.BRWSave.nativeElement.disabled = true;
-    this.BRWSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BRWSave.nativeElement.style.display = 'none';
     this.BRWtimeInput.nativeElement.onchange = () => this.setBRWduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -205,10 +205,10 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsBRW();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnBRW.nativeElement.disabled = false;
-      this.stopBtnBRW.nativeElement.style.color = '#990000';
+      this.stopBtnBRW.nativeElement.style.display = 'inline-flex';
       if(this.roundsBRW > 0){
         this.BRWSave.nativeElement.disabled = false;
-        this.BRWSave.nativeElement.style.color = '#49B79D';
+        this.BRWSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsBRW.nativeElement.disabled = false;
       this.questionBRW.nativeElement.disabled = false;
@@ -240,9 +240,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBRW.nativeElement.disabled = true;
-      this.stopBtnBRW.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnBRW.nativeElement.style.display = 'none';
       this.BRWSave.nativeElement.disabled = true;
-      this.BRWSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.BRWSave.nativeElement.style.display = 'none';
       this.BRWinterval = setInterval(() => this.startTimerBRW(), 1000);
       this.BRWTimer = setInterval(() => this.DisplayTimerBRW(), 1000);
       this.startCountdownBRW();
@@ -347,9 +347,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
         this.settingsBRW.nativeElement.disabled = false;
         this.questionBRW.nativeElement.disabled = false;
         this.stopBtnBRW.nativeElement.disabled = false;
-        this.stopBtnBRW.nativeElement.style.color = '#990000';
+        this.stopBtnBRW.nativeElement.style.display = 'inline-flex';
         this.BRWSave.nativeElement.disabled = false;
-        this.BRWSave.nativeElement.style.color = '#49B79D';
+        this.BRWSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.BRWball);
         this.BRWcountdownInput.nativeElement.style.display = "none";
         this.BRWtimeInput.nativeElement.style.display = "inline"; 
@@ -386,9 +386,9 @@ export class BRWPage implements  AfterViewInit, OnDestroy {
     this.BRWcurrentValue = parseInt(this.inhaleInputBRW.nativeElement.value) + 1;
     this.startBtnBRW.nativeElement.disabled = false;
     this.stopBtnBRW.nativeElement.disabled = true;
-    this.stopBtnBRW.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBRW.nativeElement.style.display = 'none';
     this.BRWSave.nativeElement.disabled = true;
-    this.BRWSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BRWSave.nativeElement.style.display = 'none';
     this.inhaleBRW = true;
     this.hold1BRW = false;
     this.exhaleBRW = false;

@@ -21,19 +21,19 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Latest</strong>
       <strong *ngIf="isPortuguese">Último</strong>
-      <span   *ngIf="!isPortuguese">{{ latestTest.result }} seconds on {{ latestTest.date}}</span>
-      <span *ngIf="isPortuguese">{{ latestTest.result }} segundos no {{ latestTest.date}}</span>
+      <span class="greenColor"  *ngIf="!isPortuguese">{{ latestTest.result }} seconds on {{ latestTest.date}}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ latestTest.result }} segundos no {{ latestTest.date}}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest</strong>
       <strong *ngIf="isPortuguese">Mais Longo</strong>
-      <span   *ngIf="!isPortuguese">{{ longestTest.result }} seconds on {{ longestTest.date}}</span>
-      <span *ngIf="isPortuguese">{{ longestTest.result }} segundos no {{ longestTest.date}}</span>
+      <span  class="greenColor" *ngIf="!isPortuguese">{{ longestTest.result }} seconds on {{ longestTest.date}}</span>
+      <span  class="greenColor" *ngIf="isPortuguese">{{ longestTest.result }} segundos no {{ longestTest.date}}</span>
     </div>
     <div class="overview-item">
       <strong>Total</strong>
-      <span   *ngIf="!isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Test' : 'Tests' }}</span>
-      <span *ngIf="isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Teste' : 'Testes' }}</span>
+      <span  class="greenColor" *ngIf="!isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Test' : 'Tests' }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ totalTests }} {{ totalTests === 1 ? 'Teste' : 'Testes' }}</span>
     </div>
   
     <div class="feedback" [innerHTML]="getFeedbackText()"></div>

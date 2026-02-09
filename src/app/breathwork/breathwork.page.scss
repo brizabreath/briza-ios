@@ -35,14 +35,13 @@
 
   overflow-x: auto;
   overflow-y: hidden;
-
-  padding-bottom: 12px;
   padding-right: 12px;
+  padding-bottom: 5px;
   -webkit-overflow-scrolling: touch;
 }
 
 /* 2 full cards + ~1/3 of the next card visible */
-.horizontal-scroll .breath-button2 {
+.horizontal-scroll .breath-button1 {
   flex: 0 0 auto;
 
   /* tweak these two values to taste */
@@ -51,6 +50,8 @@
 
   width: calc((100vw - (2 * var(--gap)) - (2 * 12px) - var(--peek)) / 2);
   height: 100px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 /* Optional: hide scrollbar */
@@ -59,7 +60,7 @@
 
 .iconBP2 {
   width: 1.5rem;
-  margin-left: 10px;
+  margin-bottom: 5px;
 }
 .textBW2{
   width: 100%;
@@ -68,4 +69,29 @@
 .textBW2 .titleBW2 {
   font-size: 15px;
   color: #0661AA;
+}
+.breath-button1 {
+  display: flex;
+  flex-direction: column;   /* stack icon on top of text */
+  align-items: center;      /* center horizontally */
+  justify-content: center;  /* center vertically */
+
+  background-color: #fdfbf6;
+  border: none;
+  border-radius: 16px;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+  height: 100px;
+  text-align: center;
+  text-decoration: none;
+}
+.icon-img {
+  width: 16px !important;
+  position: relative !important;
+}
+.icon-img2 {
+  width: 22px !important;
+  position: relative !important;
+}
+.share-btn{
+  background-color: transparent;
 }

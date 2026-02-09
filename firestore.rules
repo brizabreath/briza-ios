@@ -1,87 +1,106 @@
-// firestore.rules
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-		match /users/{userId}/notifications/{notifId} {
-      allow read, write: if request.auth != null;
+
+    // =========================
+    // Helpers
+    // =========================
+    function signedIn() {
+      return request.auth != null;
     }
 
+    // Admin = user has a doc in /admins/{uid}
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // =========================
+    // Notifications 
+    // =========================
+    match /users/{userId}/notifications/{notifId} {
+      allow read, write: if signedIn();
+    }
+
+
+    // =========================
+    // Devices
+    // =========================
     match /devices/{deviceId} {
-      allow read, write: if request.auth != null;  // user must be signed in
-    }
-    
-  	match /freeAccessUsers/{email} {
-      allow read: if request.auth != null;
-    }
-    // Each user can read/write their own user doc
-    match /users/{userId} {
-      allow read, write: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+      // If you want any signed-in user to read/write their device doc, keep as-is.
+      // If you want to restrict per-user, you need an owner field and check it.
+      allow read, write: if signedIn();
     }
 
-    // Public video docs
+    // =========================
+    // Free access (whitelist)
+    // =========================
+    match /freeAccessUsers/{email} {
+      allow read: if signedIn();
+      // optional: allow admin to manage whitelist
+      allow create, update, delete: if isAdmin();
+    }
+
+    // =========================
+    // Users
+    // =========================
+    match /users/{userId} {
+      // user can access own doc; admin can access any
+      allow read, write: if signedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // =========================
+    // Videos (public read, admin write)
+    // =========================
     match /videos/{videoId} {
       allow read: if true;
+      allow create, update, delete: if isAdmin();
 
-      // 🟢 allow write/update only for admin email
-      allow create, update, delete: if request.auth != null
-        && request.auth.token.email == 'info@brizabreath.com';
-
-      // Per-video comments
       match /comments/{commentId} {
         allow read: if true;
 
-        // Create: signed-in user, self-authored, non-empty text
-        allow create: if request.auth != null
+        // signed-in user creates self-authored comment with non-empty text
+        allow create: if signedIn()
           && request.resource.data.userId == request.auth.uid
           && request.resource.data.text is string
           && request.resource.data.text.size() > 0;
 
-        // Delete: author OR admin (by email)
-        allow delete: if request.auth != null && (
-          request.auth.uid == resource.data.userId ||
-          request.auth.token.email == 'info@brizabreath.com'
-        );
+        // author OR admin can delete
+        allow delete: if signedIn()
+          && (request.auth.uid == resource.data.userId || isAdmin());
 
-        // No edits
+        // no edits
         allow update: if false;
       }
     }
-    // Public quotes; only you can write
+
+    // =========================
+    // Quotes (public read, admin write)
+    // =========================
     match /quotes/{quoteId} {
       allow read: if true;
 
-      function isAdmin() {
-        return request.auth != null
-          && (
-            // option A: by email (you already use this for comment deletes)
-            request.auth.token.email == 'info@brizabreath.com'
-            // option B: or by UID(s) — add yours if you prefer
-            // || request.auth.uid in ['YOUR_UID_HERE']
-          );
-      }
-
       function isValidQuote(d) {
         return d.text is string && d.text.size() > 0
-            && d.author is string && d.author.size() > 0
-            && d.language in ['EN','PT'];
+          && d.author is string && d.author.size() > 0
+          && d.language in ['EN','PT'];
       }
 
       allow create: if isAdmin() && isValidQuote(request.resource.data);
       allow update, delete: if isAdmin();
     }
-    // ===== Helpers =====
-    function isAdmin() {
-      return request.auth != null
-        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
-    }
-    match /admins/{uid} {
-      // Only admins can see the admin list
-      allow read: if isAdmin();
 
-      // Only admins can manage admins (so one admin can add another)
-      allow create, update, delete: if isAdmin();
+    // =========================
+    // Admins list
+    // =========================
+    match /admins/{uid} {
+      // only admins can see/manage the admins list
+      allow read, create, update, delete: if isAdmin();
     }
+
+    // =========================
     // Admin-only stats
+    // =========================
     match /stats/{docId} {
       allow read, write: if isAdmin();
     }
@@ -89,6 +108,10 @@ service cloud.firestore {
     match /admin_monthly/{docId} {
       allow read, write: if isAdmin();
     }
+
+    // =========================
+    // Email queue: nobody from client
+    // =========================
     match /email_queue/{docId} {
       allow read, write: if false;
     }

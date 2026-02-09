@@ -86,9 +86,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.stopBtnYB.nativeElement.onclick = () => this.stopYB();
     this.YBSave.nativeElement.onclick = () => this.saveYB();
     this.stopBtnYB.nativeElement.disabled = true;
-    this.stopBtnYB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnYB.nativeElement.style.display = 'none';
     this.YBSave.nativeElement.disabled = true;
-    this.YBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.YBSave.nativeElement.style.display = 'none';
     this.YBtimeInput.nativeElement.onchange = () => this.setYBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -221,10 +221,10 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsYB();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnYB.nativeElement.disabled = false;
-      this.stopBtnYB.nativeElement.style.color = '#990000';
+      this.stopBtnYB.nativeElement.style.display = 'inline-flex';
       if(this.roundsYB > 0){
         this.YBSave.nativeElement.disabled = false;
-        this.YBSave.nativeElement.style.color = '#49B79D';
+        this.YBSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsYB.nativeElement.disabled = false;
       this.questionYB.nativeElement.disabled = false;
@@ -252,9 +252,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnYB.nativeElement.disabled = true;
-      this.stopBtnYB.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnYB.nativeElement.style.display = 'none';
       this.YBSave.nativeElement.disabled = true;
-      this.YBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.YBSave.nativeElement.style.display = 'none';
       this.YBinterval = setInterval(() => this.startTimerYB(), 1000);
       this.YBTimer = setInterval(() => this.DisplayTimerYB(), 1000);
       this.startCountdownYB();
@@ -347,9 +347,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
         this.settingsYB.nativeElement.disabled = false;
         this.questionYB.nativeElement.disabled = false;
         this.stopBtnYB.nativeElement.disabled = false;
-        this.stopBtnYB.nativeElement.style.color = '#990000';
+        this.stopBtnYB.nativeElement.style.display = 'inline-flex';
         this.YBSave.nativeElement.disabled = false;
-        this.YBSave.nativeElement.style.color = '#49B79D';
+        this.YBSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.YBball);
         this.YBcountdownInput.nativeElement.style.display = "none";
         this.YBtimeInput.nativeElement.style.display = "inline"; 
@@ -386,9 +386,9 @@ export class YogicPage implements  AfterViewInit, OnDestroy {
     this.YBcurrentValue = parseInt(this.inhaleInputYB.nativeElement.value) + 1;
     this.startBtnYB.nativeElement.disabled = false;
     this.stopBtnYB.nativeElement.disabled = true;
-    this.stopBtnYB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnYB.nativeElement.style.display = 'none';
     this.YBSave.nativeElement.disabled = true;
-    this.YBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.YBSave.nativeElement.style.display = 'none';
     this.inhaleYB = true;
     this.hold1YB = false;
     this.exhaleYB = false;

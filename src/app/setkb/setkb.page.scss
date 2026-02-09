@@ -1,0 +1,85 @@
+.ball-settings-card {
+  padding: 12px;
+}
+
+.ball-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: auto;
+    margin-top: 10px;
+    width: 85%;
+}
+
+.ball-side-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ball-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.ball-anim {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: breatheScale var(--breatheMs, 500ms) ease-in-out infinite;
+}
+
+.ball-anim img {
+  width: 92px;
+  height: 92px;
+}
+
+.ball-text {
+  position: absolute;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.speed-buttons {
+    display: flex;
+    margin: auto;
+    gap: 10px;
+    margin-top: 14px;
+    width: 85%;
+}
+
+.speed-btn {
+  flex: 1;
+  padding: 12px 10px;
+  border-radius: 14px;
+  font-size: 14px;
+  opacity: 0.75;
+  background-color: white;
+    color: #49B79D;
+}
+
+.speed-btn.active {
+    opacity: 1;
+    font-weight: 700;
+    background-color: rgb(236, 255, 247);
+    color: #0661AA;
+}
+
+@keyframes breatheScale {
+  0%   { transform: scale(0.65); }
+  50%  { transform: scale(1.0); }
+  100% { transform: scale(0.65); }
+}
+.settingspages {
+width: 100%;
+color: rgb(6, 97, 170);
+text-align: center;
+margin-top: 120px;
+}

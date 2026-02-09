@@ -36,12 +36,7 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   @ViewChild('breathBarSETKB') breathBarSETKB!: ElementRef<HTMLInputElement>;
   @ViewChild('bellBarSETKB') bellBarSETKB!: ElementRef<HTMLInputElement>;
   @ViewChild('songSelectSETKB') songSelectSETKB!: ElementRef<HTMLSelectElement>; // Reference to the select element
-  @ViewChild('minusKB') minusKB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('plusKB') plusKB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('SminusKB') SminusKB!: ElementRef<HTMLButtonElement>;
-  @ViewChild('SplusKB') SplusKB!: ElementRef<HTMLButtonElement>;
   @ViewChild('breathsetInputKB') breathsetInputKB!: ElementRef<HTMLInputElement>;
-  @ViewChild('speedsetInputKB') speedsetInputKB!: ElementRef<HTMLInputElement>;
   @ViewChild('setVrmuteKB') setVrmuteKB!: ElementRef<HTMLDivElement>;
   @ViewChild('setVraudioKB') setVraudioKB!: ElementRef<HTMLDivElement>;
   @ViewChild('vibrBarSETKB') vibrBarSETKB!: ElementRef<HTMLInputElement>;
@@ -53,11 +48,18 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   private breathMute = localStorage.getItem('breathMute') === 'true';
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private KBbreaths: any = null;
-  private KBbreathSpeed: any = null; 
+  KBbreathSpeed: any = null; 
   private isFemale = localStorage.getItem('isFemale') === 'true';
   private vibrMute = localStorage.getItem('vibrMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+  displayBreaths = 30;              
+  speedLabel: 'Slow'|'Medium'|'Fast' = 'Medium';
 
+  private SPEED_MAP: Record<'Slow'|'Medium'|'Fast', number> = {
+    Slow: 700,
+    Medium: 600,
+    Fast: 500,
+  };
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
   // Method called when the user selects a song
@@ -113,16 +115,12 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     this.bellBarSETKB.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSetKB.nativeElement.addEventListener('input', () => this.handleMaleChange());
     this.vibrBarSETKB.nativeElement.addEventListener('input', () => this.handlevibrChange());
-    // Add event listener for breath changes
-    this.minusKB.nativeElement.onclick = () => this.handleMinusChange();
-    this.plusKB.nativeElement.onclick = () => this.handlePlusChange();
-    this.SminusKB.nativeElement.onclick = () => this.handleSMinusChange();
-    this.SplusKB.nativeElement.onclick = () => this.handleSPlusChange();
   }
 
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+      this.syncBreathUIFromStorage();
     if(this.audioPlayerMute){
       this.volumeBarSETKB.nativeElement.value = '0';
       this.setaudio.nativeElement.style.display = 'none';
@@ -186,61 +184,7 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     } else {
       this.KBbreaths = parseInt(this.KBbreaths); // Convert the stored string to a number
     }
-    this.KBbreathSpeed = localStorage.getItem('speedOfBreathsKB');
-    // Check if it doesn't exist or is null
-    if (this.KBbreathSpeed === null) {
-      this.KBbreathSpeed = 650; // Default value
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
-      this.speedsetInputKB.nativeElement.value = "Medium";
-    } else {
-      if(this.KBbreathSpeed == 800){
-        this.speedsetInputKB.nativeElement.value = "Slow";
-      } else if(this.KBbreathSpeed == 650){
-        this.speedsetInputKB.nativeElement.value = "Medium";
-      } else if(this.KBbreathSpeed == 500){
-        this.speedsetInputKB.nativeElement.value = "Fast";
-      } 
-      this.KBbreathSpeed = parseInt(this.KBbreathSpeed); // Convert the stored string to a number
-    }
     this.breathsetInputKB.nativeElement.value = (this.KBbreaths - 1).toString();
-  }
-  handleMinusChange():void{
-    if (this.KBbreaths > 11) {
-      this.KBbreaths = this.KBbreaths - 10;
-      this.breathsetInputKB.nativeElement.value = (this.KBbreaths - 1).toString();
-      localStorage.setItem('numberOfBreaths', this.KBbreaths.toString()); // Store it in localStorage
-    }
-  }
-  handlePlusChange():void{
-    if (this.KBbreaths < 71) {
-      this.KBbreaths = this.KBbreaths + 10;
-      this.breathsetInputKB.nativeElement.value = (this.KBbreaths - 1).toString();
-      localStorage.setItem('numberOfBreaths', this.KBbreaths.toString()); // Store it in localStorage
-    }
-  }
-  handleSMinusChange():void{
-    if (this.speedsetInputKB.nativeElement.value == "Medium") {
-      this.speedsetInputKB.nativeElement.value = "Slow";
-      this.KBbreathSpeed = 800;
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
-    }
-    else if (this.speedsetInputKB.nativeElement.value == "Fast") {
-      this.speedsetInputKB.nativeElement.value = "Medium";
-      this.KBbreathSpeed = 650;
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
-    }
-  }
-  handleSPlusChange():void{
-    if (this.speedsetInputKB.nativeElement.value == "Slow") {
-      this.speedsetInputKB.nativeElement.value = "Medium";
-      this.KBbreathSpeed = 650;
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
-    }
-    else if (this.speedsetInputKB.nativeElement.value == "Medium") {
-      this.speedsetInputKB.nativeElement.value = "Fast";
-      this.KBbreathSpeed = 500;
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
-    }
   }
   // Method to handle the volume change
   handlevibrChange(): void {
@@ -355,5 +299,52 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
   // Lifecycle hook to stop audio if the component is destroyed
   ngOnDestroy(): void {
     this.stopAudio(); // Stop the audio if the user navigates away or the component is destroyed
+  }
+
+  private getNumberOfBreathsRaw(): number {
+    const raw = parseInt(localStorage.getItem('numberOfBreaths') || '31', 10);
+    // clamp
+    return Math.max(11, Math.min(101, raw));
+  }
+
+  private setNumberOfBreathsRaw(raw: number) {
+    const clamped = Math.max(11, Math.min(101, raw));
+    localStorage.setItem('numberOfBreaths', String(clamped));
+    this.displayBreaths = clamped - 1;
+  }
+
+  // - button
+  decBreaths() {
+    const raw = this.getNumberOfBreathsRaw();
+    if (raw > 11) this.setNumberOfBreathsRaw(raw - 10);
+  }
+
+  // + button
+  incBreaths() {
+    const raw = this.getNumberOfBreathsRaw();
+    if (raw < 101) this.setNumberOfBreathsRaw(raw + 10);
+  }
+
+  setSpeed(label: 'Slow'|'Medium'|'Fast') {
+    this.speedLabel = label;
+    const ms = this.SPEED_MAP[label];
+    localStorage.setItem('KBspeedOfBreaths', String(ms));
+    this.KBbreathSpeed = ms;
+  }
+
+  // call this on enter to sync UI from storage
+  private syncBreathUIFromStorage() {
+    // breaths
+    const rawBreaths = this.getNumberOfBreathsRaw();
+    this.displayBreaths = rawBreaths - 1;
+
+    // speed
+    const rawSpeed = parseInt(localStorage.getItem('KBspeedOfBreaths') || '600', 10);
+
+    if (rawSpeed >= 700) this.speedLabel = 'Slow';
+    else if (rawSpeed <= 500) this.speedLabel = 'Fast';
+    else this.speedLabel = 'Medium';
+
+    this.KBbreathSpeed = rawSpeed;
   }
 }

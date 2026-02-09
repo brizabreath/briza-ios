@@ -81,9 +81,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     this.stopBtnUB.nativeElement.onclick = () => this.stopUB();
     this.UBSave.nativeElement.onclick = () => this.saveUB();
     this.stopBtnUB.nativeElement.disabled = true;
-    this.stopBtnUB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnUB.nativeElement.style.display = 'none';
     this.UBSave.nativeElement.disabled = true;
-    this.UBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.UBSave.nativeElement.style.display = 'none';
     this.UBtimeInput.nativeElement.onchange = () => this.setUBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -207,10 +207,10 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsUB();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnUB.nativeElement.disabled = false;
-      this.stopBtnUB.nativeElement.style.color = '#990000';
+      this.stopBtnUB.nativeElement.style.display = 'inline-flex';
       if(this.roundsUB > 0){
         this.UBSave.nativeElement.disabled = false;
-        this.UBSave.nativeElement.style.color = '#49B79D';
+        this.UBSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsUB.nativeElement.disabled = false;
       this.questionUB.nativeElement.disabled = false;
@@ -238,9 +238,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnUB.nativeElement.disabled = true;
-      this.stopBtnUB.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnUB.nativeElement.style.display = 'none';
       this.UBSave.nativeElement.disabled = true;
-      this.UBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.UBSave.nativeElement.style.display = 'none';
       this.UBinterval = setInterval(() => this.startTimerUB(), 1000);
       this.UBTimer = setInterval(() => this.DisplayTimerUB(), 1000);
       this.startCountdownUB();
@@ -307,9 +307,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
         this.settingsUB.nativeElement.disabled = false;
         this.questionUB.nativeElement.disabled = false;
         this.stopBtnUB.nativeElement.disabled = false;
-        this.stopBtnUB.nativeElement.style.color = '#990000';
+        this.stopBtnUB.nativeElement.style.display = 'inline-flex';
         this.UBSave.nativeElement.disabled = false;
-        this.UBSave.nativeElement.style.color = '#49B79D';
+        this.UBSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.UBball);
         this.UBcountdownInput.nativeElement.style.display = "none";
         this.UBtimeInput.nativeElement.style.display = "inline"; 
@@ -346,9 +346,9 @@ export class UBPage implements  AfterViewInit, OnDestroy {
     this.UBcurrentValue = parseInt(this.inhaleInputUB.nativeElement.value) + 1;
     this.startBtnUB.nativeElement.disabled = false;
     this.stopBtnUB.nativeElement.disabled = true;
-    this.stopBtnUB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnUB.nativeElement.style.display = 'none';
     this.UBSave.nativeElement.disabled = true;
-    this.UBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.UBSave.nativeElement.style.display = 'none';
     this.inhaleUB = true;
     this.exhaleUB = false;
     this.globalService.changeBall(1, 1, this.UBball);

@@ -85,9 +85,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.stopBtnAP.nativeElement.onclick = () => this.stopAP();
     this.APSave.nativeElement.onclick = () => this.saveAP();
     this.stopBtnAP.nativeElement.disabled = true;
-    this.stopBtnAP.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnAP.nativeElement.style.display = 'none';
     this.APSave.nativeElement.disabled = true;
-    this.APSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.APSave.nativeElement.style.display = 'none';
     this.APtimeInput.nativeElement.onchange = () => this.setAPduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -214,10 +214,10 @@ export class APPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsAP();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnAP.nativeElement.disabled = false;
-      this.stopBtnAP.nativeElement.style.color = '#990000';
+      this.stopBtnAP.nativeElement.style.display = 'inline-flex';
       if(this.roundsAP > 0){
         this.APSave.nativeElement.disabled = false;
-        this.APSave.nativeElement.style.color = '#49B79D';
+        this.APSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsAP.nativeElement.disabled = false;
       this.questionAP.nativeElement.disabled = false;
@@ -249,9 +249,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnAP.nativeElement.disabled = true;
-      this.stopBtnAP.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnAP.nativeElement.style.display = 'none';
       this.APSave.nativeElement.disabled = true;
-      this.APSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.APSave.nativeElement.style.display = 'none';
       this.APinterval = setInterval(() => this.startTimerAP(), 1000);
       this.APTimer = setInterval(() => this.DisplayTimerAP(), 1000);
       this.startCountdownAP();
@@ -330,9 +330,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
         this.settingsAP.nativeElement.disabled = false;
         this.questionAP.nativeElement.disabled = false;
         this.stopBtnAP.nativeElement.disabled = false;
-        this.stopBtnAP.nativeElement.style.color = '#990000';
+        this.stopBtnAP.nativeElement.style.display = 'inline-flex';
         this.APSave.nativeElement.disabled = false;
-        this.APSave.nativeElement.style.color = '#49B79D';
+        this.APSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.APball);
         this.APcountdownInput.nativeElement.style.display = "none";
         this.APtimeInput.nativeElement.style.display = "inline"; 
@@ -369,9 +369,9 @@ export class APPage implements  AfterViewInit, OnDestroy {
     this.APcurrentValue = parseInt(this.inhaleInputAP.nativeElement.value) + 1;
     this.startBtnAP.nativeElement.disabled = false;
     this.stopBtnAP.nativeElement.disabled = true;
-    this.stopBtnAP.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnAP.nativeElement.style.display = 'none';
     this.APSave.nativeElement.disabled = true;
-    this.APSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.APSave.nativeElement.style.display = 'none';
     this.inhaleAP = true;
     this.hold1AP = false;
     this.exhaleAP = false;

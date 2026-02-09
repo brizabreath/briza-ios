@@ -17,10 +17,6 @@
   </header>  
   <div id="whPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h4 class="volumeSettings"  *ngIf="!isPortuguese">Oxygen Boost</h4>
-            <h4 class="volumeSettings"  *ngIf="isPortuguese">Boost de Oxigênio</h4>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form WH">
@@ -39,8 +35,8 @@
               </div>
               <div class="WHtimer-container">
                   <select #WHtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
-                      <option value="1">1 Round</option>
+                      <option value="infinity"> ∞ rounds</option>
+                      <option value="1">1 round</option>
                   </select>
                   <input #WHcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -75,7 +71,7 @@
               </div>
           </div>
       </div>
-      <div #WHResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #WHResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <!-- Modal for fixed round durations -->

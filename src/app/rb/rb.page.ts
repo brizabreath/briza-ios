@@ -80,9 +80,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     this.stopBtnRB.nativeElement.onclick = () => this.stopRB();
     this.RBSave.nativeElement.onclick = () => this.saveRB();
     this.stopBtnRB.nativeElement.disabled = true;
-    this.stopBtnRB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnRB.nativeElement.style.display = 'none';
     this.RBSave.nativeElement.disabled = true;
-    this.RBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.RBSave.nativeElement.style.display = 'none';
     this.RBtimeInput.nativeElement.onchange = () => this.setRBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -191,10 +191,10 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsRB();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnRB.nativeElement.disabled = false;
-      this.stopBtnRB.nativeElement.style.color = '#990000';
+      this.stopBtnRB.nativeElement.style.display = 'inline-flex';
       if(this.roundsRB > 0){
         this.RBSave.nativeElement.disabled = false;
-        this.RBSave.nativeElement.style.color = '#49B79D';
+        this.RBSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsRB.nativeElement.disabled = false;
       this.questionRB.nativeElement.disabled = false;
@@ -226,9 +226,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnRB.nativeElement.disabled = true;
-      this.stopBtnRB.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnRB.nativeElement.style.display = 'none';
       this.RBSave.nativeElement.disabled = true;
-      this.RBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.RBSave.nativeElement.style.display = 'none';
       this.RBinterval = setInterval(() => this.startTimerRB(), 1000);
       this.RBTimer = setInterval(() => this.DisplayTimerRB(), 1000);
       this.startCountdownRB();
@@ -307,9 +307,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
         this.settingsRB.nativeElement.disabled = false;
         this.questionRB.nativeElement.disabled = false;
         this.stopBtnRB.nativeElement.disabled = false;
-        this.stopBtnRB.nativeElement.style.color = '#990000';
+        this.stopBtnRB.nativeElement.style.display = 'inline-flex';
         this.RBSave.nativeElement.disabled = false;
-        this.RBSave.nativeElement.style.color = '#49B79D';
+        this.RBSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.RBball);
         this.RBcountdownInput.nativeElement.style.display = "none";
         this.RBtimeInput.nativeElement.style.display = "inline"; 
@@ -346,9 +346,9 @@ export class RBPage implements  AfterViewInit, OnDestroy {
     this.RBcurrentValue = parseInt(this.inhaleInputRB.nativeElement.value) + 1;
     this.startBtnRB.nativeElement.disabled = false;
     this.stopBtnRB.nativeElement.disabled = true;
-    this.stopBtnRB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnRB.nativeElement.style.display = 'none';
     this.RBSave.nativeElement.disabled = true;
-    this.RBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.RBSave.nativeElement.style.display = 'none';
     this.inhaleRB = true;
     this.hold1RB = false;
     this.exhaleRB = false;

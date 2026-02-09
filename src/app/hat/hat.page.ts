@@ -72,9 +72,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.HATReset.nativeElement.onclick = () => this.stopHAT();
     this.HATSave.nativeElement.onclick = () => this.saveHAT();
     this.HATReset.nativeElement.disabled = true;
-    this.HATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATReset.nativeElement.style.display = 'none';
     this.HATSave.nativeElement.disabled = true;
-    this.HATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATSave.nativeElement.style.display = 'none';
     this.HATtimeInput.nativeElement.onchange = () => this.setHATduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -185,10 +185,10 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.clearIntervalsHAT();
         localStorage.setItem('breathingON', "false"); 
         this.HATReset.nativeElement.disabled = false;
-        this.HATReset.nativeElement.style.color = '#990000';
+        this.HATReset.nativeElement.style.display = 'inline-flex';
         if(this.roundsHAT > 0){
           this.HATSave.nativeElement.disabled = false;
-          this.HATSave.nativeElement.style.color = '#49B79D';
+          this.HATSave.nativeElement.style.display = 'inline-flex';
         }
         this.settingsHAT.nativeElement.disabled = false;
         this.questionHAT.nativeElement.disabled = false;
@@ -219,9 +219,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.HATReset.nativeElement.disabled = true;
-      this.HATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.HATReset.nativeElement.style.display = 'none';
       this.HATSave.nativeElement.disabled = true;
-      this.HATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.HATSave.nativeElement.style.display = 'none';
       this.HATinterval = setInterval(() => this.startTimerHAT(), 1000);
       this.HATTimer = setInterval(() => this.DisplayTimerHAT(), 1000);
     }
@@ -289,9 +289,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
         this.settingsHAT.nativeElement.disabled = false;
         this.questionHAT.nativeElement.disabled = false;
         this.HATReset.nativeElement.disabled = false;
-        this.HATReset.nativeElement.style.color = '#990000';
+        this.HATReset.nativeElement.style.display = 'inline-flex';
         this.HATSave.nativeElement.disabled = false;
-        this.HATSave.nativeElement.style.color = '#49B79D';
+        this.HATSave.nativeElement.style.display = 'inline-flex';
         this.HATcountdownInput.nativeElement.style.display = "none";
         this.HATtimeInput.nativeElement.style.display = "inline"; 
         if(this.isPortuguese){
@@ -324,9 +324,9 @@ export class HATPage implements  AfterViewInit, OnDestroy {
     this.HATcurrentValue = 0;
     this.startBtnHAT.nativeElement.disabled = false;
     this.HATReset.nativeElement.disabled = true;
-    this.HATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATReset.nativeElement.style.display = 'none';
     this.HATSave.nativeElement.disabled = true;
-    this.HATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.HATSave.nativeElement.style.display = 'none';
     this.holdHAT = true;
     this.normalHAT = false;
     this.lightHAT = false;

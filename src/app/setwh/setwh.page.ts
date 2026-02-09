@@ -33,12 +33,7 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   @ViewChild('breathBarSETWH') breathBarSETWH!: ElementRef<HTMLInputElement>;
   @ViewChild('bellBarSETWH') bellBarSETWH!: ElementRef<HTMLInputElement>;
   @ViewChild('songSelectSETWH') songSelectSETWH!: ElementRef<HTMLSelectElement>; // Reference to the select element
-  @ViewChild('minusWH') minusWH!: ElementRef<HTMLButtonElement>;
-  @ViewChild('plusWH') plusWH!: ElementRef<HTMLButtonElement>;
-  @ViewChild('SminusWH') SminusWH!: ElementRef<HTMLButtonElement>;
-  @ViewChild('SplusWH') SplusWH!: ElementRef<HTMLButtonElement>;
   @ViewChild('breathsetInputWH') breathsetInputWH!: ElementRef<HTMLInputElement>;
-  @ViewChild('speedsetInputWH') speedsetInputWH!: ElementRef<HTMLInputElement>;
   @ViewChild('setFemale') setFemale!: ElementRef<HTMLDivElement>;
   @ViewChild('setMale') setMale!: ElementRef<HTMLDivElement>;
   @ViewChild('maleBarSetWH') maleBarSetWH!: ElementRef<HTMLInputElement>;
@@ -53,10 +48,18 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   private breathMute = localStorage.getItem('breathMute') === 'true';
   private bellMute = localStorage.getItem('bellMute') === 'true';
   private WHbreaths: any = null;
-  private WHbreathSpeed: any = null; 
+  WHbreathSpeed: any = null; 
   private isFemale = localStorage.getItem('isFemale') === 'true';
   private vibrMute = localStorage.getItem('vibrMute') === 'true';
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+   displayBreaths = 30;              
+  speedLabel: 'Slow'|'Medium'|'Fast' = 'Medium';
+
+  private SPEED_MAP: Record<'Slow'|'Medium'|'Fast', number> = {
+    Slow: 4000,
+    Medium: 3000,
+    Fast: 2000,
+  };
 
   constructor(private navCtrl: NavController, private globalService: GlobalService, private audioService: AudioService) {}
 
@@ -112,16 +115,12 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     this.bellBarSETWH.nativeElement.addEventListener('input', () => this.handleBellChange());
     this.maleBarSetWH.nativeElement.addEventListener('input', () => this.handleMaleChange());
     this.vibrBarSETWH.nativeElement.addEventListener('input', () => this.handlevibrChange());
-    // Add event listener for breath changes
-    this.minusWH.nativeElement.onclick = () => this.handleMinusChange();
-    this.plusWH.nativeElement.onclick = () => this.handlePlusChange();
-    this.SminusWH.nativeElement.onclick = () => this.handleSMinusChange();
-    this.SplusWH.nativeElement.onclick = () => this.handleSPlusChange();
   }
 
   ionViewWillEnter() {
     // Refresh the content every time the page becomes active
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    this.syncBreathUIFromStorage();
     if(this.audioPlayerMute){
       this.volumeBarSETWH.nativeElement.value = '0';
       this.setaudio.nativeElement.style.display = 'none';
@@ -185,62 +184,9 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
     } else {
       this.WHbreaths = parseInt(this.WHbreaths); // Convert the stored string to a number
     }
-    this.WHbreathSpeed = localStorage.getItem('speedOfBreaths');
-    // Check if it doesn't exist or is null
-    if (this.WHbreathSpeed === null) {
-      this.WHbreathSpeed = 1900; // Default value
-      localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
-      this.speedsetInputWH.nativeElement.value = "Medium";
-    } else {
-      if(this.WHbreathSpeed == 2200){
-        this.speedsetInputWH.nativeElement.value = "Slow";
-      } else if(this.WHbreathSpeed == 1900){
-        this.speedsetInputWH.nativeElement.value = "Medium";
-      } else if(this.WHbreathSpeed == 1600){
-        this.speedsetInputWH.nativeElement.value = "Fast";
-      } 
-      this.WHbreathSpeed = parseInt(this.WHbreathSpeed); // Convert the stored string to a number
-    }
     this.breathsetInputWH.nativeElement.value = (this.WHbreaths - 1).toString();
   }
-  handleMinusChange():void{
-    if (this.WHbreaths > 11) {
-      this.WHbreaths = this.WHbreaths - 10;
-      this.breathsetInputWH.nativeElement.value = (this.WHbreaths - 1).toString();
-      localStorage.setItem('numberOfBreaths', this.WHbreaths.toString()); // Store it in localStorage
-    }
-  }
-  handlePlusChange():void{
-    if (this.WHbreaths < 71) {
-      this.WHbreaths = this.WHbreaths + 10;
-      this.breathsetInputWH.nativeElement.value = (this.WHbreaths - 1).toString();
-      localStorage.setItem('numberOfBreaths', this.WHbreaths.toString()); // Store it in localStorage
-    }
-  }
-  handleSMinusChange():void{
-    if (this.speedsetInputWH.nativeElement.value == "Medium") {
-      this.speedsetInputWH.nativeElement.value = "Slow";
-      this.WHbreathSpeed = 2200;
-      localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
-    }
-    else if (this.speedsetInputWH.nativeElement.value == "Fast") {
-      this.speedsetInputWH.nativeElement.value = "Medium";
-      this.WHbreathSpeed = 1900;
-      localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
-    }
-  }
-  handleSPlusChange():void{
-    if (this.speedsetInputWH.nativeElement.value == "Slow") {
-      this.speedsetInputWH.nativeElement.value = "Medium";
-      this.WHbreathSpeed = 1900;
-      localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
-    }
-    else if (this.speedsetInputWH.nativeElement.value == "Medium") {
-      this.speedsetInputWH.nativeElement.value = "Fast";
-      this.WHbreathSpeed = 1600;
-      localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
-    }
-  }
+
   // Method to handle the volume change
   handlevibrChange(): void {
     const volumeSET = parseFloat(this.vibrBarSETWH.nativeElement.value);
@@ -354,5 +300,52 @@ export class SETWHPage implements AfterViewInit, OnDestroy {
   // Lifecycle hook to stop audio if the component is destroyed
   ngOnDestroy(): void {
     this.stopAudio(); // Stop the audio if the user navigates away or the component is destroyed
+  }
+
+  private getNumberOfBreathsRaw(): number {
+    const raw = parseInt(localStorage.getItem('numberOfBreaths') || '31', 10);
+    // clamp
+    return Math.max(11, Math.min(101, raw));
+  }
+
+  private setNumberOfBreathsRaw(raw: number) {
+    const clamped = Math.max(11, Math.min(101, raw));
+    localStorage.setItem('numberOfBreaths', String(clamped));
+    this.displayBreaths = clamped - 1;
+  }
+
+  // - button
+  decBreaths() {
+    const raw = this.getNumberOfBreathsRaw();
+    if (raw > 11) this.setNumberOfBreathsRaw(raw - 10);
+  }
+
+  // + button
+  incBreaths() {
+    const raw = this.getNumberOfBreathsRaw();
+    if (raw < 101) this.setNumberOfBreathsRaw(raw + 10);
+  }
+
+  setSpeed(label: 'Slow'|'Medium'|'Fast') {
+    this.speedLabel = label;
+    const ms = this.SPEED_MAP[label];
+    localStorage.setItem('speedOfBreaths', String(ms));
+    this.WHbreathSpeed = ms;
+  }
+
+  // call this on enter to sync UI from storage
+  private syncBreathUIFromStorage() {
+    // breaths
+    const rawBreaths = this.getNumberOfBreathsRaw();
+    this.displayBreaths = rawBreaths - 1;
+
+    // speed
+    const rawSpeed = parseInt(localStorage.getItem('speedOfBreaths') || '3000', 10);
+
+    if (rawSpeed >= 4000) this.speedLabel = 'Slow';
+    else if (rawSpeed <= 2000) this.speedLabel = 'Fast';
+    else this.speedLabel = 'Medium';
+
+    this.WHbreathSpeed = rawSpeed;
   }
 }

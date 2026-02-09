@@ -86,9 +86,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBOX.nativeElement.onclick = () => this.stopBOX();
     this.BOXSave.nativeElement.onclick = () => this.saveBOX();
     this.stopBtnBOX.nativeElement.disabled = true;
-    this.stopBtnBOX.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBOX.nativeElement.style.display = 'none';
     this.BOXSave.nativeElement.disabled = true;
-    this.BOXSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BOXSave.nativeElement.style.display = 'none';
     this.BOXtimeInput.nativeElement.onchange = () => this.setBOXduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -216,10 +216,10 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsBOX();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnBOX.nativeElement.disabled = false;
-      this.stopBtnBOX.nativeElement.style.color = '#990000';
+      this.stopBtnBOX.nativeElement.style.display = 'inline-flex';
       if(this.roundsBOX > 0){
         this.BOXSave.nativeElement.disabled = false;
-        this.BOXSave.nativeElement.style.color = '#49B79D';
+        this.BOXSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsBOX.nativeElement.disabled = false;
       this.questionBOX.nativeElement.disabled = false;
@@ -251,9 +251,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBOX.nativeElement.disabled = true;
-      this.stopBtnBOX.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnBOX.nativeElement.style.display = 'none';
       this.BOXSave.nativeElement.disabled = true;
-      this.BOXSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.BOXSave.nativeElement.style.display = 'none';
       this.BOXinterval = setInterval(() => this.startTimerBOX(), 1000);
       this.BOXTimer = setInterval(() => this.DisplayTimerBOX(), 1000);
       this.startCountdownBOX();
@@ -345,9 +345,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
         this.settingsBOX.nativeElement.disabled = false;
         this.questionBOX.nativeElement.disabled = false;
         this.stopBtnBOX.nativeElement.disabled = false;
-        this.stopBtnBOX.nativeElement.style.color = '#990000';
+        this.stopBtnBOX.nativeElement.style.display = 'inline-flex';
         this.BOXSave.nativeElement.disabled = false;
-        this.BOXSave.nativeElement.style.color = '#49B79D';
+        this.BOXSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.BOXball);
         this.BOXcountdownInput.nativeElement.style.display = "none";
         this.BOXtimeInput.nativeElement.style.display = "inline"; 
@@ -384,9 +384,9 @@ export class BOXPage implements  AfterViewInit, OnDestroy {
     this.BOXcurrentValue = parseInt(this.inhaleInputBOX.nativeElement.value) + 1;
     this.startBtnBOX.nativeElement.disabled = false;
     this.stopBtnBOX.nativeElement.disabled = true;
-    this.stopBtnBOX.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBOX.nativeElement.style.display = 'none';
     this.BOXSave.nativeElement.disabled = true;
-    this.BOXSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BOXSave.nativeElement.style.display = 'none';
     this.inhaleBOX = true;
     this.hold1BOX = false;
     this.exhaleBOX = false;

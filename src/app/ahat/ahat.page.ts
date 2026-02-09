@@ -74,9 +74,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.AHATReset.nativeElement.onclick = () => this.stopAHAT();
     this.AHATSave.nativeElement.onclick = () => this.saveAHAT();
     this.AHATReset.nativeElement.disabled = true;
-    this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.AHATReset.nativeElement.style.display = 'none';
     this.AHATSave.nativeElement.disabled = true;
-    this.AHATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.AHATSave.nativeElement.style.display = 'none';
     this.AHATtimeInput.nativeElement.onchange = () => this.setAHATduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -184,10 +184,10 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.clearIntervalsAHAT();
         localStorage.setItem('breathingON', "false"); 
         this.AHATReset.nativeElement.disabled = false;
-        this.AHATReset.nativeElement.style.color = '#990000';
+        this.AHATReset.nativeElement.style.display = 'inline-flex';
         if(this.roundsAHAT > 0){
           this.AHATSave.nativeElement.disabled = false;
-          this.AHATSave.nativeElement.style.color = '#49B79D';
+          this.AHATSave.nativeElement.style.display = 'inline-flex';
         }
         this.settingsAHAT.nativeElement.disabled = false;
         this.questionAHAT.nativeElement.disabled = false;
@@ -218,9 +218,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.AHATReset.nativeElement.disabled = true;
-      this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.AHATReset.nativeElement.style.display = 'none';
       this.AHATSave.nativeElement.disabled = true;
-      this.AHATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.AHATSave.nativeElement.style.display = 'none';
       this.AHATinterval = setInterval(() => this.startTimerAHAT(), 1000);
       this.AHATTimer = setInterval(() => this.DisplayTimerAHAT(), 1000);
     }
@@ -288,9 +288,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
         this.settingsAHAT.nativeElement.disabled = false;
         this.questionAHAT.nativeElement.disabled = false;
         this.AHATReset.nativeElement.disabled = false;
-        this.AHATReset.nativeElement.style.color = '#990000';
+        this.AHATReset.nativeElement.style.display = 'inline-flex';
         this.AHATSave.nativeElement.disabled = false;
-        this.AHATSave.nativeElement.style.color = '#49B79D';
+        this.AHATSave.nativeElement.style.display = 'inline-flex';
         this.AHATcountdownInput.nativeElement.style.display = "none";
         this.AHATtimeInput.nativeElement.style.display = "inline"; 
         if(this.isPortuguese){
@@ -323,9 +323,9 @@ export class AHATPage implements  AfterViewInit, OnDestroy {
     this.AHATcurrentValue = 0;
     this.startBtnAHAT.nativeElement.disabled = false;
     this.AHATReset.nativeElement.disabled = true;
-    this.AHATReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.AHATReset.nativeElement.style.display = 'none';
     this.AHATSave.nativeElement.disabled = true;
-    this.AHATSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.AHATSave.nativeElement.style.display = 'none';
     this.holdAHAT = true;
     this.normalAHAT = false;
     this.lightAHAT = false;

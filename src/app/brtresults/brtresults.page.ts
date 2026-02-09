@@ -243,8 +243,8 @@ export class BrtresultsPage implements AfterViewInit {
   getChartTitle(): string {
     const year = this.BRTendDate.getFullYear();
     return this.isPortuguese
-      ? `Seus resultados de TRB em segundos (${year})`
-      : `Your BRT results in seconds (${year})`;
+      ? `Seus resultados em segundos (${year})`
+      : `Your results in seconds (${year})`;
   }
 
   setupScrolling(): void {

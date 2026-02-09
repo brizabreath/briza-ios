@@ -23,13 +23,13 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Highest Daily Total</strong>
       <strong *ngIf="isPortuguese">Maior total de minutos em um dia</strong>
-      <span   *ngIf="!isPortuguese">{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
-      <span *ngIf="isPortuguese">{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ maxTotalMinutes }} on {{ maxTotalMinutesDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ maxTotalMinutes }} no dia {{ maxTotalMinutesDate }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ totalSessions }}</span>
+      <span class="greenColor">{{ totalSessions }}</span>
     </div>
   </div>  
 </ion-content>

@@ -23,19 +23,19 @@
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Longest Round</strong>
       <strong *ngIf="isPortuguese">Rodada Mais Longa</strong>
-      <span   *ngIf="!isPortuguese">{{ KBlongestRound }} on {{ KBlongestRoundDate }}</span>
-      <span *ngIf="isPortuguese">{{ KBlongestRound }} no dia {{ KBlongestRoundDate }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ KBlongestRound }} on {{ KBlongestRoundDate }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ KBlongestRound }} no dia {{ KBlongestRoundDate }}</span>
     </div>
      <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Lifetime Average</strong>
       <strong *ngIf="isPortuguese">Média de todas sessões</strong>
-      <span   *ngIf="!isPortuguese">{{ KBlongestSessionAverage }}</span>
-      <span *ngIf="isPortuguese">{{ KBlongestSessionAverage }}</span>
+      <span class="greenColor"   *ngIf="!isPortuguese">{{ KBlongestSessionAverage }}</span>
+      <span class="greenColor" *ngIf="isPortuguese">{{ KBlongestSessionAverage }}</span>
     </div>
     <div class="overview-item">
       <strong   *ngIf="!isPortuguese">Total Sessions</strong>
       <strong *ngIf="isPortuguese">Total de Sessões</strong>
-      <span>{{ KBtotalSessions }}</span>
+      <span class="greenColor">{{ KBtotalSessions }}</span>
     </div>
   </div>  
 </ion-content>

@@ -10,14 +10,14 @@
 
     <div class="placeholderHeader">
       <div class="questionMark questionClass2">
-        <button #questionBREATH type="button" (click)="openOpenScreen()">
+        <button #questionBREATH type="button" (click)="startAppGuide()">
           <img class="questionIMG" src="assets/images/question.png">
         </button>
       </div>
     </div>
   </header>
 
-  <div id="breathgrid">
+  <div #brworkPage>
     <div id="breathpagegrid">
       <div class="welcomeDisplay">
         <h2>{{ greetingText }}</h2>
@@ -25,10 +25,7 @@
 
       <!-- No BRT today -->
       <div *ngIf="!hasBrtToday">
-        <h3  *ngIf="!isPortuguese" class="homeWeek">Check your retention test daily</h3>
-        <h3  *ngIf="isPortuguese" class="homeWeek">Verifique seu teste de retenção diariamente</h3>
-
-        <a class="breath-button" routerLink="/brt">
+        <a class="breath-button" routerLink="/brt" id="hp-brtHome">
           <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
           <div class="textBP">
             <div class="titleBP"  *ngIf="!isPortuguese">Briza<br>Retention Test</div>
@@ -41,14 +38,7 @@
 
       <!-- Has BRT today -->
       <div *ngIf="hasBrtToday">
-        <h3 class="homeWeek"  *ngIf="!isPortuguese">
-          Improve your score of <b>{{ latestBRTResultInSeconds }}</b> seconds
-        </h3>
-        <h3   *ngIf="isPortuguese" class="homeWeek">
-          Melhore sua pontuação de <b>{{ latestBRTResultInSeconds }}</b> segundos
-        </h3>
-
-        <a class="breath-button" routerLink="/program">
+        <a class="breath-button" routerLink="/program" id="hp-progHome">
           <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
           <div class="textBP">
             <div class="titleBP"  *ngIf="!isPortuguese">Briza Program</div>
@@ -62,31 +52,24 @@
       <h3  *ngIf="!isPortuguese">How Briza can help</h3>
       <h3  *ngIf="isPortuguese">Como Briza pode te ajudar</h3>
 
-      <div class="horizontal-scroll">
-        <a class="breath-button2" routerLink="/anxiety">
+      <div class="horizontal-scroll" id="hp-moodScroll">
+        <a class="breath-button1" routerLink="/anxiety">
           <img src="assets/images/anxiety.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2"  *ngIf="!isPortuguese">Stress & <br>Anxiety</div>
-            <div class="titleBW2"  *ngIf="isPortuguese">Estresse e <br>Ansiedade</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Stress & Anxiety</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Stress & Ansiedade</div>
           </div>
         </a>
-
-        <a class="breath-button2" routerLink="/sleep">
+        
+        <a class="breath-button1" routerLink="/sleep">
           <img src="assets/images/sleepbetter.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2"  *ngIf="!isPortuguese">Better <br>sleep</div>
-            <div class="titleBW2"  *ngIf="isPortuguese">Durma <br>melhor</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Better sleep</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Durma melhor</div>
           </div>
         </a>
 
-        <a class="breath-button2" routerLink="/perform">
-          <img src="assets/images/performanceIcon.png" alt="icon" class="iconBP2" />
-          <div class="textBW2">
-            <div class="titleBW2">Performance</div>
-          </div>
-        </a>
-
-        <a class="breath-button2" routerLink="/vitality">
+        <a class="breath-button1" routerLink="/vitality">
           <img src="assets/images/vitality.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
             <div class="titleBW2"  *ngIf="!isPortuguese">Vitality</div>
@@ -94,53 +77,83 @@
           </div>
         </a>
 
-        <a class="breath-button2" routerLink="/pain">
+         <a class="breath-button1" routerLink="/perform">
+          <img src="assets/images/performanceIcon.png" alt="icon" class="iconBP2" />
+          <div class="textBW2">
+            <div class="titleBW2">Performance</div>
+          </div>
+        </a>
+
+        <a class="breath-button1" routerLink="/pain">
           <img src="assets/images/pain.png" alt="icon" class="iconBP2" />
           <div class="textBW2">
-            <div class="titleBW2"  *ngIf="!isPortuguese">Pain <br>relief</div>
-            <div class="titleBW2"  *ngIf="isPortuguese">Alívio de <br>dores</div>
+            <div class="titleBW2"  *ngIf="!isPortuguese">Pain relief</div>
+            <div class="titleBW2"  *ngIf="isPortuguese">Alívio de dores</div>
           </div>
         </a>
       </div>
+      <div id="hp-progress">
+        <h3>{{ progressText }}</h3>
 
-      <h3  *ngIf="!isPortuguese">Your progress</h3>
-      <h3  *ngIf="isPortuguese">Seu progresso</h3>
+        <div class="weekday-row">
+          <div class="day">
+            <div id="circle-mon" class="circle"></div>
+            <div class="label"  *ngIf="!isPortuguese">M</div>
+            <div class="label"  *ngIf="isPortuguese">S</div>
+          </div>
+          <div class="day">
+            <div id="circle-tue" class="circle"></div>
+            <div class="label">T</div>
+          </div>
+          <div class="day">
+            <div id="circle-wed" class="circle"></div>
+            <div class="label"  *ngIf="!isPortuguese">W</div>
+            <div class="label"  *ngIf="isPortuguese">Q</div>
+          </div>
+          <div class="day">
+            <div id="circle-thu" class="circle"></div>
+            <div class="label"  *ngIf="!isPortuguese">T</div>
+            <div class="label"  *ngIf="isPortuguese">Q</div>
+          </div>
+          <div class="day">
+            <div id="circle-fri" class="circle"></div>
+            <div class="label"  *ngIf="!isPortuguese">F</div>
+            <div class="label"  *ngIf="isPortuguese">S</div>
+          </div>
+          <div class="day">
+            <div id="circle-sat" class="circle"></div>
+            <div class="label">S</div>
+          </div>
+          <div class="day">
+            <div id="circle-sun" class="circle"></div>
+            <div class="label"  *ngIf="!isPortuguese">S</div>
+            <div class="label"  *ngIf="isPortuguese">D</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote-container2"  *ngIf="!isPortuguese">
+        <p class="quote-text2">{{ selectedQuote?.text }}</p>
+        <div class="quote-author2">{{ selectedQuote?.author }}
+          <button class="video-icon-btn share-btn" (click)="shareOpenScreen()">
+            <img
+              src="assets/images/share.png"
+              alt="Share"
+              class="icon-img"
+            />
+          </button>
+        </div>
+      </div>
 
-      <p class="arialFont">{{ progressText }}</p>
-
-      <div class="weekday-row">
-        <div class="day">
-          <div id="circle-mon" class="circle"></div>
-          <div class="label"  *ngIf="!isPortuguese">M</div>
-          <div class="label"  *ngIf="isPortuguese">S</div>
-        </div>
-        <div class="day">
-          <div id="circle-tue" class="circle"></div>
-          <div class="label">T</div>
-        </div>
-        <div class="day">
-          <div id="circle-wed" class="circle"></div>
-          <div class="label"  *ngIf="!isPortuguese">W</div>
-          <div class="label"  *ngIf="isPortuguese">Q</div>
-        </div>
-        <div class="day">
-          <div id="circle-thu" class="circle"></div>
-          <div class="label"  *ngIf="!isPortuguese">T</div>
-          <div class="label"  *ngIf="isPortuguese">Q</div>
-        </div>
-        <div class="day">
-          <div id="circle-fri" class="circle"></div>
-          <div class="label"  *ngIf="!isPortuguese">F</div>
-          <div class="label"  *ngIf="isPortuguese">S</div>
-        </div>
-        <div class="day">
-          <div id="circle-sat" class="circle"></div>
-          <div class="label">S</div>
-        </div>
-        <div class="day">
-          <div id="circle-sun" class="circle"></div>
-          <div class="label"  *ngIf="!isPortuguese">S</div>
-          <div class="label"  *ngIf="isPortuguese">D</div>
+      <div class="quote-container2"  *ngIf="isPortuguese">
+        <p class="quote-text2">{{ selectedQuote?.text }}</p>
+        <div class="quote-author2">{{ selectedQuote?.author }}
+          <button class="video-icon-btn share-btn" (click)="shareOpenScreen()">
+            <img
+              src="assets/images/share.png"
+              alt="Share"
+              class="icon-img"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -148,10 +161,10 @@
     <footer id="breathFooter"  *ngIf="!isPortuguese">
       <div class="navbar">
         <a class="active"><i class="fa fa-home active"></i>Home</a>
-        <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-        <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
-        <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
-        <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Profile</a>
+        <a class="navIcons" routerLink="/home" id="hp-program"><i class="fa fa-fire"></i>Breathwork</a>
+        <a class="navIcons" routerLink="/yoga" id="hp-yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+        <a class="navIcons" routerLink="/bpr" id="hp-bpr"><i class="fa fa-line-chart"></i>Results</a>
+        <a class="navIcons" routerLink="/profile" id="hp-profile"><i class="fa fa-user"></i>Profile</a>
       </div>
     </footer>
   </div>
@@ -159,10 +172,10 @@
   <footer id="breathFooterBR"  *ngIf="isPortuguese">
     <div class="navbar">
       <a class="active"><i class="fa fa-home active"></i>Home</a>
-      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
-      <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
-      <a class="navIcons" routerLink="/profile"><i class="fa fa-user"></i>Perfil</a>
+      <a class="navIcons" routerLink="/home" id="hp-programPT"><i class="fa fa-fire"></i>Breathwork</a>
+      <a class="navIcons" routerLink="/yoga" id="hp-yogaPT"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/bpr" id="hp-bprPT"><i class="fa fa-line-chart"></i>Resultados</a>
+      <a class="navIcons" routerLink="/profile"id="hp-profilePT"><i class="fa fa-user"></i>Perfil</a>
     </div>
   </footer>
 
@@ -177,23 +190,25 @@
 
           <div class="quote-container"  *ngIf="!isPortuguese">
             <p class="quote-text">{{ selectedQuote?.text }}</p>
-            <p class="quote-author">- {{ selectedQuote?.author }}</p>
+            <p class="quote-author">{{ selectedQuote?.author }}</p>
           </div>
 
           <div class="quote-container"  *ngIf="isPortuguese">
             <p class="quote-text">{{ selectedQuote?.text }}</p>
-            <p class="quote-author">- {{ selectedQuote?.author }}</p>
+            <p class="quote-author">{{ selectedQuote?.author }}</p>
           </div>
-
           <button (click)="shareOpenScreen()" class="share-button">
-            {{ isPortuguese ? 'Compartilhar' : 'Share' }}
+            <img
+              src="assets/images/share.png"
+              alt="Share"
+              class="icon-img2"
+            />
           </button>
         </div>
-
+      </div>
         <a class="openScreenBut" (click)="startAppGuide()">
           {{ isPortuguese ? 'Guia do app' : 'App Guide' }}
         </a>
-      </div>
     </div>
   </div>
 </ion-content>

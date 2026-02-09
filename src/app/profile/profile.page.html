@@ -13,7 +13,7 @@
     </div>
     <div class="placeholderHeader"></div>
   </header>
-  <div class="breathingpages">
+  <div class="breathingpages2">
     <h2  *ngIf="isPortuguese" >Conta</h2>
     <h2    *ngIf="!isPortuguese" >Account</h2>
     <div class="flexProfile">
@@ -92,6 +92,28 @@
       </div>
     </div>
     <hr />
+    <div class="profile">
+      <h2>{{ isPortuguese ? 'Código de promoção' : 'Promo code' }}</h2>
+
+      <div class="newsletterSection">
+        <input
+          [(ngModel)]="codeInput"
+          class="profileInput uppercase"
+          [placeholder]="isPortuguese ? 'Digite o código' : 'Enter code'"
+          inputmode="text"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          (input)="onCodeInput($event)"
+        />
+
+
+        <button type="button" class="profileBTN" (click)="redeemCode()">
+          {{ isPortuguese ? 'ATIVAR' : 'REDEEM' }}
+        </button>
+      </div>
+    </div>
+    <hr />
   <div class="profile">
     <h2>Newsletter</h2>
     <div class="newsletterSection">
@@ -134,7 +156,6 @@
       </button>
     </div>
   </div>
-
     <hr />
     <div class="profile termsPrivacyBtn profileMargin">
       <a

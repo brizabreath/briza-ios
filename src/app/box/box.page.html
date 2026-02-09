@@ -17,9 +17,6 @@
   </header>  
   <div id="boxPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings">Sama Vritti</h1>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form BOX">
@@ -51,7 +48,8 @@
               </div>
               <div class="BOXtimer-container">
                   <select #BOXtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity" *ngIf="!isPortuguese"> ∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese"> ∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
@@ -78,7 +76,7 @@
               </div>
           </div>
       </div>
-      <div #BOXResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #BOXResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalBOX" class="modal" #myModalBOX>
@@ -93,10 +91,10 @@
             <div class="mySlides fadeModal slides">
                 <img src="assets/images/yogiclines.svg">
                 <div class="text"  *ngIf="!isPortuguese">
-                  <p>The Box Breathing technique is based on the principles of deep breathing and diaphragmatic breathing</p>
+                  <p>The Sama Vritti or Box Breathing technique is based on the principles of deep breathing and diaphragmatic breathing</p>
                 </div>
                 <div class="text"  *ngIf="isPortuguese">
-                  <p>A técnica de Respiração da Caixa é baseada nos princípios da respiração profunda e da respiração diafragmática</p>
+                  <p>A técnica de Sama Vritti ou Respiração da Caixa é baseada nos princípios da respiração profunda e da respiração diafragmática</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">

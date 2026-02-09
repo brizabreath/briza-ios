@@ -4,7 +4,7 @@ import { GlobalService } from '../services/global.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { VideoModalComponent } from '../modals/video-modal.component';
 import { FirebaseService } from '../services/firebase.service';
@@ -14,6 +14,8 @@ import { ActivatedRoute } from '@angular/router';
 import { LocalReminderService } from '../services/local-reminder.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { getDocsFromServer } from 'firebase/firestore';
+import { ShepherdService } from 'angular-shepherd';
+
 
 @Component({
   selector: 'app-yoga',
@@ -50,7 +52,9 @@ export class YogaPage implements OnInit {
     private vimeoMeta: VimeoMetaService,
     private reminders: LocalReminderService,
     private route: ActivatedRoute,
-    private globalAlert: GlobalAlertService
+    private globalAlert: GlobalAlertService,
+    private shepherd: ShepherdService,
+    private router: Router
   ) {}
   isWatched(videoId: string): boolean {
     const ids: string[] = JSON.parse(localStorage.getItem(this.watchedKey) || '[]');
@@ -534,4 +538,103 @@ export class YogaPage implements OnInit {
   goBack(): void {
     this.navCtrl.back();
   }
+  ionViewDidEnter() {
+    const shouldStart = localStorage.getItem('startYogaTour') === 'true';
+    if (shouldStart) {
+      localStorage.removeItem('startYogaTour');
+    }else{
+      return;
+    }
+    const isPT = localStorage.getItem('isPortuguese') === 'true';
+    const t = (en: string, pt: string) => (isPT ? pt : en);
+    const sel = (enSel: string, ptSel: string) => (isPT ? ptSel : enSel);
+
+    this.shepherd.defaultStepOptions = {
+      cancelIcon: { enabled: true },
+      scrollTo: true,
+      canClickTarget: false,
+      modalOverlayOpeningPadding: 4,
+      modalOverlayOpeningRadius: 10,
+      classes: 'briza-tour',
+    };
+    this.shepherd.modal = true;
+
+    setTimeout(() => {
+    this.shepherd.addSteps([
+      {
+        id: 'hp-heart', 
+        text: `
+               <p>${t('Every class that you liked will be saved here',
+                      'Todas as aulas que você curtiu serão salvas aqui')}</p>`,
+        attachTo: { element: '#hp-heart', on: 'bottom' },
+        buttons: [
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() },
+        ]
+      },
+      {
+        id: 'hp-med',
+        text: `
+               <p>${t('Simple timer for you to track your meditation sessions',
+                      'Um cronômetro simples para você acompanhar suas sessões de meditação')}</p>`,
+        attachTo: { element: '#hp-med', on: 'bottom' },
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      },
+      {
+        id: 'brt-finish7',
+        text: `<h3>${t('Classes','Aulas')}</h3>
+               <p>${t('You can choose the type of practice and search by keywords and duration of class',
+                      'Você pode escolher o tipo de prática e pode pesquisar por palavras-chave e duração da aula')}</p>`,
+        buttons: [
+          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        ]
+      },
+      {
+        id: 'brt-finish6',
+        text: `<h3>${t('Continue tour?','Continuar tour?')}</h3>`,
+        buttons: [
+          { text: t('End','Fechar'), action: () => this.shepherd.complete() },
+          {
+            text: t('Next','Próximo'),
+            action: () => {
+              this.shepherd.complete();
+              localStorage.setItem('startHomeTour','true');
+              this.router.navigateByUrl('/home');
+            },
+          },
+        ],
+      }
+      ]);
+
+      const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
+      if (tour?.on) {
+        tour.off?.('start', this.lockUIForTour);
+        tour.off?.('complete', this.unlockUIForTour);
+        tour.off?.('cancel', this.unlockUIForTour);
+        tour.off?.('inactive', this.unlockUIForTour);
+
+        tour.on('start', this.lockUIForTour);
+        tour.on('complete', this.unlockUIForTour);
+        tour.on('cancel', this.unlockUIForTour);
+        tour.on('inactive', this.unlockUIForTour);
+      }
+
+      this.shepherd.start();  
+    }, 0);
+  }
+  ionViewDidLeave() {
+    this.unlockUIForTour();
+  }
+  private lockUIForTour = () => {
+    document.documentElement.classList.add('tour-active');
+    document.body.style.overflow = 'hidden'; // stop background scroll
+  };
+
+  private unlockUIForTour = () => {
+    document.documentElement.classList.remove('tour-active');
+    document.body.style.overflow = '';
+  };
 }

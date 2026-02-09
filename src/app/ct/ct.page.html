@@ -16,11 +16,9 @@
     </div>
   </header>  
   <div id="ctPage">
-    <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings"  *ngIf="!isPortuguese">CO2 Tolerance</h1>
-            <h1 class="volumeSettings"  *ngIf="isPortuguese">Tolerância ao CO2</h1>
-        </div>
+    <div class="breathingpages2">
+       <p class="centeredText"  *ngIf="!isPortuguese">Press "Restart" if you<br>can no longer cope with the breath hold</p>
+        <p class="centeredText"  *ngIf="isPortuguese">Pressione "Reiniciar" quando você<br>não puder mais acompanhar a retenção</p>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form CT"> 
@@ -39,7 +37,8 @@
               </div>
               <div class="CTtimer-container">
                   <select #CTtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
@@ -57,8 +56,8 @@
                   <!--  Information about interval  -->
                   <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT><div   *ngIf="!isPortuguese">Restart</div><div  *ngIf="isPortuguese">Reiniciar</div></button>
                   <button type="button" class="stopBtn" id="CTReset" #CTReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
+                  <button type="button" class="saveBtn" id="CTSave" #CTSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                   <form method="post" id="CTForm">
-                      <button type="button" class="saveBtn" id="CTSave" #CTSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
                       <div class="roundbox">
                           <div>Rounds:</div><div #roundsDoneCT>0</div>
                           <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
@@ -67,7 +66,7 @@
               </div>
           </div>
       </div>
-      <div #CTResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #CTResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalCT" class="modal" #myModalCT>

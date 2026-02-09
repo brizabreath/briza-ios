@@ -77,9 +77,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHReset.nativeElement.onclick = () => this.stopWH();
     this.WHSave.nativeElement.onclick = () => this.saveWH();
     this.WHReset.nativeElement.disabled = true;
-    this.WHReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.WHReset.nativeElement.style.display = 'none';
     this.WHSave.nativeElement.disabled = true;
-    this.WHSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.WHSave.nativeElement.style.display = 'none';
     this.WHtimeInput.nativeElement.onchange = () => this.setWHduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -145,7 +145,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHbreathSpeed = localStorage.getItem('speedOfBreaths');
     // Check if it doesn't exist or is null
     if (this.WHbreathSpeed === null) {
-      this.WHbreathSpeed = 1900; // Default value
+      this.WHbreathSpeed = 3000; // Default value
       localStorage.setItem('speedOfBreaths', this.WHbreathSpeed.toString()); // Store it in localStorage
     } else {
       this.WHbreathSpeed = parseInt(this.WHbreathSpeed); // Convert the stored string to a number
@@ -180,7 +180,6 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       }, 2000);
       this.globalService.timeouts.push(timeoutId3); // Store the timeout ID
       const timeoutId4 = setTimeout(async () => {
-        await this.audioService.playSound('inhale');
         if(this.isPortuguese){
           this.WHballText.nativeElement.textContent = "Inspire";
         }else{
@@ -203,10 +202,10 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.clearIntervalsWH();
         localStorage.setItem('breathingON', "false"); 
         this.WHReset.nativeElement.disabled = false;
-        this.WHReset.nativeElement.style.color = '#990000';
+        this.WHReset.nativeElement.style.display = 'inline-flex';
         if(this.roundsWH > 0){
           this.WHSave.nativeElement.disabled = false;
-          this.WHSave.nativeElement.style.color = '#49B79D';
+          this.WHSave.nativeElement.style.display = 'inline-flex';
         }
         this.settingsWH.nativeElement.disabled = false;
         this.questionWH.nativeElement.disabled = false;
@@ -238,9 +237,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.WHReset.nativeElement.disabled = true;
-      this.WHReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.WHReset.nativeElement.style.display = 'none';
       this.WHSave.nativeElement.disabled = true;
-      this.WHSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.WHSave.nativeElement.style.display = 'none';
       if(this.hold2WH){
         this.WHinterval = setInterval(() => this.startTimerWH(), 1000);
         this.WHTimer = setInterval(() => this.DisplayTimerWH(), 1000);
@@ -258,6 +257,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHbreaths--;
     if(this.WHbreaths < 1){
       clearInterval(this.WHinterval);
+      this.startBtnWH.nativeElement.disabled = true;
       this.WHinterval = null;
       if(this.isPortuguese){
         this.WHballText.nativeElement.textContent = "Segure"    
@@ -276,6 +276,7 @@ export class WHPage implements  AfterViewInit, OnDestroy {
       this.WHbreaths = this.breathsInputWH.nativeElement.value;
       const timeoutId8 = setTimeout(() => {
         this.WHinterval = setInterval(() => this.startTimerWH(), 1000);
+        this.startBtnWH.nativeElement.disabled = false;
       }, 4000);
       this.globalService.timeouts.push(timeoutId8); // Store the timeout ID
     }else{
@@ -370,9 +371,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
         this.settingsWH.nativeElement.disabled = false;
         this.questionWH.nativeElement.disabled = false;
         this.WHReset.nativeElement.disabled = false;
-        this.WHReset.nativeElement.style.color = '#990000';
+        this.WHReset.nativeElement.style.display = 'inline-flex';
         this.WHSave.nativeElement.disabled = false;
-        this.WHSave.nativeElement.style.color = '#49B79D';
+        this.WHSave.nativeElement.style.display = 'inline-flex';
         this.WHcountdownInput.nativeElement.style.display = "none";
         this.WHtimeInput.nativeElement.style.display = "inline"; 
         if(this.isPortuguese){
@@ -408,9 +409,9 @@ export class WHPage implements  AfterViewInit, OnDestroy {
     this.WHcurrentValue = 0;
     this.startBtnWH.nativeElement.disabled = false;
     this.WHReset.nativeElement.disabled = true;
-    this.WHReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.WHReset.nativeElement.style.display = 'none';
     this.WHSave.nativeElement.disabled = true;
-    this.WHSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.WHSave.nativeElement.style.display = 'none';
     this.breathsWH = true;
     this.hold2WH = false;
     this.hold1WH = false;

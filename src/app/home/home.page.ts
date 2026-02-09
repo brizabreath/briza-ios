@@ -49,18 +49,18 @@ export class HomePage {
   setTimeout(() => {
     this.shepherd.addSteps([
       {
-        id: 'hp-program',
+        id: 'hp-program2',
         text: `<h3>${t('Briza Program','Programa Briza')}</h3>
                <p>${t('Daily exercises to improve breathing efficiency and quality',
                       'Exercícios diários para melhorar a eficiência e a qualidade respiratória')}</p>`,
-        attachTo: { element: sel('#hp-program', '#hp-programPT'), on: 'bottom' },
+        attachTo: { element: sel('#hp-program2', '#hp-programPT2'), on: 'bottom' },
         buttons: [
           { text: t('Next','Próximo'), action: () => this.shepherd.next() },
         ]
       },
       {
         id: 'hp-prana',
-        text: `<h3>Pranayama</h3>
+        text: `<h3>${t('Traditional breathwork','Respirações tradicionais')}</h3>
                <p>${t('Breathing techniques to calm and balance your body',
                       'Técnicas de respiração para acalmar e equilibrar o corpo')}</p>`,
         attachTo: { element: sel('#hp-prana', '#hp-pranaPT'), on: 'bottom' },
@@ -103,40 +103,7 @@ export class HomePage {
         ]
       },
       {
-        id: 'hp-yoga',
-        text: `<h3>Yoga</h3>
-               <p>${t('Flow, gentle, and mindfulness practices',
-                'Aulas guiadas de yoga e mindfulness')}</p>`,
-        attachTo: { element: sel('#hp-yoga', '#hp-yogaPT'), on: 'top' },
-        buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      },
-      {
-        id: 'hp-bpr',
-        text: `<h3>${t('Results','Resultados')}</h3>
-               <p>${t('Check your progress',
-                      'Veja seu progresso')}</p>`,
-        attachTo: { element: sel('#hp-bpr', '#hp-bprPT'), on: 'top' },
-        buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      },
-      {
-        id: 'hp-profile',
-        text: `<h3>${t('Profile','Perfil')}</h3>
-               <p>${t('Manage your account and subscription',
-                      'Gerencie sua conta e assinatura')}</p>`,
-        attachTo: { element: sel('#hp-profile', '#hp-profilePT'), on: 'top' },
-        buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      },
-      {
-          id: 'brt-finish',
+          id: 'brt-finish3',
           text: `
             <div class="briza-tour-finish">
             <h2>${t('Get Started','Comece agora')}</h2>

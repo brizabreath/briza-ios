@@ -17,10 +17,6 @@
   </header>  
   <div id="ahatPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings"  *ngIf="!isPortuguese">Altitude Training - Pro</h1>
-            <h1 class="volumeSettings"  *ngIf="isPortuguese">Treino de Altitude - Pro</h1>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form AHAT">
@@ -39,8 +35,8 @@
               </div>
               <div class="AHATtimer-container">
                   <select #AHATtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
-                      <option value="1">1 Round</option>
+                      <option value="infinity"> ∞ rounds</option>
+                      <option value="1">1 round</option>
                   </select>
                   <input #AHATcountdownInput class="countdownDisplay" style="display: none;" readonly />
               </div>
@@ -66,7 +62,7 @@
               </div>
           </div>
       </div>
-      <div #AHATResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #AHATResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalAHAT" class="modal" #myModalAHAT>
@@ -84,7 +80,7 @@
                   <p>Bring your altitude training to another level</p>
                 </div>
                 <div class="text"  *ngIf="isPortuguese">
-                  <p>Eleve seu treinamento de alta altitude para outro nível</p>
+                  <p>Eleve seu treino em altitude para outro nível</p>
                 </div>
             </div>
             <div class="mySlides fadeModal slides">

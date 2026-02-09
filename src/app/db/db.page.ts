@@ -86,9 +86,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     this.stopBtnDB.nativeElement.onclick = () => this.stopDB();
     this.DBSave.nativeElement.onclick = () => this.saveDB();
     this.stopBtnDB.nativeElement.disabled = true;
-    this.stopBtnDB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnDB.nativeElement.style.display = 'none';
     this.DBSave.nativeElement.disabled = true;
-    this.DBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.DBSave.nativeElement.style.display = 'none';
     this.DBtimeInput.nativeElement.onchange = () => this.setDBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -148,8 +148,6 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     if(parseInt(this.inhaleInputDB.nativeElement.value) > 3){
       this.inhaleInputDB.nativeElement.value = 
       ((parseInt(this.inhaleInputDB.nativeElement.value) || 0) - 1).toString();
-      this.hold1InputDB.nativeElement.value = 
-      ((parseInt(this.hold1InputDB.nativeElement.value) || 0) - 1).toString();
       this.exhaleInputDB.nativeElement.value = 
       ((parseInt(this.exhaleInputDB.nativeElement.value) || 0) - 1).toString();
       this.hold2InputDB.nativeElement.value = 
@@ -157,11 +155,10 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     }
   }
   plusRatioDB():void{
-    if(parseInt(this.inhaleInputDB.nativeElement.value) < 20){
+    if(parseInt(this.inhaleInputDB.nativeElement.value) < 10){
       this.inhaleInputDB.nativeElement.value = 
       ((parseInt(this.inhaleInputDB.nativeElement.value) || 0) + 1).toString();
-      this.hold1InputDB.nativeElement.value = 
-      ((parseInt(this.hold1InputDB.nativeElement.value) || 0) + 1).toString();
+
       this.exhaleInputDB.nativeElement.value = 
       ((parseInt(this.exhaleInputDB.nativeElement.value) || 0) + 1).toString();
       this.hold2InputDB.nativeElement.value = 
@@ -216,10 +213,10 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsDB();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnDB.nativeElement.disabled = false;
-      this.stopBtnDB.nativeElement.style.color = '#990000';
+      this.stopBtnDB.nativeElement.style.display = 'inline-flex';
       if(this.roundsDB > 0){
         this.DBSave.nativeElement.disabled = false;
-        this.DBSave.nativeElement.style.color = '#49B79D';
+        this.DBSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsDB.nativeElement.disabled = false;
       this.questionDB.nativeElement.disabled = false;
@@ -251,9 +248,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnDB.nativeElement.disabled = true;
-      this.stopBtnDB.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnDB.nativeElement.style.display = 'none';
       this.DBSave.nativeElement.disabled = true;
-      this.DBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.DBSave.nativeElement.style.display = 'none';
       this.DBinterval = setInterval(() => this.startTimerDB(), 1000);
       this.DBTimer = setInterval(() => this.DisplayTimerDB(), 1000);
       this.startCountdownDB();
@@ -341,9 +338,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
         this.settingsDB.nativeElement.disabled = false;
         this.questionDB.nativeElement.disabled = false;
         this.stopBtnDB.nativeElement.disabled = false;
-        this.stopBtnDB.nativeElement.style.color = '#990000';
+        this.stopBtnDB.nativeElement.style.display = 'inline-flex';
         this.DBSave.nativeElement.disabled = false;
-        this.DBSave.nativeElement.style.color = '#49B79D';
+        this.DBSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.DBball);
         this.DBcountdownInput.nativeElement.style.display = "none";
         this.DBtimeInput.nativeElement.style.display = "inline"; 
@@ -380,9 +377,9 @@ export class DbPage implements  AfterViewInit, OnDestroy {
     this.DBcurrentValue = parseInt(this.inhaleInputDB.nativeElement.value) + 1;
     this.startBtnDB.nativeElement.disabled = false;
     this.stopBtnDB.nativeElement.disabled = true;
-    this.stopBtnDB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnDB.nativeElement.style.display = 'none';
     this.DBSave.nativeElement.disabled = true;
-    this.DBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.DBSave.nativeElement.style.display = 'none';
     this.inhaleDB = true;
     this.hold1DB = false;
     this.exhaleDB = false;

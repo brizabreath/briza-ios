@@ -78,9 +78,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.stopBtnBB.nativeElement.onclick = () => this.stopBB();
     this.BBSave.nativeElement.onclick = () => this.saveBB();
     this.stopBtnBB.nativeElement.disabled = true;
-    this.stopBtnBB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBB.nativeElement.style.display = 'none';
     this.BBSave.nativeElement.disabled = true;
-    this.BBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BBSave.nativeElement.style.display = 'none';
     this.BBtimeInput.nativeElement.onchange = () => this.setBBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -185,10 +185,10 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsBB();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnBB.nativeElement.disabled = false;
-      this.stopBtnBB.nativeElement.style.color = '#990000';
+      this.stopBtnBB.nativeElement.style.display = 'inline-flex';
       if(this.roundsBB > 0){
         this.BBSave.nativeElement.disabled = false;
-        this.BBSave.nativeElement.style.color = '#49B79D';
+        this.BBSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsBB.nativeElement.disabled = false;
       this.questionBB.nativeElement.disabled = false;
@@ -220,9 +220,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnBB.nativeElement.disabled = true;
-      this.stopBtnBB.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnBB.nativeElement.style.display = 'none';
       this.BBSave.nativeElement.disabled = true;
-      this.BBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.BBSave.nativeElement.style.display = 'none';
       this.BBinterval = setInterval(() => this.startTimerBB(), 1000);
       this.BBTimer = setInterval(() => this.DisplayTimerBB(), 1000);
       this.startCountdownBB();
@@ -305,9 +305,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
         this.settingsBB.nativeElement.disabled = false;
         this.questionBB.nativeElement.disabled = false;
         this.stopBtnBB.nativeElement.disabled = false;
-        this.stopBtnBB.nativeElement.style.color = '#990000';
+        this.stopBtnBB.nativeElement.style.display = 'inline-flex';
         this.BBSave.nativeElement.disabled = false;
-        this.BBSave.nativeElement.style.color = '#49B79D';
+        this.BBSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.BBball);
         this.BBcountdownInput.nativeElement.style.display = "none";
         this.BBtimeInput.nativeElement.style.display = "inline"; 
@@ -344,9 +344,9 @@ export class BBPage implements  AfterViewInit, OnDestroy {
     this.BBcurrentValue = 5;
     this.startBtnBB.nativeElement.disabled = false;
     this.stopBtnBB.nativeElement.disabled = true;
-    this.stopBtnBB.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnBB.nativeElement.style.display = 'none';
     this.BBSave.nativeElement.disabled = true;
-    this.BBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.BBSave.nativeElement.style.display = 'none';
     this.inhaleBB = true;
     this.hold1BB = false;
     this.exhaleBB = false;

@@ -37,22 +37,6 @@
     <!-- Segment Content -->
     <div class="segment-content">
       <div *ngIf="filteredVideos.length > 0" class="video-list">
-        <p class="section-subtitle">
-          <span *ngIf="selectedSegment === 'lungs' && !isPortuguese" >
-            Increase your lungs capacity
-          </span>
-          <span *ngIf="selectedSegment === 'lungs' && isPortuguese">
-            Aumente a capacidade dos seus pulmões
-          </span>
-
-          <span *ngIf="selectedSegment === 'mobility' && !isPortuguese">
-            Improve mobility with guided movement
-          </span>
-          <span *ngIf="selectedSegment === 'mobility' && isPortuguese">
-            Melhore a mobilidade com movimento guiado
-          </span>
-        </p>
-
         <div
           *ngFor="let video of filteredVideos"
           class="video-card"

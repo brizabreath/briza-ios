@@ -17,10 +17,6 @@
   </header>  
   <div id="hatPage">
     <div class="breathingpages">
-      <div class="breathingpages">
-        <h1 class="volumeSettings"  *ngIf="!isPortuguese">Altitude Training</h1>
-        <h1 class="volumeSettings"  *ngIf="isPortuguese">Treino de Altitude</h1>
-      </div>
       <div class="main-container">
         <div class="timer-status">
           <div class="settings-form HAT">
@@ -39,8 +35,8 @@
           </div>
           <div class="HATtimer-container">
             <select #HATtimeInput class="countdownDisplay">
-                <option value="infinity"> ∞ </option>
-                <option value="1">1 Round</option>
+                <option value="infinity"> ∞ rounds</option>
+                <option value="1">1 round</option>
             </select>
             <input #HATcountdownInput class="countdownDisplay" style="display: none;" readonly />
           </div>
@@ -66,7 +62,7 @@
           </div>
         </div>
       </div>
-      <div #HATResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #HATResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
     <div id="myModalHAT" class="modal" #myModalHAT>

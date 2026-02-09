@@ -76,9 +76,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.KBReset.nativeElement.onclick = () => this.stopKB();
     this.KBSave.nativeElement.onclick = () => this.saveKB();
     this.KBReset.nativeElement.disabled = true;
-    this.KBReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.KBReset.nativeElement.style.display = 'none';
     this.KBSave.nativeElement.disabled = true;
-    this.KBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.KBSave.nativeElement.style.display = 'none';
     this.KBtimeInput.nativeElement.onchange = () => this.setKBduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -140,11 +140,11 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     } else {
       this.KBbreaths = parseInt(this.KBbreaths); // Convert the stored string to a number
     }
-    this.KBbreathSpeed = localStorage.getItem('speedOfBreathsKB');
+    this.KBbreathSpeed = localStorage.getItem('KBspeedOfBreaths');
     // Check if it doesn't exist or is null
     if (this.KBbreathSpeed === null) {
-      this.KBbreathSpeed = 650; // Default value
-      localStorage.setItem('speedOfBreathsKB', this.KBbreathSpeed.toString()); // Store it in localStorage
+      this.KBbreathSpeed = 600; // Default value
+      localStorage.setItem('KBspeedOfBreaths', this.KBbreathSpeed.toString()); // Store it in localStorage
     } else {
       this.KBbreathSpeed = parseInt(this.KBbreathSpeed); // Convert the stored string to a number
     }
@@ -201,10 +201,10 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.clearIntervalsKB();
         localStorage.setItem('breathingON', "false"); 
         this.KBReset.nativeElement.disabled = false;
-        this.KBReset.nativeElement.style.color = '#990000';
+        this.KBReset.nativeElement.style.display = 'inline-flex';
         if(this.roundsKB > 0){
           this.KBSave.nativeElement.disabled = false;
-          this.KBSave.nativeElement.style.color = '#49B79D';
+          this.KBSave.nativeElement.style.display = 'inline-flex';
         }
         this.settingsKB.nativeElement.disabled = false;
         this.questionKB.nativeElement.disabled = false;
@@ -236,9 +236,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.KBReset.nativeElement.disabled = true;
-      this.KBReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.KBReset.nativeElement.style.display = 'none';
       this.KBSave.nativeElement.disabled = true;
-      this.KBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.KBSave.nativeElement.style.display = 'none';
       if(this.hold2KB){
         this.KBinterval = setInterval(() => this.startTimerKB(), 1000);
         this.KBTimer = setInterval(() => this.DisplayTimerKB(), 1000);
@@ -263,6 +263,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.hold1KB = true;
       this.KBbreaths = parseInt(this.breathsInputKB.nativeElement.value) + 1;
       await this.audioService.playBell("bell"); 
+      this.startBtnKB.nativeElement.disabled = true;
       const timeoutId9 = setTimeout(async () => {
         if(this.isPortuguese){
           this.KBballText.nativeElement.textContent = "Inspire e Segure"    
@@ -275,6 +276,7 @@ export class KBPage implements  AfterViewInit, OnDestroy {
       this.globalService.timeouts.push(timeoutId9); // Store the timeout ID
       const timeoutId8 = setTimeout(() => {
         this.KBinterval = setInterval(() => this.startTimerKB(), 1000);
+        this.startBtnKB.nativeElement.disabled = false;
       }, 2000);
       this.globalService.timeouts.push(timeoutId8); // Store the timeout ID
     }else{
@@ -368,9 +370,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
         this.settingsKB.nativeElement.disabled = false;
         this.questionKB.nativeElement.disabled = false;
         this.KBReset.nativeElement.disabled = false;
-        this.KBReset.nativeElement.style.color = '#990000';
+        this.KBReset.nativeElement.style.display = 'inline-flex';
         this.KBSave.nativeElement.disabled = false;
-        this.KBSave.nativeElement.style.color = '#49B79D';
+        this.KBSave.nativeElement.style.display = 'inline-flex';
         this.KBcountdownInput.nativeElement.style.display = "none";
         this.KBtimeInput.nativeElement.style.display = "inline"; 
         if(this.isPortuguese){
@@ -406,9 +408,9 @@ export class KBPage implements  AfterViewInit, OnDestroy {
     this.KBcurrentValue = 0;
     this.startBtnKB.nativeElement.disabled = false;
     this.KBReset.nativeElement.disabled = true;
-    this.KBReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.KBReset.nativeElement.style.display = 'none';
     this.KBSave.nativeElement.disabled = true;
-    this.KBSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.KBSave.nativeElement.style.display = 'none';
     this.breathsKB = true;
     this.hold2KB = false;
     this.hold1KB = false;

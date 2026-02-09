@@ -17,9 +17,6 @@
   </header>  
   <div id="yogicPage">
     <div class="breathingpages">
-        <div class="breathingpages">
-            <h1 class="volumeSettings">Dirga</h1>
-        </div>
         <div class="main-container">
           <div class="timer-status">
               <div class="settings-form YB">
@@ -48,7 +45,8 @@
               </div>
               <div class="YBtimer-container">
                   <select #YBtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ </option>
+                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
+                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
                       <option value="60"   *ngIf="!isPortuguese">1 minute</option>
                       <option value="60" *ngIf="isPortuguese">1 minuto</option>
                   </select>
@@ -75,7 +73,7 @@
               </div>
           </div>
       </div>
-      <div #YBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result Succesfully Saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #YBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
     </div>
   </div>
   <div id="myModalYB" class="modal" #myModalYB>

@@ -81,11 +81,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     this.CTReset.nativeElement.onclick = () => this.stopCT();
     this.CTSave.nativeElement.onclick = () => this.saveCT();
     this.stopBtnCT.nativeElement.disabled = true;
-    this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnCT.nativeElement.style.display = 'none';
     this.CTReset.nativeElement.disabled = true;
-    this.CTReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CTReset.nativeElement.style.display = 'none';
     this.CTSave.nativeElement.disabled = true;
-    this.CTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CTSave.nativeElement.style.display = 'none';
     this.CTtimeInput.nativeElement.onchange = () => this.setCTduration();
     //set up booleans
     localStorage.setItem('breathingON', "false"); 
@@ -181,7 +181,7 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.CTTimer = setInterval(() => this.DisplayTimerCT(), 1000);
         this.startBtnCT.nativeElement.disabled = false;
         this.stopBtnCT.nativeElement.disabled = false;
-        this.stopBtnCT.nativeElement.style.color = '#0661AA';
+        this.stopBtnCT.nativeElement.style.display = 'inline-flex';
         localStorage.setItem('breathingON', "true"); 
         localStorage.setItem('firstClick', "false"); 
       }, 3000);
@@ -191,12 +191,12 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.clearIntervalsCT();
       localStorage.setItem('breathingON', "false"); 
       this.stopBtnCT.nativeElement.disabled = true;
-      this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.stopBtnCT.nativeElement.style.display = 'none';
       this.CTReset.nativeElement.disabled = false;
-      this.CTReset.nativeElement.style.color = '#990000';
+      this.CTReset.nativeElement.style.display = 'inline-flex';
       if(this.roundsCT > 0){
         this.CTSave.nativeElement.disabled = false;
-        this.CTSave.nativeElement.style.color = '#49B79D';
+        this.CTSave.nativeElement.style.display = 'inline-flex';
       }
       this.settingsCT.nativeElement.disabled = false;
       this.questionCT.nativeElement.disabled = false;
@@ -228,11 +228,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
       this.audioService.playSelectedSong();
       localStorage.setItem('breathingON', "true"); 
       this.stopBtnCT.nativeElement.disabled = false;
-      this.stopBtnCT.nativeElement.style.color = '#0661AA';
+      this.stopBtnCT.nativeElement.style.display = ' inline-flex';
       this.CTReset.nativeElement.disabled = true;
-      this.CTReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.CTReset.nativeElement.style.display = 'none';
       this.CTSave.nativeElement.disabled = true;
-      this.CTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+      this.CTSave.nativeElement.style.display = 'none';
       this.CTinterval = setInterval(() => this.startTimerCT(), 1000);
       this.CTTimer = setInterval(() => this.DisplayTimerCT(), 1000);
       this.startCountdownCT();
@@ -314,11 +314,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
         this.settingsCT.nativeElement.disabled = false;
         this.questionCT.nativeElement.disabled = false;
         this.stopBtnCT.nativeElement.disabled = true;
-        this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
+        this.stopBtnCT.nativeElement.style.display = 'none';
         this.CTReset.nativeElement.disabled = false;
-        this.CTReset.nativeElement.style.color = '#990000';
+        this.CTReset.nativeElement.style.display = 'inline-flex';
         this.CTSave.nativeElement.disabled = false;
-        this.CTSave.nativeElement.style.color = '#49B79D';
+        this.CTSave.nativeElement.style.display = 'inline-flex';
         this.globalService.changeBall(1.5, 1, this.CTball);
         this.CTcountdownInput.nativeElement.style.display = "none";
         this.CTtimeInput.nativeElement.style.display = "inline"; 
@@ -355,11 +355,11 @@ export class CTPage implements  AfterViewInit, OnDestroy {
     this.CTcurrentValue = 4;
     this.startBtnCT.nativeElement.disabled = false;
     this.stopBtnCT.nativeElement.disabled = true;
-    this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.stopBtnCT.nativeElement.style.display = 'none';
     this.CTReset.nativeElement.disabled = true;
-    this.CTReset.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CTReset.nativeElement.style.display = 'none';
     this.CTSave.nativeElement.disabled = true;
-    this.CTSave.nativeElement.style.color = 'rgb(177, 177, 177)';
+    this.CTSave.nativeElement.style.display = 'none';
     this.inhaleCT = true;
     this.hold1CT = false;
     this.exhaleCT = false;
@@ -382,7 +382,6 @@ export class CTPage implements  AfterViewInit, OnDestroy {
   }
   resetCT(): void{
     this.stopBtnCT.nativeElement.disabled = true;
-    this.stopBtnCT.nativeElement.style.color = 'rgb(177, 177, 177)';
     this.audioService.pauseSelectedSong();
     this.clearIntervalsCT();    
     this.CTcurrentValue = 4;

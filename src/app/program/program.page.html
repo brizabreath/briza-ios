@@ -18,23 +18,7 @@
   <div id="programPage">
     <div id="personalizedBriza" #personalizedBriza>
 
-      <div id="noBrtResults" #noBrtResults style="display: none;">
-        <div class="programpageStyle">
-          <h2 class="justifyContent"  *ngIf="!isPortuguese">Find out what your retention test score is to get started with the Briza Program</h2>
-          <h2 class="justifyContent"  *ngIf="isPortuguese">Descubra qual é a sua pontuação no teste de renteção para começar com o Programa Briza</h2>
-          <a class="breath-button brt-link" routerLink="/brt" data-tour="brt">
-            <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-            <div class="textBP">
-              <div class="titleBP"  *ngIf="!isPortuguese">Briza<br>Retention Test</div>
-              <div class="subtitleBP"  *ngIf="!isPortuguese">Measure your fitness level</div>
-              <div class="titleBP"  *ngIf="isPortuguese">Teste<br>de Retenção Briza</div>
-              <div class="subtitleBP"  *ngIf="isPortuguese">Medindo seu condicionamento</div>
-            </div>
-          </a>
-        </div>
-      </div>
-
-      <ng-container *ngIf="todayProgram.length > 0">
+      <ng-container>
         <h3  *ngIf="!isPortuguese" class="centerText">Today's suggested sessions</h3>
         <h3  *ngIf="isPortuguese" class="centerText">Sugestões de sessões para hoje</h3>
       </ng-container>
