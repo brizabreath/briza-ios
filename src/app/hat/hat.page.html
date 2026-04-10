@@ -1,17 +1,17 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
-        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader">
       <div class="settingButtons">
         <button routerLink="/set" id="settingsHAT" #settingsHAT class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionHAT type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionHAT type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
@@ -20,23 +20,23 @@
       <div class="main-container">
         <div class="timer-status">
           <div class="settings-form HAT">
-            <div class="form-line">
+            <div class="form-line" id="hat-hold-item">
               <img src="assets/images/hold.png">
               <input value="∞" #holdInputHAT min="1" readonly>
             </div>
-            <div class="form-line">
-                <img src="assets/images/lit.png">
-                <input type="number" value="15" #lightInputHAT min="1" readonly>
+            <div class="form-line" id="hat-light-item">
+              <img src="assets/images/lit.png">
+              <input type="number" value="15" #lightInputHAT min="1" readonly>
             </div>
-            <div class="form-line">
+            <div class="form-line" id="hat-normal-item">
               <img src="assets/images/nor.png">
               <input type="number" value="30" #normalInputHAT min="1" readonly>
             </div>
           </div>
           <div class="HATtimer-container">
-            <select #HATtimeInput class="countdownDisplay">
-                <option value="infinity"> ∞ rounds</option>
-                <option value="1">1 round</option>
+            <select #HATtimeInput class="countdownDisplay" id="hat-rounds-box">
+              <option value="infinity">∞ rounds</option>
+              <option value="1">1 round</option>
             </select>
             <input #HATcountdownInput class="countdownDisplay" style="display: none;" readonly />
           </div>
@@ -44,149 +44,31 @@
             <button #startBtnHAT class="ballButton">
               <div #HATball class="ball">
                 <span #HATballText></span>
-                <img src="assets/images/3dBall.png" alt="3D Ball">
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="hat-start-ball">
               </div>
             </button>
-          </div>   
+          </div>
           <div class="timer-controls">
-              <!--  Information about interval  -->
-              <button type="button" class="stopBtn" id="HATReset" #HATReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-              <button type="button" class="saveBtn" id="HATSave" #HATSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-              <form method="post" id="HATForm">
-                  <div class="roundbox">
-                      <div>Rounds:</div><div #roundsDoneHAT>0</div>
-                      <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayHAT>00 : 00</div>
-                  </div>
-              </form>
-              <div #HATResults></div>
+            <button type="button" class="stopBtn" id="HATReset" #HATReset>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="HATSave" #HATSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="HATForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneHAT>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayHAT>00 : 00</div>
+              </div>
+            </form>
+            <div #HATResults></div>
           </div>
         </div>
       </div>
-      <div #HATResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-    <div id="myModalHAT" class="modal" #myModalHAT>
-    <div class="modal-content">
-        <span class="close" id="closeModalHAT" #closeModalHAT>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mountain.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p> Altitude environments can help to improve cardiovascular fitness, strengthen muscles, stimulate the production of red blood cells, and stimulate the production of certain immune cells</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>Ambientes de alta altitude podem ajudar a melhorar o condicionamento cardiovascular, fortalecer os músculos, estimular a produção de células vermelhas do sangue e estimular a produção de certas células imunes</p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/walk.svg">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  Breathe normally for about 1 minute while walking
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Respire normalmente por cerca de 1 minuto enquanto anda
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/start.jpg">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  Whenever you're ready, press "Start"
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Quando estiver pronto, pressione "Iniciar"
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/nosepinch.svg">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  Exhale, pinch your nose, hold your breath and keep on walking                   
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Espire, aperte o nariz, segure a respiração e continue andando                   
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/next.jpg">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  The timer will count how long you can hold your breath while walking. Once you feel a strong air hunger and no longer can hold your breath, press the circle again                      
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  O cronômetro contará quanto tempo você consegue segurar a respiração enquanto anda. Uma vez que você sentir uma forte necessidade de ar e não conseguir mais segurar a respiração, pressione "Próximo"                    
-                </p>
-              </div>
-            </div>
-              <div class="mySlides fadeModal slides">
-                <img src="assets/images/lit.png">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Do not stop walking. Inhale and try to breathe as light as possible for 15 seconds, if you cannot breathe light that means you held it for too long
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Não pare de andar. Inspire e tente respirar o mais levemente possível por 15 segundos. Se não conseguir respirar levemente, significa que segurou a respiração por muito tempo
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/nor.png">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Keep walking, and breathe normally for 30 seconds, after this a new round will start
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Continue caminhando e respire normalmente por 30 segundos, após isso uma nova rodada começará
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/pause.jpg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    You can click on the circle if you need to pause the exercise
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Se precisar pausar, basta clicar no círculo novamente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    When holding your breath, aim to hold it for as long as you can. However, avoid pushing yourself to the point of feeling dizzy or struggling to recover your breath gently</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Quando prender a respiração, tente segurá-la o máximo que conseguir. No entanto, evite forçar a ponto de sentir tontura ou dificuldade em recuperar a respiração de forma suave</p>
-                </div>
-            </div>
-            <div class="dots" #HATdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #HATResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
       </div>
+    </div>
   </div>
 </ion-content>

@@ -9,9 +9,6 @@
     </div>
 
     <div class="placeholderHeader">
-      <button class="liked-open-btn" (click)="goToLikedClasses()">
-        <img class="timerIMG2" src="assets/images/heartG.png">
-      </button>
     </div>
   </header>
 
@@ -27,10 +24,10 @@
 
       <button
         class="segment"
-        [class.active]="selectedSegment === 'mobility'"
-        (click)="selectSegment('mobility')">
-        <div    *ngIf="!isPortuguese" >Mobility</div>
-        <div   *ngIf="isPortuguese" >Mobilidade</div>
+        [class.active]="selectedSegment === 'meditate'"
+        (click)="selectSegment('meditate')">
+        <div    *ngIf="!isPortuguese" >Breathe & Meditate</div>
+        <div   *ngIf="isPortuguese" >Respire e medite</div>
       </button>
     </div>
 

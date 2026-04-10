@@ -34,7 +34,7 @@ export class YogaUpdateService {
       const q = query(colRef, where('language', '==', userLang));
       const snapshot = await getDocs(q);
 
-      const allowed = new Set(['move','slowdown','meditate','lungs','mobility']);
+      const allowed = new Set(['move','slowdown','meditate','lungs','mobility', 'series']);
 
       // Pull doc data too (we need url + category)
       const current = snapshot.docs
@@ -76,7 +76,7 @@ export class YogaUpdateService {
           return {
             id: v.id,
             title,
-            category: v.category as 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility' | undefined,
+            category: v.category as 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility' | 'series' | undefined,
           };
         })
       );

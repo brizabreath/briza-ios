@@ -1,11 +1,10 @@
+// admin.page.ts
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController, ModalController } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { NavController } from '@ionic/angular';
 import { FirebaseService } from '../services/firebase.service';
-import { updateDoc } from 'firebase/firestore';
 import { VimeoMetaService } from '../services/vimeo-meta.service';
 
 import {
@@ -21,14 +20,16 @@ import {
   startAfter,
   Timestamp,
   where,
-
   Query,
   QuerySnapshot,
   DocumentData,
   QueryDocumentSnapshot,
+  updateDoc,
 } from 'firebase/firestore';
 
 import { Chart, registerables } from 'chart.js';
+import { UserListModal } from '../user-list/modal'; // adjust path if needed
+
 Chart.register(...registerables);
 
 @Component({
@@ -39,7 +40,6 @@ Chart.register(...registerables);
   styleUrls: ['./admin.page.scss'],
 })
 export class Admin {
-  // ===== Existing stats =====
   usersCount: number | null = null;
   loadingUsersCount = false;
 
@@ -67,40 +67,43 @@ export class Admin {
   membershipAnnualCount: number | null = null;
   loadingMembershipAnnualCount = false;
 
-  newUsersThisMonthCount: number | null = null; // live query (still used if you want)
+  newUsersThisMonthCount: number | null = null;
   loadingNewUsersThisMonthCount = false;
 
   newUsersThisWeekCount: number | null = null;
   loadingNewUsersThisWeekCount = false;
 
-  // ===== Monthly saved stats (users + subs) =====
+  // monthly saved stats
   computingMonthlyStats = false;
   computeMonthlyMsg = '';
 
   loadingMonthlyThisMonth = false;
-  monthlyNewUsersThisMonth: number | null = null; // from DB
-  monthlyNewSubsThisMonth: number | null = null;  // from DB
+  monthlyNewUsersThisMonth: number | null = null;
+  monthlyNewSubsThisMonth: number | null = null;
+
+  // live fallback for subs this month
+  monthlyNewSubsThisMonthLive: number | null = null;
+  loadingNewSubsThisMonthLive = false;
 
   promoCodeUsersCount: number | null = null;
   loadingPromoCodeUsersCount = false;
 
-
-  // Chart data (last 6 months)
+  // charts
   loadingChartData = false;
   showCharts = false;
-
   private usersChart: Chart | null = null;
   private subsChart: Chart | null = null;
 
-  // ===== Exercise stats (all time) =====
+  // exercise stats
   loadingGlobalExerciseStats = false;
-  globalTotalExercises: number | null = null; // excludes BRT + Yoga
-  globalYogaClasses: number | null = null;
+  globalTotalExercises: number | null = null;
+  globalTotalVideoClasses: number | null = null;  // NEW
   globalBrtTests: number | null = null;
   globalTop3: { key: string; count: number }[] = [];
 
   recomputingExerciseStats = false;
   recomputeExerciseMsg = '';
+
   @ViewChild('usersCanvas') usersCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('subsCanvas') subsCanvas!: ElementRef<HTMLCanvasElement>;
 
@@ -111,14 +114,17 @@ export class Admin {
     'BBResults', 'YBResults', 'BREResults', 'BRWResults',
     'CTResults', 'APResults', 'UBResults', 'BOXResults',
     'CBResults', 'RBResults', 'NBResults', 'CUSTResults',
-    'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults'
+    'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults', 'BMResults', 'MobilityResults', 'SeriesResults'
   ];
+
   updatingVideos = false;
-  updateProgressText = '';  
+  updateProgressText = '';
+
   constructor(
     private firebase: FirebaseService,
     private navCtrl: NavController,
     private vimeoMeta: VimeoMetaService,
+    private modalCtrl: ModalController,
   ) {}
 
   async ionViewWillEnter() {
@@ -130,7 +136,6 @@ export class Admin {
     }
 
     await Promise.all([
-      // existing live counts
       this.loadUsersCount(),
       this.loadFreeUsersCount(),
       this.loadDevicesCount(),
@@ -140,34 +145,59 @@ export class Admin {
       this.loadMembershipTrialCount(),
       this.loadMembershipMonthlyCount(),
       this.loadMembershipAnnualCount(),
-      this.loadNewUsersThisMonthCount(), // optional live
+      this.loadNewUsersThisMonthCount(),
       this.loadNewUsersThisWeekCount(),
       this.loadPromoCodeUsersCount(),
 
-      // exercise all-time from DB
       this.loadGlobalExerciseStatsFromDb(),
-
-      // monthly saved + charts
       this.loadMonthlyThisMonthFromDb(),
       this.loadChartsFromDb(),
-      this.recomputeAndSaveExerciseStats()
+      this.loadNewSubsThisMonthLive(), // fallback so you don't see —
     ]);
   }
 
-  // ===========================
+  // ---------------------------
+  // Modal openers
+  // ---------------------------
+  async openUsersModal(kind: string) {
+    const ok = await this.firebase.isAdminUid();
+    if (!ok) { alert('not administrator'); return; }
+
+    const titles: Record<string, string> = {
+      totalUsers: 'Total users',
+      freeLifetime: 'Free lifetime users',
+      freeNoMembership: 'Free version users',
+      promoCodeActive: 'Promo code users',
+      subsTotal: 'Total subscriptions',
+      subsTrial: 'Subscriptions on trial',
+      subsMonthly: 'Monthly subscribers',
+      subsAnnual: 'Annual subscribers',
+
+      newUsersThisMonth: 'New users this month',
+      newUsersThisWeek: 'New users this week',
+      subsNewThisMonth: 'New subscriptions this month',
+    };
+
+    const modal = await this.modalCtrl.create({
+      component: UserListModal,
+      componentProps: {
+        kind,
+        title: titles[kind] || 'Users',
+      }
+    });
+
+    await modal.present();
+  }
+
+  // ---------------------------
   // Navigation
-  // ===========================
-  goToAdminComments() {
-    this.navCtrl.navigateForward('/manage-comments');
-  }
+  // ---------------------------
+  goToAdminComments() { this.navCtrl.navigateForward('/manage-comments'); }
+  goBack(): void { this.navCtrl.back(); }
 
-  goBack(): void {
-    this.navCtrl.back();
-  }
-
-  // ===========================
+  // ---------------------------
   // Helpers
-  // ===========================
+  // ---------------------------
   private currentMonthId(d = new Date()): string {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -182,37 +212,24 @@ export class Admin {
     return new Date(d.getFullYear(), d.getMonth() + 1, 1, 0, 0, 0, 0);
   }
 
-  // Week starting Monday
   private startOfWeek(d = new Date()): Date {
     const date = new Date(d);
-    const day = date.getDay(); // 0=Sun, 1=Mon...
+    const day = date.getDay();
     const diffToMonday = (day === 0 ? -6 : 1) - day;
     date.setDate(date.getDate() + diffToMonday);
     date.setHours(0, 0, 0, 0);
     return date;
   }
 
-  private monthIdFromISODate(iso: any): string | null {
-    if (!iso || typeof iso !== 'string' || iso.length < 7) return null;
-    return iso.slice(0, 7);
-  }
-
-  private buildTop3Exercises(byKey: Record<string, number>): { key: string; count: number }[] {
-    return Object.entries(byKey || {})
-      .filter(([k]) => k !== 'brtResults' && k !== 'YogaResults')
-      .sort((a, b) => (b[1] || 0) - (a[1] || 0))
-      .slice(0, 3)
-      .map(([key, count]) => ({ key, count }));
-  }
 
   private async countQuery(qry: any): Promise<number> {
     const snap = await getCountFromServer(qry);
     return snap.data().count;
   }
 
-  // ===========================
+  // ---------------------------
   // Exercise name mapping
-  // ===========================
+  // ---------------------------
   getExerciseName(key: string): string {
     const exerciseNames: { [key: string]: string } = {
       brtResults: 'Briza Retention Test',
@@ -237,14 +254,17 @@ export class Admin {
       NBResults: 'Nadi Shodhana',
       LungsResults: 'Lungs Expansion',
       YogaResults: 'Yoga Classes',
-      TIMERResults: 'Mindfulness',
+      TIMERResults: 'Meditation',
+      BMResults: 'Breathe & Meditate',
+      MobilityResults: 'Mobility',
+      SeriesResults: 'Series'
     };
     return exerciseNames[key] || key;
   }
 
-  // ===========================
+  // ---------------------------
   // Monthly saved stats: compute + save
-  // ===========================
+  // ---------------------------
   async computeAndSaveMonthlyAdminStats(): Promise<void> {
     const db = this.firebase.firestore;
     if (!db) return;
@@ -257,7 +277,6 @@ export class Admin {
       const start = Timestamp.fromDate(this.startOfMonth(new Date()));
       const end = Timestamp.fromDate(this.startOfNextMonth(new Date()));
 
-      // New users in current month (based on userCreatedAt)
       const qNewUsers = query(
         collection(db, 'users'),
         where('userCreatedAt', '>=', start),
@@ -265,8 +284,6 @@ export class Admin {
       );
       const newUsers = await this.countQuery(qNewUsers);
 
-      // New subscriptions in current month:
-      // Requires users/{uid}.membership.activatedAt to be set when subscription starts
       const qNewSubs = query(
         collection(db, 'users'),
         where('membership.activatedAt', '>=', start),
@@ -274,7 +291,6 @@ export class Admin {
       );
       const newSubs = await this.countQuery(qNewSubs);
 
-      // Save snapshot
       await setDoc(doc(db, 'admin_monthly', monthId), {
         monthId,
         computedAt: Timestamp.now(),
@@ -284,10 +300,10 @@ export class Admin {
 
       this.computeMonthlyMsg = `Saved ${monthId}: newUsers=${newUsers}, newSubs=${newSubs}`;
 
-      // refresh DB-backed widgets + charts
       await Promise.all([
         this.loadMonthlyThisMonthFromDb(),
         this.loadChartsFromDb(),
+        this.loadNewSubsThisMonthLive(),
       ]);
     } catch (e) {
       console.error('computeAndSaveMonthlyAdminStats failed:', e);
@@ -325,13 +341,37 @@ export class Admin {
     }
   }
 
+  async loadNewSubsThisMonthLive(): Promise<void> {
+    const db = this.firebase.firestore;
+    if (!db) { this.monthlyNewSubsThisMonthLive = null; return; }
+
+    this.loadingNewSubsThisMonthLive = true;
+    try {
+      const start = Timestamp.fromDate(this.startOfMonth(new Date()));
+      const end = Timestamp.fromDate(this.startOfNextMonth(new Date()));
+
+      const qNewSubs = query(
+        collection(db, 'users'),
+        where('membership.activatedAt', '>=', start),
+        where('membership.activatedAt', '<', end),
+      );
+
+      this.monthlyNewSubsThisMonthLive = await this.countQuery(qNewSubs);
+    } catch (e) {
+      console.error('Failed to count new subs live:', e);
+      this.monthlyNewSubsThisMonthLive = null;
+    } finally {
+      this.loadingNewSubsThisMonthLive = false;
+    }
+  }
+
   private lastNMonthIds(n: number, from = new Date()): string[] {
     const out: string[] = [];
     for (let i = n - 1; i >= 0; i--) {
       const d = new Date(from.getFullYear(), from.getMonth() - i, 1);
       out.push(this.currentMonthId(d));
     }
-    return out; // oldest -> newest
+    return out;
   }
 
   async loadChartsFromDb(): Promise<void> {
@@ -353,19 +393,17 @@ export class Admin {
         newSubsSeries.push(typeof data.newSubs === 'number' ? data.newSubs : 0);
       }
 
-      // Only show charts if we have at least 2 months with any saved values
       const monthsWithAnyData =
         monthIds.filter((_, i) => (newUsersSeries[i] || 0) > 0 || (newSubsSeries[i] || 0) > 0).length;
 
       this.showCharts = monthsWithAnyData >= 2;
+
       if (!this.showCharts) {
-        // destroy if previously shown
         if (this.usersChart) { this.usersChart.destroy(); this.usersChart = null; }
         if (this.subsChart) { this.subsChart.destroy(); this.subsChart = null; }
         return;
       }
 
-      // render after view is ready
       setTimeout(() => {
         this.renderUsersChart(labels, newUsersSeries);
         this.renderSubsChart(labels, newSubsSeries);
@@ -377,6 +415,7 @@ export class Admin {
       this.loadingChartData = false;
     }
   }
+
   private renderUsersChart(labels: string[], data: number[]) {
     if (!this.usersCanvas?.nativeElement) return;
     const ctx = this.usersCanvas.nativeElement.getContext('2d');
@@ -435,9 +474,9 @@ export class Admin {
     });
   }
 
-  // ===========================
-  // Exercise stats (All Time) from DB
-  // ===========================
+  // ---------------------------
+  // Global exercise stats from DB
+  // ---------------------------
   async loadGlobalExerciseStatsFromDb(): Promise<void> {
     const db = this.firebase.firestore;
     if (!db) return;
@@ -449,16 +488,23 @@ export class Admin {
 
       if (!snap.exists()) {
         this.globalTotalExercises = null;
-        this.globalYogaClasses = null;
+        this.globalTotalVideoClasses = null;
         this.globalBrtTests = null;
         this.globalTop3 = [];
         return;
       }
 
       const data = snap.data() as any;
-      this.globalTotalExercises = typeof data.totalExercises === 'number' ? data.totalExercises : null;
-      this.globalYogaClasses = typeof data.totalYoga === 'number' ? data.totalYoga : null;
-      this.globalBrtTests = typeof data.totalTests === 'number' ? data.totalTests : null;
+
+      this.globalTotalExercises =
+        typeof data.totalExercises === 'number' ? data.totalExercises : null;
+
+      this.globalTotalVideoClasses =
+        typeof data.totalVideoClasses === 'number' ? data.totalVideoClasses : null;
+
+      this.globalBrtTests =
+        typeof data.totalBrtTests === 'number' ? data.totalBrtTests : null;
+
       this.globalTop3 = Array.isArray(data.top3) ? data.top3 : [];
     } catch (e) {
       console.error('Failed to load global exercise stats:', e);
@@ -467,87 +513,9 @@ export class Admin {
     }
   }
 
-  // ===========================
-  // Recompute Exercise Stats (All Time) and save
-  // ===========================
-  async recomputeAndSaveExerciseStats(): Promise<void> {
-    const db = this.firebase.firestore;
-    if (!db) return;
-
-    this.recomputingExerciseStats = true;
-    this.recomputeExerciseMsg = 'Starting...';
-
-    try {
-      let totalTests = 0;
-      let totalYoga = 0;
-      let totalExercises = 0;
-
-      const byKeyGlobal: Record<string, number> = {};
-
-      const usersCol = collection(db, 'users');
-      const pageSize = 200;
-
-      let last: QueryDocumentSnapshot<DocumentData> | null = null;
-      let scanned = 0;
-
-      while (true) {
-        const qUsers: Query<DocumentData> = last
-          ? query(usersCol, orderBy('__name__'), startAfter(last), limit(pageSize))
-          : query(usersCol, orderBy('__name__'), limit(pageSize));
-
-        const snapUsers: QuerySnapshot<DocumentData> = await getDocs(qUsers);
-        if (snapUsers.empty) break;
-
-        for (const userDoc of snapUsers.docs) {
-          scanned++;
-          const u = userDoc.data() as any;
-          const results = u?.results || {};
-
-          for (const key of this.RESULT_KEYS) {
-            const arr = Array.isArray(results[key]) ? results[key] : [];
-            const c = arr.length;
-            if (!c) continue;
-
-            byKeyGlobal[key] = (byKeyGlobal[key] || 0) + c;
-
-            if (key === 'brtResults') totalTests += c;
-            else if (key === 'YogaResults') totalYoga += c;
-            else totalExercises += c;
-          }
-        }
-
-        last = snapUsers.docs[snapUsers.docs.length - 1] || null;
-        this.recomputeExerciseMsg = `Scanned users: ${scanned}`;
-
-        if (snapUsers.size < pageSize) break;
-      }
-
-      const globalTop3 = this.buildTop3Exercises(byKeyGlobal);
-
-      await setDoc(doc(db, 'stats', 'global_exercise'), {
-        computedAt: Timestamp.now(),
-        scannedUsers: scanned,
-        totalTests,
-        totalYoga,
-        totalExercises,
-        byKey: byKeyGlobal,
-        top3: globalTop3,
-      }, { merge: true });
-
-      this.recomputeExerciseMsg = 'Done.';
-
-      await this.loadGlobalExerciseStatsFromDb();
-    } catch (e) {
-      console.error('recomputeAndSaveExerciseStats failed:', e);
-      this.recomputeExerciseMsg = 'Failed (see console).';
-    } finally {
-      this.recomputingExerciseStats = false;
-    }
-  }
-
-  // ===========================
+  // ---------------------------
   // Existing count loaders
-  // ===========================
+  // ---------------------------
   async loadUsersCount() {
     const db = this.firebase.firestore;
     if (!db) { this.usersCount = null; return; }
@@ -616,7 +584,7 @@ export class Admin {
       this.loadingTrialDevicesCount = false;
     }
   }
-
+  
   async loadFreeNoMembershipCount() {
     const db = this.firebase.firestore;
     if (!db) { this.freeNoMembershipCount = null; return; }
@@ -641,7 +609,11 @@ export class Admin {
     try {
       const qUsers = query(
         collection(db, 'users'),
-        where('membership.type', 'in', ['rcTrial', 'monthlySubscriber', 'annualSubscriber'])
+        where('membership.type', 'in', [
+          'rcTrial',
+          'monthlySubscriber',
+          'annualSubscriber'
+        ])
       );
       this.membershipUsersCount = await this.countQuery(qUsers);
     } catch (e) {
@@ -651,6 +623,7 @@ export class Admin {
       this.loadingMembershipUsersCount = false;
     }
   }
+
 
   async loadMembershipTrialCount() {
     const db = this.firebase.firestore;
@@ -724,7 +697,6 @@ export class Admin {
     }
   }
 
-
   async loadNewUsersThisWeekCount() {
     const db = this.firebase.firestore;
     if (!db) { this.newUsersThisWeekCount = null; return; }
@@ -741,6 +713,37 @@ export class Admin {
       this.loadingNewUsersThisWeekCount = false;
     }
   }
+
+  async loadPromoCodeUsersCount() {
+    const db = this.firebase.firestore;
+    if (!db) { this.promoCodeUsersCount = null; return; }
+
+    this.loadingPromoCodeUsersCount = true;
+    try {
+      const now = Timestamp.now();
+
+      // ✅ Works even if membership.source/type got overwritten to "whitelist"
+      const qUsers = query(
+        collection(db, 'users'),
+        where('membership.status', '==', 'active'),
+        where('membership.codeEndsAt', '>', now),
+        orderBy('membership.codeEndsAt', 'asc'),
+        orderBy('__name__', 'desc'),
+      );
+
+      this.promoCodeUsersCount = await this.countQuery(qUsers);
+    } catch (e) {
+      console.error('Failed to count promo code users:', e);
+      this.promoCodeUsersCount = null;
+    } finally {
+      this.loadingPromoCodeUsersCount = false;
+    }
+  }
+
+
+  // ---------------------------
+  // Update video metadata
+  // ---------------------------
   async updateAllVideoMetadata(): Promise<void> {
     const db = this.firebase.firestore;
     if (!db) return;
@@ -760,22 +763,21 @@ export class Admin {
     this.updateProgressText = 'Starting...';
 
     try {
-
-      const allowed = new Set(['move','slowdown','meditate','lungs','mobility']);
+      const allowed = new Set(['move','slowdown','meditate','lungs','mobility', 'series']);
 
       const snap = await getDocs(collection(db, 'videos'));
       const docs = snap.docs
         .map(d => ({ id: d.id, ...(d.data() as any) }))
         .filter(v => allowed.has(v.category))
-        .filter(v => !!(v.url || v.videoUrl)); // must have vimeo url
+        .filter(v => !!(v.url || v.videoUrl));
 
       const total = docs.length;
       let updated = 0;
       let failed = 0;
 
       const CONCURRENCY = 5;
-
       let idx = 0;
+
       const worker = async () => {
         while (idx < docs.length) {
           const i = idx++;
@@ -785,14 +787,13 @@ export class Admin {
           this.updateProgressText = `${i + 1}/${total} ${v.category || ''} — ${v.title || v.id}`;
 
           try {
-            const meta = await this.vimeoMeta.getMeta(rawUrl, true); // keep true if you want max correctness
+            const meta = await this.vimeoMeta.getMeta(rawUrl, true);
             const playerUrl = this.vimeoMeta.toPlayerUrl(rawUrl);
 
             const newTitle = (meta.title || '').trim();
             const newDesc = (meta.description || '').trim();
             const newThumb = (meta.thumbnail_url || '').trim();
-            const newDurMin =
-              typeof meta.duration === 'number' ? Math.round(meta.duration / 60) : null;
+            const newDurMin = typeof meta.duration === 'number' ? Math.round(meta.duration / 60) : null;
 
             const patch: any = {};
             if (newTitle && newTitle !== (v.title || '').trim()) patch.title = newTitle;
@@ -814,7 +815,6 @@ export class Admin {
       };
 
       await Promise.all(Array.from({ length: CONCURRENCY }, worker));
-
       this.updateProgressText = `Done. Updated ${updated}/${total}. Failed ${failed}.`;
     } catch (e) {
       console.error('updateAllVideoMetadata failed:', e);
@@ -823,30 +823,133 @@ export class Admin {
       this.updatingVideos = false;
     }
   }
+  membershipDebugMsg = '';
+  debuggingMembership = false;
+  private countAny(value: any): number {
+    if (!value) return 0;
 
-  async loadPromoCodeUsersCount() {
-    const db = this.firebase.firestore;
-    if (!db) { this.promoCodeUsersCount = null; return; }
+    // If you stored as a number counter
+    if (typeof value === 'number' && Number.isFinite(value)) return value;
 
-    this.loadingPromoCodeUsersCount = true;
-    try {
-      const now = Timestamp.now();
+    // Most common: array of session objects
+    if (Array.isArray(value)) return value.length;
 
-      const qUsers = query(
-        collection(db, 'users'),
-        where('membership.source', '==', 'code'),
-        where('membership.status', '==', 'active'),
-        where('membership.codeEndsAt', '>', now),
-      );
-
-      this.promoCodeUsersCount = await this.countQuery(qUsers);
-    } catch (e) {
-      console.error('Failed to count promo code users:', e);
-      this.promoCodeUsersCount = null;
-    } finally {
-      this.loadingPromoCodeUsersCount = false;
+    // Sometimes you store as map/object: {id: {...}, id2: {...}}
+    if (typeof value === 'object') {
+      // Firestore Timestamp objects etc shouldn't be counted
+      // so we only count plain object keys
+      return Object.keys(value).length;
     }
+
+    return 0;
   }
 
+  private buildTop3ExercisesFromCounts(
+    byKey: Record<string, number>,
+    excludeKeys: Set<string>,
+  ): { key: string; count: number }[] {
+    return Object.entries(byKey)
+      .filter(([k, c]) => !excludeKeys.has(k) && (c || 0) > 0)
+      .sort((a, b) => (b[1] || 0) - (a[1] || 0))
+      .slice(0, 3)
+      .map(([key, count]) => ({ key, count }));
+  }
+
+  async recomputeAndSaveGlobalExerciseStats(): Promise<void> {
+    const db = this.firebase.firestore;
+    if (!db) return;
+
+    if (!navigator.onLine) {
+      alert('You are offline');
+      return;
+    }
+
+    const ok = await this.firebase.isAdminUid();
+    if (!ok) {
+      alert('not administrator');
+      return;
+    }
+
+    this.recomputingExerciseStats = true;
+    this.recomputeExerciseMsg = 'Scanning users...';
+
+    try {
+      const usersCol = collection(db, 'users');
+
+      const VIDEO_CLASS_KEYS = new Set([
+        'YogaResults',
+        'MobilityResults',
+        'LungsResults',
+        'BMResults',
+        'SeriesResults',
+      ]);
+
+      const TOP3_EXCLUDE = new Set<string>(['brtResults', ...Array.from(VIDEO_CLASS_KEYS)]);
+
+      const byKey: Record<string, number> = {};
+      let scannedUsers = 0;
+
+      const PAGE_SIZE = 300;
+      let last: QueryDocumentSnapshot<DocumentData> | null = null;
+
+      while (true) {
+        // ✅ Explicit types fix the implicit-any error
+        const qUsers: Query<DocumentData> = last
+          ? query(usersCol, orderBy('__name__'), startAfter(last), limit(PAGE_SIZE))
+          : query(usersCol, orderBy('__name__'), limit(PAGE_SIZE));
+
+        const snapUsers: QuerySnapshot<DocumentData> = await getDocs(qUsers);
+        if (snapUsers.empty) break;
+
+        for (const userDoc of snapUsers.docs) {
+          scannedUsers++;
+
+          const data = userDoc.data() as any;
+          const results = data?.results; // ✅ NESTED HERE
+
+          if (!results || typeof results !== 'object') continue;
+
+          for (const key of this.RESULT_KEYS) {
+            const c = this.countAny(results?.[key]);
+            if (c > 0) byKey[key] = (byKey[key] || 0) + c;
+          }
+        }
+
+        last = snapUsers.docs[snapUsers.docs.length - 1];
+
+        this.recomputeExerciseMsg = `Scanned ${scannedUsers} users...`;
+
+        if (snapUsers.size < PAGE_SIZE) break;
+      }
+
+      const totalExercises = Object.values(byKey).reduce((sum, n) => sum + (n || 0), 0);
+      const totalBrtTests = byKey['brtResults'] || 0;
+
+      const totalVideoClasses = Array.from(VIDEO_CLASS_KEYS)
+        .reduce((sum, key) => sum + (byKey[key] || 0), 0);
+
+      const top3 = this.buildTop3ExercisesFromCounts(byKey, TOP3_EXCLUDE);
+
+      await setDoc(doc(db, 'stats', 'global_exercise'), {
+        computedAt: Timestamp.now(),
+        scannedUsers,
+        byKey,
+        totalExercises,
+        totalBrtTests,
+        totalVideoClasses,
+        top3,
+      }, { merge: false });
+
+      this.recomputeExerciseMsg =
+        `Saved stats/global_exercise. Users=${scannedUsers}, total=${totalExercises}, videos=${totalVideoClasses}, brt=${totalBrtTests}`;
+
+      await this.loadGlobalExerciseStatsFromDb();
+    } catch (e) {
+      console.error('recomputeAndSaveGlobalExerciseStats failed:', e);
+      this.recomputeExerciseMsg = 'Failed (see console).';
+    } finally {
+      this.recomputingExerciseStats = false;
+    }
+  }
 
 }

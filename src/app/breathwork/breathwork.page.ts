@@ -34,19 +34,20 @@ export class BreathworkPage {
   isPortuguese = localStorage.getItem('isPortuguese') === 'true';
   greetingText = '';
   progressText = '';
+  showWebSplash = false;
 
   private static hasInitialized = false;
-
+  private static hasSyncedResultsOnce = false;
   private _pendingActiveDays: Set<string> | null = null;
-
+  isContentReady = false;
   private readonly EXERCISE_KEYS = [
     'brtResults', 'HATResults', 'HATCResults', 'AHATResults',
     'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
     'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
     'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
-    'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
+    'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults', 'BMResults', 'MobilityResults', 'SeriesResults'
   ];
-
+  todayWeekdayKey: 'sun'|'mon'|'tue'|'wed'|'thu'|'fri'|'sat' = 'mon';
   constructor(
     private globalService: GlobalService,
     private router: Router,
@@ -67,13 +68,16 @@ export class BreathworkPage {
 
   closeOpenScreen() {
     try {
-      this.globalService.closeModal(this.openScreen);
+      this.isContentReady = true; // ensure visible
+      if (!localStorage.getItem('home_guide_seen')) {
+        localStorage.setItem('home_guide_seen', 'true');
+        this.startAppGuide();
+      } else {
+        this.globalService.closeModal(this.openScreen);
+      }
     } catch (e) {
       console.warn('closeOpenScreen failed:', e);
     }
-  }
-  private firstVisible(selector: string): HTMLElement | null {
-    return Array.from(document.querySelectorAll<HTMLElement>(selector)).find(el => this.isVisible(el)) || null;
   }
   private isVisible(el: HTMLElement): boolean {
     if (!el) return false;
@@ -98,93 +102,119 @@ export class BreathworkPage {
     document.body.style.overflow = '';
   };
   async ionViewWillEnter() {
-    try {
-      this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    this.computeTodayWeekdayKey();
+    this.computeGreeting();
+    this.computeBrtToday();
+    this.computeWeeklyProgressCached();
 
-      // Always load quote (online->db, else cache)
-      await this.loadRandomQuote();
-      // First-time modal open (once per app session)
-      if (!BreathworkPage.hasInitialized) {
-        BreathworkPage.hasInitialized = true;
-        this.openOpenScreen();
-      }
-      // Online-only sync logic
-      if (navigator.onLine) {
-        try {
-          await this.authService.ensureUserCreatedAt();
-          await this.authService.ensureUserLanguageSynced();
-          await this.authService.expireCodeIfNeeded();
-          const snapshot = await this.revenuecat.getSnapshot();
-          await this.authService.syncMembershipTypeToFirestore(snapshot);
-
-          if (snapshot.status !== 'active') {
-            const trialStatus = await this.authService.checkOrStartDeviceTrial();
-
-            if (trialStatus.newlyCreated) {
-              this.globalAlert.showalert(
-                this.isPortuguese ? 'Período de Teste' : 'Trial Started',
-                this.isPortuguese
-                  ? 'Você tem 7 dias de acesso gratuito a todos os recursos do Briza'
-                  : 'You have 7 days of free access to all features of Briza'
-              );
-              localStorage.setItem('membershipStatus', 'active');
-              localStorage.setItem('membershipSource', 'trial');
-            } else if (trialStatus.expiredNow) {
-              this.globalAlert.showalert(
-                this.isPortuguese ? 'Período de Teste Encerrado' : 'Trial Ended',
-                this.isPortuguese
-                  ? 'Seu período de teste terminou. Você agora está no modo gratuito. Assine para obter acesso total novamente'
-                  : 'Your trial period has ended. You are now in free mode. Subscribe to regain full access'
-              );
-              localStorage.setItem('membershipStatus', 'inactive');
-              localStorage.setItem('membershipSource', 'trialExpired');
-            }
-          }
-
-          // Update remote results at most once every 3 days
-          const lastOpened = localStorage.getItem('lastOpened');
-          const now = Date.now();
-          const THREE_DAYS = 72 * 60 * 60 * 1000;
-
-          if (lastOpened == null || (now - parseInt(lastOpened, 10)) >= THREE_DAYS) {
-            try {
-              await this.authService.updateDataResults();
-            } catch (e) {
-              console.warn('updateDataResults failed:', e);
-            }
-            localStorage.setItem('lastOpened', String(now));
-          }
-        } catch (e) {
-          console.warn('Online sync/trial logic failed (continuing):', e);
-        }
-      }
-
-      // Fast UI updates
-      this.computeGreeting();
-      this.computeBrtToday();
-      this.computeWeeklyProgressCached(); 
-      if (this._pendingActiveDays) {
-        this.paintWeekCircles(this._pendingActiveDays);
+    if (this._pendingActiveDays) {
+      requestAnimationFrame(() => {
+        this.paintWeekCircles(this._pendingActiveDays!);
         this._pendingActiveDays = null;
+      });
+    }
+
+    if (localStorage.getItem('isFemale') === null) {
+      localStorage.setItem('isFemale', 'true');
+    }
+
+    // show cached quote immediately
+    this.loadQuoteFast();
+
+    if (!BreathworkPage.hasInitialized) {
+      BreathworkPage.hasInitialized = true;
+      this.showWebSplash = true;
+      setTimeout(() => {
+        this.isContentReady = true;
+        this.showWebSplash = false;
+        this.openOpenScreen();
+      }, 0);
+    } else {
+      this.isContentReady = true;
+      this.showWebSplash = false;
+    }
+    // background refreshes
+    this.refreshInBackground();
+
+    // sync results only once per app session
+    if (!BreathworkPage.hasSyncedResultsOnce) {
+      BreathworkPage.hasSyncedResultsOnce = true;
+
+      this.authService.updateDataResults().catch(e => {
+        console.warn('updateDataResults failed:', e);
+      });
+    }
+  }
+  private async refreshInBackground() {
+    // refresh quotes pool without blocking UI
+    this.refreshQuotePoolSilently();
+
+    if (!navigator.onLine) return;
+
+    const lastSync = Number(localStorage.getItem('breathwork_last_sync') || '0');
+    const now = Date.now();
+    const TEN_MIN = 10 * 60 * 1000;
+
+    if (now - lastSync < TEN_MIN) return;
+
+    localStorage.setItem('breathwork_last_sync', String(now));
+
+    try {
+      await this.authService.ensureUserCreatedAt();
+    } catch (e) {
+      console.warn('ensureUserCreatedAt failed:', e);
+    }
+
+    try {
+      await this.authService.ensureUserLanguageSynced();
+    } catch (e) {
+      console.warn('ensureUserLanguageSynced failed:', e);
+    }
+
+    try {
+      await this.authService.expireCodeIfNeeded();
+    } catch (e) {
+      console.warn('expireCodeIfNeeded failed:', e);
+    }
+
+    try {
+      const snapshot = await this.revenuecat.getSnapshot();
+      await this.authService.syncMembershipTypeToFirestore(snapshot);
+
+      if (snapshot.status !== 'active') {
+        await this.authService.checkOrStartDeviceTrial();
       }
-      if (localStorage.getItem('isFemale') === null) {
-        localStorage.setItem('isFemale', 'true');
-      }
-    } catch {}
-    this.brworkPage.nativeElement.style.display = "block";
+    } catch (e) {
+      console.warn('RevenueCat sync failed:', e);
+    }
+  }
+  private computeGreeting() {
+    this.applyGreeting(localStorage.getItem('currentUserName') || '');
+
+    const hasName = !!(localStorage.getItem('currentUserName') || '').trim();
+    if (!hasName && navigator.onLine) {
+      this.authService.getNameFromFirestore()
+        .then(name => {
+          if (name) {
+            localStorage.setItem('currentUserName', name);
+            this.applyGreeting(name);
+          }
+        })
+        .catch(e => console.warn('Could not fetch name:', e));
+    }
   }
 
-  private computeGreeting() {
-    const fullName = localStorage.getItem('currentUserName') || '';
+  private applyGreeting(fullName: string) {
     const userName = (fullName.split(' ')[0] || '').trim();
     const currentHour = new Date().getHours();
 
     if (this.isPortuguese) {
       const g = currentHour < 12 ? 'Bom dia' : currentHour < 18 ? 'Boa tarde' : 'Boa noite';
-      this.greetingText = `${g}, ${userName}`;
+      this.greetingText = userName ? `${g}, ${userName}` : g;
     } else {
       const g = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
-      this.greetingText = `${g}, ${userName}`;
+      this.greetingText = userName ? `${g}, ${userName}` : g;
     }
   }
 
@@ -237,7 +267,14 @@ export class BreathworkPage {
 
   private computeWeeklyProgressCached() {
     const sig = this.storageSignature();
-    const cacheKey = `home_weekly_cache_v3_${this.isPortuguese ? 'PT' : 'EN'}`;
+    
+    const today = new Date();
+    const monday = new Date(today);
+    monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+    const weekKey = monday.toLocaleDateString('en-CA'); // e.g. "2025-03-31"
+
+    const cacheKey = `home_weekly_cache_v3_${this.isPortuguese ? 'PT' : 'EN'}_${weekKey}`;
+
 
     const cachedRaw = localStorage.getItem(cacheKey);
     if (cachedRaw) {
@@ -377,143 +414,154 @@ export class BreathworkPage {
   }
 
   startAppGuide() {
-  this.closeOpenScreen();
-  const isPT = localStorage.getItem('isPortuguese') === 'true';
-  const t = (en: string, pt: string) => (isPT ? pt : en);
-  const sel = (enSel: string, ptSel: string) => (isPT ? ptSel : enSel);
+    this.globalService.closeModal(this.openScreen);
+    const isPT = localStorage.getItem('isPortuguese') === 'true';
+    const t = (en: string, pt: string) => (isPT ? pt : en);
+    const sel = (enSel: string, ptSel: string) => (isPT ? ptSel : enSel);
 
-  this.shepherd.defaultStepOptions = {
-    cancelIcon: { enabled: true },
-    scrollTo: true,
-    canClickTarget: false,
-    modalOverlayOpeningPadding: 4,
-    modalOverlayOpeningRadius: 10,
-    classes: 'briza-tour',
-  };
-  this.shepherd.modal = true;
+    this.shepherd.cancel();
 
-  setTimeout(() => {
-    const steps: any[] = [];
+    this.shepherd.defaultStepOptions = {
+      cancelIcon: { enabled: true },
+      scrollTo: true,
+      canClickTarget: false,
+      modalOverlayOpeningPadding: 4,
+      modalOverlayOpeningRadius: 10,
+      classes: 'briza-tour',
+    };
+    this.shepherd.modal = true;
+
+    setTimeout(() => {
+      const steps: any[] = [];
 
       // Step: Program
       if (document.querySelector('#hp-progHome')) {
         steps.push({
           id: 'hp-progHome',
-          text: `<h3>${t('Briza Program','Programa Briza')}</h3>
+          text: `<h3>${t('The Briza Program', 'O Programa Briza')}</h3>
                 <p>${t(
-                  'Daily exercises to improve breathing efficiency',
-                  'Exercícios diários para melhorar a eficiência respiratória'
+                  'Your personalised daily training plan. It adapts week by week based on your Briza Retention Test results — getting more challenging as your breathing improves. Every day starts with the same foundation: retention test, Briza breathing, and meditation.',
+                  'Seu plano de treino diário personalizado. Ele se adapta semana a semana com base nos seus resultados do Teste de Retenção Briza — ficando mais desafiador conforme sua respiração melhora. Todo dia começa com a mesma base: teste de retenção, respiração Briza e meditação.'
                 )}</p>`,
           attachTo: { element: '#hp-progHome', on: 'bottom' },
-           buttons: [
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
+          buttons: [
+            { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
+          ]
         });
       }
 
-      // Step: BRT (only if visible)
+      // Step: BRT
       if (document.querySelector('#hp-brtHome')) {
         steps.push({
           id: 'hp-brtHome',
-          text: `<h3>${t('Briza Retention Test','Teste de Retenção Briza')}</h3>
+          text: `<h3>${t('Briza Retention Test', 'Teste de Retenção Briza')}</h3>
                 <p>${t(
-                  'Daily test to track your breathing',
-                  'Teste diário para acompanhar sua respiração'
+                  'This test measures how long you can comfortably hold your breath after a normal exhale — a reliable indicator of CO₂ tolerance and overall breathing efficiency. Do it every morning and your program automatically adapts to your level.',
+                  'Este teste mede por quanto tempo você consegue confortavelmente segurar a respiração após uma expiração normal — um indicador confiável de tolerância ao CO₂ e eficiência respiratória geral. Faça todo dia pela manhã e seu programa se adapta automaticamente ao seu nível.'
                 )}</p>`,
           attachTo: { element: '#hp-brtHome', on: 'bottom' },
-           buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
+          buttons: [
+            { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+            { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
+          ]
         });
       }
+
+      // Step: Mood / How Briza can help
       steps.push({
         id: 'hp-moodScroll',
-        text: `<h3>${t('How Briza can help','Como Briza pode te ajudar')}</h3>
+        text: `<h3>${t('How Briza can help', 'Como Briza pode te ajudar')}</h3>
               <p>${t(
-                'Multiple classes and breathwork options for specific purposes',
-                'Diversas aulas e opções de exercícios respiratórios para fins específicos'
+                'Browse exercises grouped by what you need right now — energy, calm, focus, recovery, sleep, or performance. Each category contains targeted breathing techniques and guided classes chosen for that specific outcome.',
+                'Navegue por exercícios agrupados pelo que você precisa agora — energia, calma, foco, recuperação, sono ou desempenho. Cada categoria contém técnicas de respiração e aulas guiadas específicas para aquele objetivo.'
               )}</p>`,
         attachTo: { element: '#hp-moodScroll', on: 'bottom' },
-         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        buttons: [
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
         ]
       });
+
+      // Step: Weekly progress
       steps.push({
         id: 'hp-progress',
-        text: `<h3>${t('Your progress','Seu progresso')}</h3>
+        text: `<h3>${t('Your weekly progress', 'Seu progresso semanal')}</h3>
               <p>${t(
-                'Follow your progress weekly',
-                'Acompanhe seu progresso semanalmente'
+                'The circles show which days of this week you have already practiced. Consistency matters more than intensity — even a single session a day adds up.',
+                'Os círculos mostram quais dias desta semana você já praticou. Consistência importa mais do que intensidade — mesmo uma sessão por dia faz diferença.'
               )}</p>`,
         attachTo: { element: '#hp-progress', on: 'top' },
-         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        buttons: [
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
         ]
       });
+
+      // Step: Mindfulness / Program section
       steps.push({
         id: 'hp-program',
-        text: `<h3>${t('Breathwork','Breathwork')}</h3>
+        text: `<h3>${t('Mindfulness', 'Mindfulness')}</h3>
               <p>${t(
-                'Multiple breathwork sessions, lungs expansion and mobility training',
-                'Múltiplas sessões de exercícios respiratórios, expansão pulmonar e treinamento de mobilidade'
+                'Guided breathing sessions, meditation, and breathwork classes for specific purposes — from stress relief and sleep preparation to energy and focus. The techniques here draw from pranayama, CO₂ training, and modern breathwork research.',
+                'Sessões guiadas de respiração, meditação e aulas de breathwork para fins específicos — desde alívio do estresse e preparação para o sono até energia e foco. As técnicas aqui são baseadas em pranayama, treinamento de CO₂ e pesquisas modernas de respiração.'
               )}</p>`,
         attachTo: { element: sel('#hp-program', '#hp-programPT'), on: 'top' },
-         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+        buttons: [
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
         ]
       });
+
+      // Step: Movement / Yoga
       steps.push({
         id: 'hp-yoga',
-        text: `<h3>Yoga</h3>
-               <p>${t('Flow, gentle, and mindfulness practices',
-                'Aulas guiadas de yoga e mindfulness')}</p>`,
+        text: `<h3>${t('Movement', 'Movimento')}</h3>
+              <p>${t(
+                'Yoga and mobility classes that complement your breathing practice. Movement and breathwork reinforce each other.',
+                'Aulas de yoga e mobilidade que complementam sua prática de respiração. Movimento e respiração se reforçam mutuamente.'
+              )}</p>`,
         attachTo: { element: sel('#hp-yoga', '#hp-yogaPT'), on: 'top' },
         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
         ]
       });
+
+      // Step: Results
       steps.push({
         id: 'hp-bpr',
-        text: `<h3>${t('Results','Resultados')}</h3>
-               <p>${t('Check your overall progress',
-                      'Veja seu progresso geral')}</p>`,
+        text: `<h3>${t('Results', 'Resultados')}</h3>
+              <p>${t(
+                'A complete history of every exercise you have done, your Briza Retention Test scores over time, and charts showing your long-term progress. Use this to see how far you have come and to stay motivated to keep going.',
+                'Um histórico completo de todos os exercícios que você fez, suas pontuações do Teste de Retenção Briza ao longo do tempo e gráficos mostrando seu progresso a longo prazo. Use isso para ver o quanto você evoluiu e para manter a motivação.'
+              )}</p>`,
         attachTo: { element: sel('#hp-bpr', '#hp-bprPT'), on: 'top' },
         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
+          { text: t('Next', 'Próximo'), action: () => this.shepherd.next() }
         ]
       });
+
+      // Step: Profile
       steps.push({
         id: 'hp-profile',
-        text: `<h3>${t('Profile','Perfil')}</h3>
-               <p>${t('Manage your account, subscription and more',
-                      'Gerencie sua conta, assinatura e mais')}</p>`,
+        text: `<h3>${t('Profile', 'Perfil')}</h3>
+              <p>${t(
+                'Manage your account, subscription, language settings, and app preferences. You can also find your membership details and access support from here.',
+                'Gerencie sua conta, assinatura, configurações de idioma e preferências do app. Você também pode encontrar os detalhes da sua assinatura e acessar o suporte por aqui.'
+              )}</p>`,
         attachTo: { element: sel('#hp-profile', '#hp-profilePT'), on: 'top' },
         buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      });
-      // Final step (always)
-      steps.push({
-        id: 'brt-finish',
-        text: `<h3>${t('Continue tour?','Continuar tour?')}</h3>`,
-        buttons: [
-          { text: t('End','Fechar'), action: () => this.shepherd.complete() },
+          { text: t('Back', 'Voltar'), action: () => this.shepherd.back() },
           {
-            text: t('Next','Próximo'),
+            text: t('Next', 'Próximo'),
             action: () => {
               this.shepherd.complete();
-              localStorage.setItem('startYogaTour','true');
-              this.router.navigateByUrl('/yoga');
+              localStorage.setItem('startHomeTour', 'true');
+              this.router.navigateByUrl('/home');
             },
           },
-        ],
+        ]
       });
 
       this.shepherd.addSteps(steps);
@@ -531,7 +579,7 @@ export class BreathworkPage {
         tour.on('inactive', this.unlockUIForTour);
       }
 
-      this.shepherd.start();  
+      this.shepherd.start();
     }, 0);
   }
 
@@ -539,12 +587,11 @@ export class BreathworkPage {
     return this.isPortuguese ? 'PT' : 'EN';
   }
 
-  async loadRandomQuote(): Promise<void> {
-    const lang = this.langKey(); // 'EN' | 'PT'
+  private loadQuoteFast(): void {
+    const lang = this.langKey();
     const today = this.localDayKey();
-
-    // 1) Reuse today’s quote if already set
     const stateKey = this.quoteStateKey(lang);
+
     const savedState = localStorage.getItem(stateKey);
     if (savedState) {
       try {
@@ -556,46 +603,65 @@ export class BreathworkPage {
       } catch {}
     }
 
-    // 2) Get pool
-    const pool = await this.getQuotePool(lang);
-    if (!pool.length) {
-      const fallback = { text: 'Breathe in. Breathe out.', author: '—' };
-      this.selectedQuote = fallback;
-      localStorage.setItem(stateKey, JSON.stringify({ day: today, quote: fallback }));
-      return;
-    }
-
-    // 3) Load remaining queue (array of indices)
-    const remainingKey = this.quoteRemainingKey(lang);
-    let remaining: number[] = [];
-    const rawRemaining = localStorage.getItem(remainingKey);
-
-    if (rawRemaining) {
+    const cachedPoolRaw = localStorage.getItem(this.quotePoolKey(lang));
+    if (cachedPoolRaw) {
       try {
-        const arr = JSON.parse(rawRemaining);
-        if (Array.isArray(arr)) remaining = arr.filter((n: any) => Number.isInteger(n));
+        const pool = JSON.parse(cachedPoolRaw) as { text: string; author: string }[];
+        if (Array.isArray(pool) && pool.length) {
+          const remainingKey = this.quoteRemainingKey(lang);
+          let remaining: number[] = [];
+
+          try {
+            const rawRemaining = localStorage.getItem(remainingKey);
+            if (rawRemaining) {
+              const arr = JSON.parse(rawRemaining);
+              if (Array.isArray(arr)) remaining = arr.filter((n: any) => Number.isInteger(n));
+            }
+          } catch {}
+
+          if (!remaining.length || remaining.some(i => i < 0 || i >= pool.length)) {
+            remaining = this.shuffle(Array.from({ length: pool.length }, (_, i) => i));
+          }
+
+          const nextIndex = remaining.shift()!;
+          localStorage.setItem(remainingKey, JSON.stringify(remaining));
+
+          const pick = pool[nextIndex] || pool[0];
+          this.selectedQuote = pick;
+          localStorage.setItem(stateKey, JSON.stringify({ day: today, quote: pick }));
+          return;
+        }
       } catch {}
     }
 
-    // If pool size changed, reset remaining (prevents out-of-range)
-    if (remaining.some(i => i < 0 || i >= pool.length)) remaining = [];
-
-    // 4) If empty -> reshuffle full pool and start new cycle
-    if (!remaining.length) {
-      remaining = this.shuffle(Array.from({ length: pool.length }, (_, i) => i));
-    }
-
-    // 5) Pop next quote for today
-    const nextIndex = remaining.shift()!;
-    localStorage.setItem(remainingKey, JSON.stringify(remaining));
-
-    const pick = pool[nextIndex] || pool[0];
-    this.selectedQuote = pick;
-
-    // Save today’s quote so it doesn’t change on reopen
-    localStorage.setItem(stateKey, JSON.stringify({ day: today, quote: pick }));
+    this.selectedQuote = { text: 'Breathe in. Breathe out.', author: '—' };
   }
+  private async refreshQuotePoolSilently(): Promise<void> {
+    if (!navigator.onLine || !this.firebaseService.firestore) return;
 
+    const lang = this.langKey();
+
+    try {
+      const db = this.firebaseService.firestore;
+      const colRef = collection(db, 'quotes');
+      const qRef = query(colRef, where('language', '==', lang));
+      const snap = await getDocs(qRef);
+
+      const docs = snap.docs
+        .map(d => d.data() as any)
+        .filter(x => typeof x?.text === 'string' && x.text.trim().length)
+        .map(x => ({
+          text: String(x.text).trim(),
+          author: (x.author || '—').trim()
+        }));
+
+      if (docs.length) {
+        localStorage.setItem(this.quotePoolKey(lang), JSON.stringify(docs));
+      }
+    } catch (e) {
+      console.warn('Quotes refresh failed:', e);
+    }
+  }
 
   async shareOpenScreen() {
     if (this._sharing || !this.selectedQuote) return;
@@ -787,5 +853,9 @@ export class BreathworkPage {
 
     return pool;
   }
-
+  private computeTodayWeekdayKey(): void {
+    // local device day-of-week (uses the user’s current timezone)
+    const dow = new Date().getDay(); // 0=Sun..6=Sat
+    this.todayWeekdayKey = (['sun','mon','tue','wed','thu','fri','sat'][dow] as any);
+  }
 }

@@ -38,6 +38,7 @@
   padding-right: 12px;
   padding-bottom: 5px;
   -webkit-overflow-scrolling: touch;
+  padding-left: 0.7rem;
 }
 
 /* 2 full cards + ~1/3 of the next card visible */
@@ -65,6 +66,7 @@
 .textBW2{
   width: 100%;
   text-align: center;
+   
 }
 .textBW2 .titleBW2 {
   font-size: 15px;
@@ -94,4 +96,18 @@
 }
 .share-btn{
   background-color: transparent;
+}
+.label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 10%;
+  border: 1px solid transparent; // avoids layout shift
+  font-size: 12px;
+}
+
+.label.today {
+  border-color: #0661AA; // Briza deep blue
 }

@@ -41,7 +41,6 @@ import { CommentsComponent } from '../comments/comments.component';
 
       <div class="video-date-row">
         <div class="video-date brizaBlue">
-          {{ addedOn }}
         </div>
 
         <button class="like-btn" type="button" (click)="toggleLike()" aria-label="Like class">
@@ -63,7 +62,7 @@ import { CommentsComponent } from '../comments/comments.component';
   styles: [`
     .video-wrapper { width: 100%; aspect-ratio: 16/9; }
     iframe { width: 100%; height: 100%; border: 0; }
-    .video-meta { padding: 1rem; font-size: 16px; text-align: justify; }
+    .video-meta { padding: 1rem; font-size: 16px; text-align: justify; font-family: Farah;}
 
     .video-date-row{
       display:flex;
@@ -119,7 +118,7 @@ export class VideoModalComponent implements AfterViewInit, OnDestroy {
   @Input() title!: string;
   @Input() videoId!: string;
   @Input() addedOn?: string;
-  @Input() category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility';
+  @Input() category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility' | 'series';
   @Input() duration?: number;
   @Input()
   set description(value: string) {
@@ -224,10 +223,16 @@ export class VideoModalComponent implements AfterViewInit, OnDestroy {
     let key = 'YogaResults';
 
     if (this.category === 'meditate') {
-      key = 'TIMERResults';
-    } else if (this.category === 'lungs' || this.category === 'mobility') {
+      key = 'BMResults';
+    } else if (this.category === 'lungs') {
       key = 'LungsResults';
-    }
+    } else if (this.category === 'mobility') {
+      key = 'MobilityResults';
+    } 
+    else if (this.category === 'series') {
+      key = 'SeriesResults';
+    } 
+
 
     const prev = JSON.parse(localStorage.getItem(key) || '[]');
 

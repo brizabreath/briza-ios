@@ -1,7 +1,7 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,212 +11,93 @@
         <button routerLink="/setwh" id="settingsWH" #settingsWH class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionWH type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionWH type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
   <div id="whPage">
     <div class="breathingpages">
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form WH">
-                  <div class="form-line">
-                      <img src="assets/images/breaths.png">
-                      <input value="30" #breathsInputWH min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/hold.png">
-                      <input value="∞" #hold1InputWH min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                    <img src="assets/images/pause.png">
-                    <input type="number" value="15" #hold2InputWH min="1" readonly>
-                </div>
-              </div>
-              <div class="WHtimer-container">
-                  <select #WHtimeInput class="countdownDisplay">
-                      <option value="infinity"> ∞ rounds</option>
-                      <option value="1">1 round</option>
-                  </select>
-                  <input #WHcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div *ngIf="showFixedRoundButton" class="fixed-round-button">
-                <button  type="button" (click)="openFixedRoundsModal()"  *ngIf="!isPortuguese">
-                  Set holding times
-                </button>
-                <button type="button" (click)="openFixedRoundsModal()" *ngIf="isPortuguese">
-                  Definir tempos de retenção
-                </button>
-              </div>
-
-              <div class="center-container">
-                <button #startBtnWH class="ballButton">
-                  <div #WHball class="ball">
-                      <span #WHballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="WHReset" #WHReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="WHSave" #WHSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="WHForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneWH>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayWH>00 : 00</div>
-                      </div>
-                  </form>
-                  <div #WHResults></div>
-              </div>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form WH">
+            <div class="form-line" id="wh-breaths-item">
+              <img src="assets/images/breaths.png">
+              <input value="30" #breathsInputWH min="1" readonly>
+            </div>
+            <div class="form-line" id="wh-hold-item">
+              <img src="assets/images/hold.png">
+              <input value="∞" #hold1InputWH min="1" readonly>
+            </div>
+            <div class="form-line" id="wh-recovery-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="15" #hold2InputWH min="1" readonly>
+            </div>
           </div>
+          <div class="WHtimer-container">
+            <select #WHtimeInput class="countdownDisplay" id="wh-rounds-box">
+              <option value="infinity">∞ rounds</option>
+              <option value="1">1 round</option>
+            </select>
+            <input #WHcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div *ngIf="showFixedRoundButton" class="fixed-round-button">
+            <button type="button" (click)="openFixedRoundsModal()" *ngIf="!isPortuguese">Set holding times</button>
+            <button type="button" (click)="openFixedRoundsModal()" *ngIf="isPortuguese">Definir tempos de retenção</button>
+          </div>
+          <div class="center-container">
+            <button #startBtnWH class="ballButton">
+              <div #WHball class="ball">
+                <span #WHballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="wh-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="WHReset" #WHReset>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="WHSave" #WHSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="WHForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneWH>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayWH>00 : 00</div>
+              </div>
+            </form>
+            <div #WHResults></div>
+          </div>
+        </div>
       </div>
-      <div #WHResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #WHResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
   <!-- Modal for fixed round durations -->
   <div id="fixedRoundsModal" class="modal" #fixedRoundsModal>
     <div class="modal-content fixedRoundsModal">
       <span class="close" (click)="closeFixedRoundsModal()">&times;</span>
-      <h3    *ngIf="!isPortuguese" >Set time of holds</h3>
-      <p    *ngIf="!isPortuguese" >Leave 0 if you don't want to set time</p>
-      <h3  *ngIf="isPortuguese" >Definir tempos de retenção</h3>
-      <p  *ngIf="isPortuguese" >Deixe 0 se não quiser definir os tempos</p>
-
+      <h3 *ngIf="!isPortuguese">Set time of holds</h3>
+      <p *ngIf="!isPortuguese">Leave 0 if you don't want to set time</p>
+      <h3 *ngIf="isPortuguese">Definir tempos de retenção</h3>
+      <p *ngIf="isPortuguese">Deixe 0 se não quiser definir os tempos</p>
       <div *ngFor="let round of fixedRoundDurations; let i = index" class="round-input">
-        <label class="round-label"   *ngIf="!isPortuguese" >Hold {{ i + 1 }}</label>
-        <label class="round-label"   *ngIf="isPortuguese" >Retenção {{ i + 1 }}</label>
+        <label class="round-label" *ngIf="!isPortuguese">Hold {{ i + 1 }}</label>
+        <label class="round-label" *ngIf="isPortuguese">Retenção {{ i + 1 }}</label>
         <div class="time-inputs">
-          <input type="number" inputmode="numeric"
-                min="0"
+          <input type="number" inputmode="numeric" min="0"
                 [(ngModel)]="fixedRoundDurations[i].minutes"
                 placeholder="min" onblur="this.value = Math.max(0, Math.min(20, this.value))"/>
           <span>min :</span>
-          <input type="number" inputmode="numeric"
-                min="0"
-                max="59"
+          <input type="number" inputmode="numeric" min="0" max="59"
                 [(ngModel)]="fixedRoundDurations[i].seconds"
                 placeholder="sec" onblur="this.value = Math.max(0, Math.min(59, this.value))"/>
-          <span    *ngIf="!isPortuguese" >sec</span>
-          <span  *ngIf="isPortuguese" >seg</span>
+          <span *ngIf="!isPortuguese">sec</span>
+          <span *ngIf="isPortuguese">seg</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <div id="myModalWH" class="modal" #myModalWH>
-    <div class="modal-content">
-        <span class="close" id="closeModalWH" #closeModalWH>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-          <div class="mySlides fadeModal slides">
-              <img src="assets/images/yogiclines.svg">
-               <div class="text"  *ngIf="!isPortuguese">
-                <p>This controlled hyperventilation breathing technique is based on the principles of diaphragmatic and circular breathing, allowing you to fully oxygenate your body and hold your breath with no air in the lungs</p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>Esta técnica de respiração de hiperventilação controlada é baseada nos princípios da respiração diafragmática e circular, permitindo que você oxigene totalmente seu corpo e segure sua respiração sem ar nos pulmões</p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/breaths.png">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  In settings, choose the number of breaths to prepare for the breath hold
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Em conifigurações, escolha o número de respirações para preparar a retenção de respiração
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/nor.png">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  In settings, choose the speed of breaths to prepare for the breath hold
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Em conifigurações, escolha a velocidade de respirações para preparar a retenção de respiração
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-              <img src="assets/images/airhunger.svg">
-              <div class="text"  *ngIf="!isPortuguese">
-                <p>
-                  Press 'Start' and follow guided breathing. It is ok to breathe in through the mouth in this exercise and ensure exhalation is strong.                   
-                  Once the hyperventilation is finished, you will exhale (about 70%) and hold your breath
-                </p>
-              </div>
-              <div class="text"  *ngIf="isPortuguese">
-                <p>
-                  Pressione 'Iniciar' e siga a respiração guiada. É ok respirar pela boca neste exercício e garantir que a exalação seja forte.                    
-                  Uma vez que a hiperventilação terminar, você irá exalar (cerca de 70%) e segurar sua respiração
-                </p>
-              </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/hold.png">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Let go and hold your breath for as long as you can with no air in the lungs
-                 </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Espire e segure a respiração pelo maior tempo que puder sem ar nos pulmões
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/pause.png">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Once you cannot hold it any longer, press the circle inhale and hold again for 15 seconds in the recovery round
-                 </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Quando não conseguir mais segurar, pressione o círculo, inspire e segure novamente por 15 segundos na rodada de recuperação                
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    During the breath hold, try to stay calm and focus on your heart beat.                       
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Durante a retenção de respiração, tente permanecer calmo e focado no seu batimento cardíaco.                       
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Do not do this technique inside the water or any place that may be dangerous if you lose your consciousness. Do not attemp to go over your limit, as you might pass out
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Não faça esta técnica dentro da água ou em qualquer lugar que possa ser perigoso se você perder a consciência. Não tente ultrapassar seu limite, pois você pode desmaiar
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #WHdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
-      </div>
   </div>
 </ion-content>

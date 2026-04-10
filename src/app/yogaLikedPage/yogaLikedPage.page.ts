@@ -71,7 +71,7 @@ export class YogaLikedPagePage implements OnInit {
       ...v,
       title: (v.title || '').trim() || 'Untitled',
       description: (v.description || '').trim(),
-      thumbnail: (v.thumbnail || '').trim() || 'assets/images/lungs.svg',
+      thumbnail: (v.thumbnail || '').trim() || 'assets/images/default.jpg',
       videoUrl: v.videoUrl || this.vimeoMeta.toPlayerUrl(rawUrl),
       isFree: !!v.isFree,
     };

@@ -44,18 +44,14 @@ export class AuthService {
               const data = docSnap.data();
               const name = data?.['name'] || '';
               localStorage.setItem('currentUserName', name);
-            } else {
-              localStorage.setItem('currentUserName', '');
-            }
+            } 
           } catch (error) {
             console.error('Failed to fetch user name:', error);
-            localStorage.setItem('currentUserName', '');
           }
 
           this.setRevenueCatUser(); // Link RevenueCat user on login
         } else {
           localStorage.removeItem('currentUserUID');
-          localStorage.removeItem('currentUserName');
           localStorage.removeItem('membershipStatus');
         }
       });
@@ -247,7 +243,7 @@ export class AuthService {
         'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
         'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
         'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
-        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'] },
+        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults', 'BMResults', 'MobilityResults', 'SeriesResults'] },
       ];
 
       exerciseLinks.forEach((exercise) => {
@@ -285,32 +281,40 @@ export class AuthService {
     }
   }
   
-  async updateDataResults (): Promise<void> {
-    const currentDate = Date.now();
-    localStorage.setItem('lastOpened', String(currentDate));
-    const uid = localStorage.getItem('currentUserUID');
-    // Prepare data to save
-      const resultsToSave: Record<string, any> = {};
-      const exerciseLinks = [
-        { keys: ['brtResults', 'HATResults', 'HATCResults', 'AHATResults', 
-        'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults', 
-        'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 
-        'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults', 
-        'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'] },
-      ];
+  async updateDataResults(): Promise<void> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return;
 
-      exerciseLinks.forEach((exercise) => {
-        exercise.keys.forEach((key) => {
-          const data = localStorage.getItem(key);
-          if (data) {
-            resultsToSave[key] = JSON.parse(data);
-          }
-        });
-      });
+    const uid = auth.currentUser.uid;
 
-      // Save to Firestore using UID
-      const userDocRef = doc(this.getFirestore(), `users/${uid}`);
-      await setDoc(userDocRef, { results: resultsToSave }, { merge: true });
+    // 1) build a signature of local results
+    const keys = ['brtResults','HATResults','HATCResults','AHATResults','WHResults','KBResults','BBResults','YBResults',
+      'BREResults','BRWResults','CTResults','APResults','UBResults','BOXResults','CBResults','RBResults','NBResults',
+      'CUSTResults','LungsResults','YogaResults','DBResults','HUMResults','TIMERResults','BMResults','MobilityResults','SeriesResults'
+    ];
+
+    const sigParts: string[] = [];
+    for (const k of keys) sigParts.push(`${k}:${(localStorage.getItem(k) || '').length}`);
+    const sig = sigParts.join('|');
+
+    const lastSig = localStorage.getItem('results_last_synced_sig');
+    if (lastSig === sig) return; // ✅ nothing changed, skip write
+
+    // 2) build resultsToSave
+    const resultsToSave: Record<string, any> = {};
+    for (const key of keys) {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { resultsToSave[key] = JSON.parse(raw); } catch {}
+      }
+    }
+
+    // 3) write
+    const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+    await setDoc(userDocRef, { results: resultsToSave }, { merge: true });
+
+    // 4) mark synced
+    localStorage.setItem('results_last_synced_sig', sig);
   }
   
 
@@ -409,7 +413,12 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.firebaseService.auth!.currentUser;
   }
-
+  getCurrentUserDisplayName(): Promise<string | null> {
+    return new Promise((resolve) => {
+      const user = this.firebaseService.auth!.currentUser;
+      resolve(user?.displayName ?? null);
+    });
+  }
   private getStoredResults(): Record<string, any> {
     const results: Record<string, any> = {};
     const keys = Object.keys(localStorage);
@@ -725,5 +734,22 @@ export class AuthService {
       localStorage.setItem('membershipStatus', 'inactive');
       localStorage.setItem('membershipSource', 'codeExpired');
     }
+  }
+  async getNameFromFirestore(): Promise<string | null> {
+    const auth = this.firebaseService.auth;
+    if (!auth || !auth.currentUser) return null;
+
+    try {
+      const uid = auth.currentUser.uid;
+      const userDocRef = doc(this.getFirestore(), `users/${uid}`);
+      const snap = await getDoc(userDocRef);
+      if (snap.exists()) {
+        const name = snap.data()?.['name'];
+        return (typeof name === 'string' && name.trim()) ? name.trim() : null;
+      }
+    } catch (e) {
+      console.warn('getNameFromFirestore failed:', e);
+    }
+    return null;
   }
 }

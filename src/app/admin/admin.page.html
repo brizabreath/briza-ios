@@ -1,3 +1,4 @@
+<!-- admin.page.html -->
 <ion-header>
   <ion-toolbar>
     <div class="back-buttons">
@@ -8,47 +9,79 @@
 </ion-header>
 
 <ion-content>
+
+<pre style="margin:12px 16px; font-size:12px; white-space:pre-wrap;" *ngIf="membershipDebugMsg">
+{{ membershipDebugMsg }}
+</pre>
+
   <ion-button expand="block" class="managButton" (click)="goToAdminComments()">
     Manage Comments
   </ion-button>
-  <ion-button
-      expand="block"
-      class="managButton"
-      (click)="updateAllVideoMetadata()"
-    >
-      Update yoga classes
-    </ion-button>
 
-    <div *ngIf="updatingVideos" style="margin: 12px 16px; font-size: 14px;">
-      Updating: {{ updateProgressText }}
-    </div>
+  <ion-button expand="block" class="managButton" (click)="updateAllVideoMetadata()">
+    Update video classes
+  </ion-button>
+
+  <div *ngIf="updatingVideos" class="mini-status">
+    Updating: {{ updateProgressText }}
+  </div>
+
+  <ion-button expand="block" class="managButton" (click)="computeAndSaveMonthlyAdminStats()"
+              [disabled]="computingMonthlyStats">
+    Compute monthly stats
+  </ion-button>
+
+  <div *ngIf="computeMonthlyMsg" class="mini-status">
+    {{ computeMonthlyMsg }}
+  </div>
+  <ion-button expand="block" class="managButton"
+    (click)="recomputeAndSaveGlobalExerciseStats()"
+    [disabled]="recomputingExerciseStats">
+    Recompute exercise stats
+  </ion-button>
+
+  <div *ngIf="recomputeExerciseMsg" class="mini-status">
+    {{ recomputeExerciseMsg }}
+  </div>
   <div class="admin-stats">
     <h2>Overall</h2>
 
     <div class="adminstat">
       <div class="label">Total users</div>
       <div class="value">
-        <span *ngIf="loadingUsersCount">Loading...</span>
-        <span *ngIf="!loadingUsersCount">{{ usersCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingUsersCount"
+          (click)="openUsersModal('totalUsers')">
+          <span *ngIf="loadingUsersCount">Loading...</span>
+          <span *ngIf="!loadingUsersCount">{{ usersCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Free lifetime users</div>
       <div class="value">
-        <span *ngIf="loadingFreeUsersCount">Loading...</span>
-        <span *ngIf="!loadingFreeUsersCount">{{ freeUsersCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingFreeUsersCount"
+          (click)="openUsersModal('freeLifetime')">
+          <span *ngIf="loadingFreeUsersCount">Loading...</span>
+          <span *ngIf="!loadingFreeUsersCount">{{ freeUsersCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Free version users</div>
       <div class="value">
-        <span *ngIf="loadingFreeNoMembershipCount">Loading...</span>
-        <span *ngIf="!loadingFreeNoMembershipCount">{{ freeNoMembershipCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingFreeNoMembershipCount"
+          (click)="openUsersModal('freeNoMembership')">
+          <span *ngIf="loadingFreeNoMembershipCount">Loading...</span>
+          <span *ngIf="!loadingFreeNoMembershipCount">{{ freeNoMembershipCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Devices installed</div>
       <div class="value">
@@ -56,7 +89,7 @@
         <span *ngIf="!loadingDevicesCount">{{ devicesCount ?? '—' }}</span>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Curent device trials</div>
       <div class="value">
@@ -64,61 +97,71 @@
         <span *ngIf="!loadingTrialDevicesCount">{{ trialDevicesCount ?? '—' }}</span>
       </div>
     </div>
+    <hr/>
     <div class="adminstat">
       <div class="label">Using promo code</div>
       <div class="value">
-        <span *ngIf="loadingPromoCodeUsersCount">Loading...</span>
-        <span *ngIf="!loadingPromoCodeUsersCount">{{ promoCodeUsersCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingPromoCodeUsersCount"
+          (click)="openUsersModal('promoCodeActive')">
+          <span *ngIf="loadingPromoCodeUsersCount">Loading...</span>
+          <span *ngIf="!loadingPromoCodeUsersCount">{{ promoCodeUsersCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
   </div>
 
   <div class="admin-stats">
     <h2>New users</h2>
-    <div *ngIf="computeMonthlyMsg" style="margin-top: 8px;">
-      {{ computeMonthlyMsg }}
-    </div>
 
     <div class="adminstat">
       <div class="label">This month</div>
-      <div class="value">
+      <ion-button fill="clear" size="small" class="stat-link"
+        [disabled]="loadingNewUsersThisMonthCount"
+        (click)="openUsersModal('newUsersThisMonth')">
         <span *ngIf="loadingNewUsersThisMonthCount">Loading...</span>
         <span *ngIf="!loadingNewUsersThisMonthCount">{{ newUsersThisMonthCount ?? '—' }}</span>
-      </div>
+      </ion-button>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">This week</div>
-      <div class="value">
+      <ion-button fill="clear" size="small" class="stat-link"
+        [disabled]="loadingNewUsersThisWeekCount"
+        (click)="openUsersModal('newUsersThisWeek')">
         <span *ngIf="loadingNewUsersThisWeekCount">Loading...</span>
         <span *ngIf="!loadingNewUsersThisWeekCount">{{ newUsersThisWeekCount ?? '—' }}</span>
-      </div>
+      </ion-button>
     </div>
   </div>
 
-  
-  <div *ngIf="!showCharts" style="margin:20px; ">
+  <div *ngIf="!showCharts" style="margin:20px;">
     Not enough saved monthly data yet
   </div>
+
   <div class="admin-stats" *ngIf="showCharts">
     <h2>Past 6 months</h2>
 
     <div class="adminstat">
       <div style="width: 100%;">
         <span *ngIf="loadingChartData">Loading...</span>
-        <canvas *ngIf="!loadingChartData" #usersCanvas></canvas>
+        <div class="chart-wrap" *ngIf="!loadingChartData">
+          <canvas #usersCanvas></canvas>
+        </div>
       </div>
     </div>
   </div>
+
   <div class="admin-stats" *ngIf="showCharts">
     <div class="adminstat">
       <div style="width: 100%;">
         <span *ngIf="loadingChartData">Loading...</span>
-        <canvas *ngIf="!loadingChartData" #subsCanvas></canvas> 
-      </div> 
+        <div class="chart-wrap" *ngIf="!loadingChartData">
+          <canvas #subsCanvas></canvas>
+        </div>
+      </div>
     </div>
   </div>
-
 
   <div class="admin-stats">
     <h2>Subscriptions</h2>
@@ -126,41 +169,61 @@
     <div class="adminstat">
       <div class="label">Total Subscriptions</div>
       <div class="value">
-        <span *ngIf="loadingMembershipUsersCount">Loading...</span>
-        <span *ngIf="!loadingMembershipUsersCount">{{ membershipUsersCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingMembershipUsersCount"
+          (click)="openUsersModal('subsTotal')">
+          <span *ngIf="loadingMembershipUsersCount">Loading...</span>
+          <span *ngIf="!loadingMembershipUsersCount">{{ membershipUsersCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Subscriptions on trial</div>
       <div class="value">
-        <span *ngIf="loadingMembershipTrialCount">Loading...</span>
-        <span *ngIf="!loadingMembershipTrialCount">{{ membershipTrialCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingMembershipTrialCount"
+          (click)="openUsersModal('subsTrial')">
+          <span *ngIf="loadingMembershipTrialCount">Loading...</span>
+          <span *ngIf="!loadingMembershipTrialCount">{{ membershipTrialCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Active monthly subscription</div>
       <div class="value">
-        <span *ngIf="loadingMembershipMonthlyCount">Loading...</span>
-        <span *ngIf="!loadingMembershipMonthlyCount">{{ membershipMonthlyCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingMembershipMonthlyCount"
+          (click)="openUsersModal('subsMonthly')">
+          <span *ngIf="loadingMembershipMonthlyCount">Loading...</span>
+          <span *ngIf="!loadingMembershipMonthlyCount">{{ membershipMonthlyCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Active annual subscriptions</div>
       <div class="value">
-        <span *ngIf="loadingMembershipAnnualCount">Loading...</span>
-        <span *ngIf="!loadingMembershipAnnualCount">{{ membershipAnnualCount ?? '—' }}</span>
+        <ion-button fill="clear" size="small" class="stat-link"
+          [disabled]="loadingMembershipAnnualCount"
+          (click)="openUsersModal('subsAnnual')">
+          <span *ngIf="loadingMembershipAnnualCount">Loading...</span>
+          <span *ngIf="!loadingMembershipAnnualCount">{{ membershipAnnualCount ?? '—' }}</span>
+        </ion-button>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">New subscriptions this month</div>
-      <div class="value">
-        <span *ngIf="loadingMonthlyThisMonth">Loading...</span>
-        <span *ngIf="!loadingMonthlyThisMonth">{{ monthlyNewSubsThisMonth ?? '—' }}</span>
-      </div>
+      <ion-button fill="clear" size="small" class="stat-link"
+        [disabled]="loadingMonthlyThisMonth || loadingNewSubsThisMonthLive"
+        (click)="openUsersModal('subsNewThisMonth')">
+        <span *ngIf="loadingMonthlyThisMonth || loadingNewSubsThisMonthLive">Loading...</span>
+        <span *ngIf="!(loadingMonthlyThisMonth || loadingNewSubsThisMonthLive)">
+          {{ (monthlyNewSubsThisMonth ?? monthlyNewSubsThisMonthLive) ?? '—' }}
+        </span>
+      </ion-button>
     </div>
   </div>
 
@@ -174,15 +237,15 @@
         <span *ngIf="!loadingGlobalExerciseStats">{{ globalTotalExercises ?? '—' }}</span>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
-      <div class="label">Total Yoga classes done</div>
+      <div class="label">Total video classes done</div>
       <div class="value">
         <span *ngIf="loadingGlobalExerciseStats">Loading...</span>
-        <span *ngIf="!loadingGlobalExerciseStats">{{ globalYogaClasses ?? '—' }}</span>
+        <span *ngIf="!loadingGlobalExerciseStats">{{ globalTotalVideoClasses ?? '—' }}</span>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Total BRT tests done</div>
       <div class="value">
@@ -190,7 +253,7 @@
         <span *ngIf="!loadingGlobalExerciseStats">{{ globalBrtTests ?? '—' }}</span>
       </div>
     </div>
-
+    <hr/>
     <div class="adminstat">
       <div class="label">Top 3 exercises</div>
       <div class="value">
@@ -205,5 +268,7 @@
         </ng-container>
       </div>
     </div>
+    <hr/>
   </div>
+
 </ion-content>

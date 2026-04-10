@@ -59,4 +59,6 @@ export const routes: Routes = [
   { path: 'vitality', loadComponent: () => import('./vitality/vitality.page').then(m => m.VitalityPage), canActivate: [AuthGuard] },
   { path: 'pain', loadComponent: () => import('./pain/pain.page').then(m => m.PainPage), canActivate: [AuthGuard] },
   { path: 'yogaLikedPage', loadComponent: () => import('./yogaLikedPage/yogaLikedPage.page').then(m => m.YogaLikedPagePage), canActivate: [AuthGuard] },
+  { path: 'movement', loadComponent: () => import('./movement/movement.page').then(m => m.MovementPage), canActivate: [AuthGuard] },
+  { path: 'series/:id', loadComponent: () => import('./series/series.page').then(m => m.SeriesPage) }
 ];

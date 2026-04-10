@@ -1,7 +1,7 @@
 <ion-content>
- <header class="mainHeader">
+  <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,145 +11,75 @@
         <button routerLink="/set" id="settingsBOX" #settingsBOX class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionBOX type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionBOX type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
   <div id="boxPage">
     <div class="breathingpages">
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form BOX">
-                  <div class="form-line">
-                    <button class="buttonminus" type="button" #minusBOX>-</button>
-                  </div>  
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="4" #inhaleInputBOX min="1" readonly>
-                  </div>
-  
-                  <div class="form-line">
-                      <img src="assets/images/pause.png">
-                      <input type="number" value="4" #hold1InputBOX min="1" readonly>
-                  </div>
-  
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                      <input type="number" value="4" #exhaleInputBOX min="1" readonly>
-                  </div>
-  
-                  <div class="form-line">
-                    <img src="assets/images/pause.png">
-                    <input type="number" value="4" #hold2InputBOX min="1" readonly>
-                </div>
-                <div class="form-line">
-                  <button class="buttonplus" type="button" #plusBOX>+</button>
-              </div>
-              </div>
-              <div class="BOXtimer-container">
-                  <select #BOXtimeInput class="countdownDisplay">
-                      <option value="infinity" *ngIf="!isPortuguese"> ∞ minutes</option>
-                      <option value="infinity" *ngIf="isPortuguese"> ∞ minutos</option>
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #BOXcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnBOX class="ballButton">
-                  <div #BOXball class="ball">
-                      <span #BOXballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBOX" #stopBtnBOX><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BOXSave" #BOXSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="BOXForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneBOX>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBOX>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form BOX">
+            <div class="form-line" id="box-minus-btn">
+              <button class="buttonminus" type="button" #minusBOX>-</button>
+            </div>  
+            <div class="form-line" id="box-inhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="4" #inhaleInputBOX min="1" readonly>
+            </div>
+            <div class="form-line" id="box-hold1-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="4" #hold1InputBOX min="1" readonly>
+            </div>
+            <div class="form-line" id="box-exhale-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="4" #exhaleInputBOX min="1" readonly>
+            </div>
+            <div class="form-line" id="box-hold2-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="4" #hold2InputBOX min="1" readonly>
+            </div>
+            <div class="form-line" id="box-plus-btn">
+              <button class="buttonplus" type="button" #plusBOX>+</button>
+            </div>
           </div>
+          <div class="BOXtimer-container">
+            <select #BOXtimeInput class="countdownDisplay" id="box-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #BOXcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div class="center-container">
+            <button #startBtnBOX class="ballButton" id="box-start-ball">
+              <div #BOXball class="ball">
+                <span #BOXballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="box-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnBOX" #stopBtnBOX>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="BOXSave" #BOXSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="BOXForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneBOX>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBOX>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #BOXResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-  <div id="myModalBOX" class="modal" #myModalBOX>
-    <div class="modal-content">
-        <span class="close" id="closeModalBOX" #closeModalBOX>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/yogiclines.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>The Sama Vritti or Box Breathing technique is based on the principles of deep breathing and diaphragmatic breathing</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>A técnica de Sama Vritti ou Respiração da Caixa é baseada nos princípios da respiração profunda e da respiração diafragmática</p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sit.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sandTimer.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Choose a ratio that you are comfortable with, but still pushes your comfortable zone. You can also choose how long you want to do it for
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p> 
-                    Escolha uma proporção com a qual você se sinta confortável, mas que ainda desafie sua zona de conforto. Você também pode escolher por quanto tempo deseja fazê-lo
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again.  In the end, save your results to track your improvement over time
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Se precisar pausar, basta clicar no círculo novamente. Salve seus resultados ao final
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/airhunger.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    If the ratio chosen is making your heart beat acelerate and you are finding it too hard, stop doing it and choose a lower ratio
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Se a proporção escolhida estiver fazendo seu coração acelerar e você achar muito difícil, pare de fazer e escolha uma proporção menor
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #BOXdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #BOXResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

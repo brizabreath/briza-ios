@@ -9,7 +9,11 @@
     <div class="placeholderHeader"></div>
   </header>
   <div id="breathgrid2">
-    <div id="breathpagegrid">
+    <div class="breathpagegrid">
+      <ng-container>
+        <h3  *ngIf="!isPortuguese" class="centerText">Vitality</h3>
+        <h3  *ngIf="isPortuguese" class="centerText">Vitalidade</h3>
+      </ng-container>
       <h3   *ngIf="!isPortuguese">Classes</h3>
       <h3 *ngIf="isPortuguese">Aulas</h3>
 
@@ -20,7 +24,7 @@
           [class.locked]="!v.isFree && !isMemberActive()"
           (click)="onVideoClick(v)"
         >
-          <img [src]="v.thumbnail" class="homepageimgs5 anx-thumb" />
+          <img [src]="v.thumbnail" class="homepageimgs7 anx-thumb" />
 
           <div class="anx-overlay"></div>
 

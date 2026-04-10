@@ -7,7 +7,7 @@ const NOTIF_ID = 3003; // stable id for this reminder series
 type YogaNewItem = {
   id: string;
   title?: string;
-  category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility';
+  category?: 'move' | 'slowdown' | 'meditate' | 'lungs' | 'mobility' | 'series';
 };
 
 @Injectable({ providedIn: 'root' })
@@ -143,17 +143,19 @@ export class LocalReminderService {
     const mapEN: Record<string, string> = {
       move: 'Flow',
       slowdown: 'Gentle',
-      meditate: 'Mindfulness',
+      meditate: 'Breathe & Meditate',
       lungs: 'Lungs',
       mobility: 'Mobility',
+      series: 'Series & Challenges',
     };
 
     const mapPT: Record<string, string> = {
       move: 'Flow',
       slowdown: 'Suave',
-      meditate: 'Mindfulness',
+      meditate: 'Respire & Medite',
       lungs: 'Pulmões',
       mobility: 'Mobilidade',
+      series: 'Séries e Desafios',
     };
     if (!category) return isPT ? 'Yoga' : 'Yoga';
     return (isPT ? mapPT : mapEN)[category] ?? (isPT ? 'Yoga' : 'Yoga');

@@ -77,25 +77,36 @@ body {
 #homepagegrid, #homepagegridBR, #resultspagegrid, #resultspagegridBR {
     text-align: center;
     max-width: 45rem;
-    width: 95%;
+    width: 100%;
     margin: auto;
-    margin-top: 8rem;
+    margin-top: 7.5rem;
     height: 100%;
 }
-#breathpagegrid, #breathpagegridBR {
+.breathpagegrid {
     max-width: 45rem;
-    width: 90%;
+    width: 100%;
     margin: auto;
     margin-top: 8rem;
     color: #0661AA;
 }
-#breathpagegrid h3, #breathpagegridBR h3{
+.breathpagegrid h3{
+    margin-top: 3rem;
+    margin-left: 1.5rem;
+    font-size: 18px;
+}
+.breathpagegrid2 {
+    max-width: 45rem;
+    width: 100%;
+    margin: auto;
+    margin-top: 8rem;
+    color: #0661AA;
+}
+.breathpagegrid2 h3{
     margin-top: 2rem;
-    margin-left: 0.4rem;
+    margin-left: 1.5rem;
     font-size: 18px;
 }
 #homegrid, #breathgrid{
-    position: fixed;
     width: 100%;
 }
 @media (min-width: 750px) {
@@ -104,6 +115,9 @@ body {
     position: relative; 
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+  }
+  .series-hero-img {
+    height: 500px;        
   }
 }
 #homepagegrid3 {
@@ -133,11 +147,12 @@ body {
     background-color: #0660aa1c;
 }
 .homepageimgs3 {
-    width: 99%;
+    width: 90%;
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     background-color:#49b79d1c;
     margin-bottom: 15px;
+    height: 80px;
 }
 .homepageimgs4 {
     width: 97%;
@@ -151,6 +166,13 @@ body {
     border-radius: 10px;
     box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
     height: 12rem;
+    background-color:#0660aa1c;
+}
+.homepageimgs7 {
+    width: 14rem !important;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    height: 10rem;
     background-color:#0660aa1c;
 }
 .BRTtile {
@@ -421,9 +443,6 @@ body {
 }
 .breathingpages2 h2 {
     text-align: center;
-    margin-bottom: 30px;
-    padding: 0.5em;
-    
 }
 .colText {
     display: flex;
@@ -1157,7 +1176,7 @@ input[type="radio"]:checked {
 
 #programPage {
     text-align: center;
-    margin-top: 8rem;
+    margin-top: 7rem;
     margin-bottom: 120px;
 }
 .guidedBTN {
@@ -1259,6 +1278,7 @@ input#intervalDurationInputCB {
     align-items: center;
     justify-content: center;
     text-align: center;
+     
 }
 .calendar {
     width: 100%;

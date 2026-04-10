@@ -3,6 +3,28 @@
     <span class="close" (click)="closeModal()">&times;</span>
 
     <ng-container *ngIf="membershipStatus === 'inactive'">
+      <div>
+        <h1 class="ExtraSpace">{{ isPortuguese ? 'Código de promoção' : 'Promo code' }}</h1>
+
+        <div class="newsletterSection">
+          <input
+            [(ngModel)]="codeInput"
+            class="profileInput uppercase"
+            [placeholder]="isPortuguese ? 'Digite o código' : 'Enter code'"
+            inputmode="text"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            (input)="onCodeInput($event)"
+          />
+
+
+          <button type="button" class="profileBTN" (click)="redeemCodeRouter()">
+            {{ isPortuguese ? 'Ativar' : 'Redeem' }}
+          </button>
+        </div>
+      </div>
+      <hr />
       <h1>{{ isPortuguese ? 'Assine agora' : 'Subscribe now' }}</h1>
       <p>{{ isPortuguese ? 'Escolha uma opção de assinatura para obter acesso total' : 'Choose a subscription option to unlock all features' }}</p>
 
@@ -52,7 +74,7 @@
           these terms
         </a>
       </ng-template>
-    </p>
+      </p>
     </ng-container>
   </div>
 </div>

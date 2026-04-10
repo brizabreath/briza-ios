@@ -174,10 +174,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
         if (!firstId) return;
 
-        if (cat === 'lungs' || cat === 'mobility') {
+        if (cat === 'lungs' || cat === 'meditate') {
           this.router.navigate(['/lungs'], { queryParams: { open: firstId } });
         } else {
-          this.router.navigate(['/yoga'], { queryParams: { open: firstId } });
+          this.router.navigate(['/movement'], { queryParams: { open: firstId } });
         }
       } else if (data.type === 'commentReply') {
         await this.commentNotifications.handleNotificationTap(data);
@@ -205,7 +205,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (overlay) overlay.style.opacity = '0';
 
     this.inactivityTimer = setTimeout(() => {
-      if (overlay) overlay.style.opacity = '0.6';
+      if (overlay) overlay.style.opacity = '0.75';
     }, 60000);
   }
 }

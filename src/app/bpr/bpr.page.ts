@@ -22,9 +22,9 @@ export class BPRPage implements OnInit, AfterViewInit {
     { nameEN: 'Altitude Training', namePT: 'Treinamento de Altitude', keys: ['HATResults', 'HATCResults', 'AHATResults'], url: '/hatresults' },
     { nameEN: 'Oxygen Boost', namePT: 'Boost de oxigênio', keys: ['WHResults'], url: '/whresults' },
     { nameEN: 'Kapalabhati', namePT: 'Kapalabhati', keys: ['KBResults'], url: '/kbresults' },
-    { nameEN: 'Yoga Classes', namePT: 'Aulas de Yoga', keys: ['YogaResults'], url: '/yogaresults' },
-    { nameEN: 'Mindfulness', namePT: 'Mindfulness', keys: ['TIMERResults'], url: '/timerresults' },
-    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults'], url: '/allresults' }
+    { nameEN: 'Guided Classes', namePT: 'Aulas guiadas', keys: ['YogaResults', 'BMResults', 'MobilityResults', 'SeriesResults'], url: '/yogaresults' },
+    { nameEN: 'Meditation', namePT: 'Meditação', keys: ['TIMERResults'], url: '/timerresults' },
+    { nameEN: 'All Exercises', namePT: 'Todos Exercícios', keys: ['BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults', 'CBResults', 'RBResults', 'NBResults', 'CUSTResults','HATResults', 'HATCResults', 'AHATResults', 'KBResults','WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'TIMERResults','BMResults', 'MobilityResults', 'YogaResults', 'SeriesResults'], url: '/allresults' }
   ];
 
   @ViewChild('resultsList', { static: false }) resultsList?: ElementRef<HTMLDivElement>;
@@ -226,8 +226,11 @@ export class BPRPage implements OnInit, AfterViewInit {
       RBResults: { en: 'Relaxation Breathing', pt: 'Respiração Relaxante' },
       NBResults: { en: 'Nadi Shodhana', pt: 'Nadi Shodhana' },
       LungsResults: { en: 'Lungs Expansion', pt: 'Expansão Pulmonar' },
-      YogaResults: { en: 'Yoga Classes', pt: 'Aulas de Yoga' },
-      TIMERResults: { en: 'Mindfulness', pt: 'Mindfulness' },
+      YogaResults: { en: 'Yoga', pt: 'Yoga' },
+      BMResults: { en: 'Breathe & Meditate', pt: 'Respire e medite' },
+      MobilityResults: { en: 'Mobility', pt: 'Mobilidade' },
+      SeriesResults: { en: 'Series & Challenges', pt: 'Séries e desafios' },
+      TIMERResults: { en: 'Meditation', pt: 'Meditação' },
     };
     const language = this.isPortuguese ? 'pt' : 'en';
     return exerciseNames[key]?.[language] || 'Exercise Name Not Found';
@@ -247,7 +250,7 @@ export class BPRPage implements OnInit, AfterViewInit {
       'WHResults', 'KBResults', 'BBResults', 'YBResults', 'BREResults',
       'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
       'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'LungsResults',
-      'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults'
+      'YogaResults', 'DBResults', 'HUMResults', 'TIMERResults', 'BMResults', 'MobilityResults', 'SeriesResults'
     ];
 
     this.resultsByDate = {};
@@ -403,7 +406,7 @@ export class BPRPage implements OnInit, AfterViewInit {
     const exerciseKeys = [
       'brtResults','BBResults', 'YBResults', 'BREResults', 'BRWResults', 'CTResults', 'APResults', 'UBResults', 'BOXResults',
       'CBResults', 'RBResults', 'NBResults', 'CUSTResults', 'AHATResults', 'HATResults', 'HATCResults', 'KBResults',
-      'WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'YogaResults', 'TIMERResults'
+      'WHResults', 'LungsResults', 'DBResults', 'HUMResults', 'YogaResults', 'TIMERResults', 'BMResults', 'MobilityResults', 'SeriesResults'
     ];
 
     const aggregatedData: { [key: string]: { totalSeconds: number; sessionCount: number } } = {};
@@ -743,7 +746,7 @@ export class BPRPage implements OnInit, AfterViewInit {
     this.navCtrl.back();
   }
   private syncWatchedYogaIdsFromResults(): void {
-    const keysToScan = ['YogaResults', 'LungsResults']; // add 'TIMERResults' only if you want
+    const keysToScan = ['YogaResults', 'LungsResults', 'BMResults', 'MobilityResults', 'SeriesResults']; // add 'TIMERResults' only if you want
 
     const watched = new Set<string>();
 

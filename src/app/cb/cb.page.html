@@ -1,7 +1,7 @@
 <ion-content>
- <header class="mainHeader">
+  <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,103 +11,61 @@
         <button routerLink="/set" id="settingsCB" #settingsCB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionCB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionCB type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>   
   <div id="cbPage">
     <div class="breathingpages">
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form CB">
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="5.5" #inhaleInputCB id="inhaleInputCB" min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                      <input type="number" value="5.5" #exhaleInputCB id="exhaleInputCB" min="1" readonly>
-                  </div>
-              </div>
-              <div class="CBtimer-container">
-                  <select #CBtimeInput class="countdownDisplay">
-                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
-                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #CBcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnCB class="ballButton">
-                  <div #CBball class="ball">
-                      <span #CBballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnCB" #stopBtnCB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="CBSave" #CBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="CBForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneCB>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCB>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form CB">
+            <div class="form-line" id="cb-inhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="5.5" #inhaleInputCB id="inhaleInputCB" min="1" readonly>
+            </div>
+            <div class="form-line" id="cb-exhale-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="5.5" #exhaleInputCB id="exhaleInputCB" min="1" readonly>
+            </div>
           </div>
+          <div class="CBtimer-container">
+            <select #CBtimeInput class="countdownDisplay" id="cb-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #CBcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div class="center-container">
+            <button #startBtnCB class="ballButton">
+              <div #CBball class="ball">
+                <span #CBballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="cb-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnCB" #stopBtnCB>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="CBSave" #CBSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="CBForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneCB>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCB>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #CBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-  <div id="myModalCB" class="modal" #myModalCB>
-    <div class="modal-content">
-        <span class="close" id="closeModalCB" #closeModalCB>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/breathlight.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>Coherent breathing is a breathing technique that involves inhaling and exhaling for a count of 5.5 seconds each, resulting in a breathing rate of around 5.5 breaths per minute</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>A respiração coerente é uma técnica de respiração que envolve inalar e exalar por uma contagem de 5,5 segundos cada, resultando em uma taxa de respiração de cerca de 5,5 respirações por minuto</p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sit.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Find a comfortable seat or lie down. Ease your shoulders, facial muscles, and jaw into relaxation. Let your tongue rest on the roof of your mouth, with its tip lightly touching your upper front teeth.
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sandTimer.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Press 'Start' and follow the guided technique. Save your results at the end. You can also choose how long you want to do it for
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Você também pode escolher por quanto tempo deseja fazê-lo
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #CBdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #CBResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

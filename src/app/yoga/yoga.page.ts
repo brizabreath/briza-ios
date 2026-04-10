@@ -25,7 +25,7 @@ import { ShepherdService } from 'angular-shepherd';
   imports: [CommonModule, FormsModule, IonicModule, RouterModule, VideoModalComponent],
 })
 export class YogaPage implements OnInit {
-  selectedSegment: 'move' | 'slowdown' | 'meditate' = 'move';
+  selectedSegment: 'move' | 'slowdown' = 'move';
   isPortuguese = false;
 
   selectedFilter: 'duration' | '0-20 min' | '20-35 min' | '35-50 min' | '50+ min' = 'duration';
@@ -37,7 +37,6 @@ export class YogaPage implements OnInit {
   activeVideo: { title: string; url: SafeResourceUrl } | null = null;
   showWebSplash = false;
   private watchedKey = 'watchedYogaIds';
-  private likedKey = 'likedYogaIds';
 
   // 🔎 SEARCH: state (enforce one word)
   searchTerm = '';
@@ -60,24 +59,7 @@ export class YogaPage implements OnInit {
     const ids: string[] = JSON.parse(localStorage.getItem(this.watchedKey) || '[]');
     return ids.includes(videoId);
   }
-  hasLikedClasses(): boolean {
-    const ids: string[] = JSON.parse(localStorage.getItem(this.likedKey) || '[]');
-    return ids.length > 0;
-  }
-  goToLikedClasses(): void{
-    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    if(this.hasLikedClasses()){
-      this.navCtrl.navigateRoot('/yogaLikedPage');
-    }
-    else{
-      this.globalAlert.showalert(
-        this.isPortuguese ? 'Aulas curtidas' : 'Liked classes',
-        this.isPortuguese
-          ? 'Você ainda não curtiu de nenhuma aula'
-          : 'You did not like any classes yet'
-      );
-    }
-  }
+
   ngOnInit() {
     // Initialize language BEFORE first render to avoid any flicker
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
@@ -224,7 +206,7 @@ export class YogaPage implements OnInit {
             !finalTitle ||
             finalTitle === 'Untitled' ||
             !finalThumbnail ||
-            finalThumbnail === 'assets/images/lungs.svg' ||
+            finalThumbnail === 'assets/images/default.jpg' ||
             !v.addedOn ||
             durationMinutes == null;
 
@@ -239,8 +221,8 @@ export class YogaPage implements OnInit {
               if (!finalDescription) {
                 finalDescription = (meta?.description || finalDescription || '').trim();
               }
-              if (!finalThumbnail || finalThumbnail === 'assets/images/lungs.svg') {
-                finalThumbnail = (meta?.thumbnail_url || finalThumbnail || 'assets/images/lungs.svg').trim();
+              if (!finalThumbnail || finalThumbnail === 'assets/images/default.jpg') {
+                finalThumbnail = (meta?.thumbnail_url || finalThumbnail || 'assets/images/default.jpg').trim();
               }
               if (durationMinutes == null && typeof meta?.duration === 'number') {
                 durationMinutes = Math.round(meta.duration / 60);
@@ -249,7 +231,7 @@ export class YogaPage implements OnInit {
               const payload: any = {
                 title: finalTitle || 'Untitled',
                 description: finalDescription || '',
-                thumbnail: finalThumbnail || 'assets/images/lungs.svg',
+                thumbnail: finalThumbnail || 'assets/images/default.jpg',
               };
 
               // write addedOn only once
@@ -269,7 +251,7 @@ export class YogaPage implements OnInit {
 
           // Final fallbacks for everyone
           if (!finalTitle) finalTitle = 'Untitled';
-          if (!finalThumbnail) finalThumbnail = 'assets/images/lungs.svg';
+          if (!finalThumbnail) finalThumbnail = 'assets/images/default.jpg';
           if (!finalDescription) finalDescription = '';
 
           return {
@@ -326,7 +308,7 @@ export class YogaPage implements OnInit {
         !video.title ||
         video.title === 'Untitled' ||
         !video.thumbnail ||
-        video.thumbnail === 'assets/images/lungs.svg';
+        video.thumbnail === 'assets/images/default.jpg';
 
       if (!missing) return;
 
@@ -337,7 +319,7 @@ export class YogaPage implements OnInit {
       const payload: any = {
         title: (meta?.title?.trim() || video.title || 'Untitled'),
         description: (meta?.description?.trim() || video.description || ''),
-        thumbnail: (meta?.thumbnail_url?.trim() || video.thumbnail || 'assets/images/lungs.svg'),
+        thumbnail: (meta?.thumbnail_url?.trim() || video.thumbnail || 'assets/images/default.jpg'),
       };
       if (!video.addedOn) payload.addedOn = computedAddedOn;
 
@@ -478,7 +460,7 @@ export class YogaPage implements OnInit {
     this.activeVideo = null;
   }
 
-  selectSegment(segment: 'move' | 'slowdown' | 'meditate') {
+  selectSegment(segment: 'move' | 'slowdown') {
     this.selectedSegment = segment;
     this.filterVideos();
   }
@@ -504,7 +486,7 @@ export class YogaPage implements OnInit {
       const mm = Number(m[2]);
       let yy = Number(m[3]);
       if (m[3].length === 2) yy = 2000 + yy;
-      const d = new Date(yy, mm - 1, dd);
+      const d = new Date(yy, mm - 1, dd, 12, 0, 0);
       const ts = d.getTime();
       return Number.isFinite(ts) ? ts : null;
     }
@@ -517,20 +499,25 @@ export class YogaPage implements OnInit {
     const member = this.isMemberActive();
 
     this.filteredVideos.sort((a, b) => {
-      // Non-members: FREE first, then locked
+      // 1) Non-members: FREE first
       if (!member) {
         if (!!a.isFree !== !!b.isFree) return a.isFree ? -1 : 1;
       }
 
-      // Date sorting (missing dates stay on top)
+      // 2) Newest first by addedOn
       const aTs = this.parseAddedOnToTs(a);
       const bTs = this.parseAddedOnToTs(b);
+
       const aMissing = aTs == null;
       const bMissing = bTs == null;
 
-      if (aMissing !== bMissing) return aMissing ? -1 : 1; // missing first
-      if (aTs != null && bTs != null && aTs !== bTs) return bTs - aTs; // newest first
+      // Missing dates should be LAST (not first)
+      if (aMissing !== bMissing) return aMissing ? 1 : -1;
 
+      // Both have timestamps: newest first
+      if (aTs != null && bTs != null && aTs !== bTs) return bTs - aTs;
+
+      // 3) Tie-breaker
       return (a.title || '').localeCompare(b.title || '');
     });
   }
@@ -538,103 +525,4 @@ export class YogaPage implements OnInit {
   goBack(): void {
     this.navCtrl.back();
   }
-  ionViewDidEnter() {
-    const shouldStart = localStorage.getItem('startYogaTour') === 'true';
-    if (shouldStart) {
-      localStorage.removeItem('startYogaTour');
-    }else{
-      return;
-    }
-    const isPT = localStorage.getItem('isPortuguese') === 'true';
-    const t = (en: string, pt: string) => (isPT ? pt : en);
-    const sel = (enSel: string, ptSel: string) => (isPT ? ptSel : enSel);
-
-    this.shepherd.defaultStepOptions = {
-      cancelIcon: { enabled: true },
-      scrollTo: true,
-      canClickTarget: false,
-      modalOverlayOpeningPadding: 4,
-      modalOverlayOpeningRadius: 10,
-      classes: 'briza-tour',
-    };
-    this.shepherd.modal = true;
-
-    setTimeout(() => {
-    this.shepherd.addSteps([
-      {
-        id: 'hp-heart', 
-        text: `
-               <p>${t('Every class that you liked will be saved here',
-                      'Todas as aulas que você curtiu serão salvas aqui')}</p>`,
-        attachTo: { element: '#hp-heart', on: 'bottom' },
-        buttons: [
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() },
-        ]
-      },
-      {
-        id: 'hp-med',
-        text: `
-               <p>${t('Simple timer for you to track your meditation sessions',
-                      'Um cronômetro simples para você acompanhar suas sessões de meditação')}</p>`,
-        attachTo: { element: '#hp-med', on: 'bottom' },
-        buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      },
-      {
-        id: 'brt-finish7',
-        text: `<h3>${t('Classes','Aulas')}</h3>
-               <p>${t('You can choose the type of practice and search by keywords and duration of class',
-                      'Você pode escolher o tipo de prática e pode pesquisar por palavras-chave e duração da aula')}</p>`,
-        buttons: [
-          { text: t('Back','Voltar'), action: () => this.shepherd.back() },
-          { text: t('Next','Próximo'), action: () => this.shepherd.next() }
-        ]
-      },
-      {
-        id: 'brt-finish6',
-        text: `<h3>${t('Continue tour?','Continuar tour?')}</h3>`,
-        buttons: [
-          { text: t('End','Fechar'), action: () => this.shepherd.complete() },
-          {
-            text: t('Next','Próximo'),
-            action: () => {
-              this.shepherd.complete();
-              localStorage.setItem('startHomeTour','true');
-              this.router.navigateByUrl('/home');
-            },
-          },
-        ],
-      }
-      ]);
-
-      const tour: any = (this.shepherd as any).tourObject || (this.shepherd as any).tour;
-      if (tour?.on) {
-        tour.off?.('start', this.lockUIForTour);
-        tour.off?.('complete', this.unlockUIForTour);
-        tour.off?.('cancel', this.unlockUIForTour);
-        tour.off?.('inactive', this.unlockUIForTour);
-
-        tour.on('start', this.lockUIForTour);
-        tour.on('complete', this.unlockUIForTour);
-        tour.on('cancel', this.unlockUIForTour);
-        tour.on('inactive', this.unlockUIForTour);
-      }
-
-      this.shepherd.start();  
-    }, 0);
-  }
-  ionViewDidLeave() {
-    this.unlockUIForTour();
-  }
-  private lockUIForTour = () => {
-    document.documentElement.classList.add('tour-active');
-    document.body.style.overflow = 'hidden'; // stop background scroll
-  };
-
-  private unlockUIForTour = () => {
-    document.documentElement.classList.remove('tour-active');
-    document.body.style.overflow = '';
-  };
 }

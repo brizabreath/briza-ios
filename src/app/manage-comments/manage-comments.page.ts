@@ -181,11 +181,16 @@ export class ManageComments {
     if (!snap.exists()) return;
 
     const category = (snap.data() as any)?.category || '';
-    const isLungs = category === 'lungs' || category === 'mobility';
-
-    this.navCtrl.navigateForward(isLungs ? '/lungs' : '/yoga', {
+    if(category === 'mobility'){
+      this.navCtrl.navigateForward('/movement', {
+        queryParams: { open: c.videoId },
+      });
+    }else{
+      const isLungs = category === 'lungs' || category === 'meditate';
+      this.navCtrl.navigateForward(isLungs ? '/lungs' : '/yoga', {
       queryParams: { open: c.videoId },
     });
+    }
   }
 
     // Method to navigate back

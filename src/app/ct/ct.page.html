@@ -1,7 +1,7 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,136 +11,70 @@
         <button routerLink="/set" id="settingsCT" #settingsCT class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionCT type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionCT type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
   <div id="ctPage">
     <div class="breathingpages2">
-       <p class="centeredText"  *ngIf="!isPortuguese">Press "Restart" if you<br>can no longer cope with the breath hold</p>
-        <p class="centeredText"  *ngIf="isPortuguese">Pressione "Reiniciar" quando você<br>não puder mais acompanhar a retenção</p>
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form CT"> 
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="3" #inhaleInputCT min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                      <input type="number" value="3" #exhaleInputCT min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/pause.png">
-                    <input type="number" value="4" #hold1InputCT min="1" readonly>
-                </div>
-              </div>
-              <div class="CTtimer-container">
-                  <select #CTtimeInput class="countdownDisplay">
-                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
-                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #CTcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnCT class="ballButton">
-                  <div #CTball class="ball">
-                      <span #CTballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT><div   *ngIf="!isPortuguese">Restart</div><div  *ngIf="isPortuguese">Reiniciar</div></button>
-                  <button type="button" class="stopBtn" id="CTReset" #CTReset><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="CTSave" #CTSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="CTForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneCT>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <p class="centeredText" *ngIf="!isPortuguese">Press "Restart" if you<br>can no longer cope with the breath hold</p>
+      <p class="centeredText" *ngIf="isPortuguese">Pressione "Reiniciar" quando você<br>não puder mais acompanhar a retenção</p>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form CT">
+            <div class="form-line" id="ct-inhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="3" #inhaleInputCT min="1" readonly>
+            </div>
+            <div class="form-line" id="ct-exhale-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="3" #exhaleInputCT min="1" readonly>
+            </div>
+            <div class="form-line" id="ct-hold-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="4" #hold1InputCT min="1" readonly>
+            </div>
           </div>
+          <div class="CTtimer-container">
+            <select #CTtimeInput class="countdownDisplay" id="ct-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #CTcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div class="center-container">
+            <button #startBtnCT class="ballButton">
+              <div #CTball class="ball">
+                <span #CTballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="ct-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnCT" #stopBtnCT>
+              <div *ngIf="!isPortuguese">Restart</div><div *ngIf="isPortuguese">Reiniciar</div>
+            </button>
+            <button type="button" class="stopBtn" id="CTReset" #CTReset>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="CTSave" #CTSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="CTForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneCT>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayCT>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #CTResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-  <div id="myModalCT" class="modal" #myModalCT>
-    <div class="modal-content">
-        <span class="close" id="closeModalCT" #closeModalCT>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/breathlight.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>The CO2 Tolerance Training is based on the principles of allowing your body to get used to low levels of oxygen and high levels of carbon dioxide</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>O Treinamento de Tolerância ao CO2 é baseado nos princípios de permitir que seu corpo se acostume com baixos níveis de oxigênio e altos níveis de dióxido de carbono</p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sit.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sandTimer.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Press 'Start' and follow the guided technique. If you need to pause, just click on the circle again
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Se precisar pausar, basta clicar no círculo novamente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/airhunger.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Press "Restart" when you can no longer cope with the technique, this will take you back to the begining
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Pressione "Reiniciar" quando você não puder mais lidar com a técnica, isso o levará de volta ao início
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    When the time of the exahaltion becomes too great and you can no longer follow it, press 'Restart' and you will have 3 seconds to recover your breath and start again. Save your results at the end
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Quando o tempo da exalação se tornar muito grande e você não puder mais segui-lo, pressione 'Reiniciar' e você terá 3 segundos para recuperar sua respiração e começar novamente. Salve seus resultados ao final
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #CTdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #CTResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

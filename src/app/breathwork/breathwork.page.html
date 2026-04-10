@@ -1,24 +1,24 @@
 <ion-content>
-  <header class="mainHeader">
-    <div class="back-buttons">
-      <button class="goback"></button>
-    </div>
-
-    <div class="logo-container">
-      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
-    </div>
-
-    <div class="placeholderHeader">
-      <div class="questionMark questionClass2">
-        <button #questionBREATH type="button" (click)="startAppGuide()">
-          <img class="questionIMG" src="assets/images/question.png">
-        </button>
+  <div #brworkPage [style.visibility]="isContentReady ? 'visible' : 'hidden'">    
+    <header class="mainHeader">
+      <div class="back-buttons">
+        <button class="goback"></button>
       </div>
-    </div>
-  </header>
 
-  <div #brworkPage>
-    <div id="breathpagegrid">
+      <div class="logo-container">
+        <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+      </div>
+
+      <div class="placeholderHeader">
+        <div class="questionMark questionClass2">
+          <button #questionBREATH type="button" (click)="startAppGuide()">
+            <img class="questionIMG" src="assets/images/question.png">
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="breathpagegrid2">
       <div class="welcomeDisplay">
         <h2>{{ greetingText }}</h2>
       </div>
@@ -27,11 +27,11 @@
       <div *ngIf="!hasBrtToday">
         <a class="breath-button" routerLink="/brt" id="hp-brtHome">
           <img src="assets/images/brizaretention.png" alt="icon" class="iconBP" />
-          <div class="textBP">
-            <div class="titleBP"  *ngIf="!isPortuguese">Briza<br>Retention Test</div>
-            <div class="subtitleBP"  *ngIf="!isPortuguese">Measure your fitness level</div>
-            <div class="titleBP"  *ngIf="isPortuguese">Teste<br>de Retenção Briza</div>
-            <div class="subtitleBP"  *ngIf="isPortuguese">Medindo seu condicionamento</div>
+          <div class="textBP2">
+            <div class="titleBP"  *ngIf="!isPortuguese">Briza Retention Test</div>
+            <div class="subtitleBP"  *ngIf="!isPortuguese">Measure your breathing efficiency</div>
+            <div class="titleBP"  *ngIf="isPortuguese">Teste de Retenção Briza</div>
+            <div class="subtitleBP"  *ngIf="isPortuguese">Meça sua eficiência respiratória</div>
           </div>
         </a>
       </div>
@@ -40,9 +40,9 @@
       <div *ngIf="hasBrtToday">
         <a class="breath-button" routerLink="/program" id="hp-progHome">
           <img src="assets/images/lungexpansion.png" alt="icon" class="iconBP" />
-          <div class="textBP">
+          <div class="textBP2">
             <div class="titleBP"  *ngIf="!isPortuguese">Briza Program</div>
-            <div class="subtitleBP"  *ngIf="!isPortuguese">Boost your breathing <br>efficiency</div>
+            <div class="subtitleBP"  *ngIf="!isPortuguese">Boost your breathing efficiency</div>
             <div class="titleBP"  *ngIf="isPortuguese">Programa Briza</div>
             <div class="subtitleBP"  *ngIf="isPortuguese">Melhore sua eficiência respiratória</div>
           </div>
@@ -59,7 +59,7 @@
             <div class="titleBW2"  *ngIf="!isPortuguese">Stress & Anxiety</div>
             <div class="titleBW2"  *ngIf="isPortuguese">Stress & Ansiedade</div>
           </div>
-        </a>
+        </a> 
         
         <a class="breath-button1" routerLink="/sleep">
           <img src="assets/images/sleepbetter.png" alt="icon" class="iconBP2" />
@@ -98,36 +98,92 @@
         <div class="weekday-row">
           <div class="day">
             <div id="circle-mon" class="circle"></div>
-            <div class="label"  *ngIf="!isPortuguese">M</div>
-            <div class="label"  *ngIf="isPortuguese">S</div>
+            <div
+              class="label"
+              *ngIf="!isPortuguese"
+              [class.today]="todayWeekdayKey === 'mon'">
+              M
+            </div>
+            <div
+              class="label"
+              *ngIf="isPortuguese"
+              [class.today]="todayWeekdayKey === 'mon'">
+              S
+            </div>
           </div>
+
           <div class="day">
             <div id="circle-tue" class="circle"></div>
-            <div class="label">T</div>
+            <div class="label" [class.today]="todayWeekdayKey === 'tue'">T</div>
           </div>
+
           <div class="day">
             <div id="circle-wed" class="circle"></div>
-            <div class="label"  *ngIf="!isPortuguese">W</div>
-            <div class="label"  *ngIf="isPortuguese">Q</div>
+            <div
+              class="label"
+              *ngIf="!isPortuguese"
+              [class.today]="todayWeekdayKey === 'wed'">
+              W
+            </div>
+            <div
+              class="label"
+              *ngIf="isPortuguese"
+              [class.today]="todayWeekdayKey === 'wed'">
+              Q
+            </div>
           </div>
+
           <div class="day">
             <div id="circle-thu" class="circle"></div>
-            <div class="label"  *ngIf="!isPortuguese">T</div>
-            <div class="label"  *ngIf="isPortuguese">Q</div>
+            <div
+              class="label"
+              *ngIf="!isPortuguese"
+              [class.today]="todayWeekdayKey === 'thu'">
+              T
+            </div>
+            <div
+              class="label"
+              *ngIf="isPortuguese"
+              [class.today]="todayWeekdayKey === 'thu'">
+              Q
+            </div>
           </div>
+
           <div class="day">
             <div id="circle-fri" class="circle"></div>
-            <div class="label"  *ngIf="!isPortuguese">F</div>
-            <div class="label"  *ngIf="isPortuguese">S</div>
+            <div
+              class="label"
+              *ngIf="!isPortuguese"
+              [class.today]="todayWeekdayKey === 'fri'">
+              F
+            </div>
+            <div
+              class="label"
+              *ngIf="isPortuguese"
+              [class.today]="todayWeekdayKey === 'fri'">
+              S
+            </div>
           </div>
+
           <div class="day">
             <div id="circle-sat" class="circle"></div>
-            <div class="label">S</div>
+            <div class="label" [class.today]="todayWeekdayKey === 'sat'">S</div>
           </div>
+
           <div class="day">
             <div id="circle-sun" class="circle"></div>
-            <div class="label"  *ngIf="!isPortuguese">S</div>
-            <div class="label"  *ngIf="isPortuguese">D</div>
+            <div
+              class="label"
+              *ngIf="!isPortuguese"
+              [class.today]="todayWeekdayKey === 'sun'">
+              S
+            </div>
+            <div
+              class="label"
+              *ngIf="isPortuguese"
+              [class.today]="todayWeekdayKey === 'sun'">
+              D
+            </div>
           </div>
         </div>
       </div>
@@ -161,19 +217,21 @@
     <footer id="breathFooter"  *ngIf="!isPortuguese">
       <div class="navbar">
         <a class="active"><i class="fa fa-home active"></i>Home</a>
-        <a class="navIcons" routerLink="/home" id="hp-program"><i class="fa fa-fire"></i>Breathwork</a>
-        <a class="navIcons" routerLink="/yoga" id="hp-yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+        <a class="navIcons" routerLink="/home" id="hp-program"><i class="fa fa-fire"></i>Mindfulness</a>
+        <a class="navIcons" routerLink="/movement" id="hp-yoga"><i class="fa fa-sun-o"></i>Movement</a>
         <a class="navIcons" routerLink="/bpr" id="hp-bpr"><i class="fa fa-line-chart"></i>Results</a>
         <a class="navIcons" routerLink="/profile" id="hp-profile"><i class="fa fa-user"></i>Profile</a>
       </div>
     </footer>
   </div>
-
+   <div *ngIf="showWebSplash" class="web-splash-screen">
+    <div class="loader"></div>
+  </div>
   <footer id="breathFooterBR"  *ngIf="isPortuguese">
     <div class="navbar">
       <a class="active"><i class="fa fa-home active"></i>Home</a>
-      <a class="navIcons" routerLink="/home" id="hp-programPT"><i class="fa fa-fire"></i>Breathwork</a>
-      <a class="navIcons" routerLink="/yoga" id="hp-yogaPT"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/home" id="hp-programPT"><i class="fa fa-fire"></i>Mindfulness</a>
+      <a class="navIcons" routerLink="/movement" id="hp-yogaPT"><i class="fa fa-sun-o"></i>Movimento</a>
       <a class="navIcons" routerLink="/bpr" id="hp-bprPT"><i class="fa fa-line-chart"></i>Resultados</a>
       <a class="navIcons" routerLink="/profile"id="hp-profilePT"><i class="fa fa-user"></i>Perfil</a>
     </div>

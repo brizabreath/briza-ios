@@ -66,7 +66,7 @@ html.ios, html.md {
 }
 
 :root {
-  --app-font-family: 'Nunito', sans-serif !important;
+  --app-font-family: 'Nunito', sans-serif;
   --heading-font: 'DellaRespira', serif;
 }
 
@@ -152,8 +152,9 @@ ion-input {
   animation-delay: 1s; // start after logo animation
 }
 .quote-container2 {
+  width: 90%;
+  margin: auto;
   margin-top: 1.5rem;
-  width: 100%;
 }
 .quote-text {
   font-size: 24px !important;
@@ -167,6 +168,7 @@ ion-input {
   text-align: justify; 
   margin-right: 0.4rem;
   font-style: italic;
+  margin-bottom: 0.2rem;
 }
 .quote-author {
   font-size: 1rem;
@@ -182,7 +184,6 @@ ion-input {
   justify-content: space-between;
   width: 90%;
   margin-left: 0.4rem;
-  margin-top: 10px;
   margin-bottom: 120px;
 }
 .openScreenBut{
@@ -241,8 +242,8 @@ ion-input {
 .weekday-row {
   display: flex;
   justify-content: space-between;
-  padding: 0 10px;
-  margin: 10px 0;
+  margin: auto;
+  width: 90%;
 }
 
 .day {
@@ -311,7 +312,7 @@ ion-input {
   border-radius: 16px;
   padding: 16px 20px;
   box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
-  width: 100%;
+  width: 90%;
   text-align: left;
   margin: auto;
   text-decoration: none;
@@ -339,14 +340,17 @@ ion-input {
 .textBP{
   margin-left: 3rem;
 }
-.textBP .titleBP {
-  
+.textBP2{
+  margin-left: 1rem;
+}
+.textBP .titleBP, .textBP2 .titleBP {
+   
   font-size: 18px;
   color: #0661AA;
   line-height: 1.2;
 }
 
-.textBP .subtitleBP {
+.textBP .subtitleBP, .textBP2 .subtitleBP {
   font-size: 14px;
   color: #49B79D;
   margin-top: 4px;
@@ -406,8 +410,6 @@ ion-input {
 }
 .segmented-control {
   display: flex;
-  border: 1px solid #49B79D;
-  border-radius: 12px;
   overflow: hidden;
   width: 90%;
   margin: auto;
@@ -416,19 +418,16 @@ ion-input {
 }
 
 .segment {
-  padding: 10px 18px;
-  border: none;
+  padding: 5px 18px;
   background-color: white;
   color: #0661AA;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   flex: 1;
-  transition: background-color 0.3s, color 0.3s;
   font-weight: bold !important;
-}
-
-.segment:not(:last-child) {
-  border-right: 1px solid #49B79D;
+  border-radius: 12px;
+  height: 40px;
+  border: none;
 }
 
 .segment.active {
@@ -438,6 +437,12 @@ ion-input {
 
 .segment-content {
   font-size: 16px;
+}
+.seeAll{
+  text-decoration: none;
+  color: #49B79D;
+  font-size: 12px;
+  padding-right: 20px;
 }
 .bhgrid{
   max-width: 500px;
@@ -459,14 +464,20 @@ ion-input {
 }
 p {
   font-weight: 500;
-  margin-bottom: 0px !important;
 }
-#breathpagegrid p {
+.breathpagegrid p {
   font-weight: 500;
   margin-left: 0.4rem;
 }
-#breathpagegrid h2 {
+.breathpagegrid h2 {
   margin-left: 0.4rem;
+}
+.breathpagegrid2 p {
+  font-weight: 500;
+  margin-left: 0.4rem;
+}
+.breathpagegrid2 h2 {
+  margin-left: 1.5rem;
 }
 /* ============ Modal shell ============ */
 .modal {
@@ -626,20 +637,20 @@ p {
 #openScreen .modal-controls {
 display: none;
 }
-/* Briza theme for Shepherd tour */
-.briza-tour.shepherd-element {
-  max-width: 250px;
+.shepherd-element {
+  max-width: 80%;
   border-radius: 14px;
   box-shadow: 0 10px 28px rgba(0, 0, 0, 0.56);
   background: rgba(236, 249, 246, 1);  
   border: 2px solid #0660aa65; /* teal border */
   font-family: 'Nunito', Arial, sans-serif;
+  margin: 0;
 }
 .shepherd-footer {
   justify-content: center !important;
 }
 /* Title/header */
-.briza-tour .shepherd-header {
+.shepherd-header {
   background: #0660aa00; /* Briza blue */
   color: #fff;
   font-weight: 700;
@@ -647,7 +658,7 @@ display: none;
 }
 
 /* Body text */
-.briza-tour .shepherd-text {
+.shepherd-text {
   font-size: 15px;
   line-height: 1.4;
   color: #0661AA; /* deep green */
@@ -655,23 +666,18 @@ display: none;
 }
 
 /* Buttons */
-.briza-tour .shepherd-footer button {
+.shepherd-footer button {
   border-radius: 8px;
-  padding: 6px 14px;
   font-weight: 600;
   font-family: 'Nunito', Arial, sans-serif;
 }
 
-.briza-tour .shepherd-button {
-  background: #49B79D;
-  color: white;
-  margin-left: 6px;
+.shepherd-button {
+  background: #49B79D !important;
+  color: white !important;
+  box-shadow: 1px 3px 4px 0 rgba(0, 0, 0, 0.47);
 }
 
-.briza-tour .shepherd-button:not(.shepherd-button-primary) {
-  background: #0661AA;
-  color: #ffffff;
-}
 /* Special finish step styling */
 .briza-tour-finish {
   text-align: center;
@@ -759,12 +765,11 @@ display: none;
   overscroll-behavior: none;
   touch-action: none;
 }
-/* Only adjust the Yoga step arrow */
-.shepherd-element[data-shepherd-step-id="hp-yoga"] .shepherd-arrow {
-  transform: translateX(-25px); /* nudge left */
-}/* Only adjust the Yoga step arrow */
-.shepherd-element[data-shepherd-step-id="hp-program"] .shepherd-arrow {
-  transform: translateX(-50px); /* nudge left */
+.shepherd-element h3{
+  text-align: center;
+}
+.shepherd-text p{
+  text-align: center;
 }
 .goProgram{
   margin-top: 10px;
@@ -797,7 +802,7 @@ display: none;
     z-index: 2;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 40px;
+    padding-top: 50px;
 }
 //android
 .md {
@@ -820,9 +825,15 @@ display: none;
    .breathingpages2 {
     margin-top: 100px;
   }
-  #breathpagegrid, #breathpagegridBR {
+  .breathpagegrid{
     margin-top: 7rem;
   } 
+   .breathpagegrid2{
+    margin-top: 7rem;
+  } 
+  .series-hero {
+    margin-top: 75px !important;
+  }
   select{
   background-image: none;
   }
@@ -833,6 +844,8 @@ display: none;
 .profiletext{
   text-align: center !important;
   font-family: Arial, Helvetica, sans-serif !important;
+  margin: 20px;
+  font-size: 14px;
 }
 @media only screen and (min-width: 600px){
   .homepageimgs{
@@ -846,6 +859,7 @@ ion-alert {
   text-align: center !important;
   font-family: Arial, Helvetica, sans-serif !important;
   font-size: 14px;
+  margin: 20px;
 }
 .locker-container {
   position: relative;
@@ -1003,4 +1017,9 @@ ion-alert.briza-alert-confirm .alert-button-role-cancel {
 }
 #breathgrid2{
   position: fixed;
+}
+.centerText{
+  text-align: center !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }

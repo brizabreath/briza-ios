@@ -80,6 +80,7 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
     this.currentAudio.muted = false;
     this.currentAudio.load();
     this.currentAudio.play();
+    await this.audioService.unlockFromGestureIfNeeded();
     await this.audioService.resetForPlayOrResume(); 
     await this.audioService.initializeSong();
 
@@ -210,13 +211,15 @@ export class SETKBPage implements AfterViewInit, OnDestroy {
       localStorage.setItem('audioPlayerMute', 'true');
       this.setaudio.nativeElement.style.display = 'none';
       this.setmute.nativeElement.style.display = 'block';
-      await this.audioService.resetForPlayOrResume(); 
+      await this.audioService.unlockFromGestureIfNeeded();
+    await this.audioService.resetForPlayOrResume(); 
       await this.audioService.initializeSong();
     } else {
       localStorage.setItem('audioPlayerMute', 'false');
       this.setmute.nativeElement.style.display = 'none';
       this.setaudio.nativeElement.style.display = 'block';
-      await this.audioService.resetForPlayOrResume(); 
+      await this.audioService.unlockFromGestureIfNeeded();
+    await this.audioService.resetForPlayOrResume(); 
       await this.audioService.initializeSong();
     }
   }

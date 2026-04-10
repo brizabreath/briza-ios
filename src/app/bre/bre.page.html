@@ -1,7 +1,7 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,147 +11,79 @@
         <button routerLink="/set" id="settingsBRE" #settingsBRE class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionBRE type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionBRE type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
   <div id="brePage">
     <div class="breathingpages">
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form BRE">
-                  <div class="form-line">
-                    <button class="buttonminus" type="button" #minusBRE>-</button>
-                  </div>  
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="4" #inhaleInputBRE min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                      <input type="number" value="4" #hold1InputBRE min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="4" #exhaleInputBRE min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                    <input type="number" value="4" #hold2InputBRE min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/pause.png">
-                    <input type="number" value="3" #hold3InputBRE min="1" readonly>
-                  </div>
-                <div class="form-line">
-                  <button class="buttonplus" type="button" #plusBRE>+</button>
-              </div>
-              </div>
-              <div class="BREtimer-container">
-                  <select #BREtimeInput class="countdownDisplay">
-                      <option value="infinity" *ngIf="!isPortuguese"> ∞ minutes</option>
-                      <option value="infinity" *ngIf="isPortuguese"> ∞ minutos</option>
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #BREcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnBRE class="ballButton">
-                  <div #BREball class="ball">
-                      <span #BREballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnBRE" #stopBtnBRE><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="BRESave" #BRESave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="BREForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneBRE>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBRE>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form BRE">
+            <div class="form-line" id="bre-minus-btn">
+              <button class="buttonminus" type="button" #minusBRE>-</button>
+            </div>  
+            <div class="form-line" id="bre-inhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="4" #inhaleInputBRE min="1" readonly>
+            </div>
+            <div class="form-line" id="bre-hold1-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="4" #hold1InputBRE min="1" readonly>
+            </div>
+            <div class="form-line" id="bre-exhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="4" #exhaleInputBRE min="1" readonly>
+            </div>
+            <div class="form-line" id="bre-hold2-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="4" #hold2InputBRE min="1" readonly>
+            </div>
+            <div class="form-line" id="bre-hold3-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="3" #hold3InputBRE min="1" readonly>
+            </div>
+            <div class="form-line" id="bre-plus-btn">
+              <button class="buttonplus" type="button" #plusBRE>+</button>
+            </div>
           </div>
+          <div class="BREtimer-container">
+            <select #BREtimeInput class="countdownDisplay" id="bre-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #BREcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div class="center-container">
+            <button #startBtnBRE class="ballButton">
+              <div #BREball class="ball">
+                <span #BREballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="bre-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnBRE" #stopBtnBRE>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="BRESave" #BRESave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="BREForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneBRE>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayBRE>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #BREResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-  <div id="myModalBRE" class="modal" #myModalBRE>
-    <div class="modal-content">
-        <span class="close" id="closeModalBRE" #closeModalBRE>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/calm.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>Simple exercise that can be used to recover your breath after a physical activity</p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>Exercício simples que pode ser usado para recuperar sua respiração após uma atividade física</p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sit.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Encontre um assento confortável ou deite-se. Relaxe os ombros, músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sandTimer.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Choose the appropriated breath hold time from 2 to 10 seconds and Press 'Start' when you are ready. If you need to pause, just click on the circle again.
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p> 
-                    Escolha o tempo de pausa respiratória apropriado de 2 a 10 segundos e pressione "Iniciar" quando estiver pronto. Se precisar pausar, basta clicar no círculo novamente.
-                  </p> 
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/breathlight.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Breathe light on the inhalation and exhalation
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Respire suavemente na inalação e exalação
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/airhunger.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    If you feel that the breath hold time chosen is too hard, stop doing it and choose a lower breath hold time
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Se você achar que o tempo de pausa respiratória escolhido é muito difícil, pare de fazer e escolha um tempo de pausa menor
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #BREdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #BREResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

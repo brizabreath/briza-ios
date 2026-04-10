@@ -1,51 +1,62 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
     </div>
     <div class="placeholderHeader"> 
-       <div class="settingButtons">
+      <div class="settingButtons">
         <button routerLink="/setMED" id="settingsMED" #settingsMED class="audioSet" type="button"><img src="assets/images/settings.png"></button>
-      </div>  
+      </div>
+      <div class="questionMark questionClass">
+        <button #questionMED type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
+      </div>
     </div>
   </header>  
   <div id="yogicPage">
     <div class="breathingpages2">
-        <p class="centeredText"  *ngIf="!isPortuguese">Choose time, press start and begin your meditation</p>
-        <p class="centeredText"  *ngIf="isPortuguese">Escolha o tempo, pressione iniciar e comece sua meditação</p>
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="TIMERtimer-container">
-                  <select #TIMERtimeInput class="countdownDisplay">
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #TIMERcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnTIMER class="ballButton">
-                  <div #TIMERball class="ball">
-                      <span #TIMERballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnTIMER" #stopBtnTIMER><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="TIMERSave" #TIMERSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="TIMERForm">
-                      <div class="roundbox" style="display:none !important">
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayTIMER>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <p class="centeredText" *ngIf="!isPortuguese">Choose time, press start and begin your meditation</p>
+      <p class="centeredText" *ngIf="isPortuguese">Escolha o tempo, pressione iniciar e comece sua meditação</p>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="TIMERtimer-container">
+            <select #TIMERtimeInput class="countdownDisplay" id="timer-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #TIMERcountdownInput class="countdownDisplay" style="display: none;" readonly />
           </div>
+          <div class="center-container">
+            <button #startBtnTIMER class="ballButton">
+              <div #TIMERball class="ball">
+                <span #TIMERballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="timer-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnTIMER" #stopBtnTIMER>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="TIMERSave" #TIMERSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="TIMERForm">
+              <div class="roundbox" style="display:none !important">
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayTIMER>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #TIMERResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
+      <div #TIMERResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

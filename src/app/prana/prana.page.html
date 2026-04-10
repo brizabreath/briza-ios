@@ -8,164 +8,91 @@
     </div>
     <div class="placeholderHeader">
       <div class="questionMark questionClass2">
-        <a id="questionPrana" #questionPrana>
+        <a id="questionPrana" #questionPrana (click)="startGuide()">
           <img class="questionIMG" src="assets/images/question.png" />
         </a>
       </div>
-      </div>
+    </div>
   </header>
 
   <div id="pranaPage">
-    <!-- Segmented Control -->
     <div class="segmented-control">
-      <button
-        class="segment"
-        [class.active]="selectedSegment === 'traditional'"
-        (click)="selectSegment('traditional')">
-        <div    *ngIf="!isPortuguese" >Traditional</div>
-        <div   *ngIf="isPortuguese" >Tradicional</div>
+      <button class="segment" [class.active]="selectedSegment === 'traditional'" (click)="selectSegment('traditional')" id="prana-traditional-segment">
+        <div *ngIf="!isPortuguese">Traditional</div>
+        <div *ngIf="isPortuguese">Tradicional</div>
       </button>
-
-      <button
-        class="segment"
-        [class.active]="selectedSegment === 'regulation'"
-        (click)="selectSegment('regulation')">
-        <div    *ngIf="!isPortuguese" >Regulation</div>
-        <div   *ngIf="isPortuguese" >Regulação</div>
+      <button class="segment" [class.active]="selectedSegment === 'regulation'" (click)="selectSegment('regulation')" id="prana-regulation-segment">
+        <div *ngIf="!isPortuguese">Regulation</div>
+        <div *ngIf="isPortuguese">Regulação</div>
       </button>
     </div>
 
-    <!-- Segment Content -->
     <div class="segment-content">
-      <!-- Traditional -->
       <div *ngIf="selectedSegment === 'traditional'" class="bhgrid">
         <div class="row g-2">
           <div class="col locker-container">
             <a routerLink="/ub">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/ubPT.svg' : 'assets/images/ub.svg'" />
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/ubPT.svg' : 'assets/images/ub.svg'" />
               <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
           <div class="col locker-container">
             <a routerLink="/box">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/boxPT.svg' : 'assets/images/box.svg'" />
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/boxPT.svg' : 'assets/images/box.svg'" />
               <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
-
           <div class="w-100"></div>
-
           <div class="col">
             <a routerLink="/yogic">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
-            </a>
-          </div> 
-          <div class="col">
-            <a routerLink="/nb">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/nbPT.svg' : 'assets/images/nb.svg'" />
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/ybPT.svg' : 'assets/images/yb.svg'" />
             </a>
           </div>
-
+          <div class="col">
+            <a routerLink="/nb">
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/nbPT.svg' : 'assets/images/nb.svg'" />
+            </a>
+          </div>
           <div class="w-100"></div>
-
           <div class="col">
             <a routerLink="/kb">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/kbPT.svg' : 'assets/images/kb.svg'" />
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/kbPT.svg' : 'assets/images/kb.svg'" />
             </a>
           </div>
           <div class="col">
             <a routerLink="/hum">
-              <img class="homepageimgs5"
-                   [src]="isPortuguese ? 'assets/images/humPT.svg' : 'assets/images/hum.svg'" />
+              <img class="homepageimgs5" [src]="isPortuguese ? 'assets/images/humPT.svg' : 'assets/images/hum.svg'" />
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Regulation -->
       <div *ngIf="selectedSegment === 'regulation'" class="bhgrid">
         <div class="row g-2">
           <div class="col locker-container">
             <a routerLink="/rb">
-              <img class="homepageimgs4"
-                   [src]="isPortuguese ? 'assets/images/rbPT.svg' : 'assets/images/rb.svg'" />
+              <img class="homepageimgs4" [src]="isPortuguese ? 'assets/images/rbPT.svg' : 'assets/images/rb.svg'" />
               <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
           <div class="col locker-container">
             <a routerLink="/cb">
-              <img class="homepageimgs4"
-                   [src]="isPortuguese ? 'assets/images/cbPT.svg' : 'assets/images/cb.svg'" />
+              <img class="homepageimgs4" [src]="isPortuguese ? 'assets/images/cbPT.svg' : 'assets/images/cb.svg'" />
               <img *ngIf="!isMember" src="assets/images/unlock.png" class="locker-icon" alt="Free to use" />
             </a>
           </div>
-
           <div class="w-100"></div>
-
           <div class="col">
             <a routerLink="/bb">
-              <img class="homepageimgs4"
-                   [src]="isPortuguese ? 'assets/images/bbPT.svg' : 'assets/images/bb.svg'" />
+              <img class="homepageimgs4" [src]="isPortuguese ? 'assets/images/bbPT.svg' : 'assets/images/bb.svg'" />
             </a>
           </div>
           <div class="col">
             <a routerLink="/db">
-              <img class="homepageimgs4"
-                   [src]="isPortuguese ? 'assets/images/dbPT.svg' : 'assets/images/db.svg'" />
+              <img class="homepageimgs4" [src]="isPortuguese ? 'assets/images/dbPT.svg' : 'assets/images/db.svg'" />
             </a>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Safety notice -->
-    <div class="breathingpages set">
-      <p class="atention"   *ngIf="isPortuguese" >
-        Esteja ciente dos seus limites. Se você tiver algum problema de saúde grave, para garantir que esses exercícios respiratórios sejam seguros para você, consulte um médico antes de praticar qualquer exercício do aplicativo Briza Breath & Performance.      </p>
-      <p class="atention"   *ngIf="!isPortuguese" >
-        Be aware of your limits. If you have any serious health conditions, to ensure these breathing exercises are safe to you, consult a doctor before practicing any of the Briza Breath & Performance App`s exercises
-      </p>
-    </div>
-  </div>
-
-  <!-- Modal (kept minimal; hooks match your TS) -->
-  <div id="myModalPrana" class="modal" #myModalPrana>
-    <div class="modal-content">
-      <span class="close" id="closeModalPrana" #closeModalPrana>&times;</span>
-      <div class="autoPlayBtnContainer">
-        <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-      </div>
-      <div class="slideshow-container">
-        <!-- Example slide 1 -->
-        <div class="mySlides fadeModal slides">
-          <img src="assets/images/coherentlines.svg" />
-          <div class="text"   *ngIf="!isPortuguese" >
-            <p>Learn foundational breathing patterns that build control and calm.</p>
-          </div>
-          <div class="text"   *ngIf="isPortuguese" >
-            <p>Aprenda padrões de respiração fundamentais que constroem controle e calma.</p>
-          </div>
-        </div>
-
-        <!-- Example slide 2 -->
-        <div class="mySlides fadeModal slides">
-          <img src="assets/images/breathlight.svg" />
-          <div class="text"   *ngIf="!isPortuguese" >
-            <p>Use regulation techniques to balance energy and focus.</p>
-          </div>
-          <div class="text"   *ngIf="isPortuguese" >
-            <p>Use técnicas de regulação para equilibrar energia e foco.</p>
-          </div>
-        </div>
-
-        <div class="dots" #Pranadots role="tablist" aria-label="Slideshow pagination"></div>
       </div>
     </div>
   </div>

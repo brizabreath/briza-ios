@@ -1,0 +1,233 @@
+#container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+.timerIMG{
+  height: 40px;
+}
+.timerIMG2{
+  height: 30px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+.liked-open-btn{
+  background-color: transparent;
+}
+.segmented-control {
+  margin-top: 0px !important;
+  margin-bottom: 20px !important;
+}
+.inlineDisplay{
+  display: flex;
+  justify-content: space-between;
+}
+#container {
+  text-align: center;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+
+  color: #8c8c8c;
+
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+
+.horizontal-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding-right:12px;
+  padding-left: 0.7rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 2 full cards + ~1/3 of the next card visible */
+.horizontal-scroll .breath-button2 {
+  flex: 0 0 auto;
+
+  /* tweak these two values to taste */
+  --gap: 12px;     /* must match .horizontal-scroll gap */
+  --peek: 70px;    /* how much of 3rd card shows */
+  height: 8rem;
+}
+.homepageimgs5{
+  height: 8rem;
+}
+.videoHome{
+  height: 8rem !important;
+  margin-bottom: 30px;
+}
+/* Optional: hide scrollbar */
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+.horizontal-scroll { scrollbar-width: none; }
+
+.iconBP2 {
+  width: 2.5rem;
+  margin-left: 5px;
+}
+.textBW2{
+  margin-left: 10px;
+  text-align: left;
+}
+.textBW2 .titleBW2 {
+  font-size: 12px;
+  color: #0661AA;
+}
+.breath-button2 {
+  background-color: white;
+  box-shadow: none;
+  height: 8rem;
+}
+.anx-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000;
+}
+
+.anx-thumb {
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+  display: block;
+
+  /* slightly darker */
+  filter: brightness(0.75);
+}
+.anx-thumb2 {
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+  display: block;
+}
+
+.anx-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.50),
+    rgba(0, 0, 0, 0.10)
+  );
+}
+
+.anx-title {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 30px;
+  z-index: 1;
+
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6);
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.anx-free-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.anx-card.locked {
+  opacity: 0.92;
+}
+h2{
+  font-size: 20px;
+  text-align: center;
+}
+.homepageimgs6 {
+    width: 90%;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.22);
+    background-color: #0660aa1c;
+    height: 70px;
+    margin-bottom: 120px;
+    margin-top: 20px;
+}
+.homepageimgs7 {
+    height: 8rem !important;
+}
+h3{
+    margin-left: 1.5rem;
+    font-size: 18px;
+    color: #0661AA;
+     
+}
+#homepagegrid{
+  margin-top: 0 !important;
+}
+.series-hero {
+  margin-top: 100px;
+  width: 100%;
+  position: relative;   /* ✅ required for overlay/title positioning */
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.series-hero-img {
+  width: 100%;
+  height: 220px;        /* optional: gives a consistent hero height */
+  object-fit: cover;
+  display: block;
+}

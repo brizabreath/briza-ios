@@ -1,0 +1,58 @@
+<ion-content>
+  <header class="mainHeader">
+    <div class="back-buttons">
+      <button class="goback" (click)="goBack()">&#8249;</button>
+    </div>
+
+    <div class="logo-container">
+      <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
+    </div>
+
+    <div class="placeholderHeader"></div>
+  </header>
+
+  <!-- Series hero -->
+  <div class="series-hero" *ngIf="series">
+    <img [src]="series.thumbnail" class="series-hero-img" />
+  </div>
+
+  <div class="series-description" *ngIf="series?.description">
+    {{ series.description }}
+  </div>
+
+  <!-- Videos list -->
+  <div *ngIf="series && isSeriesUnlocked">
+    <div class="video-list" *ngIf="seriesVideos.length > 0">
+      <div
+        *ngFor="let v of seriesVideos"
+        class="video-card"
+        (click)="onVideoClick(v)"
+      >
+        <div>
+          <img [src]="v.thumbnail" class="video-thumb" />
+        </div>
+
+        <div class="video-info">
+          <h3>{{ v.title }}</h3>
+          <p class="video-subtitle">{{ v.duration }} min</p>
+        </div>
+
+        <div class="play-button">&#9658;</div>
+
+        <!-- ✅ watched badge -->
+        <div class="watched-badge" *ngIf="isWatched(v.id)">✓</div>
+      </div>
+    </div>
+
+    <div class="no-videos" *ngIf="seriesVideos.length === 0">
+      <p *ngIf="!isPortuguese">No videos found for this series.</p>
+      <p *ngIf="isPortuguese">Nenhum vídeo encontrado para esta série.</p>
+    </div>
+  </div>
+
+  <!-- not found -->
+  <div class="no-videos" *ngIf="!series">
+    <p *ngIf="!isPortuguese">Series not found.</p>
+    <p *ngIf="isPortuguese">Série não encontrada.</p>
+  </div>
+</ion-content>

@@ -1,14 +1,38 @@
+// revenuecat.service.ts
 import { Injectable } from '@angular/core';
 import { FirebaseService } from './firebase.service';
-import { doc, getDoc } from 'firebase/firestore';
-import {
-  Purchases,
-  PurchasesOfferings,
-} from '@revenuecat/purchases-capacitor';
+import { doc, getDoc, setDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { Purchases, PurchasesOfferings } from '@revenuecat/purchases-capacitor';
+
+type MembershipType =
+  | 'whitelist'
+  | 'deviceTrial'
+  | 'rcTrial'
+  | 'monthlySubscriber'
+  | 'annualSubscriber'
+  | 'free'
+  | 'code';
+
+type Snapshot = {
+  online: boolean;
+  platform: 'ios' | 'android' | 'web';
+  status: 'active' | 'inactive';
+  source: 'none' | 'whitelist' | 'trial' | 'revenuecat' | 'code' | 'cache';
+  whitelistActive: boolean;
+  trialActive: boolean;
+  trialDaysLeft: number;
+  rcActive: boolean;
+  membershipType: MembershipType;
+  rcPeriodType: string | null;
+  rcProductId: string | null;
+  codeActive: boolean;
+  codeDaysLeft: number;
+};
 
 @Injectable({ providedIn: 'root' })
 export class RevenuecatService {
   constructor(private firebaseService: FirebaseService) {}
+
   private readonly ENTITLEMENT_ID = 'premium_access';
 
   private readonly MONTHLY_PRODUCT_IDS = new Set([
@@ -20,15 +44,14 @@ export class RevenuecatService {
     'annual_subscription',
     'annual_subscription:annual-payment1',
   ]);
-  // 🔹 Unified snapshot (used by Guard and Profile)
-  async getSnapshot(): Promise<any> {
-    const isOnline = navigator.onLine;
-    const email = this.firebaseService.auth?.currentUser?.email;
-    const firestore = this.firebaseService.firestore;
 
-    // Base snapshot
-    let result = {
-      online: isOnline,
+  private normalizeEmail(e: any): string {
+    return String(e || '').trim().toLowerCase();
+  }
+
+  private baseSnapshot(): Snapshot {
+    return {
+      online: navigator.onLine,
       platform: this.getPlatform(),
       status: 'inactive',
       source: 'none',
@@ -36,54 +59,118 @@ export class RevenuecatService {
       trialActive: false,
       trialDaysLeft: 0,
       rcActive: false,
-      membershipType: 'free' as
-        | 'whitelist'
-        | 'deviceTrial'
-        | 'rcTrial'
-        | 'monthlySubscriber'
-        | 'annualSubscriber'
-        | 'free',
-      rcPeriodType: null as string | null,
-      rcProductId: null as string | null,
+      membershipType: 'free',
+      rcPeriodType: null,
+      rcProductId: null,
       codeActive: false,
       codeDaysLeft: 0,
     };
+  }
 
-    // ============================================================
-    // 1️⃣ WHITELIST (query by email field, not document ID)
-    // ============================================================
+  // -------------------------
+  // Persist membership
+  // -------------------------
+  private async persistMembershipFromSnapshot(s: Snapshot): Promise<void> {
+    const db = this.firebaseService.firestore;
+    const user = this.firebaseService.auth?.currentUser;
+    if (!db || !user) return;
+
+    const userRef = doc(db, `users/${user.uid}`);
+
+    // Always write these
+    const patch: any = {
+      membership: {
+        type: s.membershipType,
+        status: s.status,
+        source: s.source,
+        rcPeriodType: s.rcPeriodType ?? null,
+        rcProductId: s.rcProductId ?? null,
+        updatedAt: Timestamp.now(),
+      },
+    };
+
+    // Set activatedAt ONCE (first time user becomes active)
+    if (s.status === 'active') {
+      try {
+        const snap = await getDoc(userRef);
+        const existing = snap.exists() ? (snap.data() as any) : {};
+        const activatedAt = existing?.membership?.activatedAt;
+
+        if (!activatedAt) {
+          patch.membership.activatedAt = Timestamp.now();
+        }
+      } catch {
+        // If read fails, still do safe write without activatedAt
+      }
+    }
+
+    // Merge patch
+    await setDoc(userRef, patch, { merge: true });
+  }
+
+  // -------------------------
+  // Unified snapshot
+  // -------------------------
+  async getSnapshot(): Promise<Snapshot> {
+    const isOnline = navigator.onLine;
+    const db = this.firebaseService.firestore;
+    const user = this.firebaseService.auth?.currentUser;
+    const email = this.normalizeEmail(user?.email);
+
+    const result = this.baseSnapshot();
+
+    // 1) WHITELIST (freeAccessUsers doc id = email)
     try {
-      if (firestore && email) {
-        const { collection, query, where, getDocs } = await import('firebase/firestore');
-        const q = query(
-          collection(firestore, 'freeAccessUsers'),
-          where('email', '==', email),
-          where('active', '==', true)
-        );
-        const snap = await getDocs(q);
+      if (db && email) {
+        // Try doc id lookup first (your real structure)
+        const ref = doc(db, 'freeAccessUsers', email);
+        const snap = await getDoc(ref);
 
-        if (!snap.empty) {
+        // Accept either {active:true} or {isActive:true}
+        const d: any = snap.exists() ? snap.data() : null;
+        const active = !!(d?.active ?? d?.isActive);
+
+        if (snap.exists() && active) {
           result.membershipType = 'whitelist';
           result.status = 'active';
           result.source = 'whitelist';
           result.whitelistActive = true;
+
           localStorage.setItem('membershipStatus', 'active');
           localStorage.setItem('membershipSource', 'whitelist');
+
+          await this.persistMembershipFromSnapshot(result);
+          return result;
+        }
+
+        // Fallback: query by field if you also store email field
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        const q = query(
+          collection(db, 'freeAccessUsers'),
+          where('email', '==', email),
+          where('active', '==', true),
+        );
+        const qs = await getDocs(q);
+        if (!qs.empty) {
+          result.membershipType = 'whitelist';
+          result.status = 'active';
+          result.source = 'whitelist';
+          result.whitelistActive = true;
+
+          localStorage.setItem('membershipStatus', 'active');
+          localStorage.setItem('membershipSource', 'whitelist');
+
+          await this.persistMembershipFromSnapshot(result);
           return result;
         }
       }
     } catch (err) {
       console.error('⚠️ Whitelist check failed:', err);
     }
-    // ============================================================
-    // 2️⃣B CODE ACCESS (from user doc)
-    // ============================================================
-    try {
-      const user = this.firebaseService.auth?.currentUser;
-      const db = this.firebaseService.firestore;
 
+    // 2) CODE ACCESS (from user doc)
+    try {
       if (db && user) {
-        const { doc, getDoc } = await import('firebase/firestore');
         const userRef = doc(db, `users/${user.uid}`);
         const snap = await getDoc(userRef);
 
@@ -94,20 +181,19 @@ export class RevenuecatService {
           if (m?.source === 'code' && m?.status === 'active') {
             const endMs = m?.codeEndsAt?.toMillis?.();
             if (typeof endMs === 'number') {
-              const now = Date.now();
-              const diffDays = Math.ceil((endMs - now) / 86400000);
+              const diffDays = Math.ceil((endMs - Date.now()) / 86400000);
 
               if (diffDays > 0) {
                 result.status = 'active';
                 result.source = 'code';
                 result.codeActive = true;
                 result.codeDaysLeft = diffDays;
-
-                // optional: classify type
-                result.membershipType = 'whitelist'; // or create 'codeAccess' in union
+                result.membershipType = 'code';
 
                 localStorage.setItem('membershipStatus', 'active');
                 localStorage.setItem('membershipSource', 'code');
+
+                await this.persistMembershipFromSnapshot(result);
                 return result;
               }
             }
@@ -117,31 +203,32 @@ export class RevenuecatService {
     } catch (err) {
       console.error('⚠️ Code access check failed:', err);
     }
-    // ============================================================
-    // 2️⃣ TRIAL
-    // ============================================================
+
+    // 3) DEVICE TRIAL
     try {
       const { Device } = await import('@capacitor/device');
       const device = await Device.getId();
-      const db = this.firebaseService.firestore;
+
       if (db) {
         const deviceRef = doc(db, 'devices', device.identifier);
         const snap = await getDoc(deviceRef);
+
         if (snap.exists()) {
-          const data = snap.data();
-          const expiresAt = data['trialExpiresAt'];
-          const now = new Date();
-          if (expiresAt && expiresAt.toMillis() > now.getTime()) {
-            const diffDays = Math.ceil(
-              (expiresAt.toMillis() - now.getTime()) / (1000 * 60 * 60 * 24)
-            );
+          const data: any = snap.data();
+          const expiresAt = data?.trialExpiresAt;
+          if (expiresAt && expiresAt.toMillis && expiresAt.toMillis() > Date.now()) {
+            const diffDays = Math.ceil((expiresAt.toMillis() - Date.now()) / 86400000);
+
             result.status = 'active';
             result.source = 'trial';
             result.trialActive = true;
             result.trialDaysLeft = diffDays;
+            result.membershipType = 'deviceTrial';
+
             localStorage.setItem('membershipStatus', 'active');
             localStorage.setItem('membershipSource', 'trial');
-            result.membershipType = 'deviceTrial';
+
+            await this.persistMembershipFromSnapshot(result);
             return result;
           }
         }
@@ -150,40 +237,36 @@ export class RevenuecatService {
       console.error('⚠️ Trial check failed:', err);
     }
 
-    // ============================================================
-    // 3️⃣ OFFLINE FALLBACK
-    // ============================================================
+    // 4) OFFLINE FALLBACK
     if (!isOnline) {
       const cachedStatus = localStorage.getItem('membershipStatus');
       const cachedSource = localStorage.getItem('membershipSource');
+
       if (cachedStatus === 'active') {
         result.status = 'active';
-        result.source = cachedSource || 'cache';
-        return result;
+        result.source = (cachedSource as any) || 'cache';
       } else {
         result.status = 'inactive';
         result.source = 'cache';
-        return result;
       }
+
+      // Do NOT persist while offline (your FirebaseService disables firestore offline)
+      return result;
     }
 
-    // ============================================================
-    // 4️⃣ REVENUECAT
-    // ============================================================
+    // 5) REVENUECAT
     try {
       await this.init();
       const { customerInfo } = await Purchases.getCustomerInfo();
-      const activeEntitlements = Object.keys(customerInfo.entitlements.active || {});
 
-      if (activeEntitlements.length > 0) {
+      const ent = customerInfo.entitlements.active?.[this.ENTITLEMENT_ID];
+      const hasEntitlement = !!ent;
+
+      if (hasEntitlement) {
         result.status = 'active';
         result.source = 'revenuecat';
         result.rcActive = true;
 
-        // ✅ Added classification (non-breaking)
-        const ent = customerInfo.entitlements.active?.[this.ENTITLEMENT_ID];
-
-        // periodType is usually available on the entitlement object
         const periodType = (ent?.periodType || '').toString().toUpperCase();
         result.rcPeriodType = periodType || null;
 
@@ -198,38 +281,40 @@ export class RevenuecatService {
         } else if (productId && this.ANNUAL_PRODUCT_IDS.has(productId)) {
           result.membershipType = 'annualSubscriber';
         } else {
-          // Fallback if productId not in your known list
-          // (still active, just unknown paid type)
+          // still active; unknown paid SKU
           result.membershipType = 'monthlySubscriber';
           console.warn('[RevenueCat] Unknown productId:', productId);
         }
 
-        // keep your existing cache keys
         localStorage.setItem('membershipStatus', 'active');
         localStorage.setItem('membershipSource', 'revenuecat');
 
+        await this.persistMembershipFromSnapshot(result);
         return result;
       }
     } catch (err) {
       console.error('❌ RevenueCat check failed:', err);
     }
 
-    // ============================================================
-    // 5️⃣ FINAL FALLBACK → INACTIVE
-    // ============================================================
-    console.warn('❌ No active membership found');
+    // 6) FINAL FALLBACK → INACTIVE
     result.status = 'inactive';
     result.source = 'none';
+    result.membershipType = 'free';
+
     localStorage.setItem('membershipStatus', 'inactive');
     localStorage.setItem('membershipSource', 'none');
-    result.membershipType = 'free';
+
+    // Optional: persist inactive state (your call). Usually OK.
+    try {
+      await this.persistMembershipFromSnapshot(result);
+    } catch {}
+
     return result;
   }
 
-
-  // ============================================================
-  // PLATFORM + MANAGEMENT LINKS
-  // ============================================================
+  // -------------------------
+  // Platform + links
+  // -------------------------
   getPlatform(): 'ios' | 'android' | 'web' {
     const ua = navigator.userAgent.toLowerCase();
     if (/iphone|ipad|ipod/.test(ua)) return 'ios';
@@ -243,9 +328,9 @@ export class RevenuecatService {
       : 'https://apps.apple.com/account/subscriptions';
   }
 
-  // ============================================================
-  // INIT + OFFERINGS
-  // ============================================================
+  // -------------------------
+  // Init + offerings
+  // -------------------------
   async init() {
     try {
       const apiKey =

@@ -10,7 +10,8 @@
   </header>
 
   <div class="breathingpages" *ngIf="hasData">
-    <h1>Mindfulness</h1>
+     <h1   *ngIf="!isPortuguese">Meditation</h1>
+    <h1 *ngIf="isPortuguese">Meditação</h1>
   </div>
 
   <div class="chart-container">

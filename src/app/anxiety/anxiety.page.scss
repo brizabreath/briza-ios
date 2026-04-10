@@ -35,8 +35,9 @@
   overflow-y: hidden;
 
   padding-right:12px;
-  padding-left: 0;
+  padding-left: 0.7rem;
   -webkit-overflow-scrolling: touch;
+  height: 10.2rem;
 }
 
 /* 2 full cards + ~1/3 of the next card visible */
@@ -46,9 +47,7 @@
   /* tweak these two values to taste */
   --gap: 12px;     /* must match .horizontal-scroll gap */
   --peek: 70px;    /* how much of 3rd card shows */
-
-  width: calc((100vw - (2 * var(--gap)) - (2 * 12px) - var(--peek)) / 2);
-  height: 9rem;
+  height: 10rem;
 }
 
 /* Optional: hide scrollbar */
@@ -70,10 +69,9 @@
 .breath-button2 {
   background-color: white;
   box-shadow: none;
-  height: 9rem;
 }
 .homepageimgs5{
-  height: 9rem;
+  height: 10rem;
 }
 .anx-card {
   position: relative;
@@ -84,7 +82,7 @@
 
 .anx-thumb {
   width: 100%;
-  height: 9rem;
+  height: 10rem;
   object-fit: cover;
   display: block;
 
@@ -107,7 +105,7 @@
   left: 10px;
   right: 10px;
   bottom: 30px;
-  z-index: 2;
+  z-index: 1;
 
   color: #fff;
   font-size: 14px;
@@ -126,7 +124,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  z-index: 2;
+  z-index: 1;
 
   background: rgba(0,0,0,0.55);
   color: #fff;

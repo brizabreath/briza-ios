@@ -6,7 +6,7 @@ h3 {
   color: #0661AA;
 }
 .program-bottom-controls {
-  padding: 14px 16px 24px 16px;
+  padding: 0px 16px 24px 16px;
 }
 
 .program-dd-row {
@@ -17,7 +17,7 @@ h3 {
 .countdownDisplay {
   border: 1px solid;
   border-radius: 20px;
-  margin-top: 2rem;
+  margin-top: 1rem;
   text-align: center;
   font-size: 15px;
   color: #0661AA;
@@ -28,6 +28,47 @@ h3 {
 .watched-badge{
   color:#49B79D;
 }
-.centerText{
+.date-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid rgba(0,0,0,0.08);
+}
+
+.date-nav-arrow {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: transparent;
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  color: #0661AA;
+}
+
+.date-nav-center {
   text-align: center;
+}
+
+.date-nav-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  margin-bottom: 2px;
+}
+
+.date-nav-date {
+  font-size: 15px;
+  font-weight: 500;
+  color: #0661AA;
+}
+.date-nav-arrow.disabled {
+  opacity: 0.2;
+  pointer-events: none;
 }

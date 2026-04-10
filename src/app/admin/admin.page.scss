@@ -9,6 +9,7 @@
 }
 .adminstat {
   display: flex;
+  align-items: center;
 }
 .label{
   font-size: 20px;
@@ -20,4 +21,18 @@
 h2{
   color: #49b79d;
   margin-top: 15px;
+}
+/* admin.page.scss */
+.mini-status {
+  margin: 12px 16px;
+  font-size: 14px;
+}
+
+.stat-link {
+  font-size: 20px;
+}
+
+.chart-wrap {
+  height: 220px;
+  margin-bottom: 30px;
 }

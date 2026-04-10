@@ -22,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [CommonModule, IonicModule, RouterModule, VideoModalComponent],
 })
 export class LungsPage implements OnInit {
-  selectedSegment: 'lungs' | 'mobility' = 'lungs';
+  selectedSegment: 'lungs' | 'meditate' = 'lungs';
   isPortuguese = false;
 
   allVideos: any[] = [];
@@ -32,7 +32,6 @@ export class LungsPage implements OnInit {
   showWebSplash = false;
 
   private watchedKey = 'watchedYogaIds';
-  private likedKey = 'likedYogaIds';
   private openingVideo = false;
 
   constructor(
@@ -51,28 +50,12 @@ export class LungsPage implements OnInit {
     const ids: string[] = JSON.parse(localStorage.getItem(this.watchedKey) || '[]');
     return ids.includes(videoId);
   }
-
-  hasLikedClasses(): boolean {
-    const ids: string[] = JSON.parse(localStorage.getItem(this.likedKey) || '[]');
-    return ids.length > 0;
-  }
-  goToLikedClasses(): void{
-    this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
-    if(this.hasLikedClasses()){
-      this.navCtrl.navigateRoot('/yogaLikedPage');
-    }
-    else{
-      this.globalAlert.showalert(
-        this.isPortuguese ? 'Aulas curtidas' : 'Liked classes',
-        this.isPortuguese
-          ? 'Você ainda não curtiu de nenhuma aula'
-          : 'You did not like any classes yet'
-      );
-    }
-  }
   ngOnInit() {
     this.isPortuguese = localStorage.getItem('isPortuguese') === 'true';
+    const seg = (this.route.snapshot.queryParamMap.get('seg') || '').toLowerCase();
 
+    if (seg === 'meditate') this.selectedSegment = 'meditate';
+    else if (seg === 'lungs') this.selectedSegment = 'lungs';
     window.addEventListener('storage', (e) => {
       if (e.key === 'isPortuguese') {
         this.isPortuguese = e.newValue === 'true';
@@ -127,7 +110,7 @@ export class LungsPage implements OnInit {
 
           // ✅ show cache instantly
           this.allVideos = cachedVideos
-            .filter((v: any) => v?.category === 'lungs' || v?.category === 'mobility')
+            .filter((v: any) => v?.category === 'lungs' || v?.category === 'meditate')
             .map((v: any) => ({
               ...v,
               url: this.sanitizer.bypassSecurityTrustResourceUrl(v.videoUrl || v.url),
@@ -150,7 +133,7 @@ export class LungsPage implements OnInit {
         .map((d) => {
           const data = d.data() as any;
           const cat = data?.category;
-          if (cat !== 'lungs' && cat !== 'mobility') return null;
+          if (cat !== 'lungs' && cat !== 'meditate') return null;
 
           const ts =
             typeof data?.updatedAt?.toMillis === 'function'
@@ -163,7 +146,7 @@ export class LungsPage implements OnInit {
         .sort((a: any, b: any) => a.id.localeCompare(b.id));
 
       const localMeta = (cachedVideos || [])
-        .filter((v: any) => v?.category === 'lungs' || v?.category === 'mobility')
+        .filter((v: any) => v?.category === 'lungs' || v?.category === 'meditate')
         .map((v: any) => {
           const ts =
             typeof v?.updatedAt?.toMillis === 'function'
@@ -202,7 +185,7 @@ export class LungsPage implements OnInit {
       const base = snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
 
       const filteredBase = base.filter(
-        (v) => v?.category === 'lungs' || v?.category === 'mobility'
+        (v) => v?.category === 'lungs' || v?.category === 'meditate'
       );
 
       const enriched = filteredBase.map((v) => {
@@ -216,7 +199,7 @@ export class LungsPage implements OnInit {
           duration: v.duration ?? null,
           title: (v.title || '').trim() || 'Untitled',
           description: (v.description || '').trim() || '',
-          thumbnail: (v.thumbnail || '').trim() || 'assets/images/lungs.svg',
+          thumbnail: (v.thumbnail || '').trim() || 'assets/images/default.jpg',
           videoUrl: playerUrl,
           rawUrl,
           addedOn: v.addedOn || '',
@@ -237,7 +220,7 @@ export class LungsPage implements OnInit {
 
       const byId = new Map<string, any>();
       for (const v of cached) byId.set(v.id, v);
-      for (const v of this.allVideos) byId.set(v.id, v); // lungs/mobility override same id
+      for (const v of this.allVideos) byId.set(v.id, v); // lungs/meditate override same id
 
       const mergedVideos = Array.from(byId.values());
 
@@ -252,6 +235,7 @@ export class LungsPage implements OnInit {
 
   filterVideos() {
     const selectedLanguage = this.isPortuguese ? 'PT' : 'EN';
+    const isMember = this.isMemberActive();
 
     const base = this.allVideos.filter((v) => {
       const matchesCategory = v.category === this.selectedSegment;
@@ -259,13 +243,68 @@ export class LungsPage implements OnInit {
       return matchesCategory && matchesLanguage;
     });
 
-    // ✅ pin ALL free classes first (for this segment + language)
-    const pinned = base.filter(v => !!v.isFree);
-    const rest = base.filter(v => !v.isFree);
-    this.filteredVideos = [...pinned, ...rest];
+    // newest-first helper (Firestore Timestamp / ISO string / number)
+    const toTime = (x: any) => {
+      const d = x?.addedOn;
+      if (!d) return 0;
+
+      if (typeof d === 'number') return d;
+
+      if (typeof d?.toMillis === 'function') return d.toMillis();
+
+      if (d?.seconds != null) {
+        return (d.seconds * 1000) + Math.floor((d.nanoseconds || 0) / 1e6);
+      }
+
+      if (typeof d === 'string') {
+        const s = d.trim();
+
+        // dd/mm/yy or dd/mm/yyyy
+        const m = s.match(/^(\d{2})\/(\d{2})\/(\d{2}|\d{4})$/);
+        if (m) {
+          const dd = Number(m[1]);
+          const mm = Number(m[2]);
+          let yy = Number(m[3]);
+
+          if (m[3].length === 2) yy = 2000 + yy;
+
+          const date = new Date(yy, mm - 1, dd, 12, 0, 0);
+          const ts = date.getTime();
+          return Number.isFinite(ts) ? ts : 0;
+        }
+
+        const parsed = Date.parse(s);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+
+      return 0;
+    };
+
+    // Special pin for Lungs: "Intro" always first
+    const isIntro = (v: any) =>
+      (v?.title || '').trim().toLowerCase() === 'intro';
+
+    let pinnedFirst: any[] = [];
+    let list = base;
+
+    if (this.selectedSegment === 'lungs') {
+      const intro = base.find(isIntro);
+      pinnedFirst = intro ? [intro] : [];
+      list = base.filter(v => !isIntro(v));
+    }
+
+    // Now apply ordering rules
+    if (!isMember) {
+      const free = list.filter(v => !!v.isFree).sort((a, b) => toTime(b) - toTime(a));
+      const paid = list.filter(v => !v.isFree).sort((a, b) => toTime(b) - toTime(a));
+      this.filteredVideos = [...pinnedFirst, ...free, ...paid];
+    } else {
+      const all = list.sort((a, b) => toTime(b) - toTime(a));
+      this.filteredVideos = [...pinnedFirst, ...all];
+    }
   }
 
-  selectSegment(segment: 'lungs' | 'mobility') {
+  selectSegment(segment: 'lungs' | 'meditate') {
     this.selectedSegment = segment;
     this.filterVideos();
   }

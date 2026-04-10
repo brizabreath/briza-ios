@@ -70,8 +70,8 @@
       <h2 *ngIf="isPortuguese">Idioma</h2>
       <h2   *ngIf="!isPortuguese">Language</h2>
       <div class="flags">
-        <a #portuguese   *ngIf="!isPortuguese" class="langBtn">Trocar para Português</a>
-        <a #english   *ngIf="isPortuguese" class="langBtn">Change to English</a>
+        <a #portuguese   *ngIf="!isPortuguese" class="langBtn">TROCAR PARA PORTUGUÊS</a>
+        <a #english   *ngIf="isPortuguese" class="langBtn">CHANGE TO ENGLISH</a>
       </div>
     </div>
     <hr />
@@ -89,28 +89,6 @@
       <div class="contactProfile">
         <p>Instagram</p>
         <a href="https://www.instagram.com/brizabreath/" target="_blank">brizabreath</a>
-      </div>
-    </div>
-    <hr />
-    <div class="profile">
-      <h2>{{ isPortuguese ? 'Código de promoção' : 'Promo code' }}</h2>
-
-      <div class="newsletterSection">
-        <input
-          [(ngModel)]="codeInput"
-          class="profileInput uppercase"
-          [placeholder]="isPortuguese ? 'Digite o código' : 'Enter code'"
-          inputmode="text"
-          autocomplete="off"
-          autocorrect="off"
-          spellcheck="false"
-          (input)="onCodeInput($event)"
-        />
-
-
-        <button type="button" class="profileBTN" (click)="redeemCode()">
-          {{ isPortuguese ? 'ATIVAR' : 'REDEEM' }}
-        </button>
       </div>
     </div>
     <hr />
@@ -152,7 +130,7 @@
         *ngIf="!newsletterActive && isPortuguese"
         (click)="toggleNewsletter(true)"
       >
-        ISCREVER-SE
+        ASSINAR
       </button>
     </div>
   </div>
@@ -196,8 +174,8 @@
   <footer id="profileFooter"  *ngIf="isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
-      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Mindfulness</a>
+      <a class="navIcons" routerLink="/movement"><i class="fa fa-sun-o"></i>Movement</a>
       <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Resultados</a>
       <a class="active"><i class="fa fa-user active"></i>Perfil</a>
     </div>
@@ -205,8 +183,8 @@
   <footer id="profileFooter"    *ngIf="!isPortuguese" >
     <div class="navbar">
       <a class="navIcons" routerLink="/breathwork"><i class="fa fa-home"></i>Home</a>
-      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Breathwork</a>
-      <a class="navIcons" routerLink="/yoga"><i class="fa fa-sun-o"></i>Yoga</a>
+      <a class="navIcons" routerLink="/home"><i class="fa fa-fire"></i>Mindfulness</a>
+      <a class="navIcons" routerLink="/movement"><i class="fa fa-sun-o"></i>Movimento</a>
       <a class="navIcons" routerLink="/bpr"><i class="fa fa-line-chart"></i>Results</a>
       <a class="active"><i class="fa fa-user active"></i>Profile</a>
     </div>

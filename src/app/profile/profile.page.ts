@@ -9,14 +9,10 @@ import { RouterModule } from '@angular/router';
 import { FirebaseService } from '../services/firebase.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { RevenuecatService } from '../services/revenuecat.service';
-import type { FirebaseError } from 'firebase/app';
 import {
   doc,
   getDoc,
   setDoc,
-  runTransaction,
-  serverTimestamp,
-  Timestamp,
 } from 'firebase/firestore';
 
 @Component({
@@ -35,8 +31,6 @@ export class ProfilePage implements OnInit, AfterViewInit {
   isOnline = navigator.onLine;
   isLoggingOut = false;
   newsletterActive = false;
-  codeInput = '';
-  isRedeeming = false;
 
   private t(s: { en: string; pt: string }) {
     return this.isPortuguese ? s.pt : s.en;
@@ -181,7 +175,7 @@ export class ProfilePage implements OnInit, AfterViewInit {
     const isPortuguese = localStorage.getItem('isPortuguese') === 'true';
     const t = (en: string, pt: string) => (isPortuguese ? pt : en);
     const storeName = snapshot.platform === 'ios' ? 'Apple' : 'Google';
-    const storeURL = snapshot.managementURL || this.revenuecat.getManageSubscriptionUrl?.();
+    const storeURL = this.revenuecat.getManageSubscriptionUrl();
 
     // Always update cache
     localStorage.setItem('membershipStatus', snapshot.status);
@@ -291,180 +285,4 @@ export class ProfilePage implements OnInit, AfterViewInit {
       this.navCtrl.navigateForward(page);
     }
   }
-
-  async redeemCode() {
-    if (!navigator.onLine) {
-      this.globalAlert.showalert(
-        'OFFLINE',
-        this.isPortuguese
-          ? '🌐 Você está offline.\n\nConecte-se à internet para ativar o código'
-          : '🌐 You are offline.\n\nConnect to the internet to redeem the code'
-      );
-      return;
-    }
-
-    if (this.isRedeeming) return;
-    this.isRedeeming = true;
-
-    try {
-      const user = this.authService.getCurrentUser();
-      const db = this.firebaseService.firestore;
-
-      if (!user || !db) {
-        this.globalAlert.showalert(
-          this.isPortuguese ? 'Erro' : 'Error',
-          this.isPortuguese
-            ? 'Você precisa estar logado para ativar um código.'
-            : 'You must be logged in to redeem a code.'
-        );
-        return;
-      }
-
-      const code = (this.codeInput || '').trim().toUpperCase().replace(/\s+/g, '');
-      if (!code) {
-        this.globalAlert.showalert(
-          this.isPortuguese ? 'Código' : 'Code',
-          this.isPortuguese ? 'Digite um código.' : 'Enter a code.'
-        );
-        return;
-      }
-
-      const codeRef = doc(db, `accessCodes/${code}`);
-      const userRef = doc(db, `users/${user.uid}`);
-
-      // Transaction prevents double redeem + lets you mark code used
-      const result = await runTransaction(db, async (tx) => {
-        const codeSnap = await tx.get(codeRef);
-        if (!codeSnap.exists()) return { ok: false, reason: 'not_found' as const };
-
-        const c: any = codeSnap.data();
-
-        // inactive
-        if (c.active === false) return { ok: false, reason: 'inactive' as const };
-
-        // expired: expects expiresAt (Timestamp) OR expiresAtMs (number)
-        const nowMs = Date.now();
-        const expiresAtMs =
-          c.expiresAt?.toMillis?.() ??
-          (typeof c.expiresAtMs === 'number' ? c.expiresAtMs : null);
-
-        if (expiresAtMs && nowMs > expiresAtMs) {
-          return { ok: false, reason: 'expired' as const };
-        }
-
-        // lengthDays required
-        const lengthDays = Number(c.lengthDays);
-        if (!Number.isFinite(lengthDays) || lengthDays <= 0 || lengthDays > 3650) {
-          return { ok: false, reason: 'misconfigured' as const };
-        }
-
-        // one-time per user: store redeemedBy map or array
-        // expects c.redeemedBy.{uid}: true
-        if (c.redeemedBy?.[user.uid]) {
-          return { ok: false, reason: 'already_used' as const };
-        }
-
-        const endMs = nowMs + lengthDays * 24 * 60 * 60 * 1000;
-
-        // write membership
-        tx.set(
-          userRef,
-          {
-            membership: {
-              status: 'active',
-              source: 'code',
-              type: 'code',
-              code,
-              codeStartedAt: Timestamp.fromMillis(nowMs),
-              codeEndsAt: Timestamp.fromMillis(endMs),
-              updatedAt: serverTimestamp(),
-            },
-          },
-          { merge: true }
-        );
-
-        // mark redeemed in code doc (prevents reuse by same user)
-        tx.set(
-          codeRef,
-          {
-            redeemedBy: { [user.uid]: true },
-            redeemedCount: (c.redeemedCount || 0) + 1,
-            lastRedeemedAt: serverTimestamp(),
-          },
-          { merge: true }
-        );
-
-        return { ok: true, lengthDays };
-      });
-
-      if (!result.ok) {
-        const msg =
-          result.reason === 'not_found'
-            ? this.isPortuguese
-              ? 'Esse código não existe. Tente novamente.'
-              : 'This code does not exist. Try again.'
-            : result.reason === 'inactive'
-            ? this.isPortuguese
-              ? 'Esse código está inativo.'
-              : 'That code is inactive.'
-            : result.reason === 'expired'
-            ? this.isPortuguese
-              ? 'Esse código expirou.'
-              : 'That code is expired.'
-            : result.reason === 'already_used'
-            ? this.isPortuguese
-              ? 'Você já usou esse código.'
-              : 'You already used this code.'
-            : this.isPortuguese
-            ? 'Código mal configurado.'
-            : 'Code misconfigured.';
-
-        this.globalAlert.showalert(this.isPortuguese ? 'Código' : 'Code', msg);
-        return;
-      }
-
-      // success
-      localStorage.setItem('membershipStatus', 'active');
-      localStorage.setItem('membershipSource', 'code');
-
-      this.globalAlert.showalert(
-        this.isPortuguese ? 'Ativado' : 'Activated',
-        this.isPortuguese
-          ? `Parabéns. Você ganhou ${result.lengthDays} dias de Premium.`
-          : `Congratulations. You've got ${result.lengthDays} days of Premium.`
-      );
-
-      this.codeInput = '';
-    } catch (e: any) {
-      const err = e as FirebaseError;
-
-      if (err?.code === 'permission-denied') {
-        this.globalAlert.showalert(
-          this.isPortuguese ? 'Permissão' : 'Permission',
-          this.isPortuguese
-            ? 'Sem permissão para validar esse código. Atualize o app ou entre em contato.'
-            : 'No permission to validate this code. Update the app or contact support.'
-        );
-        return;
-      }
-
-      this.globalAlert.showalert(
-        this.isPortuguese ? 'Erro' : 'Error',
-        this.isPortuguese
-          ? 'Algo deu errado ao ativar o código. Tente novamente.'
-          : 'Something went wrong redeeming the code. Try again.'
-      );
-      console.error('redeemCode error:', e);
-    } finally {
-      this.isRedeeming = false;
-    }
-  }
-
-  onCodeInput(ev: any) {
-    const v = (ev?.target?.value ?? '').toString();
-    const cleaned = v.toUpperCase().replace(/\s+/g, '');
-    this.codeInput = cleaned;
-    if (ev?.target) ev.target.value = cleaned; // keeps cursor stable most of the time
-  }
-
 }

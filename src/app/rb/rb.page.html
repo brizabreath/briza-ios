@@ -1,7 +1,7 @@
 <ion-content>
   <header class="mainHeader">
     <div class="back-buttons"> 
-      <button class="goback" (click)="goBack()">&#8249;</button> <!-- Custom back button -->
+      <button class="goback" (click)="goBack()">&#8249;</button>
     </div>
     <div class="logo-container">
         <img class="logoimg" src="assets/images/blogo.png" width="50" height="50" />
@@ -11,126 +11,65 @@
         <button routerLink="/set" id="settingsRB" #settingsRB class="audioSet" type="button"><img src="assets/images/settings.png"></button>
       </div>  
       <div class="questionMark questionClass">
-        <button #questionRB type="button"><img class="questionIMG" src="assets/images/question.png"></button>
+        <button #questionRB type="button" (click)="startGuide()"><img class="questionIMG" src="assets/images/question.png"></button>
       </div>
     </div>
   </header>  
   <div id="rbPage">
     <div class="breathingpages">
-        <div class="main-container">
-          <div class="timer-status">
-              <div class="settings-form RB">
-                  <div class="form-line">
-                      <img src="assets/images/in.png">
-                      <input type="number" value="4" #inhaleInputRB min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/pause.png">
-                      <input type="number" value="7" #hold1InputRB min="1" readonly>
-                  </div>
-                  <div class="form-line">
-                      <img src="assets/images/out.png">
-                      <input type="number" value="8" #exhaleInputRB min="1" readonly>
-                  </div>
-              </div>
-              <div class="RBtimer-container">
-                  <select #RBtimeInput class="countdownDisplay">
-                      <option value="infinity"   *ngIf="!isPortuguese">∞ minutes</option>
-                      <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
-                      <option value="60"   *ngIf="!isPortuguese">1 minute</option>
-                      <option value="60" *ngIf="isPortuguese">1 minuto</option>
-                  </select>
-                  <input #RBcountdownInput class="countdownDisplay" style="display: none;" readonly />
-              </div>
-              <div class="center-container">
-                <button #startBtnRB class="ballButton">
-                  <div #RBball class="ball">
-                      <span #RBballText></span>
-                      <img src="assets/images/3dBall.png" alt="3D Ball">
-                    </div>
-                </button>
-              </div>   
-              <div class="timer-controls">
-                  <!--  Information about interval  -->
-                  <button type="button" class="stopBtn" id="stopBtnRB" #stopBtnRB><div   *ngIf="!isPortuguese">Reset</div><div  *ngIf="isPortuguese">Resetar</div></button>
-                  <button type="button" class="saveBtn" id="RBSave" #RBSave><div   *ngIf="!isPortuguese">Save</div><div  *ngIf="isPortuguese">Salvar</div></button>
-                  <form method="post" id="RBForm">
-                      <div class="roundbox">
-                          <div>Rounds:</div><div #roundsDoneRB>0</div>
-                          <div   *ngIf="!isPortuguese">Total time:</div><div  *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayRB>00 : 00</div>
-                      </div>
-                  </form>
-              </div>
+      <div class="main-container">
+        <div class="timer-status">
+          <div class="settings-form RB">
+            <div class="form-line" id="rb-inhale-item">
+              <img src="assets/images/in.png">
+              <input type="number" value="4" #inhaleInputRB min="1" readonly>
+            </div>
+            <div class="form-line" id="rb-hold-item">
+              <img src="assets/images/pause.png">
+              <input type="number" value="7" #hold1InputRB min="1" readonly>
+            </div>
+            <div class="form-line" id="rb-exhale-item">
+              <img src="assets/images/out.png">
+              <input type="number" value="8" #exhaleInputRB min="1" readonly>
+            </div>
           </div>
+          <div class="RBtimer-container">
+            <select #RBtimeInput class="countdownDisplay" id="rb-duration-select">
+              <option value="infinity" *ngIf="!isPortuguese">∞ minutes</option>
+              <option value="infinity" *ngIf="isPortuguese">∞ minutos</option>
+              <option value="60" *ngIf="!isPortuguese">1 minute</option>
+              <option value="60" *ngIf="isPortuguese">1 minuto</option>
+            </select>
+            <input #RBcountdownInput class="countdownDisplay" style="display: none;" readonly />
+          </div>
+          <div class="center-container">
+            <button #startBtnRB class="ballButton">
+              <div #RBball class="ball">
+                <span #RBballText></span>
+                <img src="assets/images/3dBall.png" alt="3D Ball" id="rb-start-ball">
+              </div>
+            </button>
+          </div>
+          <div class="timer-controls">
+            <button type="button" class="stopBtn" id="stopBtnRB" #stopBtnRB>
+              <div *ngIf="!isPortuguese">Reset</div><div *ngIf="isPortuguese">Resetar</div>
+            </button>
+            <button type="button" class="saveBtn" id="RBSave" #RBSave>
+              <div *ngIf="!isPortuguese">Save</div><div *ngIf="isPortuguese">Salvar</div>
+            </button>
+            <form method="post" id="RBForm">
+              <div class="roundbox">
+                <div>Rounds:</div><div #roundsDoneRB>0</div>
+                <div *ngIf="!isPortuguese">Total time:</div><div *ngIf="isPortuguese">Tempo Total:</div><div #timerDisplayRB>00 : 00</div>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      <div #RBResultSaved class="resultSaved hiddenElements"><div   *ngIf="!isPortuguese">Result successfully saved</div><div  *ngIf="isPortuguese">Resultado salvo com sucesso</div></div>
-    </div>
-  </div>
-  <div id="myModalRB" class="modal" #myModalRB>
-    <div class="modal-content">
-        <span class="close" id="closeModalRB" #closeModalRB>&times;</span>
-        <div class="autoPlayBtnContainer">
-          <!--<button type="button" class="autoPlayBtn" (click)="toggleInstructions()">
-            {{ instructionsActive ? '⏹ Stop Instructions' : '▶ Play Instructions' }}
-          </button>-->
-        </div>
-        <div class="slideshow-container">
-            <div class="mySlides fadeModal slides">
-
-                <img src="assets/images/yogiclines.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    The 4-7-8 breathing technique is based on the principles of deep breathing and diaphragmatic breathing, which have been shown to reduce stress and anxiety by activating the body's relaxation response
-                  </p> 
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    A técnica de respiração 4-7-8 é baseada nos princípios da respiração profunda e da respiração diafragmática, que demonstraram reduzir o estresse e a ansiedade ativando a resposta de relaxamento do corpo.
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-
-                <img src="assets/images/yogiclines.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    By slowing down the breath and focusing on the pattern of inhalation and exhalation, the mind is able to become more calm and centered.
-                  </p> 
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Ao desacelerar a respiração e focar no padrão de inalação e exalação, a mente é capaz de se tornar mais calma e centrada
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/sit.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Find a comfortable seat or lay down. Relax your shoulders, face muscles and jaw. Place your tongue on the roof of your mouth, its tip should touch the top of your front teeth
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Encontre um assento confortável ou deite-se. Relaxe os ombros, os músculos faciais e a mandíbula. Coloque sua língua no céu da boca, a ponta deve tocar o topo dos seus dentes da frente
-                  </p>
-                </div>
-            </div>
-            <div class="mySlides fadeModal slides">
-                <img src="assets/images/mindful.svg">
-                <div class="text"  *ngIf="!isPortuguese">
-                  <p>
-                    Press 'Start' to begin the guided exercise. If you need to pause, just click on the circle again
-                  </p>
-                </div>
-                <div class="text"  *ngIf="isPortuguese">
-                  <p>
-                    Pressione 'Iniciar' e siga a técnica guiada. Salve seus resultados ao final. Se precisar pausar, basta clicar no círculo novamente
-                  </p>
-                </div>
-            </div>
-            <div class="dots" #RBdots role="tablist" aria-label="Slideshow pagination"></div>
-        </div>
+      <div #RBResultSaved class="resultSaved hiddenElements">
+        <div *ngIf="!isPortuguese">Result successfully saved</div>
+        <div *ngIf="isPortuguese">Resultado salvo com sucesso</div>
+      </div>
     </div>
   </div>
 </ion-content>

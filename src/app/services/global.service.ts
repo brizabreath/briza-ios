@@ -4,7 +4,10 @@ import { AudioService } from './audio.service';
 import { GlobalAlertService } from '../services/global-alert.service';
 import { RevenuecatService } from '../services/revenuecat.service'; // ✅ NEW import
 import { Subject } from 'rxjs';
-
+type ModalUnlockCtx =
+  | { unlockType: 'premium' }
+  | { unlockType: 'series'; seriesId: string };
+  
 @Injectable({
   providedIn: 'root',
 })
@@ -15,7 +18,7 @@ export class GlobalService {
   isModalOpen$ = this.isModalOpenSubject.asObservable();
   private autoplayAbort = { stop: false };
   public autoplayStopped$ = new Subject<void>();
-  
+
   constructor(
     private audioService: AudioService,
     private globalAlert: GlobalAlertService,
@@ -31,10 +34,10 @@ export class GlobalService {
       : { next: 'Next', start: 'Get started' };
   }
 
-  // ✅ Replaces openModal2() + checkIfModalIsEmpty()
-  openModal2Safe(): void {
-    this.isModalOpenSubject.next(true); // Show modal
-  }
+openModal2Safe(ctx: ModalUnlockCtx = { unlockType: 'premium' }): void {
+  localStorage.setItem('modalUnlockCtx', JSON.stringify(ctx));
+  this.isModalOpenSubject.next(true);
+}
 
   closeModal2(): void {
     this.isModalOpenSubject.next(false);
